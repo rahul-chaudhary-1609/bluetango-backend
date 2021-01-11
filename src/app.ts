@@ -35,7 +35,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// welcome route for virtuDoc 
+// welcome route for bluetango 
 app.get('/', (req, res) => {
     res.send("<center><p><b>Welcome to BlueTango!</b></p></center>");
 });
