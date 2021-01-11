@@ -1,0 +1,3999 @@
+ [
+    {"city":"Addis Ababa", "region_id":1},
+    {"city":"Dire Dawa", "region_id":2},
+    {"city":"Afar", "region_id":3},
+    {"city":"Agew Awi", "region_id":4},
+    {"city":"Debub Gondar", "region_id":4},
+    {"city":"Mirab Gojam", "region_id":4},
+    {"city":"Semen Gondar", "region_id":4},
+    {"city":"Semen Wello", "region_id":4},
+    {"city":"Wag Hemra", "region_id":4},
+    {"city":"Asosa", "region_id":5},
+    {"city":"Metekel", "region_id":5},
+    {"city":"Gambela", "region_id":6},
+    {"city":"Harari", "region_id":7},
+    {"city":"Arssi", "region_id":8},
+    {"city":"Bale", "region_id":8},
+    {"city":"Semen Shewa", "region_id":8},
+    {"city":"Afder", "region_id":9},
+    {"city":"Degehabur", "region_id":9},
+    {"city":"Fiq", "region_id":9},
+    {"city":"Gode", "region_id":9},
+    {"city":"Korahe", "region_id":9},
+    {"city":"Warder", "region_id":9},
+    {"city":"Amaro Special Woreda", "region_id":10},
+    {"city":"Bench Maji", "region_id":10},
+    {"city":"Burji Special Woreda", "region_id":10},
+    {"city":"Debub Omo", "region_id":10},
+    {"city":"Derashe Special Woreda", "region_id":10},
+    {"city":"Keficho Shekicho", "region_id":10},
+    {"city":"Konso Special Woreda", "region_id":10},
+    {"city":"Semen Omo", "region_id":10},
+    {"city":"Debubawi", "region_id":11},
+    {"city":"Mehakelegnaw", "region_id":11},
+    {"city":"Mirabawi", "region_id":11},
+    {"city":"Misrakawi", "region_id":11},
+    {"city":"Birmingham", "region_id":12},
+    {"city":"Montgomery", "region_id":12},
+    {"city":"Mobile", "region_id":12},
+    {"city":"Huntsville", "region_id":12},
+    {"city":"Tuscaloosa", "region_id":12},
+    {"city":"Hoover", "region_id":12},
+    {"city":"Dothan", "region_id":12},
+    {"city":"Auburn", "region_id":12},
+    {"city":"Decatur", "region_id":12},
+    {"city":"Madison", "region_id":12},
+    {"city":"Florence", "region_id":12},
+    {"city":"Phenix City", "region_id":12},
+    {"city":"Anchorage", "region_id":13},
+    {"city":"Phoenix", "region_id":14},
+    {
+        "city": "Phoenix",
+        "region_id": 15
+    },
+    {
+        "city": "Tucson",
+        "region_id": 15
+    },
+    {
+        "city": "Mesa",
+        "region_id": 15
+    },
+    {
+        "city": "Chandler",
+        "region_id": 15
+    },
+    {
+        "city": "Glendale",
+        "region_id": 15
+    },
+    {
+        "city": "Gilbert",
+        "region_id": 15
+    },
+    {
+        "city": "Scottsdale",
+        "region_id": 15
+    },
+    {
+        "city": "Tempe",
+        "region_id": 15
+    },
+    {
+        "city": "Peoria",
+        "region_id": 15
+    },
+    {
+        "city": "Surprise",
+        "region_id": 15
+    },
+    {
+        "city": "Yuma",
+        "region_id": 15
+    },
+    {
+        "city": "Avondale",
+        "region_id": 15
+    },
+    {
+        "city": "Goodyear",
+        "region_id": 15
+    },
+    {
+        "city": "Flagstaff",
+        "region_id": 15
+    },
+    {
+        "city": "Buckeye",
+        "region_id": 15
+    },
+    {
+        "city": "Lake Havasu City",
+        "region_id": 15
+    },
+    {
+        "city": "Casa Grande",
+        "region_id": 15
+    },
+    {
+        "city": "Maricopa",
+        "region_id": 15
+    },
+    {
+        "city": "Sierra Vista",
+        "region_id": 15
+    },
+    {
+        "city": "Oro Valley",
+        "region_id": 15
+    },
+    {
+        "city": "Prescott",
+        "region_id": 15
+    },
+    {
+        "city": "Prescott Valley",
+        "region_id": 15
+    },
+    {
+        "city": "Bullhead City",
+        "region_id": 15
+    },
+    {
+        "city": "Marana",
+        "region_id": 15
+    },
+    {
+        "city": "Apache Junction",
+        "region_id": 15
+    },
+    {
+        "city": "Little Rock",
+        "region_id": 16
+    },
+    {
+        "city": "Fort Smith",
+        "region_id": 16
+    },
+    {
+        "city": "Fayetteville",
+        "region_id": 16
+    },
+    {
+        "city": "Springdale",
+        "region_id": 16
+    },
+    {
+        "city": "Jonesboro",
+        "region_id": 16
+    },
+    {
+        "city": "North Little Rock",
+        "region_id": 16
+    },
+    {
+        "city": "Conway",
+        "region_id": 16
+    },
+    {
+        "city": "Rogers",
+        "region_id": 16
+    },
+    {
+        "city": "Pine Bluff",
+        "region_id": 16
+    },
+    {
+        "city": "Bentonville",
+        "region_id": 16
+    },
+    {
+        "city": "Los Angeles",
+        "region_id": 17
+    },
+    {
+        "city": "San Diego",
+        "region_id": 17
+    },
+    {
+        "city": "San Jose",
+        "region_id": 17
+    },
+    {
+        "city": "San Francisco",
+        "region_id": 17
+    },
+    {
+        "city": "Fresno",
+        "region_id": 17
+    },
+    {
+        "city": "Sacramento",
+        "region_id": 17
+    },
+    {
+        "city": "Long Beach",
+        "region_id": 17
+    },
+    {
+        "city": "Oakland",
+        "region_id": 17
+    },
+    {
+        "city": "Bakersfield",
+        "region_id": 17
+    },
+    {
+        "city": "Anaheim",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Ana",
+        "region_id": 17
+    },
+    {
+        "city": "Riverside",
+        "region_id": 17
+    },
+    {
+        "city": "Stockton",
+        "region_id": 17
+    },
+    {
+        "city": "Chula Vista",
+        "region_id": 17
+    },
+    {
+        "city": "Irvine",
+        "region_id": 17
+    },
+    {
+        "city": "Fremont",
+        "region_id": 17
+    },
+    {
+        "city": "San Bernardino",
+        "region_id": 17
+    },
+    {
+        "city": "Modesto",
+        "region_id": 17
+    },
+    {
+        "city": "Oxnard",
+        "region_id": 17
+    },
+    {
+        "city": "Fontana",
+        "region_id": 17
+    },
+    {
+        "city": "Moreno Valley",
+        "region_id": 17
+    },
+    {
+        "city": "Huntington Beach",
+        "region_id": 17
+    },
+    {
+        "city": "Glendale",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Clarita",
+        "region_id": 17
+    },
+    {
+        "city": "Garden Grove",
+        "region_id": 17
+    },
+    {
+        "city": "Oceanside",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Rosa",
+        "region_id": 17
+    },
+    {
+        "city": "Rancho Cucamonga",
+        "region_id": 17
+    },
+    {
+        "city": "Ontario",
+        "region_id": 17
+    },
+    {
+        "city": "Elk Grove",
+        "region_id": 17
+    },
+    {
+        "city": "Lancaster",
+        "region_id": 17
+    },
+    {
+        "city": "Corona",
+        "region_id": 17
+    },
+    {
+        "city": "Palmdale",
+        "region_id": 17
+    },
+    {
+        "city": "Salinas",
+        "region_id": 17
+    },
+    {
+        "city": "Hayward",
+        "region_id": 17
+    },
+    {
+        "city": "Pomona",
+        "region_id": 17
+    },
+    {
+        "city": "Escondido",
+        "region_id": 17
+    },
+    {
+        "city": "Sunnyvale",
+        "region_id": 17
+    },
+    {
+        "city": "Torrance",
+        "region_id": 17
+    },
+    {
+        "city": "Orange",
+        "region_id": 17
+    },
+    {
+        "city": "Pasadena",
+        "region_id": 17
+    },
+    {
+        "city": "Fullerton",
+        "region_id": 17
+    },
+    {
+        "city": "Thousand Oaks",
+        "region_id": 17
+    },
+    {
+        "city": "Visalia",
+        "region_id": 17
+    },
+    {
+        "city": "Roseville",
+        "region_id": 17
+    },
+    {
+        "city": "Simi Valley",
+        "region_id": 17
+    },
+    {
+        "city": "Concord",
+        "region_id": 17
+    },
+    {
+        "city": "Victorville",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Clara",
+        "region_id": 17
+    },
+    {
+        "city": "Vallejo",
+        "region_id": 17
+    },
+    {
+        "city": "Berkeley",
+        "region_id": 17
+    },
+    {
+        "city": "El Monte",
+        "region_id": 17
+    },
+    {
+        "city": "Downey",
+        "region_id": 17
+    },
+    {
+        "city": "Costa Mesa",
+        "region_id": 17
+    },
+    {
+        "city": "Inglewood",
+        "region_id": 17
+    },
+    {
+        "city": "Carlsbad",
+        "region_id": 17
+    },
+    {
+        "city": "Fairfield",
+        "region_id": 17
+    },
+    {
+        "city": "San Buenaventura (Ventura)",
+        "region_id": 17
+    },
+    {
+        "city": "West Covina",
+        "region_id": 17
+    },
+    {
+        "city": "Richmond",
+        "region_id": 17
+    },
+    {
+        "city": "Murrieta",
+        "region_id": 17
+    },
+    {
+        "city": "Antioch",
+        "region_id": 17
+    },
+    {
+        "city": "Temecula",
+        "region_id": 17
+    },
+    {
+        "city": "Norwalk",
+        "region_id": 17
+    },
+    {
+        "city": "Daly City",
+        "region_id": 17
+    },
+    {
+        "city": "Burbank",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Maria",
+        "region_id": 17
+    },
+    {
+        "city": "El Cajon",
+        "region_id": 17
+    },
+    {
+        "city": "Rialto",
+        "region_id": 17
+    },
+    {
+        "city": "San Mateo",
+        "region_id": 17
+    },
+    {
+        "city": "Clovis",
+        "region_id": 17
+    },
+    {
+        "city": "Jurupa Valley",
+        "region_id": 17
+    },
+    {
+        "city": "Compton",
+        "region_id": 17
+    },
+    {
+        "city": "Vista",
+        "region_id": 17
+    },
+    {
+        "city": "Mission Viejo",
+        "region_id": 17
+    },
+    {
+        "city": "South Gate",
+        "region_id": 17
+    },
+    {
+        "city": "Vacaville",
+        "region_id": 17
+    },
+    {
+        "city": "Carson",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Monica",
+        "region_id": 17
+    },
+    {
+        "city": "Hesperia",
+        "region_id": 17
+    },
+    {
+        "city": "Westminster",
+        "region_id": 17
+    },
+    {
+        "city": "Redding",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Barbara",
+        "region_id": 17
+    },
+    {
+        "city": "San Marcos",
+        "region_id": 17
+    },
+    {
+        "city": "Chico",
+        "region_id": 17
+    },
+    {
+        "city": "San Leandro",
+        "region_id": 17
+    },
+    {
+        "city": "Newport Beach",
+        "region_id": 17
+    },
+    {
+        "city": "Whittier",
+        "region_id": 17
+    },
+    {
+        "city": "Hawthorne",
+        "region_id": 17
+    },
+    {
+        "city": "Citrus Heights",
+        "region_id": 17
+    },
+    {
+        "city": "Livermore",
+        "region_id": 17
+    },
+    {
+        "city": "Tracy",
+        "region_id": 17
+    },
+    {
+        "city": "Alhambra",
+        "region_id": 17
+    },
+    {
+        "city": "Indio",
+        "region_id": 17
+    },
+    {
+        "city": "Menifee",
+        "region_id": 17
+    },
+    {
+        "city": "Buena Park",
+        "region_id": 17
+    },
+    {
+        "city": "Hemet",
+        "region_id": 17
+    },
+    {
+        "city": "Lakewood",
+        "region_id": 17
+    },
+    {
+        "city": "Merced",
+        "region_id": 17
+    },
+    {
+        "city": "Chino",
+        "region_id": 17
+    },
+    {
+        "city": "Redwood City",
+        "region_id": 17
+    },
+    {
+        "city": "Lake Forest",
+        "region_id": 17
+    },
+    {
+        "city": "Napa",
+        "region_id": 17
+    },
+    {
+        "city": "Tustin",
+        "region_id": 17
+    },
+    {
+        "city": "Mountain View",
+        "region_id": 17
+    },
+    {
+        "city": "Bellflower",
+        "region_id": 17
+    },
+    {
+        "city": "Baldwin Park",
+        "region_id": 17
+    },
+    {
+        "city": "Chino Hills",
+        "region_id": 17
+    },
+    {
+        "city": "Alameda",
+        "region_id": 17
+    },
+    {
+        "city": "Upland",
+        "region_id": 17
+    },
+    {
+        "city": "San Ramon",
+        "region_id": 17
+    },
+    {
+        "city": "Pleasanton",
+        "region_id": 17
+    },
+    {
+        "city": "Folsom",
+        "region_id": 17
+    },
+    {
+        "city": "Union City",
+        "region_id": 17
+    },
+    {
+        "city": "Perris",
+        "region_id": 17
+    },
+    {
+        "city": "Manteca",
+        "region_id": 17
+    },
+    {
+        "city": "Lynwood",
+        "region_id": 17
+    },
+    {
+        "city": "Apple Valley",
+        "region_id": 17
+    },
+    {
+        "city": "Turlock",
+        "region_id": 17
+    },
+    {
+        "city": "Redlands",
+        "region_id": 17
+    },
+    {
+        "city": "Milpitas",
+        "region_id": 17
+    },
+    {
+        "city": "Rancho Cordova",
+        "region_id": 17
+    },
+    {
+        "city": "Redondo Beach",
+        "region_id": 17
+    },
+    {
+        "city": "Yorba Linda",
+        "region_id": 17
+    },
+    {
+        "city": "Walnut Creek",
+        "region_id": 17
+    },
+    {
+        "city": "Pittsburg",
+        "region_id": 17
+    },
+    {
+        "city": "Palo Alto",
+        "region_id": 17
+    },
+    {
+        "city": "Davis",
+        "region_id": 17
+    },
+    {
+        "city": "South San Francisco",
+        "region_id": 17
+    },
+    {
+        "city": "Camarillo",
+        "region_id": 17
+    },
+    {
+        "city": "Yuba City",
+        "region_id": 17
+    },
+    {
+        "city": "San Clemente",
+        "region_id": 17
+    },
+    {
+        "city": "Laguna Niguel",
+        "region_id": 17
+    },
+    {
+        "city": "Pico Rivera",
+        "region_id": 17
+    },
+    {
+        "city": "Montebello",
+        "region_id": 17
+    },
+    {
+        "city": "Lodi",
+        "region_id": 17
+    },
+    {
+        "city": "Madera",
+        "region_id": 17
+    },
+    {
+        "city": "Santa Cruz",
+        "region_id": 17
+    },
+    {
+        "city": "La Habra",
+        "region_id": 17
+    },
+    {
+        "city": "Encinitas",
+        "region_id": 17
+    },
+    {
+        "city": "Tulare",
+        "region_id": 17
+    },
+    {
+        "city": "Monterey Park",
+        "region_id": 17
+    },
+    {
+        "city": "Cupertino",
+        "region_id": 17
+    },
+    {
+        "city": "Gardena",
+        "region_id": 17
+    },
+    {
+        "city": "National City",
+        "region_id": 17
+    },
+    {
+        "city": "Rocklin",
+        "region_id": 17
+    },
+    {
+        "city": "Petaluma",
+        "region_id": 17
+    },
+    {
+        "city": "San Rafael",
+        "region_id": 17
+    },
+    {
+        "city": "Huntington Park",
+        "region_id": 17
+    },
+    {
+        "city": "La Mesa",
+        "region_id": 17
+    },
+    {
+        "city": "Arcadia",
+        "region_id": 17
+    },
+    {
+        "city": "Lake Elsinore",
+        "region_id": 17
+    },
+    {
+        "city": "Fountain Valley",
+        "region_id": 17
+    },
+    {
+        "city": "Woodland",
+        "region_id": 17
+    },
+    {
+        "city": "Diamond Bar",
+        "region_id": 17
+    },
+    {
+        "city": "Santee",
+        "region_id": 17
+    },
+    {
+        "city": "Eastvale",
+        "region_id": 17
+    },
+    {
+        "city": "Porterville",
+        "region_id": 17
+    },
+    {
+        "city": "Brentwood",
+        "region_id": 17
+    },
+    {
+        "city": "Paramount",
+        "region_id": 17
+    },
+    {
+        "city": "Hanford",
+        "region_id": 17
+    },
+    {
+        "city": "Rosemead",
+        "region_id": 17
+    },
+    {
+        "city": "Highland",
+        "region_id": 17
+    },
+    {
+        "city": "Novato",
+        "region_id": 17
+    },
+    {
+        "city": "Colton",
+        "region_id": 17
+    },
+    {
+        "city": "Cathedral City",
+        "region_id": 17
+    },
+    {
+        "city": "Yucaipa",
+        "region_id": 17
+    },
+    {
+        "city": "Watsonville",
+        "region_id": 17
+    },
+    {
+        "city": "Delano",
+        "region_id": 17
+    },
+    {
+        "city": "Placentia",
+        "region_id": 17
+    },
+    {
+        "city": "Dublin",
+        "region_id": 17
+    },
+    {
+        "city": "Gilroy",
+        "region_id": 17
+    },
+    {
+        "city": "Glendora",
+        "region_id": 17
+    },
+    {
+        "city": "Palm Desert",
+        "region_id": 17
+    },
+    {
+        "city": "Aliso Viejo",
+        "region_id": 17
+    },
+    {
+        "city": "West Sacramento",
+        "region_id": 17
+    },
+    {
+        "city": "Cerritos",
+        "region_id": 17
+    },
+    {
+        "city": "Poway",
+        "region_id": 17
+    },
+    {
+        "city": "Rancho Santa Margarita",
+        "region_id": 17
+    },
+    {
+        "city": "La Mirada",
+        "region_id": 17
+    },
+    {
+        "city": "Cypress",
+        "region_id": 17
+    },
+    {
+        "city": "Covina",
+        "region_id": 17
+    },
+    {
+        "city": "Azusa",
+        "region_id": 17
+    },
+    {
+        "city": "Ceres",
+        "region_id": 17
+    },
+    {
+        "city": "San Luis Obispo",
+        "region_id": 17
+    },
+    {
+        "city": "Palm Springs",
+        "region_id": 17
+    },
+    {
+        "city": "San Jacinto",
+        "region_id": 17
+    },
+    {
+        "city": "Lincoln",
+        "region_id": 17
+    },
+    {
+        "city": "Newark",
+        "region_id": 17
+    },
+    {
+        "city": "Lompoc",
+        "region_id": 17
+    },
+    {
+        "city": "El Centro",
+        "region_id": 17
+    },
+    {
+        "city": "Danville",
+        "region_id": 17
+    },
+    {
+        "city": "Coachella",
+        "region_id": 17
+    },
+    {
+        "city": "Bell Gardens",
+        "region_id": 17
+    },
+    {
+        "city": "Rancho Palos Verdes",
+        "region_id": 17
+    },
+    {
+        "city": "San Bruno",
+        "region_id": 17
+    },
+    {
+        "city": "Rohnert Park",
+        "region_id": 17
+    },
+    {
+        "city": "Brea",
+        "region_id": 17
+    },
+    {
+        "city": "Morgan Hill",
+        "region_id": 17
+    },
+    {
+        "city": "Campbell",
+        "region_id": 17
+    },
+    {
+        "city": "Beaumont",
+        "region_id": 17
+    },
+    {
+        "city": "La Puente",
+        "region_id": 17
+    },
+    {
+        "city": "San Gabriel",
+        "region_id": 17
+    },
+    {
+        "city": "Culver City",
+        "region_id": 17
+    },
+    {
+        "city": "Calexico",
+        "region_id": 17
+    },
+    {
+        "city": "La Quinta",
+        "region_id": 17
+    },
+    {
+        "city": "Stanton",
+        "region_id": 17
+    },
+    {
+        "city": "Pacifica",
+        "region_id": 17
+    },
+    {
+        "city": "Oakley",
+        "region_id": 17
+    },
+    {
+        "city": "Montclair",
+        "region_id": 17
+    },
+    {
+        "city": "Martinez",
+        "region_id": 17
+    },
+    {
+        "city": "Monrovia",
+        "region_id": 17
+    },
+    {
+        "city": "Denver",
+        "region_id": 18
+    },
+    {
+        "city": "Colorado Springs",
+        "region_id": 18
+    },
+    {
+        "city": "Aurora",
+        "region_id": 18
+    },
+    {
+        "city": "Fort Collins",
+        "region_id": 18
+    },
+    {
+        "city": "Lakewood",
+        "region_id": 18
+    },
+    {
+        "city": "Thornton",
+        "region_id": 18
+    },
+    {
+        "city": "Arvada",
+        "region_id": 18
+    },
+    {
+        "city": "Westminster",
+        "region_id": 18
+    },
+    {
+        "city": "Pueblo",
+        "region_id": 18
+    },
+    {
+        "city": "Centennial",
+        "region_id": 18
+    },
+    {
+        "city": "Boulder",
+        "region_id": 18
+    },
+    {
+        "city": "Greeley",
+        "region_id": 18
+    },
+    {
+        "city": "Longmont",
+        "region_id": 18
+    },
+    {
+        "city": "Loveland",
+        "region_id": 18
+    },
+    {
+        "city": "Grand Junction",
+        "region_id": 18
+    },
+    {
+        "city": "Broomfield",
+        "region_id": 18
+    },
+    {
+        "city": "Castle Rock",
+        "region_id": 18
+    },
+    {
+        "city": "Commerce City",
+        "region_id": 18
+    },
+    {
+        "city": "Parker",
+        "region_id": 18
+    },
+    {
+        "city": "Littleton",
+        "region_id": 18
+    },
+    {
+        "city": "Northglenn",
+        "region_id": 18
+    },
+    {
+        "city": "Bridgeport",
+        "region_id": 19
+    },
+    {
+        "city": "New Haven",
+        "region_id": 19
+    },
+    {
+        "city": "Stamford",
+        "region_id": 19
+    },
+    {
+        "city": "Hartford",
+        "region_id": 19
+    },
+    {
+        "city": "Waterbury",
+        "region_id": 19
+    },
+    {
+        "city": "Norwalk",
+        "region_id": 19
+    },
+    {
+        "city": "Danbury",
+        "region_id": 19
+    },
+    {
+        "city": "New Britain",
+        "region_id": 19
+    },
+    {
+        "city": "Bristol",
+        "region_id": 19
+    },
+    {
+        "city": "Meriden",
+        "region_id": 19
+    },
+    {
+        "city": "West Haven",
+        "region_id": 19
+    },
+    {
+        "city": "Milford",
+        "region_id": 19
+    },
+    {
+        "city": "Middletown",
+        "region_id": 19
+    },
+    {
+        "city": "Shelton",
+        "region_id": 19
+    },
+    {
+        "city": "Norwich",
+        "region_id": 19
+    },
+    {
+        "city": "Wilmington",
+        "region_id": 20
+    },
+    {
+        "city": "Dover",
+        "region_id": 20
+    },
+    {
+        "city": "Washington",
+        "region_id": 21
+    },
+    {
+        "city": "Jacksonville",
+        "region_id": 23
+    },
+    {
+        "city": "Miami",
+        "region_id": 23
+    },
+    {
+        "city": "Tampa",
+        "region_id": 23
+    },
+    {
+        "city": "Orlando",
+        "region_id": 23
+    },
+    {
+        "city": "St. Petersburg",
+        "region_id": 23
+    },
+    {
+        "city": "Hialeah",
+        "region_id": 23
+    },
+    {
+        "city": "Tallahassee",
+        "region_id": 23
+    },
+    {
+        "city": "Fort Lauderdale",
+        "region_id": 23
+    },
+    {
+        "city": "Port St. Lucie",
+        "region_id": 23
+    },
+    {
+        "city": "Cape Coral",
+        "region_id": 23
+    },
+    {
+        "city": "Pembroke Pines",
+        "region_id": 23
+    },
+    {
+        "city": "Hollywood",
+        "region_id": 23
+    },
+    {
+        "city": "Miramar",
+        "region_id": 23
+    },
+    {
+        "city": "Gainesville",
+        "region_id": 23
+    },
+    {
+        "city": "Coral Springs",
+        "region_id": 23
+    },
+    {
+        "city": "Miami Gardens",
+        "region_id": 23
+    },
+    {
+        "city": "Clearwater",
+        "region_id": 23
+    },
+    {
+        "city": "Palm Bay",
+        "region_id": 23
+    },
+    {
+        "city": "Pompano Beach",
+        "region_id": 23
+    },
+    {
+        "city": "West Palm Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Lakeland",
+        "region_id": 23
+    },
+    {
+        "city": "Davie",
+        "region_id": 23
+    },
+    {
+        "city": "Miami Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Plantation",
+        "region_id": 23
+    },
+    {
+        "city": "Sunrise",
+        "region_id": 23
+    },
+    {
+        "city": "Boca Raton",
+        "region_id": 23
+    },
+    {
+        "city": "Deltona",
+        "region_id": 23
+    },
+    {
+        "city": "Palm Coast",
+        "region_id": 23
+    },
+    {
+        "city": "Largo",
+        "region_id": 23
+    },
+    {
+        "city": "Deerfield Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Melbourne",
+        "region_id": 23
+    },
+    {
+        "city": "Boynton Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Lauderhill",
+        "region_id": 23
+    },
+    {
+        "city": "Weston",
+        "region_id": 23
+    },
+    {
+        "city": "Fort Myers",
+        "region_id": 23
+    },
+    {
+        "city": "Kissimmee",
+        "region_id": 23
+    },
+    {
+        "city": "Homestead",
+        "region_id": 23
+    },
+    {
+        "city": "Delray Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Tamarac",
+        "region_id": 23
+    },
+    {
+        "city": "Daytona Beach",
+        "region_id": 23
+    },
+    {
+        "city": "North Miami",
+        "region_id": 23
+    },
+    {
+        "city": "Wellington",
+        "region_id": 23
+    },
+    {
+        "city": "North Port",
+        "region_id": 23
+    },
+    {
+        "city": "Jupiter",
+        "region_id": 23
+    },
+    {
+        "city": "Ocala",
+        "region_id": 23
+    },
+    {
+        "city": "Port Orange",
+        "region_id": 23
+    },
+    {
+        "city": "Coconut Creek",
+        "region_id": 23
+    },
+    {
+        "city": "Sanford",
+        "region_id": 23
+    },
+    {
+        "city": "Margate",
+        "region_id": 23
+    },
+    {
+        "city": "Sarasota",
+        "region_id": 23
+    },
+    {
+        "city": "Pensacola",
+        "region_id": 23
+    },
+    {
+        "city": "Bradenton",
+        "region_id": 23
+    },
+    {
+        "city": "Palm Beach Gardens",
+        "region_id": 23
+    },
+    {
+        "city": "Doral",
+        "region_id": 23
+    },
+    {
+        "city": "Pinellas Park",
+        "region_id": 23
+    },
+    {
+        "city": "Coral Gables",
+        "region_id": 23
+    },
+    {
+        "city": "Bonita Springs",
+        "region_id": 23
+    },
+    {
+        "city": "Apopka",
+        "region_id": 23
+    },
+    {
+        "city": "Titusville",
+        "region_id": 23
+    },
+    {
+        "city": "Cutler Bay",
+        "region_id": 23
+    },
+    {
+        "city": "Oakland Park",
+        "region_id": 23
+    },
+    {
+        "city": "North Miami Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Fort Pierce",
+        "region_id": 23
+    },
+    {
+        "city": "North Lauderdale",
+        "region_id": 23
+    },
+    {
+        "city": "Altamonte Springs",
+        "region_id": 23
+    },
+    {
+        "city": "St. Cloud",
+        "region_id": 23
+    },
+    {
+        "city": "Ocoee",
+        "region_id": 23
+    },
+    {
+        "city": "Greenacres",
+        "region_id": 23
+    },
+    {
+        "city": "Ormond Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Hallandale Beach",
+        "region_id": 23
+    },
+    {
+        "city": "Winter Garden",
+        "region_id": 23
+    },
+    {
+        "city": "Aventura",
+        "region_id": 23
+    },
+    {
+        "city": "Panama City",
+        "region_id": 23
+    },
+    {
+        "city": "Atlanta",
+        "region_id": 24
+    },
+    {
+        "city": "Columbus",
+        "region_id": 24
+    },
+    {
+        "city": "Augusta-Richmond County",
+        "region_id": 24
+    },
+    {
+        "city": "Savannah",
+        "region_id": 24
+    },
+    {
+        "city": "Athens-Clarke County",
+        "region_id": 24
+    },
+    {
+        "city": "Sandy Springs",
+        "region_id": 24
+    },
+    {
+        "city": "Roswell",
+        "region_id": 24
+    },
+    {
+        "city": "Macon",
+        "region_id": 24
+    },
+    {
+        "city": "Johns Creek",
+        "region_id": 24
+    },
+    {
+        "city": "Albany",
+        "region_id": 24
+    },
+    {
+        "city": "Warner Robins",
+        "region_id": 24
+    },
+    {
+        "city": "Alpharetta",
+        "region_id": 24
+    },
+    {
+        "city": "Marietta",
+        "region_id": 24
+    },
+    {
+        "city": "Valdosta",
+        "region_id": 24
+    },
+    {
+        "city": "Smyrna",
+        "region_id": 24
+    },
+    {
+        "city": "Brookhaven",
+        "region_id": 24
+    },
+    {
+        "city": "Dunwoody",
+        "region_id": 24
+    },
+    {
+        "city": "Peachtree Corners",
+        "region_id": 24
+    },
+    {
+        "city": "Honolulu",
+        "region_id": 26
+    },
+    {
+        "city": "Boise City",
+        "region_id": 27
+    },
+    {
+        "city": "Nampa",
+        "region_id": 27
+    },
+    {
+        "city": "Meridian",
+        "region_id": 27
+    },
+    {
+        "city": "Idaho Falls",
+        "region_id": 27
+    },
+    {
+        "city": "Pocatello",
+        "region_id": 27
+    },
+    {
+        "city": "Caldwell",
+        "region_id": 27
+    },
+    {
+        "city": "Coeur d'Alene",
+        "region_id": 27
+    },
+    {
+        "city": "Twin Falls",
+        "region_id": 27
+    },
+    {
+        "city": "Chicago",
+        "region_id": 28
+    },
+    {
+        "city": "Aurora",
+        "region_id": 28
+    },
+    {
+        "city": "Rockford",
+        "region_id": 28
+    },
+    {
+        "city": "Joliet",
+        "region_id": 28
+    },
+    {
+        "city": "Naperville",
+        "region_id": 28
+    },
+    {
+        "city": "Springfield",
+        "region_id": 28
+    },
+    {
+        "city": "Peoria",
+        "region_id": 28
+    },
+    {
+        "city": "Elgin",
+        "region_id": 28
+    },
+    {
+        "city": "Waukegan",
+        "region_id": 28
+    },
+    {
+        "city": "Cicero",
+        "region_id": 28
+    },
+    {
+        "city": "Champaign",
+        "region_id": 28
+    },
+    {
+        "city": "Bloomington",
+        "region_id": 28
+    },
+    {
+        "city": "Arlington Heights",
+        "region_id": 28
+    },
+    {
+        "city": "Evanston",
+        "region_id": 28
+    },
+    {
+        "city": "Schaumburg",
+        "region_id": 28
+    },
+    {
+        "city": "Decatur",
+        "region_id": 28
+    },
+    {
+        "city": "Bolingbrook",
+        "region_id": 28
+    },
+    {
+        "city": "Palatine",
+        "region_id": 28
+    },
+    {
+        "city": "Skokie",
+        "region_id": 28
+    },
+    {
+        "city": "Des Plaines",
+        "region_id": 28
+    },
+    {
+        "city": "Orland Park",
+        "region_id": 28
+    },
+    {
+        "city": "Tinley Park",
+        "region_id": 28
+    },
+    {
+        "city": "Oak Lawn",
+        "region_id": 28
+    },
+    {
+        "city": "Berwyn",
+        "region_id": 28
+    },
+    {
+        "city": "Mount Prospect",
+        "region_id": 28
+    },
+    {
+        "city": "Normal",
+        "region_id": 28
+    },
+    {
+        "city": "Wheaton",
+        "region_id": 28
+    },
+    {
+        "city": "Hoffman Estates",
+        "region_id": 28
+    },
+    {
+        "city": "Oak Park",
+        "region_id": 28
+    },
+    {
+        "city": "Downers Grove",
+        "region_id": 28
+    },
+    {
+        "city": "Elmhurst",
+        "region_id": 28
+    },
+    {
+        "city": "Glenview",
+        "region_id": 28
+    },
+    {
+        "city": "Lombard",
+        "region_id": 28
+    },
+    {
+        "city": "DeKalb",
+        "region_id": 28
+    },
+    {
+        "city": "Moline",
+        "region_id": 28
+    },
+    {
+        "city": "Belleville",
+        "region_id": 28
+    },
+    {
+        "city": "Buffalo Grove",
+        "region_id": 28
+    },
+    {
+        "city": "Urbana",
+        "region_id": 28
+    },
+    {
+        "city": "Plainfield",
+        "region_id": 28
+    },
+    {
+        "city": "Bartlett",
+        "region_id": 28
+    },
+    {
+        "city": "Quincy",
+        "region_id": 28
+    },
+    {
+        "city": "Crystal Lake",
+        "region_id": 28
+    },
+    {
+        "city": "Carol Stream",
+        "region_id": 28
+    },
+    {
+        "city": "Streamwood",
+        "region_id": 28
+    },
+    {
+        "city": "Romeoville",
+        "region_id": 28
+    },
+    {
+        "city": "Rock Island",
+        "region_id": 28
+    },
+    {
+        "city": "Hanover Park",
+        "region_id": 28
+    },
+    {
+        "city": "Carpentersville",
+        "region_id": 28
+    },
+    {
+        "city": "Wheeling",
+        "region_id": 28
+    },
+    {
+        "city": "Park Ridge",
+        "region_id": 28
+    },
+    {
+        "city": "Addison",
+        "region_id": 28
+    },
+    {
+        "city": "Calumet City",
+        "region_id": 28
+    },
+    {
+        "city": "Indianapolis",
+        "region_id": 29
+    },
+    {
+        "city": "Fort Wayne",
+        "region_id": 29
+    },
+    {
+        "city": "Evansville",
+        "region_id": 29
+    },
+    {
+        "city": "South Bend",
+        "region_id": 29
+    },
+    {
+        "city": "Carmel",
+        "region_id": 29
+    },
+    {
+        "city": "Fishers",
+        "region_id": 29
+    },
+    {
+        "city": "Bloomington",
+        "region_id": 29
+    },
+    {
+        "city": "Hammond",
+        "region_id": 29
+    },
+    {
+        "city": "Gary",
+        "region_id": 29
+    },
+    {
+        "city": "Lafayette",
+        "region_id": 29
+    },
+    {
+        "city": "Muncie",
+        "region_id": 29
+    },
+    {
+        "city": "Terre Haute",
+        "region_id": 29
+    },
+    {
+        "city": "Kokomo",
+        "region_id": 29
+    },
+    {
+        "city": "Noblesville",
+        "region_id": 29
+    },
+    {
+        "city": "Anderson",
+        "region_id": 29
+    },
+    {
+        "city": "Greenwood",
+        "region_id": 29
+    },
+    {
+        "city": "Elkhart",
+        "region_id": 29
+    },
+    {
+        "city": "Mishawaka",
+        "region_id": 29
+    },
+    {
+        "city": "Lawrence",
+        "region_id": 29
+    },
+    {
+        "city": "Jeffersonville",
+        "region_id": 29
+    },
+    {
+        "city": "Columbus",
+        "region_id": 29
+    },
+    {
+        "city": "Des Moines",
+        "region_id": 30
+    },
+    {
+        "city": "Cedar Rapids",
+        "region_id": 30
+    },
+    {
+        "city": "Davenport",
+        "region_id": 30
+    },
+    {
+        "city": "Sioux City",
+        "region_id": 30
+    },
+    {
+        "city": "Iowa City",
+        "region_id": 30
+    },
+    {
+        "city": "Waterloo",
+        "region_id": 30
+    },
+    {
+        "city": "Council Bluffs",
+        "region_id": 30
+    },
+    {
+        "city": "Ames",
+        "region_id": 30
+    },
+    {
+        "city": "West Des Moines",
+        "region_id": 30
+    },
+    {
+        "city": "Dubuque",
+        "region_id": 30
+    },
+    {
+        "city": "Ankeny",
+        "region_id": 30
+    },
+    {
+        "city": "Urbandale",
+        "region_id": 30
+    },
+    {
+        "city": "Cedar Falls",
+        "region_id": 30
+    },
+    {
+        "city": "Wichita",
+        "region_id": 31
+    },
+    {
+        "city": "Overland Park",
+        "region_id": 31
+    },
+    {
+        "city": "Kansas City",
+        "region_id": 31
+    },
+    {
+        "city": "Olathe",
+        "region_id": 31
+    },
+    {
+        "city": "Topeka",
+        "region_id": 31
+    },
+    {
+        "city": "Lawrence",
+        "region_id": 31
+    },
+    {
+        "city": "Shawnee",
+        "region_id": 31
+    },
+    {
+        "city": "Manhattan",
+        "region_id": 31
+    },
+    {
+        "city": "Lenexa",
+        "region_id": 31
+    },
+    {
+        "city": "Salina",
+        "region_id": 31
+    },
+    {
+        "city": "Hutchinson",
+        "region_id": 31
+    },
+    {
+        "city": "Louisville/Jefferson County",
+        "region_id": 32
+    },
+    {
+        "city": "Lexington-Fayette",
+        "region_id": 32
+    },
+    {
+        "city": "Bowling Green",
+        "region_id": 32
+    },
+    {
+        "city": "Owensboro",
+        "region_id": 32
+    },
+    {
+        "city": "Covington",
+        "region_id": 32
+    },
+    {
+        "city": "New Orleans",
+        "region_id": 33
+    },
+    {
+        "city": "Baton Rouge",
+        "region_id": 33
+    },
+    {
+        "city": "Shreveport",
+        "region_id": 33
+    },
+    {
+        "city": "Lafayette",
+        "region_id": 33
+    },
+    {
+        "city": "Lake Charles",
+        "region_id": 33
+    },
+    {
+        "city": "Kenner",
+        "region_id": 33
+    },
+    {
+        "city": "Bossier City",
+        "region_id": 33
+    },
+    {
+        "city": "Monroe",
+        "region_id": 33
+    },
+    {
+        "city": "Alexandria",
+        "region_id": 33
+    },
+    {
+        "city": "Portland",
+        "region_id": 34
+    },
+    {
+        "city": "Baltimore",
+        "region_id": 36
+    },
+    {
+        "city": "Frederick",
+        "region_id": 36
+    },
+    {
+        "city": "Gaithersburg",
+        "region_id": 36
+    },
+    {
+        "city": "Rockville",
+        "region_id": 36
+    },
+    {
+        "city": "Bowie",
+        "region_id": 36
+    },
+    {
+        "city": "Hagerstown",
+        "region_id": 36
+    },
+    {
+        "city": "Annapolis",
+        "region_id": 36
+    },
+    {
+        "city": "Boston",
+        "region_id": 37
+    },
+    {
+        "city": "Worcester",
+        "region_id": 37
+    },
+    {
+        "city": "Springfield",
+        "region_id": 37
+    },
+    {
+        "city": "Lowell",
+        "region_id": 37
+    },
+    {
+        "city": "Cambridge",
+        "region_id": 37
+    },
+    {
+        "city": "New Bedford",
+        "region_id": 37
+    },
+    {
+        "city": "Brockton",
+        "region_id": 37
+    },
+    {
+        "city": "Quincy",
+        "region_id": 37
+    },
+    {
+        "city": "Lynn",
+        "region_id": 37
+    },
+    {
+        "city": "Fall River",
+        "region_id": 37
+    },
+    {
+        "city": "Newton",
+        "region_id": 37
+    },
+    {
+        "city": "Somerville",
+        "region_id": 37
+    },
+    {
+        "city": "Lawrence",
+        "region_id": 37
+    },
+    {
+        "city": "Waltham",
+        "region_id": 37
+    },
+    {
+        "city": "Haverhill",
+        "region_id": 37
+    },
+    {
+        "city": "Malden",
+        "region_id": 37
+    },
+    {
+        "city": "Medford",
+        "region_id": 37
+    },
+    {
+        "city": "Taunton",
+        "region_id": 37
+    },
+    {
+        "city": "Chicopee",
+        "region_id": 37
+    },
+    {
+        "city": "Weymouth Town",
+        "region_id": 37
+    },
+    {
+        "city": "Revere",
+        "region_id": 37
+    },
+    {
+        "city": "Peabody",
+        "region_id": 37
+    },
+    {
+        "city": "Methuen",
+        "region_id": 37
+    },
+    {
+        "city": "Barnstable Town",
+        "region_id": 37
+    },
+    {
+        "city": "Pittsfield",
+        "region_id": 37
+    },
+    {
+        "city": "Attleboro",
+        "region_id": 37
+    },
+    {
+        "city": "Everett",
+        "region_id": 37
+    },
+    {
+        "city": "Salem",
+        "region_id": 37
+    },
+    {
+        "city": "Westfield",
+        "region_id": 37
+    },
+    {
+        "city": "Leominster",
+        "region_id": 37
+    },
+    {
+        "city": "Beverly",
+        "region_id": 37
+    },
+    {
+        "city": "Fitchburg",
+        "region_id": 37
+    },
+    {
+        "city": "Holyoke",
+        "region_id": 37
+    },
+    {
+        "city": "Marlborough",
+        "region_id": 37
+    },
+    {
+        "city": "Woburn",
+        "region_id": 37
+    },
+    {
+        "city": "Chelsea",
+        "region_id": 37
+    },
+    {
+        "city": "Detroit",
+        "region_id": 38
+    },
+    {
+        "city": "Grand Rapids",
+        "region_id": 38
+    },
+    {
+        "city": "Warren",
+        "region_id": 38
+    },
+    {
+        "city": "Sterling Heights",
+        "region_id": 38
+    },
+    {
+        "city": "Ann Arbor",
+        "region_id": 38
+    },
+    {
+        "city": "Lansing",
+        "region_id": 38
+    },
+    {
+        "city": "Flint",
+        "region_id": 38
+    },
+    {
+        "city": "Dearborn",
+        "region_id": 38
+    },
+    {
+        "city": "Livonia",
+        "region_id": 38
+    },
+    {
+        "city": "Troy",
+        "region_id": 38
+    },
+    {
+        "city": "Westland",
+        "region_id": 38
+    },
+    {
+        "city": "Farmington Hills",
+        "region_id": 38
+    },
+    {
+        "city": "Kalamazoo",
+        "region_id": 38
+    },
+    {
+        "city": "Wyoming",
+        "region_id": 38
+    },
+    {
+        "city": "Southfield",
+        "region_id": 38
+    },
+    {
+        "city": "Rochester Hills",
+        "region_id": 38
+    },
+    {
+        "city": "Taylor",
+        "region_id": 38
+    },
+    {
+        "city": "St. Clair Shores",
+        "region_id": 38
+    },
+    {
+        "city": "Pontiac",
+        "region_id": 38
+    },
+    {
+        "city": "Royal Oak",
+        "region_id": 38
+    },
+    {
+        "city": "Novi",
+        "region_id": 38
+    },
+    {
+        "city": "Dearborn Heights",
+        "region_id": 38
+    },
+    {
+        "city": "Battle Creek",
+        "region_id": 38
+    },
+    {
+        "city": "Saginaw",
+        "region_id": 38
+    },
+    {
+        "city": "Kentwood",
+        "region_id": 38
+    },
+    {
+        "city": "East Lansing",
+        "region_id": 38
+    },
+    {
+        "city": "Roseville",
+        "region_id": 38
+    },
+    {
+        "city": "Portage",
+        "region_id": 38
+    },
+    {
+        "city": "Midland",
+        "region_id": 38
+    },
+    {
+        "city": "Lincoln Park",
+        "region_id": 38
+    },
+    {
+        "city": "Muskegon",
+        "region_id": 38
+    },
+    {
+        "city": "Minneapolis",
+        "region_id": 39
+    },
+    {
+        "city": "St. Paul",
+        "region_id": 39
+    },
+    {
+        "city": "Rochester",
+        "region_id": 39
+    },
+    {
+        "city": "Bloomington",
+        "region_id": 39
+    },
+    {
+        "city": "Duluth",
+        "region_id": 39
+    },
+    {
+        "city": "Brooklyn Park",
+        "region_id": 39
+    },
+    {
+        "city": "Plymouth",
+        "region_id": 39
+    },
+    {
+        "city": "St. Cloud",
+        "region_id": 39
+    },
+    {
+        "city": "Woodbury",
+        "region_id": 39
+    },
+    {
+        "city": "Eagan",
+        "region_id": 39
+    },
+    {
+        "city": "Maple Grove",
+        "region_id": 39
+    },
+    {
+        "city": "Eden Prairie",
+        "region_id": 39
+    },
+    {
+        "city": "Coon Rapids",
+        "region_id": 39
+    },
+    {
+        "city": "Burnsville",
+        "region_id": 39
+    },
+    {
+        "city": "Blaine",
+        "region_id": 39
+    },
+    {
+        "city": "Lakeville",
+        "region_id": 39
+    },
+    {
+        "city": "Minnetonka",
+        "region_id": 39
+    },
+    {
+        "city": "Apple Valley",
+        "region_id": 39
+    },
+    {
+        "city": "Edina",
+        "region_id": 39
+    },
+    {
+        "city": "St. Louis Park",
+        "region_id": 39
+    },
+    {
+        "city": "Mankato",
+        "region_id": 39
+    },
+    {
+        "city": "Maplewood",
+        "region_id": 39
+    },
+    {
+        "city": "Moorhead",
+        "region_id": 39
+    },
+    {
+        "city": "Shakopee",
+        "region_id": 39
+    },
+    {
+        "city": "Jackson",
+        "region_id": 40
+    },
+    {
+        "city": "Gulfport",
+        "region_id": 40
+    },
+    {
+        "city": "Southaven",
+        "region_id": 40
+    },
+    {
+        "city": "Hattiesburg",
+        "region_id": 40
+    },
+    {
+        "city": "Biloxi",
+        "region_id": 40
+    },
+    {
+        "city": "Meridian",
+        "region_id": 40
+    },
+    {
+        "city": "Kansas City",
+        "region_id": 41
+    },
+    {
+        "city": "St. Louis",
+        "region_id": 41
+    },
+    {
+        "city": "Springfield",
+        "region_id": 41
+    },
+    {
+        "city": "Independence",
+        "region_id": 41
+    },
+    {
+        "city": "Columbia",
+        "region_id": 41
+    },
+    {
+        "city": "Lee's Summit",
+        "region_id": 41
+    },
+    {
+        "city": "O'Fallon",
+        "region_id": 41
+    },
+    {
+        "city": "St. Joseph",
+        "region_id": 41
+    },
+    {
+        "city": "St. Charles",
+        "region_id": 41
+    },
+    {
+        "city": "St. Peters",
+        "region_id": 41
+    },
+    {
+        "city": "Blue Springs",
+        "region_id": 41
+    },
+    {
+        "city": "Florissant",
+        "region_id": 41
+    },
+    {
+        "city": "Joplin",
+        "region_id": 41
+    },
+    {
+        "city": "Chesterfield",
+        "region_id": 41
+    },
+    {
+        "city": "Jefferson City",
+        "region_id": 41
+    },
+    {
+        "city": "Cape Girardeau",
+        "region_id": 41
+    },
+    {
+        "city": "Billings",
+        "region_id": 42
+    },
+    {
+        "city": "Missoula",
+        "region_id": 42
+    },
+    {
+        "city": "Great Falls",
+        "region_id": 42
+    },
+    {
+        "city": "Bozeman",
+        "region_id": 42
+    },
+    {
+        "city": "Omaha",
+        "region_id": 43
+    },
+    {
+        "city": "Lincoln",
+        "region_id": 43
+    },
+    {
+        "city": "Bellevue",
+        "region_id": 43
+    },
+    {
+        "city": "Grand Island",
+        "region_id": 43
+    },
+    {
+        "city": "Las Vegas",
+        "region_id": 44
+    },
+    {
+        "city": "Henderson",
+        "region_id": 44
+    },
+    {
+        "city": "Reno",
+        "region_id": 44
+    },
+    {
+        "city": "North Las Vegas",
+        "region_id": 44
+    },
+    {
+        "city": "Sparks",
+        "region_id": 44
+    },
+    {
+        "city": "Carson City",
+        "region_id": 44
+    },
+    {
+        "city": "Manchester",
+        "region_id": 45
+    },
+    {
+        "city": "Nashua",
+        "region_id": 45
+    },
+    {
+        "city": "Concord",
+        "region_id": 45
+    },
+    {
+        "city": "Newark",
+        "region_id": 46
+    },
+    {
+        "city": "Jersey City",
+        "region_id": 46
+    },
+    {
+        "city": "Paterson",
+        "region_id": 46
+    },
+    {
+        "city": "Elizabeth",
+        "region_id": 46
+    },
+    {
+        "city": "Clifton",
+        "region_id": 46
+    },
+    {
+        "city": "Trenton",
+        "region_id": 46
+    },
+    {
+        "city": "Camden",
+        "region_id": 46
+    },
+    {
+        "city": "Passaic",
+        "region_id": 46
+    },
+    {
+        "city": "Union City",
+        "region_id": 46
+    },
+    {
+        "city": "Bayonne",
+        "region_id": 46
+    },
+    {
+        "city": "East Orange",
+        "region_id": 46
+    },
+    {
+        "city": "Vineland",
+        "region_id": 46
+    },
+    {
+        "city": "New Brunswick",
+        "region_id": 46
+    },
+    {
+        "city": "Hoboken",
+        "region_id": 46
+    },
+    {
+        "city": "West New York",
+        "region_id": 46
+    },
+    {
+        "city": "Perth Amboy",
+        "region_id": 46
+    },
+    {
+        "city": "Plainfield",
+        "region_id": 46
+    },
+    {
+        "city": "Sayreville",
+        "region_id": 46
+    },
+    {
+        "city": "Hackensack",
+        "region_id": 46
+    },
+    {
+        "city": "Kearny",
+        "region_id": 46
+    },
+    {
+        "city": "Linden",
+        "region_id": 46
+    },
+    {
+        "city": "Atlantic City",
+        "region_id": 46
+    },
+    {
+        "city": "Albuquerque",
+        "region_id": 47
+    },
+    {
+        "city": "Las Cruces",
+        "region_id": 47
+    },
+    {
+        "city": "Rio Rancho",
+        "region_id": 47
+    },
+    {
+        "city": "Santa Fe",
+        "region_id": 47
+    },
+    {
+        "city": "Roswell",
+        "region_id": 47
+    },
+    {
+        "city": "Farmington",
+        "region_id": 47
+    },
+    {
+        "city": "Clovis",
+        "region_id": 47
+    },
+    {
+        "city": "New York",
+        "region_id": 48
+    },
+    {
+        "city": "Buffalo",
+        "region_id": 48
+    },
+    {
+        "city": "Rochester",
+        "region_id": 48
+    },
+    {
+        "city": "Yonkers",
+        "region_id": 48
+    },
+    {
+        "city": "Syracuse",
+        "region_id": 48
+    },
+    {
+        "city": "Albany",
+        "region_id": 48
+    },
+    {
+        "city": "New Rochelle",
+        "region_id": 48
+    },
+    {
+        "city": "Mount Vernon",
+        "region_id": 48
+    },
+    {
+        "city": "Schenectady",
+        "region_id": 48
+    },
+    {
+        "city": "Utica",
+        "region_id": 48
+    },
+    {
+        "city": "White Plains",
+        "region_id": 48
+    },
+    {
+        "city": "Hempstead",
+        "region_id": 48
+    },
+    {
+        "city": "Troy",
+        "region_id": 48
+    },
+    {
+        "city": "Niagara Falls",
+        "region_id": 48
+    },
+    {
+        "city": "Binghamton",
+        "region_id": 48
+    },
+    {
+        "city": "Freeport",
+        "region_id": 48
+    },
+    {
+        "city": "Valley Stream",
+        "region_id": 48
+    },
+    {
+        "city": "Charlotte",
+        "region_id": 49
+    },
+    {
+        "city": "Raleigh",
+        "region_id": 49
+    },
+    {
+        "city": "Greensboro",
+        "region_id": 49
+    },
+    {
+        "city": "Durham",
+        "region_id": 49
+    },
+    {
+        "city": "Winston-Salem",
+        "region_id": 49
+    },
+    {
+        "city": "Fayetteville",
+        "region_id": 49
+    },
+    {
+        "city": "Cary",
+        "region_id": 49
+    },
+    {
+        "city": "Wilmington",
+        "region_id": 49
+    },
+    {
+        "city": "High Point",
+        "region_id": 49
+    },
+    {
+        "city": "Greenville",
+        "region_id": 49
+    },
+    {
+        "city": "Asheville",
+        "region_id": 49
+    },
+    {
+        "city": "Concord",
+        "region_id": 49
+    },
+    {
+        "city": "Gastonia",
+        "region_id": 49
+    },
+    {
+        "city": "Jacksonville",
+        "region_id": 49
+    },
+    {
+        "city": "Chapel Hill",
+        "region_id": 49
+    },
+    {
+        "city": "Rocky Mount",
+        "region_id": 49
+    },
+    {
+        "city": "Burlington",
+        "region_id": 49
+    },
+    {
+        "city": "Huntersville",
+        "region_id": 49
+    },
+    {
+        "city": "Wilson",
+        "region_id": 49
+    },
+    {
+        "city": "Kannapolis",
+        "region_id": 49
+    },
+    {
+        "city": "Apex",
+        "region_id": 49
+    },
+    {
+        "city": "Hickory",
+        "region_id": 49
+    },
+    {
+        "city": "Fargo",
+        "region_id": 50
+    },
+    {
+        "city": "Bismarck",
+        "region_id": 50
+    },
+    {
+        "city": "Grand Forks",
+        "region_id": 50
+    },
+    {
+        "city": "Minot",
+        "region_id": 50
+    },
+    {
+        "city": "Columbus",
+        "region_id": 52
+    },
+    {
+        "city": "Cleveland",
+        "region_id": 52
+    },
+    {
+        "city": "Cincinnati",
+        "region_id": 52
+    },
+    {
+        "city": "Toledo",
+        "region_id": 52
+    },
+    {
+        "city": "Akron",
+        "region_id": 52
+    },
+    {
+        "city": "Dayton",
+        "region_id": 52
+    },
+    {
+        "city": "Parma",
+        "region_id": 52
+    },
+    {
+        "city": "Canton",
+        "region_id": 52
+    },
+    {
+        "city": "Youngstown",
+        "region_id": 52
+    },
+    {
+        "city": "Lorain",
+        "region_id": 52
+    },
+    {
+        "city": "Hamilton",
+        "region_id": 52
+    },
+    {
+        "city": "Springfield",
+        "region_id": 52
+    },
+    {
+        "city": "Kettering",
+        "region_id": 52
+    },
+    {
+        "city": "Elyria",
+        "region_id": 52
+    },
+    {
+        "city": "Lakewood",
+        "region_id": 52
+    },
+    {
+        "city": "Cuyahoga Falls",
+        "region_id": 52
+    },
+    {
+        "city": "Middletown",
+        "region_id": 52
+    },
+    {
+        "city": "Euclid",
+        "region_id": 52
+    },
+    {
+        "city": "Newark",
+        "region_id": 52
+    },
+    {
+        "city": "Mentor",
+        "region_id": 52
+    },
+    {
+        "city": "Mansfield",
+        "region_id": 52
+    },
+    {
+        "city": "Beavercreek",
+        "region_id": 52
+    },
+    {
+        "city": "Cleveland Heights",
+        "region_id": 52
+    },
+    {
+        "city": "Strongsville",
+        "region_id": 52
+    },
+    {
+        "city": "Dublin",
+        "region_id": 52
+    },
+    {
+        "city": "Fairfield",
+        "region_id": 52
+    },
+    {
+        "city": "Findlay",
+        "region_id": 52
+    },
+    {
+        "city": "Warren",
+        "region_id": 52
+    },
+    {
+        "city": "Lancaster",
+        "region_id": 52
+    },
+    {
+        "city": "Lima",
+        "region_id": 52
+    },
+    {
+        "city": "Huber Heights",
+        "region_id": 52
+    },
+    {
+        "city": "Westerville",
+        "region_id": 52
+    },
+    {
+        "city": "Grove City",
+        "region_id": 52
+    },
+    {
+        "city": "Oklahoma City",
+        "region_id": 53
+    },
+    {
+        "city": "Tulsa",
+        "region_id": 53
+    },
+    {
+        "city": "Norman",
+        "region_id": 53
+    },
+    {
+        "city": "Broken Arrow",
+        "region_id": 53
+    },
+    {
+        "city": "Lawton",
+        "region_id": 53
+    },
+    {
+        "city": "Edmond",
+        "region_id": 53
+    },
+    {
+        "city": "Moore",
+        "region_id": 53
+    },
+    {
+        "city": "Midwest City",
+        "region_id": 53
+    },
+    {
+        "city": "Enid",
+        "region_id": 53
+    },
+    {
+        "city": "Stillwater",
+        "region_id": 53
+    },
+    {
+        "city": "Muskogee",
+        "region_id": 53
+    },
+    {
+        "city": "Portland",
+        "region_id": 54
+    },
+    {
+        "city": "Salem",
+        "region_id": 54
+    },
+    {
+        "city": "Eugene",
+        "region_id": 54
+    },
+    {
+        "city": "Gresham",
+        "region_id": 54
+    },
+    {
+        "city": "Hillsboro",
+        "region_id": 54
+    },
+    {
+        "city": "Beaverton",
+        "region_id": 54
+    },
+    {
+        "city": "Bend",
+        "region_id": 54
+    },
+    {
+        "city": "Medford",
+        "region_id": 54
+    },
+    {
+        "city": "Springfield",
+        "region_id": 54
+    },
+    {
+        "city": "Corvallis",
+        "region_id": 54
+    },
+    {
+        "city": "Albany",
+        "region_id": 54
+    },
+    {
+        "city": "Tigard",
+        "region_id": 54
+    },
+    {
+        "city": "Lake Oswego",
+        "region_id": 54
+    },
+    {
+        "city": "Keizer",
+        "region_id": 54
+    },
+    {
+        "city": "Philadelphia",
+        "region_id": 56
+    },
+    {
+        "city": "Pittsburgh",
+        "region_id": 56
+    },
+    {
+        "city": "Allentown",
+        "region_id": 56
+    },
+    {
+        "city": "Erie",
+        "region_id": 56
+    },
+    {
+        "city": "Reading",
+        "region_id": 56
+    },
+    {
+        "city": "Scranton",
+        "region_id": 56
+    },
+    {
+        "city": "Bethlehem",
+        "region_id": 56
+    },
+    {
+        "city": "Lancaster",
+        "region_id": 56
+    },
+    {
+        "city": "Harrisburg",
+        "region_id": 56
+    },
+    {
+        "city": "Altoona",
+        "region_id": 56
+    },
+    {
+        "city": "York",
+        "region_id": 56
+    },
+    {
+        "city": "State College",
+        "region_id": 56
+    },
+    {
+        "city": "Wilkes-Barre",
+        "region_id": 56
+    },
+    {
+        "city": "Providence",
+        "region_id": 58
+    },
+    {
+        "city": "Warwick",
+        "region_id": 58
+    },
+    {
+        "city": "Cranston",
+        "region_id": 58
+    },
+    {
+        "city": "Pawtucket",
+        "region_id": 58
+    },
+    {
+        "city": "East Providence",
+        "region_id": 58
+    },
+    {
+        "city": "Woonsocket",
+        "region_id": 58
+    },
+    {
+        "city": "Columbia",
+        "region_id": 59
+    },
+    {
+        "city": "Charleston",
+        "region_id": 59
+    },
+    {
+        "city": "North Charleston",
+        "region_id": 59
+    },
+    {
+        "city": "Mount Pleasant",
+        "region_id": 59
+    },
+    {
+        "city": "Rock Hill",
+        "region_id": 59
+    },
+    {
+        "city": "Greenville",
+        "region_id": 59
+    },
+    {
+        "city": "Summerville",
+        "region_id": 59
+    },
+    {
+        "city": "Sumter",
+        "region_id": 59
+    },
+    {
+        "city": "Goose Creek",
+        "region_id": 59
+    },
+    {
+        "city": "Hilton Head Island",
+        "region_id": 59
+    },
+    {
+        "city": "Florence",
+        "region_id": 59
+    },
+    {
+        "city": "Spartanburg",
+        "region_id": 59
+    },
+    {
+        "city": "Sioux Falls",
+        "region_id": 60
+    },
+    {
+        "city": "Rapid City",
+        "region_id": 60
+    },
+    {
+        "city": "Memphis",
+        "region_id": 61
+    },
+    {
+        "city": "Nashville-Davidson",
+        "region_id": 61
+    },
+    {
+        "city": "Knoxville",
+        "region_id": 61
+    },
+    {
+        "city": "Chattanooga",
+        "region_id": 61
+    },
+    {
+        "city": "Clarksville",
+        "region_id": 61
+    },
+    {
+        "city": "Murfreesboro",
+        "region_id": 61
+    },
+    {
+        "city": "Franklin",
+        "region_id": 61
+    },
+    {
+        "city": "Jackson",
+        "region_id": 61
+    },
+    {
+        "city": "Johnson City",
+        "region_id": 61
+    },
+    {
+        "city": "Bartlett",
+        "region_id": 61
+    },
+    {
+        "city": "Hendersonville",
+        "region_id": 61
+    },
+    {
+        "city": "Kingsport",
+        "region_id": 61
+    },
+    {
+        "city": "Collierville",
+        "region_id": 61
+    },
+    {
+        "city": "Smyrna",
+        "region_id": 61
+    },
+    {
+        "city": "Cleveland",
+        "region_id": 61
+    },
+    {
+        "city": "Brentwood",
+        "region_id": 61
+    },
+    {
+        "city": "Germantown",
+        "region_id": 61
+    },
+    {
+        "city": "Houston",
+        "region_id": 62
+    },
+    {
+        "city": "San Antonio",
+        "region_id": 62
+    },
+    {
+        "city": "Dallas",
+        "region_id": 62
+    },
+    {
+        "city": "Austin",
+        "region_id": 62
+    },
+    {
+        "city": "Fort Worth",
+        "region_id": 62
+    },
+    {
+        "city": "El Paso",
+        "region_id": 62
+    },
+    {
+        "city": "Arlington",
+        "region_id": 62
+    },
+    {
+        "city": "Corpus Christi",
+        "region_id": 62
+    },
+    {
+        "city": "Plano",
+        "region_id": 62
+    },
+    {
+        "city": "Laredo",
+        "region_id": 62
+    },
+    {
+        "city": "Lubbock",
+        "region_id": 62
+    },
+    {
+        "city": "Garland",
+        "region_id": 62
+    },
+    {
+        "city": "Irving",
+        "region_id": 62
+    },
+    {
+        "city": "Amarillo",
+        "region_id": 62
+    },
+    {
+        "city": "Grand Prairie",
+        "region_id": 62
+    },
+    {
+        "city": "Brownsville",
+        "region_id": 62
+    },
+    {
+        "city": "Pasadena",
+        "region_id": 62
+    },
+    {
+        "city": "McKinney",
+        "region_id": 62
+    },
+    {
+        "city": "Mesquite",
+        "region_id": 62
+    },
+    {
+        "city": "Killeen",
+        "region_id": 62
+    },
+    {
+        "city": "Frisco",
+        "region_id": 62
+    },
+    {
+        "city": "McAllen",
+        "region_id": 62
+    },
+    {
+        "city": "Waco",
+        "region_id": 62
+    },
+    {
+        "city": "Carrollton",
+        "region_id": 62
+    },
+    {
+        "city": "Midland",
+        "region_id": 62
+    },
+    {
+        "city": "Denton",
+        "region_id": 62
+    },
+    {
+        "city": "Abilene",
+        "region_id": 62
+    },
+    {
+        "city": "Beaumont",
+        "region_id": 62
+    },
+    {
+        "city": "Odessa",
+        "region_id": 62
+    },
+    {
+        "city": "Round Rock",
+        "region_id": 62
+    },
+    {
+        "city": "Wichita Falls",
+        "region_id": 62
+    },
+    {
+        "city": "Richardson",
+        "region_id": 62
+    },
+    {
+        "city": "Lewisville",
+        "region_id": 62
+    },
+    {
+        "city": "Tyler",
+        "region_id": 62
+    },
+    {
+        "city": "Pearland",
+        "region_id": 62
+    },
+    {
+        "city": "College Station",
+        "region_id": 62
+    },
+    {
+        "city": "San Angelo",
+        "region_id": 62
+    },
+    {
+        "city": "Allen",
+        "region_id": 62
+    },
+    {
+        "city": "League City",
+        "region_id": 62
+    },
+    {
+        "city": "Sugar Land",
+        "region_id": 62
+    },
+    {
+        "city": "Longview",
+        "region_id": 62
+    },
+    {
+        "city": "Mission",
+        "region_id": 62
+    },
+    {
+        "city": "Edinburg",
+        "region_id": 62
+    },
+    {
+        "city": "Bryan",
+        "region_id": 62
+    },
+    {
+        "city": "Baytown",
+        "region_id": 62
+    },
+    {
+        "city": "Pharr",
+        "region_id": 62
+    },
+    {
+        "city": "Temple",
+        "region_id": 62
+    },
+    {
+        "city": "Missouri City",
+        "region_id": 62
+    },
+    {
+        "city": "Flower Mound",
+        "region_id": 62
+    },
+    {
+        "city": "North Richland Hills",
+        "region_id": 62
+    },
+    {
+        "city": "Harlingen",
+        "region_id": 62
+    },
+    {
+        "city": "Victoria",
+        "region_id": 62
+    },
+    {
+        "city": "New Braunfels",
+        "region_id": 62
+    },
+    {
+        "city": "Conroe",
+        "region_id": 62
+    },
+    {
+        "city": "Cedar Park",
+        "region_id": 62
+    },
+    {
+        "city": "Mansfield",
+        "region_id": 62
+    },
+    {
+        "city": "Rowlett",
+        "region_id": 62
+    },
+    {
+        "city": "Georgetown",
+        "region_id": 62
+    },
+    {
+        "city": "Port Arthur",
+        "region_id": 62
+    },
+    {
+        "city": "San Marcos",
+        "region_id": 62
+    },
+    {
+        "city": "Pflugerville",
+        "region_id": 62
+    },
+    {
+        "city": "Euless",
+        "region_id": 62
+    },
+    {
+        "city": "DeSoto",
+        "region_id": 62
+    },
+    {
+        "city": "Grapevine",
+        "region_id": 62
+    },
+    {
+        "city": "Galveston",
+        "region_id": 62
+    },
+    {
+        "city": "Bedford",
+        "region_id": 62
+    },
+    {
+        "city": "Cedar Hill",
+        "region_id": 62
+    },
+    {
+        "city": "Texas City",
+        "region_id": 62
+    },
+    {
+        "city": "Wylie",
+        "region_id": 62
+    },
+    {
+        "city": "Haltom City",
+        "region_id": 62
+    },
+    {
+        "city": "Keller",
+        "region_id": 62
+    },
+    {
+        "city": "Rockwall",
+        "region_id": 62
+    },
+    {
+        "city": "Burleson",
+        "region_id": 62
+    },
+    {
+        "city": "Coppell",
+        "region_id": 62
+    },
+    {
+        "city": "Huntsville",
+        "region_id": 62
+    },
+    {
+        "city": "Duncanville",
+        "region_id": 62
+    },
+    {
+        "city": "The Colony",
+        "region_id": 62
+    },
+    {
+        "city": "Sherman",
+        "region_id": 62
+    },
+    {
+        "city": "Hurst",
+        "region_id": 62
+    },
+    {
+        "city": "Lancaster",
+        "region_id": 62
+    },
+    {
+        "city": "Friendswood",
+        "region_id": 62
+    },
+    {
+        "city": "Texarkana",
+        "region_id": 62
+    },
+    {
+        "city": "Weslaco",
+        "region_id": 62
+    },
+    {
+        "city": "Salt Lake City",
+        "region_id": 63
+    },
+    {
+        "city": "West Valley City",
+        "region_id": 63
+    },
+    {
+        "city": "Provo",
+        "region_id": 63
+    },
+    {
+        "city": "West Jordan",
+        "region_id": 63
+    },
+    {
+        "city": "Orem",
+        "region_id": 63
+    },
+    {
+        "city": "Sandy",
+        "region_id": 63
+    },
+    {
+        "city": "Ogden",
+        "region_id": 63
+    },
+    {
+        "city": "St. George",
+        "region_id": 63
+    },
+    {
+        "city": "Layton",
+        "region_id": 63
+    },
+    {
+        "city": "Taylorsville",
+        "region_id": 63
+    },
+    {
+        "city": "South Jordan",
+        "region_id": 63
+    },
+    {
+        "city": "Lehi",
+        "region_id": 63
+    },
+    {
+        "city": "Logan",
+        "region_id": 63
+    },
+    {
+        "city": "Murray",
+        "region_id": 63
+    },
+    {
+        "city": "Draper",
+        "region_id": 63
+    },
+    {
+        "city": "Bountiful",
+        "region_id": 63
+    },
+    {
+        "city": "Riverton",
+        "region_id": 63
+    },
+    {
+        "city": "Roy",
+        "region_id": 63
+    },
+    {
+        "city": "Spanish Fork",
+        "region_id": 63
+    },
+    {
+        "city": "Burlington",
+        "region_id": 64
+    },
+    {
+        "city": "Virginia Beach",
+        "region_id": 66
+    },
+    {
+        "city": "Norfolk",
+        "region_id": 66
+    },
+    {
+        "city": "Chesapeake",
+        "region_id": 66
+    },
+    {
+        "city": "Richmond",
+        "region_id": 66
+    },
+    {
+        "city": "Newport News",
+        "region_id": 66
+    },
+    {
+        "city": "Alexandria",
+        "region_id": 66
+    },
+    {
+        "city": "Hampton",
+        "region_id": 66
+    },
+    {
+        "city": "Roanoke",
+        "region_id": 66
+    },
+    {
+        "city": "Portsmouth",
+        "region_id": 66
+    },
+    {
+        "city": "Suffolk",
+        "region_id": 66
+    },
+    {
+        "city": "Lynchburg",
+        "region_id": 66
+    },
+    {
+        "city": "Harrisonburg",
+        "region_id": 66
+    },
+    {
+        "city": "Leesburg",
+        "region_id": 66
+    },
+    {
+        "city": "Charlottesville",
+        "region_id": 66
+    },
+    {
+        "city": "Blacksburg",
+        "region_id": 66
+    },
+    {
+        "city": "Danville",
+        "region_id": 66
+    },
+    {
+        "city": "Manassas",
+        "region_id": 66
+    },
+    {
+        "city": "Seattle",
+        "region_id": 67
+    },
+    {
+        "city": "Spokane",
+        "region_id": 67
+    },
+    {
+        "city": "Tacoma",
+        "region_id": 67
+    },
+    {
+        "city": "Vancouver",
+        "region_id": 67
+    },
+    {
+        "city": "Bellevue",
+        "region_id": 67
+    },
+    {
+        "city": "Kent",
+        "region_id": 67
+    },
+    {
+        "city": "Everett",
+        "region_id": 67
+    },
+    {
+        "city": "Renton",
+        "region_id": 67
+    },
+    {
+        "city": "Yakima",
+        "region_id": 67
+    },
+    {
+        "city": "Federal Way",
+        "region_id": 67
+    },
+    {
+        "city": "Spokane Valley",
+        "region_id": 67
+    },
+    {
+        "city": "Kirkland",
+        "region_id": 67
+    },
+    {
+        "city": "Bellingham",
+        "region_id": 67
+    },
+    {
+        "city": "Kennewick",
+        "region_id": 67
+    },
+    {
+        "city": "Auburn",
+        "region_id": 67
+    },
+    {
+        "city": "Pasco",
+        "region_id": 67
+    },
+    {
+        "city": "Marysville",
+        "region_id": 67
+    },
+    {
+        "city": "Lakewood",
+        "region_id": 67
+    },
+    {
+        "city": "Redmond",
+        "region_id": 67
+    },
+    {
+        "city": "Shoreline",
+        "region_id": 67
+    },
+    {
+        "city": "Richland",
+        "region_id": 67
+    },
+    {
+        "city": "Sammamish",
+        "region_id": 67
+    },
+    {
+        "city": "Burien",
+        "region_id": 67
+    },
+    {
+        "city": "Olympia",
+        "region_id": 67
+    },
+    {
+        "city": "Lacey",
+        "region_id": 67
+    },
+    {
+        "city": "Edmonds",
+        "region_id": 67
+    },
+    {
+        "city": "Bremerton",
+        "region_id": 67
+    },
+    {
+        "city": "Puyallup",
+        "region_id": 67
+    },
+    {
+        "city": "Charleston",
+        "region_id": 68
+    },
+    {
+        "city": "Huntington",
+        "region_id": 68
+    },
+    {
+        "city": "Milwaukee",
+        "region_id": 69
+    },
+    {
+        "city": "Madison",
+        "region_id": 69
+    },
+    {
+        "city": "Green Bay",
+        "region_id": 69
+    },
+    {
+        "city": "Kenosha",
+        "region_id": 69
+    },
+    {
+        "city": "Racine",
+        "region_id": 69
+    },
+    {
+        "city": "Appleton",
+        "region_id": 69
+    },
+    {
+        "city": "Waukesha",
+        "region_id": 69
+    },
+    {
+        "city": "Eau Claire",
+        "region_id": 69
+    },
+    {
+        "city": "Oshkosh",
+        "region_id": 69
+    },
+    {
+        "city": "Janesville",
+        "region_id": 69
+    },
+    {
+        "city": "West Allis",
+        "region_id": 69
+    },
+    {
+        "city": "La Crosse",
+        "region_id": 69
+    },
+    {
+        "city": "Sheboygan",
+        "region_id": 69
+    },
+    {
+        "city": "Wauwatosa",
+        "region_id": 69
+    },
+    {
+        "city": "Fond du Lac",
+        "region_id": 69
+    },
+    {
+        "city": "New Berlin",
+        "region_id": 69
+    },
+    {
+        "city": "Wausau",
+        "region_id": 69
+    },
+    {
+        "city": "Brookfield",
+        "region_id": 69
+    },
+    {
+        "city": "Greenfield",
+        "region_id": 69
+    },
+    {
+        "city": "Beloit",
+        "region_id": 69
+    },
+    {
+        "city": "Cheyenne",
+        "region_id": 70
+    },
+    {
+        "city": "Casper",
+        "region_id": 70
+    }
+    
+    ]

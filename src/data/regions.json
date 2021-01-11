@@ -1,0 +1,249 @@
+ [
+    {"region":"Addis Ababa"},
+    {"region":"Dire Dawa"},
+    {"region":"Afar"},
+    {"region":"Amhara"},
+    {"region":"Benshangul-Gumaz"},
+    {"region":"Gambela"},
+    {"region":"Harari"},
+    {"region":"Oromia"},
+    {"region":"Somali"},
+    {"region":"Southern Nations Nationalities and People's Region"},
+    {"region":"Tigray"},
+    {
+        "region": "Alabama",
+        "country_code": "USA"
+    },
+    {
+        "region": "Alaska",
+        "country_code": "USA"
+    },
+    {
+        "region": "American Samoa",
+        "country_code": "USA"
+    },
+    {
+        "region": "Arizona",
+        "country_code": "USA"
+    },
+    {
+        "region": "Arkansas",
+        "country_code": "USA"
+    },
+    {
+        "region": "California",
+        "country_code": "USA"
+    },
+    {
+        "region": "Colorado",
+        "country_code": "USA"
+    },
+    {
+        "region": "Connecticut",
+        "country_code": "USA"
+    },
+    {
+        "region": "Delaware",
+        "country_code": "USA"
+    },
+    {
+        "region": "District Of Columbia",
+        "country_code": "USA"
+    },
+    {
+        "region": "Federated States Of Micronesia",
+        "country_code": "USA"
+    },
+    {
+        "region": "Florida",
+        "country_code": "USA"
+    },
+    {
+        "region": "Georgia",
+        "country_code": "USA"
+    },
+    {
+        "region": "Guam",
+        "country_code": "USA"
+    },
+    {
+        "region": "Hawaii",
+        "country_code": "USA"
+    },
+    {
+        "region": "Idaho",
+        "country_code": "USA"
+    },
+    {
+        "region": "Illinois",
+        "country_code": "USA"
+    },
+    {
+        "region": "Indiana",
+        "country_code": "USA"
+    },
+    {
+        "region": "Iowa",
+        "country_code": "USA"
+    },
+    {
+        "region": "Kansas",
+        "country_code": "USA"
+    },
+    {
+        "region": "Kentucky",
+        "country_code": "USA"
+    },
+    {
+        "region": "Louisiana",
+        "country_code": "USA"
+    },
+    {
+        "region": "Maine",
+        "country_code": "USA"
+    },
+    {
+        "region": "Marshall Islands",
+        "country_code": "USA"
+    },
+    {
+        "region": "Maryland",
+        "country_code": "USA"
+    },
+    {
+        "region": "Massachusetts",
+        "country_code": "USA"
+    },
+    {
+        "region": "Michigan",
+        "country_code": "USA"
+    },
+    {
+        "region": "Minnesota",
+        "country_code": "USA"
+    },
+    {
+        "region": "Mississippi",
+        "country_code": "USA"
+    },
+    {
+        "region": "Missouri",
+        "country_code": "USA"
+    },
+    {
+        "region": "Montana",
+        "country_code": "USA"
+    },
+    {
+        "region": "Nebraska",
+        "country_code": "USA"
+    },
+    {
+        "region": "Nevada",
+        "country_code": "USA"
+    },
+    {
+        "region": "New Hampshire",
+        "country_code": "USA"
+    },
+    {
+        "region": "New Jersey",
+        "country_code": "USA"
+    },
+    {
+        "region": "New Mexico",
+        "country_code": "USA"
+    },
+    {
+        "region": "New York",
+        "country_code": "USA"
+    },
+    {
+        "region": "North Carolina",
+        "country_code": "USA"
+    },
+    {
+        "region": "North Dakota",
+        "country_code": "USA"
+    },
+    {
+        "region": "Northern Mariana Islands",
+        "country_code": "USA"
+    },
+    {
+        "region": "Ohio",
+        "country_code": "USA"
+    },
+    {
+        "region": "Oklahoma",
+        "country_code": "USA"
+    },
+    {
+        "region": "Oregon",
+        "country_code": "USA"
+    },
+    {
+        "region": "Palau",
+        "country_code": "USA"
+    },
+    {
+        "region": "Pennsylvania",
+        "country_code": "USA"
+    },
+    {
+        "region": "Puerto Rico",
+        "country_code": "USA"
+    },
+    {
+        "region": "Rhode Island",
+        "country_code": "USA"
+    },
+    {
+        "region": "South Carolina",
+        "country_code": "USA"
+    },
+    {
+        "region": "South Dakota",
+        "country_code": "USA"
+    },
+    {
+        "region": "Tennessee",
+        "country_code": "USA"
+    },
+    {
+        "region": "Texas",
+        "country_code": "USA"
+    },
+    {
+        "region": "Utah",
+        "country_code": "USA"
+    },
+    {
+        "region": "Vermont",
+        "country_code": "USA"
+    },
+    {
+        "region": "Virgin Islands",
+        "country_code": "USA"
+    },
+    {
+        "region": "Virginia",
+        "country_code": "USA"
+    },
+    {
+        "region": "Washington",
+        "country_code": "USA"
+    },
+    {
+        "region": "West Virginia",
+        "country_code": "USA"
+    },
+    {
+        "region": "Wisconsin",
+        "country_code": "USA"
+    },
+    {
+        "region": "Wyoming",
+        "country_code": "USA"
+    }
+]

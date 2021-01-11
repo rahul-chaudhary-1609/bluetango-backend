@@ -1,0 +1,272 @@
+import { adminModel } from "../../models/admin";
+import _ from "lodash";
+import * as constants from "../../constants";
+import * as appUtils from "../../utils/appUtils";
+import * as tokenResponse from "../../utils/tokenResponse";
+import * as helperFunction from "../../utils/helperFunction";
+import * as selectQueryService from '../../queryService/selectQueryService';
+import * as updateQueryService from '../../queryService/updateQueryService';
+import bcrypt from 'bcrypt';
+const Sequelize = require('sequelize');
+var Op = Sequelize.Op;
+
+export class LoginService {
+    constructor() { }
+
+    /**
+    * login function
+    @param {} params pass all parameters from request
+    */
+    public async login(params: any) {
+        var isEmail = await appUtils.CheckEmail(params);
+        const qry = <any>{ where: {} };
+        if (isEmail) {
+            qry.where = { 
+                email: params.username,
+                status: {[Op.in]: [0,1]}
+            };
+        }
+        qry.raw = true;
+        qry.attributes = ['admin_id', 'name', 'email', 'password'];
+        let existingUser = await adminModel.findOne(qry);
+        if (!_.isEmpty(existingUser)) {
+            let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
+            if (comparePassword) {
+                delete existingUser.password;
+                let token = await tokenResponse.adminTokenResponse(existingUser);
+                existingUser.token = token.token;
+                let update = {
+                    'token': token.token,
+                    'model': adminModel
+                };
+                let condition = {
+                    admin_id: existingUser.admin_id
+                }
+                await updateQueryService.updateData(update, condition);
+                return existingUser;
+            } else {
+                throw new Error(constants.MESSAGES.invalid_password);
+            }
+        } else {
+            throw new Error(constants.MESSAGES.invalid_credentials);
+        }
+    }
+
+    /**
+    * login function
+    @param {} params pass all parameters from request
+    */
+    public async addNewAdmin(params: any) {
+        if(params.passkey === process.env.ADMIN_PASSKEY) {
+            const qry = <any>{ where: {} };
+            qry.where = { 
+                email: params.email,
+                status: {[Op.in]: [0,1]}
+            };
+            qry.raw = true;
+            let existingUser = await adminModel.findOne(qry);
+            if (_.isEmpty(existingUser)) {
+                let comparePassword = params.password === params.confirmPassword;
+                if (comparePassword) {
+                    delete params.confirmPassword;
+                    params.password = await appUtils.bcryptPassword(params.password);
+                    params.admin_id = await this.getSerailId();
+                    let newAdmin = await adminModel.create(params);
+                    let adminData = newAdmin.get({plain:true});
+                    delete adminData.password;
+                    let token = await tokenResponse.adminTokenResponse(newAdmin);
+                    adminData.token = token.token;
+                    let update = {
+                        'token': token.token,
+                        'model': adminModel
+                    };
+                    let condition = {
+                        admin_id: adminData.admin_id
+                    }
+                    await updateQueryService.updateData(update, condition);
+                    return adminData;
+                } else {
+                    throw new Error(constants.MESSAGES.password_miss_match);
+                }
+            } else {
+                throw new Error(constants.MESSAGES.acc_already_exists);
+            }
+        } else {
+            throw new Error(constants.MESSAGES.invalid_passkey);
+        }
+    }
+
+    public async getSerailId() {
+        let lastRecord = await adminModel.findAll({
+            limit: 1,
+            order: [ [ 'createdAt', 'DESC' ]]
+          });
+        if(lastRecord && lastRecord.length > 0) {
+            return lastRecord[0].admin_id + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * reset password function to add the data
+     * @param {*} params pass all parameters from request 
+     */
+    public async forgetPassword(params: any) {
+        let userData, reset_pass_otp = <any>{};
+        const qry = <any>{ where: {} };
+        if (!_.isEmpty(params)) {
+            qry.where.email = params.email;
+            qry.where.status = {[Op.ne]: 2};
+            qry.raw = true;
+            let existingUser = await adminModel.findOne(qry);
+            if (!_.isEmpty(existingUser)) {
+                // params.country_code = existingUser.country_code;
+                let otp = await appUtils.gererateOtp();
+                const mailParams = <any>{};
+                mailParams.to = params.email;
+                mailParams.toName = existingUser.name;
+                mailParams.templateName = "reset_password_request";
+                mailParams.subject = "Reset Password Request";
+                mailParams.templateData = {
+                    subject: "Reset Password Request",
+                    name: existingUser.name,
+                    resetLink: `${process.env.WEB_HOST_URL+'admin-panel/auth/reset-password'}?email=${params.email}&otp=${otp}`
+                };
+                if (!_.isEmpty(otp)) {
+                    reset_pass_otp.otp = otp;
+                    reset_pass_otp.otp_expire = Math.floor(Date.now());
+                    userData = await adminModel.update({reset_pass_otp}, { where: { admin_id: existingUser.admin_id } });
+                    // await helperFunction.sendEmail(mailParams);
+                    return {otp};
+                }
+            } else {
+                throw new Error(constants.MESSAGES.user_not_found);
+            }
+        }
+
+    }
+
+    /**
+    * resend otp function to resend otp to the user
+    * @param {*} params pass all parameters from request 
+    */
+    // public async resendOtp(params: any) {
+    //     let userUpdate = <any>{};
+    //     const query = <any>{ where: {} };
+    //     if (!_.isEmpty(params)) {
+    //         query.where.userID = params.uid;
+    //     }
+    //     let user = await adminModel.findOne(query);
+    //     let userdata = JSON.parse(JSON.stringify(user))
+    //     if (_.isEmpty(userdata)) {
+    //         throw new Error(constants.MESSAGES.user_not_found);
+    //     } else {
+    //         let otp = await this.sendOtpViaMail(params);
+    //         if (!_.isEmpty(otp)) {
+    //             let update = <any>{};
+    //             update.reset_pass_token['otp'] = otp;
+    //             update.reset_pass_token['otp_expire'] = appUtils.currentUnixTimeStamp();
+    //             userUpdate = adminModel.update(update, query);
+    //             var token = await tokenResponse.tokenResponse(params.uid);
+    //             return token;
+    //         }
+    //     }
+    // }
+
+    /*
+    * function to set new pass by verifying otp 
+    */
+
+    public async resetPassword(params: any) {
+        try {
+            const query = <any>{ where: {} };
+            if (!_.isEmpty(params)) {
+                query.where.email = params.email;
+                query.where.status = {[Op.ne]: 2};
+            }
+            let user = await selectQueryService.selectData(adminModel, query);
+            let userdata = JSON.parse(JSON.stringify(user))
+            if (_.isEmpty(userdata)) {
+                throw new Error(constants.MESSAGES.user_not_found);
+            } else {
+                if (userdata.reset_pass_otp && userdata.reset_pass_otp.otp) {
+                    let time = appUtils.calcluateOtpTime(userdata.reset_pass_otp.otp_expire);
+                    if (userdata.reset_pass_otp.otp != params.otp) {
+                        throw new Error(constants.MESSAGES.invalid_otp);
+                    } else if (appUtils.currentUnixTimeStamp() - time > constants.otp_expiry_time) {
+                        throw new Error(constants.MESSAGES.expire_otp);
+                    } else if (params.password !== params.confirmPassword) {
+                        throw new Error(constants.MESSAGES.password_miss_match);
+                    } else {
+                        params.password = await appUtils.bcryptPassword(params.password);
+                        let update = {
+                            'password': params.password,
+                            'reset_pass_otp': null,
+                            'model': adminModel
+                        };
+                        let condition = {
+                            admin_id: userdata.admin_id
+                        }
+                        await updateQueryService.updateData(update, condition);
+                        // return userdata;
+                    }
+                } else {
+                    throw new Error(constants.MESSAGES.invalid_otp);
+                }
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    public async changePassword(params: any) {
+        try {
+            const query = <any>{ where: {} };
+            if (!_.isEmpty(params)) {
+                query.where.admin_id = params.uid;
+                query.where.status = {[Op.ne]: 2};
+            }
+            let user = await selectQueryService.selectData(adminModel, query);
+            let userdata = JSON.parse(JSON.stringify(user))
+            if (_.isEmpty(userdata)) {
+                throw new Error(constants.MESSAGES.user_not_found);
+            } else {
+                const match = await bcrypt.compare(params.oldPassword, userdata.password);
+                if (params.password !== params.confirmPassword) {
+                    throw new Error(constants.MESSAGES.password_miss_match);
+                }
+                else if (!match) {
+                    throw new Error(constants.MESSAGES.invalid_password);
+                } else {
+                    params.password = await appUtils.bcryptPassword(params.password);
+                    let update = {
+                        'password': params.password,
+                        'model': adminModel
+                    };
+                    let condition = {
+                        admin_id: userdata.admin_id
+                    }
+                    await updateQueryService.updateData(update, condition);
+                }
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    public async logout(params: any) {
+        try {
+            let update = {
+                'token': null,
+                'model': adminModel
+            };
+            let condition = {
+                admin_id: params.uid
+            }
+            return await updateQueryService.updateData(update, condition);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+}
