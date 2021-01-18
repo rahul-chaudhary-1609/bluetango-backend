@@ -18,10 +18,10 @@ export const adminModel: any = sequelize.define("admins", {
         allowNull: true,
     },
     admin_role: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: "sub_admin",
-        comment: 'super_admin/sub_admin'
+        defaultValue: 2,
+        comment: '1=>super_admin/2=>sub_admin'
     },
     reset_pass_otp: {
         type: DataTypes.STRING,

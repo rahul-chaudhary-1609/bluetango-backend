@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
+import cors from 'cors';
 
 app.use(bodyParser.urlencoded(
     {
@@ -46,8 +47,29 @@ app.get('/api', (req, res) => {
 //setup swagger for documentation
 app.use('/api-swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// for adding more route and api
-require("./routes")(app);
+//options for cors midddleware
+const options: cors.CorsOptions = {
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'X-Access-Token',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: "http://3.233.55.201/",
+    preflightContinue: false,
+  };
+  
+  //use cors middleware
+  app.use(cors(options));
+  
+  // for adding more route and api
+  require("./routes")(app);
+  
+  //enable pre-flight
+  app.options('*', cors(options));
 
 
 /*Initialize Listner*/
