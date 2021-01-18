@@ -10,17 +10,6 @@ const storage = multer.diskStorage({
   }
 });
 const fileFilter = (req: any, file: any, cb: any) => {
-  // commenting mime check for bug fix for now
-  // if(file.fieldname == 'avatar') {
-  //   for profile added validation on type.
-  //   if (file.mimetype === "image/jpg" || file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-  //     cb(null, true);
-  //   } else {
-  //     cb(new Error("Image uploaded is not of type jpg/jpeg or png"), false);
-  //   }
-  // } else {
-  //   cb(null, true);
-  // }
   cb(null, true);
 }
 const upload = multer({ storage: storage, fileFilter: fileFilter });

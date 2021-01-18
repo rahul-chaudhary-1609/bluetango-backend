@@ -18,25 +18,3 @@ export const validateToken = (req, res, next) => {
     }
     return res.status(response.status).send(response);
 }
-
-export const isDoctor = (req, res, next) => {
-    let response = { ...constants.defaultServerResponse };
-    if(req.body.user_role == 'DOCTOR') {
-        return next();
-    } else {
-        response.message = constants.MESSAGES.unauthorized_role;
-        response.status = 401;
-    }
-    return res.status(response.status).send(response);
-}
-
-export const isPatient = (req, res, next) => {
-    let response = { ...constants.defaultServerResponse };
-    if(req.body.user_role == 'PATIENT') {
-        return next();
-    } else {
-        response.message = constants.MESSAGES.unauthorized_role;
-        response.status = 401;
-    }
-    return res.status(response.status).send(response);
-}

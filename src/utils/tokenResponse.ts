@@ -19,15 +19,6 @@ export const adminTokenResponse = async (obj: any) => {
     return { token };
 }
 
-export const requisitionTokenResponse = async (obj: any) => {
-    const token = jwt.sign(
-        { id: obj.id, role: obj.role }, 
-        process.env.SECRET_KEY || constants.SECRET_KEY, 
-        { expiresIn: '1d' }
-    );
-    return { token };
-}
-
 export const verificationEmailToken = async (obj: any) => {
     const token = jwt.sign(
         { id: obj.id }, 
