@@ -12,7 +12,10 @@ export const tokenResponse = async (obj: any) => {
 
 export const adminTokenResponse = async (obj: any) => {
     const token = jwt.sign(
-        { id: obj.admin_id }, 
+        { 
+            id: obj.id,
+            admin_role: obj.admin_role
+        }, 
         process.env.ADMIN_SECRET_KEY || constants.ADMIN_SECRET_KEY, 
         { expiresIn: '1d' }
     );
