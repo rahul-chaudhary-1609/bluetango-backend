@@ -32,7 +32,7 @@ adminRoute.post("/changePassword", joiSchemaValidation.validateBody(adminSchema.
 adminRoute.get("/logout", adminTokenValidator.validateToken, loginController.logout);
 
 /* add or edit employers route for employers */
-adminRoute.get("/addEditEmployers", adminTokenValidator.validateToken, joiSchemaValidation.validateBody(adminSchema.addEditEmployers), employersController.addEditEmployers);
+adminRoute.post("/addEditEmployers", adminTokenValidator.validateToken, joiSchemaValidation.validateBody(adminSchema.addEditEmployers), employersController.addEditEmployers);
 
 
 export = adminRoute;

@@ -27,38 +27,36 @@ export class EmployersService {
                 status: {[Op.in]: [0,1]}
             };
         }
-        // var existingUser = <any> {}; 
-        // if (params.id) {
-        //     existingUser = await employersModel.findOne({
-        //         where: {
-        //             email: params.email,
-        //             status: {
-        //                 [Op.in]: [0,1]
-        //             }
-        //             id: {
-        //                 [Op.ne]: params.id
-        //             }
-        //         }
-        //     });
-        // } else {
-        //     existingUser = await employersModel.findOne({
-        //         where: {
-        //             email: params.email,
-        //             status: {
-        //                 [Op.in]: [0,1]
-        //             }
-        //         }
-        //     });
-        // }
+        var existingUser; 
+        if (params.id) {
+            existingUser = await employersModel.findOne({
+                where: {
+                    email: params.email,
+                    status: {
+                        [Op.in]: [0,1]
+                    },
+                    id: {
+                        [Op.ne]: params.id
+                    }
+                }
+            });
+        } else {
+            existingUser = await employersModel.findOne({
+                where: {
+                    email: params.email,
+                    status: {
+                        [Op.in]: [0,1]
+                    }
+                }
+            });
+        }
        
 
-        // if (!_.isEmpty(existingUser)) {
-          
-        // } else {
-        //     throw new Error(constants.MESSAGES.email_already_registered);
-        // }
-
-        return true;
+        if (!_.isEmpty(existingUser)) {
+          return true;
+        } else {
+            throw new Error(constants.MESSAGES.email_already_registered);
+        }
     }
 
 }
