@@ -27,7 +27,7 @@ export class LoginService {
             };
         }
         qry.raw = true;
-        qry.attributes = ['admin_id', 'name', 'email', 'password'];
+        qry.attributes = ['id', 'name', 'email', 'password', 'admin_role'];
         let existingUser = await adminModel.findOne(qry);
         if (!_.isEmpty(existingUser)) {
             let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
@@ -40,7 +40,7 @@ export class LoginService {
                     'model': adminModel
                 };
                 let condition = {
-                    admin_id: existingUser.admin_id
+                    id: existingUser.id
                 }
                 await updateQueryService.updateData(update, condition);
                 return existingUser;
@@ -70,7 +70,8 @@ export class LoginService {
                 if (comparePassword) {
                     delete params.confirmPassword;
                     params.password = await appUtils.bcryptPassword(params.password);
-                    params.admin_id = await this.getSerailId();
+                    params.id = await this.getSerailId();
+                    params.admin_role = (params.id == 1)?"super_admin":"sub_admin";
                     let newAdmin = await adminModel.create(params);
                     let adminData = newAdmin.get({plain:true});
                     delete adminData.password;
@@ -81,9 +82,11 @@ export class LoginService {
                         'model': adminModel
                     };
                     let condition = {
-                        admin_id: adminData.admin_id
+                        id: adminData.id
                     }
                     await updateQueryService.updateData(update, condition);
+                    delete adminData.reset_pass_otp;
+                    delete adminData.reset_pass_expiry;
                     return adminData;
                 } else {
                     throw new Error(constants.MESSAGES.password_miss_match);
@@ -102,7 +105,7 @@ export class LoginService {
             order: [ [ 'createdAt', 'DESC' ]]
           });
         if(lastRecord && lastRecord.length > 0) {
-            return lastRecord[0].admin_id + 1;
+            return lastRecord[0].id + 1;
         } else {
             return 1;
         }
@@ -113,7 +116,7 @@ export class LoginService {
      * @param {*} params pass all parameters from request 
      */
     public async forgetPassword(params: any) {
-        let userData, reset_pass_otp = <any>{};
+        let userData, reset_pass_otp = <any>{}, reset_pass_expiry;
         const qry = <any>{ where: {} };
         if (!_.isEmpty(params)) {
             qry.where.email = params.email;
@@ -135,8 +138,8 @@ export class LoginService {
                 };
                 if (!_.isEmpty(otp)) {
                     reset_pass_otp.otp = otp;
-                    reset_pass_otp.otp_expire = Math.floor(Date.now());
-                    userData = await adminModel.update({reset_pass_otp}, { where: { admin_id: existingUser.admin_id } });
+                    reset_pass_expiry = Math.floor(Date.now());
+                    userData = await adminModel.update({reset_pass_otp, reset_pass_expiry}, { where: { id: existingUser.id } });
                     // await helperFunction.sendEmail(mailParams);
                     return {otp};
                 }
@@ -190,9 +193,9 @@ export class LoginService {
             if (_.isEmpty(userdata)) {
                 throw new Error(constants.MESSAGES.user_not_found);
             } else {
-                if (userdata.reset_pass_otp && userdata.reset_pass_otp.otp) {
-                    let time = appUtils.calcluateOtpTime(userdata.reset_pass_otp.otp_expire);
-                    if (userdata.reset_pass_otp.otp != params.otp) {
+                if (userdata && userdata.reset_pass_otp) {
+                    let time = appUtils.calcluateOtpTime(userdata.reset_pass_expiry);
+                    if (userdata.reset_pass_otp != params.otp) {
                         throw new Error(constants.MESSAGES.invalid_otp);
                     } else if (appUtils.currentUnixTimeStamp() - time > constants.otp_expiry_time) {
                         throw new Error(constants.MESSAGES.expire_otp);
@@ -203,10 +206,11 @@ export class LoginService {
                         let update = {
                             'password': params.password,
                             'reset_pass_otp': null,
+                            'reset_pass_expiry': null,
                             'model': adminModel
                         };
                         let condition = {
-                            admin_id: userdata.admin_id
+                            id: userdata.id
                         }
                         await updateQueryService.updateData(update, condition);
                         // return userdata;
@@ -224,7 +228,7 @@ export class LoginService {
         try {
             const query = <any>{ where: {} };
             if (!_.isEmpty(params)) {
-                query.where.admin_id = params.uid;
+                query.where.id = params.uid;
                 query.where.status = {[Op.ne]: 2};
             }
             let user = await selectQueryService.selectData(adminModel, query);
@@ -245,7 +249,7 @@ export class LoginService {
                         'model': adminModel
                     };
                     let condition = {
-                        admin_id: userdata.admin_id
+                        id: userdata.id
                     }
                     await updateQueryService.updateData(update, condition);
                 }
@@ -262,7 +266,7 @@ export class LoginService {
                 'model': adminModel
             };
             let condition = {
-                admin_id: params.uid
+                id: params.uid
             }
             return await updateQueryService.updateData(update, condition);
         } catch (error) {

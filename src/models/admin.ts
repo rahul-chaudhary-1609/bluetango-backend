@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../connection";
 
 export const adminModel: any = sequelize.define("admins", {
-    admin_id: {
+    id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
@@ -17,15 +17,25 @@ export const adminModel: any = sequelize.define("admins", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    admin_role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "sub_admin",
+        comment: 'super_admin/sub_admin'
+    },
     reset_pass_otp: {
-        type: DataTypes.JSONB,
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    reset_pass_expiry: {
+        type: DataTypes.DATE,
         allowNull: true,
     },
     status: {//applicable for all type of users
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '0=>blocked,1=>active,2=>deleted'
+        comment: '0=>inactive,1=>active,2=>deleted'
     },
     password: {
         type: DataTypes.STRING,
@@ -40,4 +50,4 @@ export const adminModel: any = sequelize.define("admins", {
         tableName: "admins"
     }
 );
-adminModel.sync({ alter: process.env.ALTER_BOOL == 'true' });
+adminModel.sync({ alter: true });
