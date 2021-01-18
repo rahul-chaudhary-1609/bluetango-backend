@@ -71,7 +71,7 @@ export class LoginService {
                     delete params.confirmPassword;
                     params.password = await appUtils.bcryptPassword(params.password);
                     params.id = await this.getSerailId();
-                    params.admin_role = (params.id == 1)?"super_admin":"sub_admin";
+                    params.admin_role = (params.id == 1)?1:2;
                     let newAdmin = await adminModel.create(params);
                     let adminData = newAdmin.get({plain:true});
                     delete adminData.password;
