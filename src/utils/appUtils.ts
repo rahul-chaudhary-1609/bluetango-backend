@@ -6,7 +6,7 @@ import * as helperFunction from '../utils/helperFunction';
 const moment = require("moment")
 
 /* function for sending the error response */
-export const errorResponse = (error: any, errorCode: any, message = constants.MESSAGES.bad_request) => {
+export const errorResponse = (res: any, error: any, errorCode: any, message = constants.MESSAGES.bad_request) => {
     let response = { ...constants.defaultServerResponse };
     if (!_.isEmpty(error.message)) {
         if (error.message == 'SequelizeUniqueConstraintError: Validation error') {
@@ -20,17 +20,17 @@ export const errorResponse = (error: any, errorCode: any, message = constants.ME
     response.success = false;
     response.status = errorCode;
     response.body = {data : error};
-    return response;
+    return res.status(response.status).send(response);
 };
 
 /* function for sending the success response */
-export const successResponse = (params: any, message: any) => {
+export const successResponse = (res: any, params: any, message: any) => {
     let response = { ...constants.defaultServerResponse };
     response.success = true;
     response.body = {data : params};
     response.message = message;
     response.status = <number>200;
-    return response;
+    return res.status(response.status).send(response);
 }
 
 /*

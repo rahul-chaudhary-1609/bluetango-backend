@@ -16,16 +16,14 @@ export class LoginController {
     * @param res 
     */
     public async login(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.login(req.body);
             const msg = constants.MESSAGES.login_success;
-            response = appUtils.successResponse(responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
             console.log(error)
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 
     /**
@@ -34,16 +32,14 @@ export class LoginController {
     * @param res 
     */
     public async addNewAdmin(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.addNewAdmin(req.body);
             const msg = constants.MESSAGES.login_success;
-            response = appUtils.successResponse(responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
             console.log(error)
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 
     /**
@@ -52,15 +48,13 @@ export class LoginController {
     * @param res 
     */
     public async forgetPassword(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.forgetPassword(req.body);
             const msg = constants.MESSAGES.forget_pass_otp;
-            response = appUtils.successResponse(responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 
     /**
@@ -69,15 +63,13 @@ export class LoginController {
     * @param res 
     */
     public async resetPassword(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.resetPassword(req.body);
             const msg = constants.MESSAGES.reset_pass_success;
-            response = appUtils.successResponse(responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 
     /**
@@ -86,15 +78,13 @@ export class LoginController {
     * @param res 
     */
     public async changePassword(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.changePassword(req.body);
             const msg = constants.MESSAGES.reset_pass_success;
-            response = appUtils.successResponse(responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 
     /**
@@ -103,14 +93,12 @@ export class LoginController {
     * @param res 
     */
     public async logout(req: any, res: any) {
-        let response = <any>{};
         try {
             const responseFromService = await loginService.logout(req.body);
             const msg = constants.MESSAGES.logout_success;
-            response = appUtils.successResponse({}, msg);
+            appUtils.successResponse(res, {}, msg);
         } catch (error) {
-            response = appUtils.errorResponse(error, constants.code.error_code);
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-        return res.status(response.status).send(response);
     }
 }
