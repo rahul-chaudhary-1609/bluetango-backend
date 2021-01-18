@@ -58,7 +58,7 @@ const options: cors.CorsOptions = {
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: "http://3.233.55.201/",
+    origin: "http://localhost:3000",
     preflightContinue: false,
   };
   
