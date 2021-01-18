@@ -57,11 +57,11 @@ const options: cors.CorsOptions = {
       'X-Access-Token',
       'Authorization'
     ],
-    credentials: true,
+    origin: ["*", "http://localhost:3000", "http://localhost:3001", "http://dj0m8yjgpyxk7.cloudfront.net"],
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: "http://localhost:3000",
+    credentials: true,
     preflightContinue: true,
-    maxAge: 600
+    optionsSuccessStatus: 204
   };
   
   //use cors middleware
