@@ -10,6 +10,7 @@ import * as multer from '../middleware/multerParser';
 const adminRoute = express.Router();
 
 const loginController = new AdminController.LoginController();
+const employersController = new AdminController.EmployersController();
 
 
 /* add new admin route for admin */
@@ -29,6 +30,9 @@ adminRoute.post("/changePassword", joiSchemaValidation.validateBody(adminSchema.
 
 /* logout route for admin logout */
 adminRoute.get("/logout", adminTokenValidator.validateToken, loginController.logout);
+
+/* add or edit employers route for employers */
+adminRoute.get("/addEditEmployers", adminTokenValidator.validateToken, joiSchemaValidation.validateBody(adminSchema.addEditEmployers), employersController.addEditEmployers);
 
 
 export = adminRoute;
