@@ -22,8 +22,7 @@ export const validateBody = (schema) => {
   return (req, res, next) => {
     const error = validateObjectSchema(req.body, schema);
     if (error) {
-      const response = errorResponse(error, constants.code.error_code, error[0].message.split('"').join(""))
-      return res.status(response.status).send(response);
+      return errorResponse(res, error, constants.code.error_code, error[0].message.split('"').join(""))
     }
     return next();
   }
@@ -34,8 +33,7 @@ export const validateQueryParams = (schema) => {
   return (req, res, next) => {
     const error = validateObjectSchema(req.query, schema);
     if (error) {
-      const response = errorResponse(error, constants.code.error_code, error[0].message.split('"').join(""))
-      return res.status(response.status).send(response);
+      return errorResponse(res, error, constants.code.error_code, error[0].message.split('"').join(""))
     }
     return next();
   }
