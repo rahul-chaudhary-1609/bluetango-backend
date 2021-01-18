@@ -55,11 +55,13 @@ const options: cors.CorsOptions = {
       'Content-Type',
       'Accept',
       'X-Access-Token',
+      'Authorization'
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     origin: "http://localhost:3000",
-    preflightContinue: false,
+    preflightContinue: true,
+    maxAge: 600
   };
   
   //use cors middleware
