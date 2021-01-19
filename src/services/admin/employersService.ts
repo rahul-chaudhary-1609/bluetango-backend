@@ -50,6 +50,7 @@ export class EmployersService {
         delete params.uid;
         if (_.isEmpty(existingUser)) {
           if (params.id) {
+              delete params.password;
             let updateData =  await employersModel.update( params, {
                 where: { id: params.id}
             });
@@ -61,6 +62,7 @@ export class EmployersService {
                 return false;
             }
           } else {
+            params.password = await appUtils.bcryptPassword(params.password);
             return await employersModel.create(params);
           }
 

@@ -20,6 +20,10 @@
     {
       "name": "Admin",
       "description": "Admin related api's"
+    },
+    {
+      "name": "Employee",
+      "description": "Employee related api's"
     }
   ],
   "paths": {
@@ -299,6 +303,34 @@
             "required": false,
             "type": "number"
         }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/login": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee Login",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "formData",
+            "description": "email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
         ],
         "responses": {}
       }
