@@ -85,7 +85,7 @@ export const currentUnixTimeStamp = () => {
     return Math.floor(Date.now());
 }
 
-export const pagination = (page, page_size) => {
+export const pagination = async (page, page_size) => {
     if (page_size) {
         page_size = Number(page_size)
     } else {

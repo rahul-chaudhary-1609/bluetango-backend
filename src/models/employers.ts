@@ -26,7 +26,7 @@ export const employersModel: any = sequelize.define("employers", {
         allowNull: true,
     },
     phone_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
     },
     status: {//applicable for all type of users
