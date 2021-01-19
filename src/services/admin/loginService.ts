@@ -137,7 +137,7 @@ export class LoginService {
                     resetLink: `${process.env.WEB_HOST_URL+'admin-panel/auth/reset-password'}?email=${params.email}&otp=${otp}`
                 };
                 if (!_.isEmpty(otp)) {
-                    reset_pass_otp.otp = otp;
+                    reset_pass_otp = otp;
                     reset_pass_expiry = Math.floor(Date.now());
                     userData = await adminModel.update({reset_pass_otp, reset_pass_expiry}, { where: { id: existingUser.id } });
                     // await helperFunction.sendEmail(mailParams);
