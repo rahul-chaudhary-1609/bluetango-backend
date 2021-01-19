@@ -1,13 +1,8 @@
-import { adminModel } from "../../models/admin";
 import { employersModel } from "../../models/employers";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
-import * as tokenResponse from "../../utils/tokenResponse";
 import * as helperFunction from "../../utils/helperFunction";
-import * as selectQueryService from '../../queryService/selectQueryService';
-import * as updateQueryService from '../../queryService/updateQueryService';
-import bcrypt from 'bcrypt';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -15,7 +10,7 @@ export class EmployersService {
     constructor() { }
 
     /**
-    * login function
+    * add edit employers function
     @param {} params pass all parameters from request
     */
     public async addEditEmployers(params: any) {
@@ -49,14 +44,51 @@ export class EmployersService {
                     }
                 }
             });
-        }
-       
+        }       
 
-        if (!_.isEmpty(existingUser)) {
-          return true;
+        params.admin_id = params.uid;
+        delete params.uid;
+        if (_.isEmpty(existingUser)) {
+          if (params.id) {
+            let updateData =  await employersModel.update( params, {
+                where: { id: params.id}
+            });
+            if (updateData) {
+                return await employersModel.findOne({
+                    where: {id: params.id}
+                })
+            } else {
+                return false;
+            }
+          } else {
+            return await employersModel.create(params);
+          }
+
         } else {
             throw new Error(constants.MESSAGES.email_already_registered);
         }
+    }
+
+    /**
+    * get employers list function
+    @param {} params pass all parameters from request
+    */
+    public async getEmployersList (params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        var whereCond = {};
+        if (params.industry_type) {
+            whereCond = {
+                industry_type: params.industry_type
+            }
+        }
+
+        return await employersModel.findAndCountAll({
+            where: whereCond,
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
+        })
+
     }
 
 }

@@ -39,7 +39,8 @@ export const MESSAGES = {
   action_success: "Status is updated successfully",
   forget_pass_otp: "",
   reset_pass_success: "",
-  invalid_email_token: ""
+  invalid_email_token: "",
+  employers_list: 'Employers lists'
 }
 
 export const code = {
