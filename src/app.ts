@@ -16,22 +16,22 @@ app.use(bodyParser.urlencoded(
 ));
 app.use(bodyParser.json({ limit: "50mb" }));
 //options for cors midddleware
-const options: cors.CorsOptions = {
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'Accept',
-      'X-Access-Token',
-    ],
-    credentials: true,
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: "*",
-    preflightContinue: false,
-  };
+// const options: cors.CorsOptions = {
+//     allowedHeaders: [
+//       'Origin',
+//       'X-Requested-With',
+//       'Content-Type',
+//       'Accept',
+//       'X-Access-Token',
+//     ],
+//     credentials: true,
+//     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+//     origin: "*",
+//     preflightContinue: false,
+//   };
   
 //use cors middleware
-app.use(cors(options));
+app.use(cors());
 
 //enable pre-flight
 // app.options('*', cors(options));
