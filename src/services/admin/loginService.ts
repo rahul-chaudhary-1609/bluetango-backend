@@ -224,11 +224,10 @@ export class LoginService {
         }
     }
 
-    public async changePassword(params: any) {
-        try {
+    public async changePassword(params: any, users: any) {
             const query = <any>{ where: {} };
             if (!_.isEmpty(params)) {
-                query.where.id = params.uid;
+                query.where.id = users.uid;
                 query.where.status = {[Op.ne]: 2};
             }
             let user = await selectQueryService.selectData(adminModel, query);
@@ -254,19 +253,17 @@ export class LoginService {
                     await updateQueryService.updateData(update, condition);
                 }
             }
-        } catch (error) {
-            throw new Error(error);
-        }
+        
     }
 
-    public async logout(params: any) {
+    public async logout(params: any, user: any) {
         try {
             let update = {
                 'token': null,
                 'model': adminModel
             };
             let condition = {
-                id: params.uid
+                id: user.uid
             }
             return await updateQueryService.updateData(update, condition);
         } catch (error) {

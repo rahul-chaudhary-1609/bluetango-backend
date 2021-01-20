@@ -76,3 +76,10 @@ export const CUSTOM_JOI_MESSAGE = {
 }
 export const notificationmsg = {
 };
+
+export const USER_ROLE = {
+  super_admin: 1,
+  sub_admin: 2,
+  employee: 3,
+  employer: 4
+}

@@ -79,7 +79,7 @@ export class LoginController {
     */
     public async changePassword(req: any, res: any) {
         try {
-            const responseFromService = await loginService.changePassword(req.body);
+            const responseFromService = await loginService.changePassword(req.body, req.user);
             const msg = constants.MESSAGES.reset_pass_success;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
@@ -94,7 +94,7 @@ export class LoginController {
     */
     public async logout(req: any, res: any) {
         try {
-            const responseFromService = await loginService.logout(req.body);
+            const responseFromService = await loginService.logout(req.body, req.user);
             const msg = constants.MESSAGES.logout_success;
             appUtils.successResponse(res, {}, msg);
         } catch (error) {
