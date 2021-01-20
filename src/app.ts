@@ -6,7 +6,6 @@ import bodyParser from "body-parser";
 const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
-import cors from 'cors';
 
 app.use(bodyParser.urlencoded(
     {
@@ -24,22 +23,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
  * use for set header for language default as english 
  */
 
-//create custom headers to solve cors isssue 
-const customHeaders = (req, res, next) => {
-    // OR set your own header here
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    res.header("Accept", "application/json, text/plain,*/*");
-    res.header("Access-Control-Allow-Origin", ip);
-    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
-
-    next();
-}
-app.use(customHeaders);
-
-app.use((req, res, next) => {
-   
-    //options for cors midddleware
+ //options for cors midddleware
     // const options: cors.CorsOptions = {
     //     allowedHeaders: [
     //     'Origin',
@@ -60,8 +44,21 @@ app.use((req, res, next) => {
     // //enable pre-flight
     // app.options('*', cors(options));
 
-    
+// var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
+//create custom headers to solve cors isssue 
+const customHeaders = (req, res, next) => {
+    // OR set your own header here
+    res.header("Accept", "application/json, text/plain,*/*");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
+
+    next();
+}
+app.use(customHeaders);
+
+app.use((req, res, next) => {
     next();
 });
 
