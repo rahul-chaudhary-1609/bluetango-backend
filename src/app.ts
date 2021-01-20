@@ -17,16 +17,16 @@ app.use(bodyParser.urlencoded(
 app.use(bodyParser.json({ limit: "50mb" }));
 
 //create custom headers to solve cors isssue 
-// const customHeaders = (req, res, next) => {
-//     // OR set your own header here
-//     res.header("Accept", "application/json, text/plain,*/*");
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
+const customHeaders = (req, res, next) => {
+    // OR set your own header here
+    res.header("Accept", "application/json, text/plain,*/*");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
 
-//     next();
-// }
-// app.use(customHeaders);
+    next();
+}
+app.use(customHeaders);
 
 /**
  * [req] :type of request
@@ -34,29 +34,29 @@ app.use(bodyParser.json({ limit: "50mb" }));
  * use for set header for language default as english 
  */
 app.use((req, res, next) => {
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ip);
+    // var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ip);
     //options for cors midddleware
-    const options: cors.CorsOptions = {
-        allowedHeaders: [
-        'Origin',
-        'X-Requested-With',
-        'Content-Type',
-        'Accept',
-        'X-Access-Token',
-        ],
-        credentials: true,
-        methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-        origin: ip,
-        preflightContinue: false,
-    };
+    // const options: cors.CorsOptions = {
+    //     allowedHeaders: [
+    //     'Origin',
+    //     'X-Requested-With',
+    //     'Content-Type',
+    //     'Accept',
+    //     'X-Access-Token',
+    //     ],
+    //     credentials: true,
+    //     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    //     origin: ip,
+    //     preflightContinue: false,
+    // };
     
-    //use cors middleware
-    app.use(cors(options));
+    // //use cors middleware
+    // app.use(cors(options));
 
-    //enable pre-flight
-    app.options('*', cors(options));
-    
+    // //enable pre-flight
+    // app.options('*', cors(options));
+
     next();
 });
 
