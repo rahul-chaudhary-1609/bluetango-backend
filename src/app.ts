@@ -7,8 +7,6 @@ const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
 import cors from 'cors';
-var os = require("os");
-var hostname = os.hostname();
 
 app.use(bodyParser.urlencoded(
     {
@@ -17,26 +15,6 @@ app.use(bodyParser.urlencoded(
     },
 ));
 app.use(bodyParser.json({ limit: "50mb" }));
-//options for cors midddleware
-const options: cors.CorsOptions = {
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'Accept',
-      'X-Access-Token',
-    ],
-    credentials: true,
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: hostname,
-    preflightContinue: false,
-  };
-  
-//use cors middleware
-app.use(cors(options));
-
-//enable pre-flight
-app.options('*', cors(options));
 
 //create custom headers to solve cors isssue 
 // const customHeaders = (req, res, next) => {
@@ -56,6 +34,29 @@ app.options('*', cors(options));
  * use for set header for language default as english 
  */
 app.use((req, res, next) => {
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ip);
+    //options for cors midddleware
+    const options: cors.CorsOptions = {
+        allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Accept',
+        'X-Access-Token',
+        ],
+        credentials: true,
+        methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+        origin: ip,
+        preflightContinue: false,
+    };
+    
+    //use cors middleware
+    app.use(cors(options));
+
+    //enable pre-flight
+    app.options('*', cors(options));
+    
     next();
 });
 
