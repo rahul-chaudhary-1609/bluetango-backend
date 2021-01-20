@@ -17,16 +17,17 @@ app.use(bodyParser.urlencoded(
 app.use(bodyParser.json({ limit: "50mb" }));
 
 //create custom headers to solve cors isssue 
-const customHeaders = (req, res, next) => {
-    // OR set your own header here
-    res.header("Accept", "application/json, text/plain,*/*");
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
+// const customHeaders = (req, res, next) => {
+//     // OR set your own header here
+//     res.header("Accept", "application/json, text/plain,*/*");
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
 
-    next();
-}
-app.use(customHeaders);
+//     next();
+// }
+// app.use(customHeaders);
+app.use(cors());
 
 /**
  * [req] :type of request
