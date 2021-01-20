@@ -41,9 +41,6 @@ app.use((req, res, next) => {
         preflightContinue: false,
     };
     
-    //use cors middleware
-    app.use(cors(options));
-
     //enable pre-flight
     app.options('*', cors(options));
 
