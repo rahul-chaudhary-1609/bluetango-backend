@@ -23,6 +23,8 @@ const options: cors.CorsOptions = {
       'Content-Type',
       'Accept',
       'X-Access-Token',
+      'Authorization',
+      'authorization'
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
@@ -42,7 +44,7 @@ const customHeaders = (req, res, next) => {
     res.header("Accept", "application/json, text/plain,*/*");
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
 
     next();
 }
@@ -71,7 +73,7 @@ app.use('/api-swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // for adding more route and api
 require("./routes")(app);
   
-  
+app.use(cors()); 
 
 
 /*Initialize Listner*/
