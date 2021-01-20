@@ -19,12 +19,39 @@ export class AuthController {
     public async login(req: any, res: any, next: any) {
         try {
             const responseFromService = await authService.login(req.body);
-            console.log('aaaaaaaaaaaaaaaaaaaaaaa');
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
         } catch (e) {
-            // next(e)
-            
-            appUtils.errorResponse(res, e, constants.code.error_code);
+            next(e)
+        }
+    }
+
+    /**
+    * forgot password
+    * @param req :[email]
+    * @param res 
+    */
+    public async forgotPassword(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.forgotPassword(req.body);
+            const msg = constants.MESSAGES.forget_pass_otp;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    /**
+    * reset password
+    * @param req :[password]
+    * @param res 
+    */
+    public async resetPassword(req: any, res: any, next: any) {
+        try {
+            console.log(req.user);
+            const responseFromService = await authService.resetPassword(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.reset_pass_success);
+        } catch (error) {
+            next(error);
         }
     }
 }

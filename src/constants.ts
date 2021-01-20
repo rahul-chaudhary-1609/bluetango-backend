@@ -56,7 +56,9 @@ export const mobile_otp_message = 'Your one time password is ';
 export const SECRET_KEY = "A!@#$%^";
 export const ADMIN_SECRET_KEY = "S$%^!@#K";
 export const EMAIL_SECRET_KEY = "S$%^K@*S";
-export const EMPLOYEE_SECRET_KEY = "E$%^!@#K"
+export const EMPLOYEE_SECRET_KEY = "EE$%^!@#K"
+export const EMPLOYER_SECRET_KEY = "ER$%^!@#K"
+export const FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K"
 export const defaultServerResponse = {
   status: 400,
   success: false,

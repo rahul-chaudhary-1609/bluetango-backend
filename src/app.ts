@@ -7,6 +7,8 @@ const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
 import cors from 'cors';
+var os = require("os");
+var hostname = os.hostname();
 
 app.use(bodyParser.urlencoded(
     {
@@ -26,7 +28,7 @@ const options: cors.CorsOptions = {
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: "*",
+    origin: hostname,
     preflightContinue: true,
   };
   
@@ -37,16 +39,16 @@ app.use(cors(options));
 app.options('*', cors(options));
 
 //create custom headers to solve cors isssue 
-const customHeaders = (req, res, next) => {
-    // OR set your own header here
-    res.header("Accept", "application/json, text/plain,*/*");
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
+// const customHeaders = (req, res, next) => {
+//     // OR set your own header here
+//     res.header("Accept", "application/json, text/plain,*/*");
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,access-token,lang");
 
-    next();
-}
-app.use(customHeaders);
+//     next();
+// }
+// app.use(customHeaders);
 
 /**
  * [req] :type of request
