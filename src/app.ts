@@ -15,8 +15,26 @@ app.use(bodyParser.urlencoded(
     },
 ));
 app.use(bodyParser.json({ limit: "50mb" }));
+//options for cors midddleware
+const options: cors.CorsOptions = {
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'X-Access-Token',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: "*",
+    preflightContinue: true,
+  };
+  
+//use cors middleware
+// app.use(cors(options));
 
-
+//enable pre-flight
+app.options('*', cors(options));
 
 /**
  * [req] :type of request
@@ -24,28 +42,6 @@ app.use(bodyParser.json({ limit: "50mb" }));
  * use for set header for language default as english 
  */
 app.use((req, res, next) => {
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', ip);
-    // options for cors midddleware
-    const options: cors.CorsOptions = {
-        allowedHeaders: [
-        'Origin',
-        'X-Requested-With',
-        'Content-Type',
-        'Accept',
-        'X-Access-Token',
-        ],
-        credentials: true,
-        methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-        origin: ip,
-        preflightContinue: false,
-    };
-    
-    //enable pre-flight
-    app.options('*', cors(options));
-
-    
-
     next();
 });
 
