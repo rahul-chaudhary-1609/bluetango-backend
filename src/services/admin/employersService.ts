@@ -13,7 +13,7 @@ export class EmployersService {
     * add edit employers function
     @param {} params pass all parameters from request
     */
-    public async addEditEmployers(params: any) {
+    public async addEditEmployers(params: any, user: any) {
         var isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {
@@ -46,10 +46,10 @@ export class EmployersService {
             });
         }       
 
-        params.admin_id = params.uid;
-        delete params.uid;
+        params.admin_id = user.uid;
         if (_.isEmpty(existingUser)) {
           if (params.id) {
+              delete params.password;
             let updateData =  await employersModel.update( params, {
                 where: { id: params.id}
             });
@@ -61,6 +61,7 @@ export class EmployersService {
                 return false;
             }
           } else {
+            params.password = await appUtils.bcryptPassword(params.password);
             return await employersModel.create(params);
           }
 

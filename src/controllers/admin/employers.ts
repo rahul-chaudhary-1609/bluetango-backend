@@ -17,7 +17,7 @@ export class EmployersController {
     */
     public async addEditEmployers(req: any, res: any) {
         try {
-            const responseFromService = await employersService.addEditEmployers(req.body);
+            const responseFromService = await employersService.addEditEmployers(req.body, req.user);
             if (responseFromService) {
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
             } else {
@@ -35,6 +35,7 @@ export class EmployersController {
     */
     public async getEmployersList(req: any, res: any) {
         try {
+            console.log(req.user);
             const responseFromService = await employersService.getEmployersList(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
             

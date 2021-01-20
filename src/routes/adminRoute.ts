@@ -1,7 +1,6 @@
 import express from "express";
 import * as adminSchema from '../apiSchema/adminSchema';
 import * as joiSchemaValidation from '../middleware/joiSchemaValidation';
-import * as validators from "../middleware/validators";
 import * as adminTokenValidator from "../middleware/adminTokenValidator";
 
 import * as AdminController from "../controllers/admin/index";
@@ -20,7 +19,7 @@ adminRoute.post("/addNewAdmin", joiSchemaValidation.validateBody(adminSchema.add
 adminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
 
 /* forget pass route for admin */
-adminRoute.post("/forgetPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), loginController.forgetPassword);
+adminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), loginController.forgetPassword);
 
 /* reset pass route for admin */
 adminRoute.post("/resetPassword", joiSchemaValidation.validateBody(adminSchema.resetPassword), loginController.resetPassword);

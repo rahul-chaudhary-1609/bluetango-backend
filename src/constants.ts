@@ -2,6 +2,7 @@ export const MESSAGES = {
   phone_already_registered: "An account with given phone number already exists",
   email_already_registered: "An account with given email already exists",
   invalid_password: "Incorrect Password",
+  invalid_email: "Incorrect Email",
   not_same_password: "New Password should not be same as the Current Password",
   current_password_not_match: "Current Password Not matches with the existing one",
   signup_success: 'Signup Success',
@@ -55,6 +56,7 @@ export const mobile_otp_message = 'Your one time password is ';
 export const SECRET_KEY = "A!@#$%^";
 export const ADMIN_SECRET_KEY = "S$%^!@#K";
 export const EMAIL_SECRET_KEY = "S$%^K@*S";
+export const EMPLOYEE_SECRET_KEY = "E$%^!@#K"
 export const defaultServerResponse = {
   status: 400,
   success: false,
@@ -74,3 +76,10 @@ export const CUSTOM_JOI_MESSAGE = {
 }
 export const notificationmsg = {
 };
+
+export const USER_ROLE = {
+  super_admin: 1,
+  sub_admin: 2,
+  employee: 3,
+  employer: 4
+}
