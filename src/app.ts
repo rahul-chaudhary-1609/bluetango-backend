@@ -31,10 +31,10 @@ const options: cors.CorsOptions = {
   };
   
 //use cors middleware
-// app.use(cors(options));
+app.use(cors(options));
 
 //enable pre-flight
-app.options('*', cors(options));
+// app.options('*', cors(options));
 
 /**
  * [req] :type of request
