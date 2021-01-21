@@ -34,6 +34,30 @@ export const employeeTokenResponse = async (obj: any) => {
     return { token };
 }
 
+export const employerTokenResponse = async (obj: any) => {
+    const token = jwt.sign(
+        { 
+            id: obj.id,
+            user_role: constants.USER_ROLE.employer
+        }, 
+        process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY, 
+        { expiresIn: '1d' }
+    );
+    return { token };
+}
+
+export const forgotPasswordTokenResponse = async (obj: any, role:any) => {
+    const token = jwt.sign(
+        { 
+            id: obj.id,
+            user_role: role
+        }, 
+        process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, 
+        { expiresIn: '1d' }
+    );
+    return { token };
+}
+
 export const verificationEmailToken = async (obj: any) => {
     const token = jwt.sign(
         { id: obj.id }, 
