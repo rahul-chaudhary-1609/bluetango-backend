@@ -5,6 +5,8 @@ import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel } from  "../../models/employee"
 import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
+import { departmentModel } from  "../../models/department"
+import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -73,7 +75,7 @@ export class AuthService {
             mailParams.templateData = {
                 subject: "Reset Password Request",
                 name: existingUser.name,
-                resetLink: `${process.env.WEB_HOST_URL+'admin-panel/auth/reset-password'}?token=${token.token}`
+                resetLink: `${process.env.WEB_HOST_URL}?token=${token.token}`
             };
             return {mailParams};
         } else {
