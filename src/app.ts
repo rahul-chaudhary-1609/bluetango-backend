@@ -16,36 +16,37 @@ app.use(bodyParser.urlencoded(
 ));
 app.use(bodyParser.json({ limit: "50mb" }));
 
-//options for cors midddleware
-const options: cors.CorsOptions = {
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
-  };
-  
-//use cors middleware
-app.use(cors(options));
-
 // //options for cors midddleware
 // const options: cors.CorsOptions = {
-//     allowedHeaders: [
-//       'Origin',
-//       'X-Requested-With',
-//       'Content-Type',
-//       'Accept',
-//       'X-Access-Token',
-//       'Authorization',
-//       'authorization'
-//     ],
-//     credentials: true,
-//     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-//     origin: "*",
-//     preflightContinue: true,
+//     "origin": "*",
+//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     "preflightContinue": false,
+//     "optionsSuccessStatus": 204
 //   };
   
 // //use cors middleware
 // app.use(cors(options));
+
+//options for cors midddleware
+const options: cors.CorsOptions = {
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'contenttype',
+      'Accept',
+      'X-Access-Token',
+      'Authorization',
+      'authorization'
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: "*",
+    // preflightContinue: true,
+  };
+  
+//use cors middleware
+app.use(cors(options));
 
 // //enable pre-flight
 // app.options('*', cors(options));
@@ -56,7 +57,7 @@ app.use(cors(options));
 //     res.header("Accept", "application/json, text/plain,*/*");
 //     res.header("Access-Control-Allow-Origin", "*");
 //     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Contenttype Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
 
 //     next();
 // }
