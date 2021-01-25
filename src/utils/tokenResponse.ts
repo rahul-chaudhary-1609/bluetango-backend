@@ -53,7 +53,7 @@ export const forgotPasswordTokenResponse = async (obj: any, role:any) => {
             user_role: role
         }, 
         process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, 
-        { expiresIn: '1d' }
+        { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
     );
     return { token };
 }

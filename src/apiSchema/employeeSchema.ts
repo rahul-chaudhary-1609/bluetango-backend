@@ -37,3 +37,12 @@ export const resetPassword = Joi.object({
     "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
   })
 });
+
+export const updateProfile = Joi.object({
+  name: Joi.string().optional(),
+  phone_number: Joi.string().optional(),
+  country_code: Joi.string().optional(),
+  date_of_birth: Joi.string().optional(),
+  accomplishments: Joi.string().optional(),
+  profile_pic_url: Joi.string().optional()
+})

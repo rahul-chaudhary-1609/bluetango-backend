@@ -1,7 +1,7 @@
 // const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-// const sgMail = require('@sendgrid/mail');
+const sgMail = require('@sendgrid/mail');
 // var FCM = require('fcm-node');
-// sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
+sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import * as constants from '../constants';
 
 const templates = {
@@ -29,22 +29,26 @@ const templates = {
  * 
  * @param params to, from, subject, html
  */
-// export const sendEmail = async (params:any) => {
-//     try {
-//         const msg = {
-//             to: params.to,
-//             from: "",
-//             templateId: templates[params.templateName],
-//             dynamic_template_data: params.templateData
-//          };
-//          await sgMail.send(msg);
-//     } catch (error) {
-//         if (error.response) {
-//             console.error(error.response.body)
-//         }
-//         throw new Error(error);
-//     }
-// }
+export const sendEmail = async (params) => {
+    try {
+        const msg = {
+            to: params.to,
+            from: {
+                email: process.env.SENDGRID_FROM_EMAIL,
+                name: 'BluXinga'
+            },
+            subject: params.subject,
+            html: params.html,
+        };
+        console.log(msg);
+        await sgMail.send(msg);
+    } catch (error) {
+        if (error.response) {
+            console.error(error.response.body)
+        }
+        throw new Error(error);
+    }
+}
 
 /**
  * 
@@ -97,4 +101,8 @@ export const pagination = async (page, page_size) => {
         page = 0
     }
     return [page, page_size];
+}
+
+export const convertPromiseToObject = async (promise) => {
+    return JSON.parse(JSON.stringify(promise));
 }

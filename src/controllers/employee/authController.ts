@@ -54,4 +54,36 @@ export class AuthController {
             next(error);
         }
     }
+
+     /**
+    * getMyProfile
+    * @param req :[]
+    * @param res 
+    */
+    public async getMyProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.getMyProfile(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
+    * update profile
+    * @param req :[]
+    * @param res 
+    */
+    public async updateProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.updateProfile(req.body, req.user);
+            let userData = <any> {};
+            if (responseFromService) {
+                userData = await authService.getMyProfile(req.user); 
+            }
+            appUtils.successResponse(res, userData, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

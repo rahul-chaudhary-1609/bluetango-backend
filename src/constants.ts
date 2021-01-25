@@ -41,7 +41,8 @@ export const MESSAGES = {
   employers_list: 'Employers lists',
   forget_pass_otp: "Password reset link has been sent to your registered email id",
   reset_pass_success: "Password reset successfully",
-  invalid_email_token: ""
+  invalid_email_token: "",
+  success: 'Success'
 }
 
 export const code = {

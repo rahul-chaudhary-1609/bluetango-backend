@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, QueryInterface } from "sequelize";
 
 import { sequelize } from "../connection";
 
