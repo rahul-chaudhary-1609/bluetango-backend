@@ -1,12 +1,15 @@
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
+import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel } from  "../../models/employee"
 import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
+import { industryTypeModel } from  "../../models/industryType"
+import { promises } from "fs";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -18,23 +21,71 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
-        var isEmail = await appUtils.CheckEmail(params);
-        const qry = <any>{ where: {} };
-        if (isEmail) {
-            qry.where = { 
-                email: params.username,
+
+        employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        let existingUser = await employeeModel.findOne({
+            where: {
+                email: params.username.toLowerCase(),
                 status: {[Op.in]: [0,1]}
-            };
-        }
-        let existingUser = await employeeModel.findOne(qry);
+            },
+            include: [
+                {
+                    model: departmentModel, 
+                    required: false,
+                },
+                {
+                    model: employersModel, 
+                    required: false,
+                    attributes: ['id', 'name', 'email']
+                }
+            ],
+            
+        });
+
+        employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "prev_employer_id", targetKey: "id" });
+        employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "prev_department_id", targetKey: "id" });
+        let existingPrevUser = await employeeModel.findOne({
+            where: {
+                email: params.username.toLowerCase(),
+                status: {[Op.in]: [0,1]}
+            },
+            include: [
+                {
+                    model: departmentModel, 
+                    required: false,
+                },
+                {
+                    model: employersModel, 
+                    required: false,
+                    attributes: ['id', 'name', 'email']
+                }
+            ],
+            attributes: ['id']
+            
+        });
         if (!_.isEmpty(existingUser)) {
+            existingUser = await helperFunction.convertPromiseToObject(existingUser);
             let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
             if (comparePassword) {
                 delete existingUser.password;
                 delete existingUser.reset_pass_otp;
                 let token = await tokenResponse.employeeTokenResponse(existingUser);
                 existingUser.token = token.token;
-                return existingUser;
+
+                existingPrevUser = await helperFunction.convertPromiseToObject(existingPrevUser);
+                existingUser.prev_department = (existingPrevUser.department ? existingPrevUser.department : {})
+                existingUser.prev_employer = (existingPrevUser.employer ? existingPrevUser.employer : {})
+                existingUser.current_department = (existingUser.department ? existingUser.department : {})
+                existingUser.current_employer = (existingUser.employer ? existingUser.employer : {})
+
+                if (existingUser.employer)
+                    delete existingUser.employer;
+
+                if (existingUser.department)
+                    delete existingUser.department;
+
+               return existingUser;
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }
@@ -50,7 +101,7 @@ export class AuthService {
     public async forgotPassword(params: any) {
         var existingUser;
         const qry = <any>{ where: {
-            email : params.email,
+            email : params.email.toLowerCase(),
             status: {[Op.ne]: 2}
         } };
 
@@ -69,15 +120,14 @@ export class AuthService {
             let token = await tokenResponse.forgotPasswordTokenResponse(existingUser, params.user_role);
             const mailParams = <any>{};
             mailParams.to = params.email;
-            mailParams.toName = existingUser.name;
-            mailParams.templateName = "reset_password_request";
+            mailParams.html = `Hi ${existingUser.name}
+                <br> Click on the link below to reset your password
+                <br> ${process.env.WEB_HOST_URL}?token=${token.token}
+                <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
+                `;
             mailParams.subject = "Reset Password Request";
-            mailParams.templateData = {
-                subject: "Reset Password Request",
-                name: existingUser.name,
-                resetLink: `${process.env.WEB_HOST_URL}?token=${token.token}`
-            };
-            return {mailParams};
+            await helperFunction.sendEmail(mailParams);
+            return true;
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }
@@ -87,7 +137,6 @@ export class AuthService {
     /*
     * function to set new pass 
     */
-
     public async resetPassword(params: any, user: any) {
         const update = <any> {
             password: await appUtils.bcryptPassword(params.password)
@@ -108,6 +157,116 @@ export class AuthService {
             throw new Error(constants.MESSAGES.user_not_found);
         }
        
+    }
+
+    /*
+    * function to set new pass 
+    */
+
+    public async getMyProfile(params: any) {
+
+        employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        let existingUser = await employeeModel.findOne({
+            where: {
+                id: params.uid
+            },
+            include: [
+                {
+                    model: departmentModel, 
+                    required: false,
+                },
+                {
+                    model: employersModel, 
+                    required: false,
+                    attributes: ['id', 'name', 'email']
+                }
+            ],
+            
+        });
+
+        employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "prev_employer_id", targetKey: "id" });
+        employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "prev_department_id", targetKey: "id" });
+        let existingPrevUser = await employeeModel.findOne({
+            where: {
+                id: params.uid
+            },
+            include: [
+                {
+                    model: departmentModel, 
+                    required: false,
+                },
+                {
+                    model: employersModel, 
+                    required: false,
+                    attributes: ['id', 'name', 'email']
+                }
+            ],
+            attributes: ['id']
+            
+        });
+
+        existingUser = await helperFunction.convertPromiseToObject(existingUser);
+        existingPrevUser = await helperFunction.convertPromiseToObject(existingPrevUser);
+
+        existingUser.prev_department = (existingPrevUser.department ? existingPrevUser.department : {})
+        existingUser.prev_employer = (existingPrevUser.employer ? existingPrevUser.employer : {})
+        existingUser.current_department = (existingUser.department ? existingUser.department : {})
+        existingUser.current_employer = (existingUser.employer ? existingUser.employer : {})
+
+        delete existingUser.password;
+        delete existingUser.reset_pass_otp;
+        if (existingUser.employer)
+            delete existingUser.employer;
+
+        if (existingUser.department)
+            delete existingUser.department;
+
+        return existingUser;
+
+        // employeeModel.hasOne(departmentModel,{as: "current_department", foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        // employeeModel.hasOne(departmentModel,{as: "prev_department", foreignKey: "id", sourceKey: "prev_department_id", targetKey: "id" });
+        // employeeModel.hasOne(employersModel,{ as: "current_employer", foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        // employeeModel.hasOne(employersModel,{ as: "prev_employer", foreignKey: "id", sourceKey: "prev_employer_id", targetKey: "id" });
+        // return await employeeModel.findOne({
+        //     where: {
+        //         id: params.uid
+        //     },
+        //     include: [
+        //         {
+        //             as: "current_department",
+        //             model: departmentModel, 
+        //             required: false,
+        //         },
+        //         {
+        //             as: "prev_department",
+        //             model: departmentModel, 
+        //             required: false,
+        //         },
+        //         {
+        //             as: "current_employer",
+        //             model: employersModel, 
+        //             required: false,
+        //             attributes: ['id', 'name', 'email']
+        //         },
+        //         {
+        //             as: "prev_employer",
+        //             model: employersModel, 
+        //             required: false,
+        //             attributes: ['id', 'name', 'email']
+        //         }
+        //     ],
+            
+        // });
+    }
+
+     /*
+    * function to update profile 
+    */
+    public async updateProfile(params: any, user: any) {
+        return await employeeModel.update(params, {
+            where: { id: user.uid}
+        })
     }
 
 }

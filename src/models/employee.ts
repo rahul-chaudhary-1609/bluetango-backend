@@ -73,11 +73,17 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    status: {//applicable for all type of users
+    status: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    first_time_login: {//applicable for all type of users
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
     },
     is_manager: {
         type: DataTypes.INTEGER,
@@ -89,7 +95,7 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    Accomplishments: {
+    accomplishments: {
         type: DataTypes.TEXT,
         allowNull: true,
     }
