@@ -1,7 +1,7 @@
 import { AuthService } from "../../services/employee/authService";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
-import { nextTick } from "process";
+import { deleteFile } from "../../middleware/multerParser"
 
 
 //Instantiates a Home services  
@@ -47,7 +47,20 @@ export class AuthController {
     */
     public async resetPassword(req: any, res: any, next: any) {
         try {
-            console.log(req.user);
+            const responseFromService = await authService.resetPassword(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.reset_pass_success);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+     /**
+    * reset password
+    * @param req :[password]
+    * @param res 
+    */
+    public async employeeResetPassword(req: any, res: any, next: any) {
+        try {
             const responseFromService = await authService.resetPassword(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.reset_pass_success);
         } catch (error) {
@@ -82,6 +95,21 @@ export class AuthController {
                 userData = await authService.getMyProfile(req.user); 
             }
             appUtils.successResponse(res, userData, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
+    * update profile
+    * @param req :[]
+    * @param res 
+    */
+    public async uploadFile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.uploadFile(req.file, req.body.folderName);
+            await deleteFile(req.file.filename);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
         }

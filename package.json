@@ -23,6 +23,7 @@
     "@sendgrid/mail": "^7.1.1",
     "@types/cors": "^2.8.9",
     "@types/dotenv": "^8.2.0",
+    "aws-sdk": "^2.831.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
