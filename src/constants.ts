@@ -41,7 +41,8 @@ export const MESSAGES = {
   employers_list: 'Employers lists',
   forget_pass_otp: "Password reset link has been sent to your registered email id",
   reset_pass_success: "Password reset successfully",
-  invalid_email_token: ""
+  invalid_email_token: "",
+  success: 'Success'
 }
 
 export const code = {
@@ -56,7 +57,9 @@ export const mobile_otp_message = 'Your one time password is ';
 export const SECRET_KEY = "A!@#$%^";
 export const ADMIN_SECRET_KEY = "S$%^!@#K";
 export const EMAIL_SECRET_KEY = "S$%^K@*S";
-export const EMPLOYEE_SECRET_KEY = "E$%^!@#K"
+export const EMPLOYEE_SECRET_KEY = "EE$%^!@#K"
+export const EMPLOYER_SECRET_KEY = "ER$%^!@#K"
+export const FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K"
 export const defaultServerResponse = {
   status: 400,
   success: false,

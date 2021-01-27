@@ -46,7 +46,7 @@ const options: cors.CorsOptions = {
   };
   
 //use cors middleware
-app.use(cors(options));
+app.use(cors());
 
 // //enable pre-flight
 // app.options('*', cors(options));

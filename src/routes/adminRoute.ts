@@ -1,7 +1,7 @@
 import express from "express";
 import * as adminSchema from '../apiSchema/adminSchema';
 import * as joiSchemaValidation from '../middleware/joiSchemaValidation';
-import * as adminTokenValidator from "../middleware/adminTokenValidator";
+import * as tokenValidator from "../middleware/tokenValidator";
 
 import * as AdminController from "../controllers/admin/index";
 import * as multer from '../middleware/multerParser';
@@ -25,16 +25,16 @@ adminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.
 adminRoute.post("/resetPassword", joiSchemaValidation.validateBody(adminSchema.resetPassword), loginController.resetPassword);
 
 /* change pass route for admin */
-adminRoute.post("/changePassword", joiSchemaValidation.validateBody(adminSchema.changePassword), adminTokenValidator.validateToken, loginController.changePassword);
+adminRoute.post("/changePassword", joiSchemaValidation.validateBody(adminSchema.changePassword), tokenValidator.validateAdminToken, loginController.changePassword);
 
 /* logout route for admin logout */
-adminRoute.get("/logout", adminTokenValidator.validateToken, loginController.logout);
+adminRoute.get("/logout", tokenValidator.validateAdminToken, loginController.logout);
 
 /* add or edit employers route for employers */
-adminRoute.post("/addEditEmployers", joiSchemaValidation.validateBody(adminSchema.addEditEmployers), adminTokenValidator.validateToken, employersController.addEditEmployers);
+adminRoute.post("/addEditEmployers", joiSchemaValidation.validateBody(adminSchema.addEditEmployers), tokenValidator.validateAdminToken, employersController.addEditEmployers);
 
 /* get employers list route for employers */
-adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), adminTokenValidator.validateToken, employersController.getEmployersList);
+adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), tokenValidator.validateAdminToken, employersController.getEmployersList);
 
 
 export = adminRoute;

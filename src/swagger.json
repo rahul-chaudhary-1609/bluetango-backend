@@ -334,7 +334,150 @@
         ],
         "responses": {}
       }
+    },
+    "/employee/forgotPassword": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee forgot password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_role",
+            "in": "formData",
+            "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4",
+            "required": true,
+            "type": "number",
+            "enum": [1,2,3,4]
+          }
+
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/resetPassword": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee reset password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getMyProfile": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/updateProfile": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee update profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phone_number",
+            "in": "formData",
+            "description": "phone_number",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country_code",
+            "in": "formData",
+            "description": "country_code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "date_of_birth",
+            "in": "formData",
+            "description": "date_of_birth",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "accomplishments",
+            "in": "formData",
+            "description": "accomplishments",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "profile_pic_url",
+            "in": "formData",
+            "description": "profile_pic_url",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
     }
+
 
   },
   "definitions": {

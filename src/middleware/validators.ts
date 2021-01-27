@@ -1,9 +1,41 @@
+// export const trimmer = (req, res, next) => {
+//     if (req.method === 'POST') {
+//         for (const [key, value] of Object.entries(req.body)) {
+//             req.body[key] = (<any>value).trim();
+//         }
+//     }
+//     next();
+// }
+
 export const trimmer = (req, res, next) => {
     if (req.method === 'POST') {
-        for (const [key, value] of Object.entries(req.body)) {
-            req.body[key] = (<any>value).trim();
+        const temp = {};
+        for (let [key, value] of Object.entries(req.body)) {
+            key = (<any>key).trim();
+            if (isNaN(<any>value)) {
+                temp[key] = (<any>value).trim();
+            } else {
+                temp[key] = (<any>value).toString();
+            }
+            
         }
+        req.body = temp;
     }
+
+    if (req.method == 'GET') {
+        const temp = {};
+        for (let [key, value] of Object.entries(req.query)) {
+            key = (<any>key).trim();
+            if (isNaN(<any>value)) {
+                temp[key] = (<any>value).trim();
+            } else {
+                temp[key] = (<any>value).toString();
+            }
+            
+        }
+        req.query = temp;
+    }
+    
     next();
 }
 

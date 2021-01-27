@@ -9,19 +9,59 @@ export const employeeModel: any = sequelize.define("employee", {
         primaryKey: true,
         autoIncrement: true
     },
-    employer_id: {
+    current_employer_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    department_id: {
+    current_department_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+    },
+    current_designation: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    current_date_of_joining: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    prev_employer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    prev_department_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    prev_designation: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    prev_date_of_joining: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    prev_exit: {
+        type: DataTypes.DATE,
+        allowNull: true,
     },
     name: {
         type: DataTypes.STRING,
         allowNull: true,
     },
     email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    date_of_birth: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    employee_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    profile_pic_url: {
         type: DataTypes.STRING,
         allowNull: true,
     },
@@ -33,22 +73,30 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    status: {//applicable for all type of users
+    status: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
     },
-    reset_pass_otp: {
-        type: DataTypes.JSONB,
-        allowNull: true,
+    first_time_login: {//applicable for all type of users
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
     },
-    reset_pass_expiry: {
-        type: DataTypes.DATE,
+    is_manager: {
+        type: DataTypes.INTEGER,
         allowNull: true,
+        defaultValue: 0,
+        comment: '0=>notManager,1=>manager'
     },
     password: {
         type: DataTypes.STRING,
+        allowNull: true,
+    },
+    accomplishments: {
+        type: DataTypes.TEXT,
         allowNull: true,
     }
 },
