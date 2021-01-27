@@ -115,6 +115,7 @@ export class AuthService {
         if (user.user_role == constants.USER_ROLE.sub_admin || user.user_role == constants.USER_ROLE.super_admin) {
             return await adminModel.update(update, qry);
         } else if (user.user_role == constants.USER_ROLE.employee) {
+            update.first_time_reset_password = 0;
             return await employeeModel.update(update, qry);
         } else if (user.user_role == constants.USER_ROLE.employer) {
             return await employersModel.update(update, qry);
@@ -162,9 +163,17 @@ export class AuthService {
     * function to update profile 
     */
     public async updateProfile(params: any, user: any) {
+        params.first_time_login = 0;
         return await employeeModel.update(params, {
             where: { id: user.uid}
         })
+    }
+
+     /*
+    * function to upload file 
+    */
+    public async uploadFile(params: any, folderName) {
+        return await helperFunction.uploadFile(params, folderName);
     }
 
 }

@@ -85,6 +85,12 @@ export const employeeModel: any = sequelize.define("employee", {
         defaultValue: 1,
         comment: '0=>not first time,1=>first time'
     },
+    first_time_reset_password: {//applicable for all type of users
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
+    },
     is_manager: {
         type: DataTypes.INTEGER,
         allowNull: true,

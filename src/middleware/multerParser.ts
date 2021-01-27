@@ -1,34 +1,29 @@
+import multer from 'multer';
+import * as fs from 'fs';
+import * as path from 'path';
 
-import multer from "multer"
+// upload file in the src/upload folder
+let folderUploadPath = `../../src/upload`;
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads/')
+  destination(req, file, callback) {
+    const dir = path.join(__dirname, folderUploadPath);
+    fs.mkdir(dir, err => callback(null, dir))
   },
-
-  filename: function (req: any, file: any, cb: any) {
-    cb(null, `${file.fieldname}_${Date.now()}_${file.originalname}`)
-  }
+  filename(req, file, callback) {
+    callback(null, `${Date.now()}_${file.originalname}`);
+  },
 });
-const fileFilter = (req: any, file: any, cb: any) => {
-  cb(null, true);
+
+// delete file in the src/upload folder
+export const  deleteFile = function (fileName) {
+  let filePath = path.join(__dirname, folderUploadPath, fileName);
+  return fs.unlinkSync(filePath);
 }
-const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-
-export const uploadFile = function (item) {
-  if (item) {
-    return upload.single(item);
-  }
-};
-
-/**
- * upload files under different keys and different count
- * field array is like
- * [{ name: 'avatar', maxCount: 1 }, { name: 'gallery', maxCount: 8 }]
- * @param items
- * @private
- */
-export const uploadMultiFiles = function (items) {
-  return upload.fields(items);
-};
-
+// upload function to upload the file
+export const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: process.env.UPLOAD_FILE_SIZE_IN_MB,
+  },
+});
