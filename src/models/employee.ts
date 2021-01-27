@@ -25,13 +25,13 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.DATE,
         allowNull: true,
     },
-    prev_employer_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+    prev_employer: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
-    prev_department_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+    prev_department: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     prev_designation: {
         type: DataTypes.STRING,
@@ -54,7 +54,7 @@ export const employeeModel: any = sequelize.define("employee", {
         allowNull: true,
     },
     date_of_birth: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: true,
     },
     employee_code: {
