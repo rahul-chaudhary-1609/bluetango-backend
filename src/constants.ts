@@ -42,7 +42,8 @@ export const MESSAGES = {
   forget_pass_otp: "Password reset link has been sent to your registered email id",
   reset_pass_success: "Password reset successfully",
   invalid_email_token: "",
-  success: 'Success'
+  success: 'Success',
+  invalid_department: "Invalid department is provided"
 }
 
 export const code = {
