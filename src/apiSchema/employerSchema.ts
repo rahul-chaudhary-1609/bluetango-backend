@@ -56,13 +56,14 @@ export const addEditEmployee = Joi.object ({
     }),
     country_code: Joi.string().required(),
     phone_number: Joi.string().required(),
-    status: Joi.string().required(),
-    industry_type: Joi.string().required()
+    current_department_id: Joi.string().required(), 
+    current_designation: Joi.string().required(),
+    employee_code: Joi.string().required()
   
   })
   
   export const getEmployeeList = Joi.object ({
-    industry_type: Joi.string().optional(),
+    departmentId: Joi.string().optional(),
     limit: Joi.string().optional(),
     offset: Joi.string().optional()
   })
