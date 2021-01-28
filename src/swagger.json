@@ -572,6 +572,132 @@
         ],
         "responses": {}
       }
+    },
+    "/employer/addEditEmployee": {
+      "post": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to add a employee",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "id, when you will pass id then it will be update otherwise it will be create",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "country_code",
+            "in": "formData",
+            "description": "country code",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phone_number",
+            "in": "formData",
+            "description": "phone number",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "current_department_id",
+            "in": "formData",
+            "description": "department type id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "current_designation",
+            "in": "formData",
+            "description": "designation",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_code",
+            "in": "formData",
+            "description": "employee code",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getEmployeeList": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to get employee list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "description": "department type id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+        },
+        {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+        }
+        ],
+        "responses": {}
+      }
     }
 
 
