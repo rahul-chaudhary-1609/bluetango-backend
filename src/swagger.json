@@ -299,14 +299,14 @@
             "description": "page",
             "required": false,
             "type": "number"
-        },
-        {
-            "name": "limit",
-            "in": "query",
-            "description": "page size",
-            "required": false,
-            "type": "number"
-        }
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
         ],
         "responses": {}
       }
@@ -441,6 +441,48 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getListOfTeamMemberByManagerId": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "manager_id",
+            "in": "query",
+            "description": "manager_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
           }
         ],
         "responses": {}

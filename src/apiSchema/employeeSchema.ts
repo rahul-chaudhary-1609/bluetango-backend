@@ -40,9 +40,15 @@ export const resetPassword = Joi.object({
 
 export const updateProfile = Joi.object({
   name: Joi.string().optional(),
-  phone_number: Joi.string().optional(),
-  country_code: Joi.string().optional(),
+  phone_number: Joi.string().min(8).max(12).optional(),
+  country_code: Joi.string().max(5).optional(),
   date_of_birth: Joi.string().optional(),
   accomplishments: Joi.string().optional(),
   profile_pic_url: Joi.string().optional()
+})
+
+export const getListOfTeamMemberByManagerId = Joi.object({
+  manager_id: Joi.string().required(),
+  limit: Joi.string().optional(),
+  offset: Joi.string().optional()
 })

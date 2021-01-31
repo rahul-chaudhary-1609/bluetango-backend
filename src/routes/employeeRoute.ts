@@ -6,10 +6,12 @@ import * as validators from "../middleware/validators";
 import { upload } from "../middleware/multerParser";
 
 import { AuthController } from "../controllers/employee/authController";
+import { EmployeeController } from "../controllers/employee/employeeController";
 
 const employeeRoute = express.Router();
 
 const authController = new AuthController();
+const employeeController = new EmployeeController();
 
 /* login route for employee login */
 employeeRoute.post("/login",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
@@ -31,6 +33,9 @@ employeeRoute.post("/updateProfile", validators.trimmer, tokenValidator.validate
 
 /* upload file route for employee */
 employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, upload.single('file'), authController.uploadFile);
+
+/* get my profile route for employee */
+employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getListOfTeamMemberByManagerId), employeeController.getListOfTeamMemberByManagerId);
 
 
 export = employeeRoute;
