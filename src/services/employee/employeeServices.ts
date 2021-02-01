@@ -38,4 +38,45 @@ export class EmployeeServices {
         })
     }
 
+    /*
+    * function to get details of employee
+    */
+    public async viewDetailsEmployee(params:any) {
+        return await employeeModel.findOne({
+            where: { id: params.id},
+            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+
+        })
+    }
+
+    /*
+    * function to get details of employee
+    */
+   public async searchTeamMember(params:any) {
+    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
+
+    managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+    return await managerTeamMemberModel.findAndCountAll({
+        where: { manager_id: params.manager_id},
+        include: [
+            {
+                model: employeeModel, 
+                required: true,
+                where: {
+                    [Op.or]:[
+                        {name: params.search_string},
+                        {phone_number: params.search_string},
+                        {email: params.search_string}
+                    ]
+                },
+                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+            }
+        ],
+        limit: limit,
+        offset: offset,
+        order: [["createdAt", "DESC"]]
+
+    })
+}
+
 }

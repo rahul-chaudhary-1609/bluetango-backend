@@ -37,5 +37,11 @@ employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, upload.s
 /* get my profile route for employee */
 employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getListOfTeamMemberByManagerId), employeeController.getListOfTeamMemberByManagerId);
 
+/* view details route for employee */
+employeeRoute.get("/viewDetailsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), employeeController.viewDetailsEmployee);
+
+/* search team meber for manager */
+employeeRoute.get("/searchTeamMember", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.searchTeamMember), employeeController.searchTeamMember);
+
 
 export = employeeRoute;

@@ -451,7 +451,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "Employee get profile",
+        "description": "list of employee by manager id",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -469,6 +469,83 @@
             "description": "manager_id",
             "required": true,
             "type": "number"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/viewDetailsEmployee": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "get profile of employee",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/searchTeamMember": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Search team members",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "manager_id",
+            "in": "query",
+            "description": "manager_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "search_string",
+            "in": "query",
+            "description": "search_string",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "offset",
