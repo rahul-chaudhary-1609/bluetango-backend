@@ -64,9 +64,9 @@ export class EmployeeServices {
                 required: true,
                 where: {
                     [Op.or]:[
-                        {name: params.search_string},
-                        {phone_number: params.search_string},
-                        {email: params.search_string}
+                        {name: { [Op.iLike]: `%${params.search_string}%` }},
+                        {phone_number: {[Op.iLike]: `%${params.search_string}%`}},
+                        {email: { [Op.iLike]: `%${params.search_string}%`}}
                     ]
                 },
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
