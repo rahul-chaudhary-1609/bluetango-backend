@@ -17,7 +17,7 @@ export class EmployeeController {
     */
     public async getListOfTeamMemberByManagerId(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.getListOfTeamMemberByManagerId(req.query);
+            const responseFromService = await employeeServices.getListOfTeamMemberByManagerId(req.query, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
@@ -50,7 +50,7 @@ export class EmployeeController {
     */
     public async searchTeamMember(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.searchTeamMember(req.query);
+            const responseFromService = await employeeServices.searchTeamMember(req.query, req.user);
             if (responseFromService) {
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             } else {

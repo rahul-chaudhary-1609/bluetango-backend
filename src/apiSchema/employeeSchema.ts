@@ -3,7 +3,14 @@ import * as constants from '../constants';
 import { join } from 'path';
 
 export const login = Joi.object({
-  username: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+  username: Joi.string()
+  .regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i)
+  .required()
+  .messages(
+    {
+      "string.pattern.base": constants.MESSAGES.invalid_email
+    }
+  ),
   password: Joi.string().min(8)
   .max(15)
   .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
@@ -19,7 +26,12 @@ export const login = Joi.object({
 });
 
 export const forgotPassword = Joi.object({
-  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
+  .messages(
+    {
+      "string.pattern.base": constants.MESSAGES.invalid_email
+    }
+  ),
   user_role: Joi.string().regex(new RegExp("^(?=.*[1-4])")).required(),
 });
 
@@ -48,7 +60,6 @@ export const updateProfile = Joi.object({
 })
 
 export const getListOfTeamMemberByManagerId = Joi.object({
-  manager_id: Joi.string().required(),
   limit: Joi.string().optional(),
   offset: Joi.string().optional()
 })
@@ -58,6 +69,5 @@ export const viewDetailsEmployee = Joi.object({
 })
 
 export const searchTeamMember = Joi.object({
-  manager_id: Joi.string().required(),
   search_string: Joi.string().required()
 })
