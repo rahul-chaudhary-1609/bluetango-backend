@@ -115,7 +115,7 @@ export const addEditEmployers = Joi.object ({
   password: Joi.string().min(8)
   .max(15)
   .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-  .required()
+  // .required()
   .messages({
     "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
     "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,

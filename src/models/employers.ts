@@ -50,7 +50,11 @@ export const employersModel: any = sequelize.define("employers", {
     industry_type: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    }
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 },
     {
         tableName: "employers"

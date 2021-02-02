@@ -1,4 +1,4 @@
-import { employersModel } from "../../models/employers";
+import { employersModel, industryTypeModel } from "../../models";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -8,6 +8,17 @@ var Op = Sequelize.Op;
 
 export class EmployersService {
     constructor() { }
+
+    /**
+    * get employers industry type list
+    @param {} params pass all parameters from request
+    */
+    public async getIndustryTypeList (params: any) {
+        return await industryTypeModel.findAndCountAll({
+            where: {},
+            order: [["name", "ASC"]]
+        })
+    }
 
     /**
     * add edit employers function
