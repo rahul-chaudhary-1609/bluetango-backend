@@ -52,3 +52,12 @@ export const getListOfTeamMemberByManagerId = Joi.object({
   limit: Joi.string().optional(),
   offset: Joi.string().optional()
 })
+
+export const viewDetailsEmployee = Joi.object({
+  id: Joi.string().required()
+})
+
+export const searchTeamMember = Joi.object({
+  manager_id: Joi.string().required(),
+  search_string: Joi.string().required()
+})
