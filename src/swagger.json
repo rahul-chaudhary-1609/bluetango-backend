@@ -834,6 +834,13 @@
             "description": "employee code",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "is_manager",
+            "in": "formData",
+            "description": "0=>notManager,1=>manager",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}
