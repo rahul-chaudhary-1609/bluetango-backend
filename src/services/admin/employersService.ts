@@ -105,17 +105,17 @@ export class EmployersService {
         let accountExists = await employersModel.findOne(query);
         if(accountExists) {
             let updates = <any>{};
-            if(params.action == "activate") {
+            if(params.actionType == "activate") {
                 if(accountExists && accountExists.status == 1)
                 throw new Error(constants.MESSAGES.already_activated);
 
                 updates.status = 1;
-            } else if(params.action == "deactivate") {
+            } else if(params.actionType == "deactivate") {
                 if(accountExists && accountExists.status == 0)
                 throw new Error(constants.MESSAGES.already_deactivated);
 
                 updates.status = 0;
-            } else if(params.action == "delete") {
+            } else if(params.actionType == "delete") {
                 if(accountExists && accountExists.status == 2)
                 throw new Error(constants.MESSAGES.already_deleted);
 
