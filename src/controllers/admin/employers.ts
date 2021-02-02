@@ -44,4 +44,18 @@ export class EmployersController {
         }
     }
 
+    /**
+    * change employer status
+    * @param req :[get data]
+    * @param res : [employers data]
+    */
+    public async changeEmployerStatus(req: any, res: any) {
+        try {
+            await employersService.changeEmployerStatus(req.query);
+            return appUtils.successResponse(res, {}, constants.MESSAGES.status_updated);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }

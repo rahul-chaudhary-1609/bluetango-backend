@@ -36,5 +36,8 @@ adminRoute.post("/addEditEmployers", joiSchemaValidation.validateBody(adminSchem
 /* get employers list route for employers */
 adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), tokenValidator.validateAdminToken, employersController.getEmployersList);
 
+/* change employer status activate/deactivate/delete */
+adminRoute.get("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
+
 
 export = adminRoute;
