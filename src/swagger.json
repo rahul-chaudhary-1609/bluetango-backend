@@ -464,13 +464,6 @@
             "type": "string"
           },
           {
-            "name": "manager_id",
-            "in": "query",
-            "description": "manager_id",
-            "required": true,
-            "type": "number"
-          },
-          {
             "name": "offset",
             "in": "query",
             "description": "page",
@@ -534,17 +527,10 @@
             "type": "string"
           },
           {
-            "name": "manager_id",
-            "in": "query",
-            "description": "manager_id",
-            "required": true,
-            "type": "number"
-          },
-          {
             "name": "search_string",
             "in": "query",
             "description": "search_string",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {

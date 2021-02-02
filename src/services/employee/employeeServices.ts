@@ -19,11 +19,11 @@ export class EmployeeServices {
     /*
     * function to get list of team members
     */
-    public async getListOfTeamMemberByManagerId(params:any) {
+    public async getListOfTeamMemberByManagerId(params:any, user: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
         return await managerTeamMemberModel.findAndCountAll({
-            where: { manager_id: params.manager_id},
+            where: { manager_id: user.uid},
             include: [
                 {
                     model: employeeModel, 
@@ -52,12 +52,12 @@ export class EmployeeServices {
     /*
     * function to get details of employee
     */
-   public async searchTeamMember(params:any) {
+   public async searchTeamMember(params:any, user: any) {
     let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
     managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
     return await managerTeamMemberModel.findAndCountAll({
-        where: { manager_id: params.manager_id},
+        where: { manager_id: user.uid},
         include: [
             {
                 model: employeeModel, 
