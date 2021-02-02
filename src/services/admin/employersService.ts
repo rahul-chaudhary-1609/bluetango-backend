@@ -81,6 +81,10 @@ export class EmployersService {
             whereCond = {
                 industry_type: params.industry_type
             }
+        } else if(params.searchKey) {
+            whereCond = {
+                name: { [Op.iLike] : `%${params.searchKey}%`}
+            }
         }
 
         return await employersModel.findAndCountAll({
@@ -90,6 +94,41 @@ export class EmployersService {
             order: [["createdAt", "DESC"]]
         })
 
+    }
+
+    /**
+    * change employers status: activate/deactivate/delete
+    @param {} params pass all parameters from request
+    */
+    public async changeEmployerStatus (params: any) {
+        let query = {where:{id: params.employerId}};
+        let accountExists = await employersModel.findOne(query);
+        if(accountExists) {
+            let updates = <any>{};
+            if(params.actionType == "activate") {
+                if(accountExists && accountExists.status == 1)
+                throw new Error(constants.MESSAGES.already_activated);
+
+                updates.status = 1;
+            } else if(params.actionType == "deactivate") {
+                if(accountExists && accountExists.status == 0)
+                throw new Error(constants.MESSAGES.already_deactivated);
+
+                updates.status = 0;
+            } else if(params.actionType == "delete") {
+                if(accountExists && accountExists.status == 2)
+                throw new Error(constants.MESSAGES.already_deleted);
+
+                updates.status = 2;
+            } else {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }
+
+            await employersModel.update(updates, query);
+
+        } else {
+            throw new Error(constants.MESSAGES.invalid_employer);
+        }
     }
 
 }

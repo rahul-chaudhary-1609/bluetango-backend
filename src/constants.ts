@@ -43,7 +43,13 @@ export const MESSAGES = {
   reset_pass_success: "Password reset successfully",
   invalid_email_token: "",
   success: 'Success',
-  invalid_department: "Invalid department is provided"
+  invalid_department: "Invalid department is provided",
+  invalid_employer: "Invalid employer id",
+  invalid_action: "Invalid action request",
+  already_activated: "Already activated",
+  already_deactivated: "Already deactivated",
+  already_deleted: "Already deleted",
+  status_updated: "Status updated successfully"
 }
 
 export const code = {
