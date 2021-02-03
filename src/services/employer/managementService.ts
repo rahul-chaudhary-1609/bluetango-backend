@@ -4,6 +4,7 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 const Sequelize = require('sequelize');
+import {managerTeamMemberModel} from "../../models/managerTeamMember";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -19,14 +20,6 @@ export class EmployeeManagement {
             if(!departmentExists)
             throw new Error(constants.MESSAGES.invalid_department);
         }
-        // var isEmail = await appUtils.CheckEmail(params);
-        // const qry = <any>{ where: {} };
-        // if (isEmail) {
-        //     qry.where = { 
-        //         email: params.username,
-        //         status: {[Op.in]: [0,1]}
-        //     };
-        // }
         var existingUser; 
         if (params.id) {
             existingUser = await employeeModel.findOne({
@@ -67,7 +60,18 @@ export class EmployeeManagement {
             }
           } else {
             params.password = await appUtils.bcryptPassword(params.password);
-            return await employeeModel.create(params);
+            params.current_date_of_joining = await helperFunction.getCurrentDate();
+            let employeeRes = await employeeModel.create(params);
+            if (params.is_manager== 0 ||params.is_manager== '0') {
+                let teamMemberObj = <any> {
+                    team_member_id: employeeRes.id,
+                    manager_id: user.uid
+                }
+
+               await managerTeamMemberModel.create(teamMemberObj);
+            }
+
+            return employeeRes;
           }
 
         } else {

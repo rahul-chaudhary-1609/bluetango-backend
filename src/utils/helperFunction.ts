@@ -93,3 +93,7 @@ export const pagination = async (page, page_size) => {
 export const convertPromiseToObject = async (promise) => {
     return JSON.parse(JSON.stringify(promise));
 }
+
+export const getCurrentDate = async ()=> {
+    return new Date().toISOString().split('T')[0];
+}
