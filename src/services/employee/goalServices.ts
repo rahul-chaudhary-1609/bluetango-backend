@@ -9,6 +9,7 @@ import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalModel } from  "../../models/teamGoal"
+import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { promises } from "fs";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -17,35 +18,31 @@ export class GoalServices {
     constructor() { }
 
     /*
-    * function to get list of team members
+    * function to add goal
     */
     public async addGoal(params:any, user: any) {
-        console.log(params);
-        for (let i=0; i<params.goal_details; i++) {
+        for (let i=0; i<params.length; i++) {
             let teamGoalObj = <any>{
                 manager_id: user.uid,
-                title: (params.title?params.title: ''),
-                description: (params.description?params.description: ''),
+                title: (params[i].title?params[i].title: ''),
+                description: (params[i].description?params[i].description: ''),
+                start_date: params[i].start_date,
+                end_date: params[i].end_date,
+                select_measure: params[i].select_measure,
+                enter_measure: params[i].enter_measure
             }
-            teamGoalModel.create()
-        }
-        return params;
-        // let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
-        // managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-        // return await managerTeamMemberModel.findAndCountAll({
-        //     where: { manager_id: user.uid},
-        //     include: [
-        //         {
-        //             model: employeeModel, 
-        //             required: false,
-        //             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
-        //         }
-        //     ],
-        //     limit: limit,
-        //     offset: offset,
-        //     order: [["createdAt", "DESC"]]
+            let teamGoaRes = await teamGoalModel.create(teamGoalObj);
+            for (let j=0; j< (params[i].employee_ids).length; j++) {
 
-        // })
+                let teamGoalAssignObj = <any> {
+                    goal_id: teamGoaRes.id,
+                    employee_id: params[i].employee_ids[j]
+                }
+
+                await teamGoalAssignModel.create(teamGoalAssignObj);
+            }
+        }
+        return true;
     }
 
     

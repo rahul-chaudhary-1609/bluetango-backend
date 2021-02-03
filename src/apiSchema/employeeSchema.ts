@@ -72,7 +72,8 @@ export const searchTeamMember = Joi.object({
   search_string: Joi.string().required()
 })
 
-let addGoalObj = Joi.object().keys({
+export const editGoal = Joi.object({
+  id: Joi.string().required(),
   title: Joi.string().required(),
   description: Joi.string().required(),
   start_date: Joi.string().required(),
@@ -85,3 +86,14 @@ let addGoalObj = Joi.object().keys({
 export const addGoal = Joi.object({
   goal_details:Joi.string().required()
 });
+
+// export const addGoal = Joi.array().items(Joi.object().keys({
+//     title: Joi.string().required(),
+//     description: Joi.string().required(),
+//     start_date: Joi.string().required(),
+//     end_date: Joi.string().required(),
+//     select_measure: Joi.string().required(),
+//     enter_measure: Joi.string().required(),
+//     employee_ids: Joi.string().required(),
+//   })
+// )

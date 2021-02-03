@@ -691,7 +691,7 @@
           {
             "name": "date_of_birth",
             "in": "formData",
-            "description": "date_of_birth",
+            "description": "date_of_birth: YYYY-MM-DD",
             "required": false,
             "type": "string"
           },
@@ -718,7 +718,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "Employee update profile",
+        "description": "Add goal",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -733,11 +733,93 @@
           {
             "name": "goal_details",
             "in": "formData",
-            "description": "goal_details {title:'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}",
+            "description": "goal_details change all single quotes to double quotes and give perfect json {'title':'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}",
             "required": false,
             "type": "array",
             "items": {
               "type": "object"
+            }
+          }
+
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/editGoal": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee update profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "title",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "start_date",
+            "in": "formData",
+            "description": "start_date: YYYY-MM-DD HH:MM:SS",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "end_date",
+            "in": "formData",
+            "description": "end_date: YYYY-MM-DD HH:MM:SS",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "select_measure",
+            "in": "formData",
+            "description": "select_measure, 1=>Amount, 2=> Quantity",
+            "required": true,
+            "type": "number",
+            "enum":[1,2]
+          },
+          {
+            "name": "enter_measure",
+            "in": "formData",
+            "description": "enter_measure",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_ids",
+            "in": "formData",
+            "description": "employee_ids",
+            "required": true,
+            "type": "array",
+            "items":{
+              "type":"number"
             }
           }
 

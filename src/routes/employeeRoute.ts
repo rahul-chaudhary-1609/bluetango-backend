@@ -45,8 +45,9 @@ employeeRoute.get("/viewDetailsEmployee", validators.trimmer, tokenValidator.val
 /* search team meber for manager */
 employeeRoute.get("/searchTeamMember", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.searchTeamMember), employeeController.searchTeamMember);
 
-/* search team meber for manager */
-employeeRoute.post("/addGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addGoal), goalController.addGoal);
+/* add goal for manager */
+employeeRoute.post("/addGoal", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addGoal), goalController.addGoal);
+
 
 
 export = employeeRoute;
