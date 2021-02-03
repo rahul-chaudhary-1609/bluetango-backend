@@ -126,8 +126,8 @@ export const addEditEmployers = Joi.object ({
   }),
   country_code: Joi.string().required(),
   phone_number: Joi.string().required(),
-  status: Joi.string().required(),
-  industry_type: Joi.string().required()
+  industry_type: Joi.string().required(),
+  address: Joi.string().required(),
 
 })
 

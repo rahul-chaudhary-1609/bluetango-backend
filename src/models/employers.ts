@@ -29,7 +29,7 @@ export const employersModel: any = sequelize.define("employers", {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    status: {//applicable for all type of users
+    status: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,

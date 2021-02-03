@@ -22,7 +22,7 @@ export const MESSAGES = {
   reset_password_success :"password reset successfully",
   password_change_success: "Password changed successfully",
   model_name_required: "please pass model name also",
-  invalid_credentials: "An account with given info does not exist",
+  invalid_credentials: "An account with given email does not exist",
   user_profile_success: "User Profile Success",
   exception_occured: "Something went wrong! please try again",
   bad_request: "Getting error, due to bad request",
