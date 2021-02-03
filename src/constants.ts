@@ -38,6 +38,7 @@ export const MESSAGES = {
   file_upload_error: "Error in uploding file/files",
   file_upload_success: "File has been uploaded successfully",
   action_success: "Status is updated successfully",
+  industry_list: "Employers industry type list fetched successfully",
   employers_list: 'Employers lists',
   forget_pass_otp: "Password reset link has been sent to your registered email id",
   reset_pass_success: "Password reset successfully",

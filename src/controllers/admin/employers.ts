@@ -11,6 +11,21 @@ export class EmployersController {
     constructor() { }
 
     /**
+    * get employer industry type list
+    * @param req :[get data]
+    * @param res : [data]
+    */
+    public async getIndustryTypeList(req: any, res: any) {
+        try {
+            const responseFromService = await employersService.getIndustryTypeList(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.industry_list);
+            
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
     * add edit employer
     * @param req :[Body data]
     * @param res : [employers data object]
@@ -35,7 +50,6 @@ export class EmployersController {
     */
     public async getEmployersList(req: any, res: any) {
         try {
-            console.log(req.user);
             const responseFromService = await employersService.getEmployersList(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
             

@@ -34,10 +34,13 @@ adminRoute.get("/logout", tokenValidator.validateAdminToken, loginController.log
 adminRoute.post("/addEditEmployers", joiSchemaValidation.validateBody(adminSchema.addEditEmployers), tokenValidator.validateAdminToken, employersController.addEditEmployers);
 
 /* get employers list route for employers */
+adminRoute.get("/getIndustryTypeList", tokenValidator.validateAdminToken, employersController.getIndustryTypeList);
+
+/* get employers list route for employers */
 adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), tokenValidator.validateAdminToken, employersController.getEmployersList);
 
 /* change employer status activate/deactivate/delete */
-adminRoute.get("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
+adminRoute.put("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
 
 
 export = adminRoute;

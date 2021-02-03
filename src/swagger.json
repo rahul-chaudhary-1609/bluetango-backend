@@ -231,6 +231,13 @@
             "type": "string"
           },
           {
+            "name": "address",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "password",
             "in": "formData",
             "description": "password",
@@ -252,16 +259,30 @@
             "type": "string"
           },
           {
-            "name": "status",
-            "in": "formData",
-            "description": "status, 0=>inactive,1=>active,2=>deleted",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "industry_type",
             "in": "formData",
             "description": "industry type",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getIndustryTypeList": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get employer industry type list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
           }
@@ -831,6 +852,13 @@
             "description": "employee code",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "is_manager",
+            "in": "formData",
+            "description": "0=>notManager,1=>manager",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}
