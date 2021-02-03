@@ -7,11 +7,13 @@ import { upload } from "../middleware/multerParser";
 
 import { AuthController } from "../controllers/employee/authController";
 import { EmployeeController } from "../controllers/employee/employeeController";
+import { GoalController } from "../controllers/employee/goalController";
 
 const employeeRoute = express.Router();
 
 const authController = new AuthController();
 const employeeController = new EmployeeController();
+const goalController = new GoalController();
 
 /* login route for employee login */
 employeeRoute.post("/login",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
@@ -42,6 +44,9 @@ employeeRoute.get("/viewDetailsEmployee", validators.trimmer, tokenValidator.val
 
 /* search team meber for manager */
 employeeRoute.get("/searchTeamMember", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.searchTeamMember), employeeController.searchTeamMember);
+
+/* search team meber for manager */
+employeeRoute.post("/addGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addGoal), goalController.addGoal);
 
 
 export = employeeRoute;

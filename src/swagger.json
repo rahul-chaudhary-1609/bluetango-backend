@@ -692,6 +692,38 @@
         "responses": {}
       }
     },
+    "/employee/addGoal": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee update profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "goal_details",
+            "in": "formData",
+            "description": "goal_details {title:'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [
