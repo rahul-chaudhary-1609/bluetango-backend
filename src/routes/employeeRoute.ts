@@ -48,6 +48,8 @@ employeeRoute.get("/searchTeamMember", validators.trimmer, tokenValidator.valida
 /* add goal for manager */
 employeeRoute.post("/addGoal", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addGoal), goalController.addGoal);
 
+/* edit goal for manager */
+employeeRoute.post("/editGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.editGoal), goalController.editGoal);
 
 
 export = employeeRoute;

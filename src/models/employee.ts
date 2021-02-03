@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 
 import { sequelize } from "../connection";
 
@@ -23,7 +23,7 @@ export const employeeModel: any = sequelize.define("employee", {
     },
     current_date_of_joining: {
         type: DataTypes.DATE,
-        allowNull: true,
+        allowNull: true
     },
     prev_employer: {
         type: DataTypes.STRING,

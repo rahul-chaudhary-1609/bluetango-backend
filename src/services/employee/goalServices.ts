@@ -45,6 +45,38 @@ export class GoalServices {
         return true;
     }
 
-    
+    /*
+    * function to edit goal
+    */
+    public async editGoal(params:any, user: any) {
+        let teamGoalObj = <any>{
+            manager_id: user.uid,
+            title: (params.title?params.title: ''),
+            description: (params.description?params.description: ''),
+            start_date: (params.start_date?params.start_date: ''),
+            end_date: (params.end_date?params.end_date: ''),
+            select_measure: (params.select_measure?params.select_measure: ''),
+            enter_measure: (params.enter_measure?params.enter_measure: '')
+        }
+        let teamGoalRes = await teamGoalModel.update(teamGoalObj,{
+                where: { id: params.id, manager_id: user.uid}
+            });
+        if (teamGoalRes) {
+            await teamGoalAssignModel.destroy({
+                where: { goal_id: params.id}
+            });
+
+            for (let j=0; j< (params.employee_ids).length; j++) {
+                let teamGoalAssignObj = <any> {
+                    goal_id: params.id,
+                    employee_id: params.employee_ids[j]
+                }
+
+                await teamGoalAssignModel.create(teamGoalAssignObj);
+                
+            }
+        }
+
+    }
 
 }

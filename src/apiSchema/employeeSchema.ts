@@ -83,8 +83,22 @@ export const editGoal = Joi.object({
   employee_ids: Joi.string().required(),
 });
 
-export const addGoal = Joi.object({
-  goal_details:Joi.string().required()
+// export const addGoal = Joi.object({
+//   goal_details:Joi.string().required()
+// });
+
+export const addGoal = Joi.object().keys({
+  goal_details: Joi.array().items(
+      Joi.object({
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        start_date: Joi.string().required(),
+        end_date: Joi.string().required(),
+        select_measure: Joi.string().required(),
+        enter_measure: Joi.string().required(),
+        employee_ids: Joi.array().items(Joi.number())
+      })
+  )
 });
 
 // export const addGoal = Joi.array().items(Joi.object().keys({

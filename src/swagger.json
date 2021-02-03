@@ -733,7 +733,7 @@
           {
             "name": "goal_details",
             "in": "formData",
-            "description": "goal_details change all single quotes to double quotes and give perfect json {'title':'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}",
+            "description": "goal_details change all single quotes to double quotes and give perfect json, This API will work postman not swagger [{'title':'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}]",
             "required": false,
             "type": "array",
             "items": {
@@ -941,6 +941,41 @@
             "description": "0=>notManager,1=>manager",
             "required": true,
             "type": "number"
+          },
+          {
+            "name": "prev_employer",
+            "in": "formData",
+            "description": "prev_employer",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prev_department",
+            "in": "formData",
+            "description": "prev_department",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prev_designation",
+            "in": "formData",
+            "description": "prev_designation",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prev_date_of_joining",
+            "in": "formData",
+            "description": "prev_date_of_joining YYYY-MM-DD",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "prev_exit",
+            "in": "formData",
+            "description": "prev_exit YYYY-MM-DD",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}
