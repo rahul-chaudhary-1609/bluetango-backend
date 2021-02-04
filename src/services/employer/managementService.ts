@@ -59,13 +59,21 @@ export class EmployeeManagement {
                 return false;
             }
           } else {
+
+            // if is_manager=0 then manager_id must be required
+            if (params.is_manager== 0 ||params.is_manager== '0') {
+                console.log(params.manager_id, _.isEmpty(params.manager_id),  typeof(params.manager_id) == 'undefined' )
+                if (typeof(params.manager_id) == 'undefined') {
+                    throw new Error(constants.MESSAGES.manager_id_required);
+                }
+            }
+
             params.password = await appUtils.bcryptPassword(params.password);
-            params.current_date_of_joining = await helperFunction.getCurrentDate();
             let employeeRes = await employeeModel.create(params);
             if (params.is_manager== 0 ||params.is_manager== '0') {
                 let teamMemberObj = <any> {
                     team_member_id: employeeRes.id,
-                    manager_id: user.uid
+                    manager_id: params.manager_id
                 }
 
                await managerTeamMemberModel.create(teamMemberObj);

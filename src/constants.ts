@@ -50,7 +50,8 @@ export const MESSAGES = {
   already_activated: "Already activated",
   already_deactivated: "Already deactivated",
   already_deleted: "Already deleted",
-  status_updated: "Status updated successfully"
+  status_updated: "Status updated successfully",
+  manager_id_required: 'Manager id is required'
 }
 
 export const code = {

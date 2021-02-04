@@ -880,6 +880,13 @@
             "type": "number"
           },
           {
+            "name": "manager_id",
+            "in": "formData",
+            "description": "manager_id, If is_manager=0 then manger_id will pass",
+            "required": false,
+            "type": "number"
+          },
+          {
             "name": "name",
             "in": "formData",
             "description": "name",
@@ -925,6 +932,13 @@
             "name": "current_designation",
             "in": "formData",
             "description": "designation",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "current_date_of_joining",
+            "in": "formData",
+            "description": "current_date_of_joining",
             "required": true,
             "type": "string"
           },
