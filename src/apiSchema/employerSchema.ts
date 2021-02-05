@@ -59,14 +59,13 @@ export const addEditEmployee = Joi.object ({
     current_department_id: Joi.string().required(), 
     current_designation: Joi.string().required(),
     employee_code: Joi.string().required(),
-    is_manager: Joi.string().required(),
     prev_employer: Joi.string().required(),
     prev_department: Joi.string().required(),
     prev_designation: Joi.string().required(),
     prev_date_of_joining: Joi.string().required(),
     prev_exit: Joi.string().required(),
     current_date_of_joining: Joi.string().required(),
-    manager_id: Joi.string().optional(),
+    manager_id: Joi.string().required(),
   
   })
   

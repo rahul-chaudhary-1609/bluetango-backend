@@ -51,7 +51,8 @@ export const MESSAGES = {
   already_deactivated: "Already deactivated",
   already_deleted: "Already deleted",
   status_updated: "Status updated successfully",
-  manager_id_required: 'Manager id is required'
+  manager_id_required: 'Manager id is required',
+  goal_management_check: "Goal management only for manager",
 }
 
 export const code = {

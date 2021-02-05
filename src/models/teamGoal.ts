@@ -10,7 +10,7 @@ export const teamGoalModel: any = sequelize.define("team_goal", {
         autoIncrement: true
     },
     manager_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     title: {

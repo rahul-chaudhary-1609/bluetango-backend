@@ -69,7 +69,9 @@ export const viewDetailsEmployee = Joi.object({
 })
 
 export const searchTeamMember = Joi.object({
-  search_string: Joi.string().required()
+  search_string: Joi.string().required(),
+  limit: Joi.string().optional(),
+  offset: Joi.string().optional()
 })
 
 export const editGoal = Joi.object({
