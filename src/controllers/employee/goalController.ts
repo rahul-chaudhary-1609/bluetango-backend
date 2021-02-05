@@ -41,13 +41,27 @@ export class GoalController {
     }
 
     /**
-    * view goal
+    * view goal as manager
     * @param req :[]
     * @param res 
     */
-    public async viewGoal(req: any, res: any, next: any) {
+    public async viewGoalAsManager(req: any, res: any, next: any) {
         try {
-            const responseFromService = await goalServices.viewGoal(req.query, req.user);
+            const responseFromService = await goalServices.viewGoalAsManager(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
+    * view goal as employee
+    * @param req :[]
+    * @param res 
+    */
+    public async viewGoalAsEmployee(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.viewGoalAsEmployee(req.query, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
