@@ -22,14 +22,15 @@ export const trimmer = (req, res, next) => {
         req.body = temp;
     }
 
-    if (req.method == 'GET') {
+    if (req.method == 'GET' || req.method == 'DELETE' ) {
         const temp = {};
         for (let [key, value] of Object.entries(req.query)) {
             key = (<any>key).trim();
+            console.log(key, '--------------------', value);
             if (isNaN(<any>value)) {
                 temp[key] = (<any>value).trim();
             } else {
-                temp[key] = (<any>value).toString();
+                temp[key] = ((<any>value).toString()).trim();
             }
             
         }

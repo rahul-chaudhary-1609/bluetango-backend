@@ -51,5 +51,10 @@ employeeRoute.post("/addGoal", tokenValidator.validateEmployeeToken, joiSchemaVa
 /* edit goal for manager */
 employeeRoute.post("/editGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.editGoal), goalController.editGoal);
 
+/* view goal for manager */
+employeeRoute.get("/viewGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.getListOfTeamMemberByManagerId), goalController.viewGoal);
+
+/* delete goal for manager */
+employeeRoute.delete("/deleteGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), goalController.deleteGoal);
 
 export = employeeRoute;

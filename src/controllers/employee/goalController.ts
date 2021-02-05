@@ -40,5 +40,33 @@ export class GoalController {
         }
     }
 
+    /**
+    * view goal
+    * @param req :[]
+    * @param res 
+    */
+    public async viewGoal(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.viewGoal(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
+    * delete goal
+    * @param req :[]
+    * @param res 
+    */
+    public async deleteGoal(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.deleteGoal(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
 }

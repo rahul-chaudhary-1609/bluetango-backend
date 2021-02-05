@@ -827,6 +827,69 @@
         "responses": {}
       }
     },
+    "/employee/viewGoal": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/deleteGoal": {
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [
@@ -883,7 +946,7 @@
             "name": "manager_id",
             "in": "formData",
             "description": "manager_id, If is_manager=0 then manger_id will pass",
-            "required": false,
+            "required": true,
             "type": "number"
           },
           {
@@ -948,13 +1011,6 @@
             "description": "employee code",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "is_manager",
-            "in": "formData",
-            "description": "0=>notManager,1=>manager",
-            "required": true,
-            "type": "number"
           },
           {
             "name": "prev_employer",
