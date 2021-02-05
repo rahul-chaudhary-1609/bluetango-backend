@@ -16,10 +16,14 @@ export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
     employee_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+    },
+    complete_measure: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     }
 },
     {
         tableName: "team_goal_assign"
     }
 );
-teamGoalAssignModel.sync({ alter: true });
+// teamGoalAssignModel.sync({ alter: true });

@@ -827,7 +827,49 @@
         "responses": {}
       }
     },
-    "/employee/viewGoal": {
+    "/employee/viewGoalAsManager": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+           {
+            "name": "search_string",
+            "in": "query",
+            "description": "search_string",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/viewGoalAsEmployee": {
       "get": {
         "tags": [
           "Employee"
