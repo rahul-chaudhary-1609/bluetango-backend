@@ -20,6 +20,7 @@ export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
     complete_measure: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0
     }
 },
     {
