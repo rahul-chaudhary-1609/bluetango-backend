@@ -869,6 +869,77 @@
         "responses": {}
       }
     },
+    "/employee/deleteGoal": {
+      "delete": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/submitGoalAsEmployee": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "team_goal_assign_id",
+            "in": "formData",
+            "description": "team_goal_assign_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "enter_measure",
+            "in": "formData",
+            "description": "enter_measure",
+            "required": true,
+            "type": "number"
+          },
+          {
+              "name": "description",
+              "in": "formData",
+              "description": "description",
+              "required": true,
+              "type": "string"
+          }
+          
+        ],
+        "responses": {}
+      }
+    },
     "/employee/viewGoalAsEmployee": {
       "get": {
         "tags": [
@@ -904,34 +975,7 @@
         "responses": {}
       }
     },
-    "/employee/deleteGoal": {
-      "delete": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "view goal",
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Enter jwt token for authentication",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "description": "id",
-            "required": true,
-            "type": "number"
-          }
-        ],
-        "responses": {}
-      }
-    },
+    
     "/employer/login": {
       "post": {
         "tags": [

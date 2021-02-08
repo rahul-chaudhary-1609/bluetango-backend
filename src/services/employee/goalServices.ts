@@ -4,14 +4,10 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel } from  "../../models/employee"
-import { adminModel } from "../../models/admin";
-import { employersModel } from  "../../models/employers"
-import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
-import { promises } from "fs";
-import { Model } from "sequelize/types";
+import { teamGoalAssignCompletionByEmployee } from  "../../models/teamGoalAssignCompletionByEmployee"
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -186,4 +182,18 @@ export class GoalServices {
         
     }
 
+
+     /*
+    * function to submit goal for employee
+    */
+    public async submitGoalAsEmployee(params: any, user: any) {
+        let createObj = <any> {
+            team_goal_assign_id: params.team_goal_assign_id,
+            description: params.description,
+            complete_measure: params.complete_measure
+        };
+        console.log(createObj);
+        return await teamGoalAssignCompletionByEmployee.create(createObj);
+        
+    }
 }

@@ -60,4 +60,7 @@ employeeRoute.get("/viewGoalAsEmployee", validators.trimmer, tokenValidator.vali
 /* delete goal for manager */
 employeeRoute.delete("/deleteGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), goalController.deleteGoal);
 
+/* submit goal for employee */
+employeeRoute.post("/submitGoalAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.submitGoalAsEmployee), goalController.submitGoalAsEmployee);
+
 export = employeeRoute;

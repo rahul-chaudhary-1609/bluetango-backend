@@ -82,5 +82,18 @@ export class GoalController {
         }
     }
 
+    /**
+    * submitGoalAsEmployee
+    * @param req :[]
+    * @param res 
+    */
+    public async submitGoalAsEmployee(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.submitGoalAsEmployee(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }
