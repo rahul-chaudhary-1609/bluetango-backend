@@ -115,7 +115,8 @@ export const addGoal = Joi.object().keys({
 });
 
 export const submitGoalAsEmployee = Joi.object({
-  enter_measure: Joi.string().required(),
+  complete_measure: Joi.string().required(),
   description: Joi.string().required(),
-  team_goal_assign_id: Joi.string().required()
+  team_goal_assign_id: Joi.string().required(),
+  goal_id: Joi.string().required()
 });

@@ -89,7 +89,7 @@ export class GoalController {
     */
     public async submitGoalAsEmployee(req: any, res: any, next: any) {
         try {
-            const responseFromService = await goalServices.submitGoalAsEmployee(req.query, req.user);
+            const responseFromService = await goalServices.submitGoalAsEmployee(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

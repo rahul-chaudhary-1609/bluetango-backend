@@ -143,6 +143,7 @@ export class GoalServices {
         teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
         teamGoalModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+        teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
 
         return await teamGoalAssignModel.findAndCountAll({
             where: {employee_id: user.uid },
@@ -157,6 +158,10 @@ export class GoalServices {
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
+                },
+                {
+                    model:teamGoalAssignCompletionByEmployee,
+                    required: false
                 }
             ],
             limit: limit,
@@ -187,13 +192,30 @@ export class GoalServices {
     * function to submit goal for employee
     */
     public async submitGoalAsEmployee(params: any, user: any) {
-        let createObj = <any> {
-            team_goal_assign_id: params.team_goal_assign_id,
-            description: params.description,
-            complete_measure: params.complete_measure
-        };
-        console.log(createObj);
-        return await teamGoalAssignCompletionByEmployee.create(createObj);
+        let getGoalData = await helperFunction.convertPromiseToObject( await teamGoalModel.findOne({
+            where: { id: params.goal_id}
+        }) );
+
+        let compeleteData = await helperFunction.convertPromiseToObject( await teamGoalAssignCompletionByEmployee.findAll({
+                where: { goal_id: params.goal_id },
+                 attributes: [ [Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
+                ],
+            }) );
+
+         console.log(getGoalData, '..................', compeleteData);
+
+         if (getGoalData.enter_measure >= ( parseInt(compeleteData[0].total_complete)+ parseInt(params.complete_measure) ) ) {
+            let createObj = <any> {
+                team_goal_assign_id: params.team_goal_assign_id,
+                goal_id: params.goal_id,
+                description: params.description,
+                complete_measure: params.complete_measure
+            };
+            return await teamGoalAssignCompletionByEmployee.create(createObj);
+         } else {
+            throw new Error(constants.MESSAGES.invalid_measure);
+         }
+       
         
     }
 }

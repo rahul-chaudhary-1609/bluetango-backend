@@ -915,6 +915,13 @@
             "type": "string"
           },
           {
+            "name": "goal_id",
+            "in": "formData",
+            "description": "goal_id",
+            "required": true,
+            "type": "number"
+          },
+          {
             "name": "team_goal_assign_id",
             "in": "formData",
             "description": "team_goal_assign_id",
@@ -922,9 +929,9 @@
             "type": "number"
           },
           {
-            "name": "enter_measure",
+            "name": "complete_measure",
             "in": "formData",
-            "description": "enter_measure",
+            "description": "complete_measure",
             "required": true,
             "type": "number"
           },

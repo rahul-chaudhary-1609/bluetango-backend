@@ -9,12 +9,16 @@ export const teamGoalAssignCompletionByEmployee: any = sequelize.define("team_go
         primaryKey: true,
         autoIncrement: true
     },
+    goal_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     team_goal_assign_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
     description: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     complete_measure: {

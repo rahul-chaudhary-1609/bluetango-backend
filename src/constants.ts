@@ -54,6 +54,7 @@ export const MESSAGES = {
   status_updated: "Status updated successfully",
   manager_id_required: 'Manager id is required',
   goal_management_check: "Goal management only for manager",
+  invalid_measure: 'Invalid measure value in request'
 }
 
 export const code = {
