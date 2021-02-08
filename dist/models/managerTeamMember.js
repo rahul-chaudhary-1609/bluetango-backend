@@ -21,5 +21,5 @@ exports.managerTeamMemberModel = connection_1.sequelize.define("manager_team_mem
 }, {
     tableName: "manager_team_member"
 });
-exports.managerTeamMemberModel.sync({ alter: true });
+exports.managerTeamMemberModel.sync({ alter: false });
 //# sourceMappingURL=managerTeamMember.js.map

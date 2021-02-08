@@ -49,5 +49,5 @@ exports.adminModel = connection_1.sequelize.define("admins", {
 }, {
     tableName: "admins"
 });
-exports.adminModel.sync({ alter: true });
+exports.adminModel.sync({ alter: false });
 //# sourceMappingURL=admin.js.map

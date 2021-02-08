@@ -17,5 +17,5 @@ exports.departmentModel = connection_1.sequelize.define("department", {
 }, {
     tableName: "department"
 });
-exports.departmentModel.sync({ alter: true });
+exports.departmentModel.sync({ alter: false });
 //# sourceMappingURL=department.js.map

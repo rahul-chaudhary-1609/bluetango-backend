@@ -42,5 +42,5 @@ exports.teamGoalModel = connection_1.sequelize.define("team_goal", {
 }, {
     tableName: "team_goal"
 });
-exports.teamGoalModel.sync({ alter: true });
+exports.teamGoalModel.sync({ alter: false });
 //# sourceMappingURL=teamGoal.js.map

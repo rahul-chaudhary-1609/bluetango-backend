@@ -50,4 +50,4 @@ export const adminModel: any = sequelize.define("admins", {
         tableName: "admins"
     }
 );
-adminModel.sync({ alter: true });
+adminModel.sync({ alter: false });

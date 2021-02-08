@@ -17,5 +17,5 @@ exports.industryTypeModel = connection_1.sequelize.define("industry_type", {
 }, {
     tableName: "industry_type"
 });
-exports.industryTypeModel.sync({ alter: true });
+exports.industryTypeModel.sync({ alter: false });
 //# sourceMappingURL=industryType.js.map

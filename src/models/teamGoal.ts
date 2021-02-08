@@ -43,4 +43,4 @@ export const teamGoalModel: any = sequelize.define("team_goal", {
         tableName: "team_goal"
     }
 );
-teamGoalModel.sync({ alter: true });
+teamGoalModel.sync({ alter: false });
