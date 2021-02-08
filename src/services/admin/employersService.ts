@@ -37,7 +37,10 @@ export class EmployersService {
         if (params.id) {
             existingUser = await employersModel.findOne({
                 where: {
-                    email: params.email,
+                    [Op.or]:[
+                        {email: params.email},
+                        {phone_number: params.phone_number},
+                    ],
                     status: {
                         [Op.in]: [0,1]
                     },
@@ -49,14 +52,16 @@ export class EmployersService {
         } else {
             existingUser = await employersModel.findOne({
                 where: {
-                    email: params.email,
+                    [Op.or]:[
+                        {email: params.email},
+                        {phone_number: params.phone_number},
+                    ],
                     status: {
                         [Op.in]: [0,1]
                     }
                 }
             });
         }       
-
         params.admin_id = user.uid;
         if (_.isEmpty(existingUser)) {
           if (params.id) {
@@ -77,7 +82,7 @@ export class EmployersService {
           }
 
         } else {
-            throw new Error(constants.MESSAGES.email_already_registered);
+            throw new Error(constants.MESSAGES.email_phone_already_registered);
         }
     }
 

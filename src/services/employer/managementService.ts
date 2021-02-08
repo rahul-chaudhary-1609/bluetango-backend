@@ -33,7 +33,10 @@ export class EmployeeManagement {
         if (params.id) {
             existingUser = await employeeModel.findOne({
                 where: {
-                    email: params.email,
+                    [Op.or]:[
+                        {email: params.email},
+                        {phone_number: params.phone_number},
+                    ],
                     status: {
                         [Op.in]: [0,1]
                     },
@@ -45,7 +48,10 @@ export class EmployeeManagement {
         } else {
             existingUser = await employeeModel.findOne({
                 where: {
-                    email: params.email,
+                    [Op.or]:[
+                        {email: params.email},
+                        {phone_number: params.phone_number},
+                    ],
                     status: {
                         [Op.in]: [0,1]
                     }
@@ -91,7 +97,7 @@ export class EmployeeManagement {
           }
 
         } else {
-            throw new Error(constants.MESSAGES.email_already_registered);
+            throw new Error(constants.MESSAGES.email_phone_already_registered);
         }
     }
 
