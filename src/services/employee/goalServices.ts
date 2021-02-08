@@ -97,7 +97,7 @@ export class GoalServices {
     /*
     * function to view goal
     */
-    public async viewGoal (params: any, user: any) {
+    public async viewGoalAsManager (params: any, user: any) {
         console.log(params);
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
@@ -105,6 +105,12 @@ export class GoalServices {
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
         teamGoalModel.hasMany(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
 
+        if (params.search_string) {
+            var whereCondition = <any> {
+               name: { [Op.iLike]: `%${params.search_string}%` }
+            }
+        }
+       
         return await teamGoalModel.findAndCountAll({
             where: {manager_id: user.uid },
             include: [
@@ -115,6 +121,39 @@ export class GoalServices {
                 },
                 {
                     model: teamGoalAssignModel,
+                    include: [
+                        {
+                            model: employeeModel,
+                            where: whereCondition,
+                            required: true,
+                            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        }
+                    ]
+                }
+            ],
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
+        })
+    }
+
+     /*
+    * function to view goal as employee
+    */
+    public async viewGoalAsEmployee(params: any, user: any) {
+        console.log(params);
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
+
+        teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        teamGoalModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+
+        return await teamGoalAssignModel.findAndCountAll({
+            where: {employee_id: user.uid },
+            include: [
+                {
+                    model: teamGoalModel,
+                    required: true,
                     include: [
                         {
                             model: employeeModel,

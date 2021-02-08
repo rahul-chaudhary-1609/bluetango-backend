@@ -64,12 +64,23 @@ export const getListOfTeamMemberByManagerId = Joi.object({
   offset: Joi.string().optional()
 })
 
+export const limitOffsetValidate = Joi.object({
+  limit: Joi.string().optional(),
+  offset: Joi.string().optional()
+})
+
 export const viewDetailsEmployee = Joi.object({
   id: Joi.string().required()
 })
 
 export const searchTeamMember = Joi.object({
   search_string: Joi.string().required(),
+  limit: Joi.string().optional(),
+  offset: Joi.string().optional()
+})
+
+export const viewGoalAsManager = Joi.object({
+  search_string: Joi.string().optional(),
   limit: Joi.string().optional(),
   offset: Joi.string().optional()
 })
