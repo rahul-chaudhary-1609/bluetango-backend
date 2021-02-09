@@ -27,13 +27,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoalServices = void 0;
+const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
 const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
+const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class GoalServices {
@@ -96,14 +101,27 @@ class GoalServices {
                 });
                 if (teamGoalRes) {
                     yield teamGoalAssign_1.teamGoalAssignModel.destroy({
-                        where: { goal_id: params.id }
+                        where: {
+                            goal_id: params.id,
+                            employee_id: {
+                                [Op.notIn]: params.employee_ids
+                            }
+                        }
                     });
                     for (let j = 0; j < (params.employee_ids).length; j++) {
-                        let teamGoalAssignObj = {
-                            goal_id: params.id,
-                            employee_id: params.employee_ids[j]
-                        };
-                        yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                        let goalAssignData = yield teamGoalAssign_1.teamGoalAssignModel.findOne({
+                            where: {
+                                goal_id: params.id,
+                                employee_id: params.employee_ids[j]
+                            }
+                        });
+                        if (lodash_1.default.isEmpty(goalAssignData)) {
+                            let teamGoalAssignObj = {
+                                goal_id: params.id,
+                                employee_id: params.employee_ids[j]
+                            };
+                            yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                        }
                     }
                 }
             }
@@ -163,6 +181,7 @@ class GoalServices {
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
             return yield teamGoalAssign_1.teamGoalAssignModel.findAndCountAll({
                 where: { employee_id: user.uid },
                 include: [
@@ -176,6 +195,10 @@ class GoalServices {
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
                         ]
+                    },
+                    {
+                        model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee,
+                        required: false
                     }
                 ],
                 limit: limit,
@@ -199,6 +222,33 @@ class GoalServices {
             }
             else {
                 throw new Error(constants.MESSAGES.bad_request);
+            }
+        });
+    }
+    /*
+   * function to submit goal for employee
+   */
+    submitGoalAsEmployee(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getGoalData = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+                where: { id: params.goal_id }
+            }));
+            let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee.findAll({
+                where: { team_goal_assign_id: params.team_goal_assign_id },
+                attributes: [[Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
+                ],
+            }));
+            if (getGoalData.enter_measure >= (parseInt(compeleteData[0].total_complete) + parseInt(params.complete_measure))) {
+                let createObj = {
+                    team_goal_assign_id: params.team_goal_assign_id,
+                    goal_id: params.goal_id,
+                    description: params.description,
+                    complete_measure: params.complete_measure
+                };
+                return yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee.create(createObj);
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_measure);
             }
         });
     }

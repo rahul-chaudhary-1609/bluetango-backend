@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -119,14 +119,10 @@ exports.addGoal = joi_1.default.object().keys({
         employee_ids: joi_1.default.array().items(joi_1.default.number())
     }))
 });
-// export const addGoal = Joi.array().items(Joi.object().keys({
-//     title: Joi.string().required(),
-//     description: Joi.string().required(),
-//     start_date: Joi.string().required(),
-//     end_date: Joi.string().required(),
-//     select_measure: Joi.string().required(),
-//     enter_measure: Joi.string().required(),
-//     employee_ids: Joi.string().required(),
-//   })
-// )
+exports.submitGoalAsEmployee = joi_1.default.object({
+    complete_measure: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+    team_goal_assign_id: joi_1.default.string().required(),
+    goal_id: joi_1.default.string().required()
+});
 //# sourceMappingURL=employeeSchema.js.map

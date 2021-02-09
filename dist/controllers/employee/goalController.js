@@ -118,6 +118,22 @@ class GoalController {
             }
         });
     }
+    /**
+    * submitGoalAsEmployee
+    * @param req :[]
+    * @param res
+    */
+    submitGoalAsEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.submitGoalAsEmployee(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.GoalController = GoalController;
 //# sourceMappingURL=goalController.js.map

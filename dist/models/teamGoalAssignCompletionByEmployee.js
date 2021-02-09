@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamGoalAssignModel = void 0;
+exports.teamGoalAssignCompletionByEmployee = void 0;
 const sequelize_1 = require("sequelize");
 const connection_1 = require("../connection");
-exports.teamGoalAssignModel = connection_1.sequelize.define("team_goal_assign", {
+exports.teamGoalAssignCompletionByEmployee = connection_1.sequelize.define("team_goal_assign_completion_by_employee", {
     id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -14,8 +14,12 @@ exports.teamGoalAssignModel = connection_1.sequelize.define("team_goal_assign", 
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    employee_id: {
+    team_goal_assign_id: {
         type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
+    description: {
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
     complete_measure: {
@@ -27,10 +31,10 @@ exports.teamGoalAssignModel = connection_1.sequelize.define("team_goal_assign", 
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "0=>assign, 1=> approve, 2=> rejected, 3=> requested"
+        comment: "1=> approve, 2=> rejected, 3=> requested"
     }
 }, {
-    tableName: "team_goal_assign"
+    tableName: "team_goal_assign_completion_by_employee"
 });
-exports.teamGoalAssignModel.sync({ alter: false });
-//# sourceMappingURL=teamGoalAssign.js.map
+exports.teamGoalAssignCompletionByEmployee.sync({ alter: true });
+//# sourceMappingURL=teamGoalAssignCompletionByEmployee.js.map

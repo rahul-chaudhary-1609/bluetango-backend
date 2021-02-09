@@ -27,7 +27,6 @@ exports.trimmer = (req, res, next) => {
         const temp = {};
         for (let [key, value] of Object.entries(req.query)) {
             key = key.trim();
-            console.log(key, '--------------------', value);
             if (isNaN(value)) {
                 temp[key] = value.trim();
             }

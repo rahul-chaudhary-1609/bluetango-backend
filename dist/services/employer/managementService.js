@@ -48,10 +48,11 @@ class EmployeeManagement {
     */
     addEditEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            params.email = (params.email).toLowerCase();
             // check employee is exist or not
             if (params.manager_id == '0') {
                 let checkEmployeeFirst = yield models_1.employeeModel.findOne();
-                if (!lodash_1.default.isEmpty(existingUser)) {
+                if (!lodash_1.default.isEmpty(checkEmployeeFirst)) {
                     throw new Error(constants.MESSAGES.manager_id_required);
                 }
             }
