@@ -71,17 +71,31 @@ export class GoalServices {
                 });
             if (teamGoalRes) {
                 await teamGoalAssignModel.destroy({
-                    where: { goal_id: params.id}
+                    where: { 
+                        goal_id: params.id,
+                        employee_id: { 
+                            [Op.notIn]: params.employee_ids
+                        }
+                    }
                 });
 
                 for (let j=0; j< (params.employee_ids).length; j++) {
-                    let teamGoalAssignObj = <any> {
-                        goal_id: params.id,
-                        employee_id: params.employee_ids[j]
-                    }
+                    let goalAssignData = await teamGoalAssignModel.findOne({
+                            where: { 
+                                goal_id: params.id, 
+                                employee_id: params.employee_ids[j]
+                            }
+                        });
 
-                    await teamGoalAssignModel.create(teamGoalAssignObj);
-                    
+                    if (_.isEmpty(goalAssignData) ) {
+                        let teamGoalAssignObj = <any> {
+                            goal_id: params.id,
+                            employee_id: params.employee_ids[j]
+                        }
+    
+                        await teamGoalAssignModel.create(teamGoalAssignObj);
+                    } 
+                   
                 }
             }
         }else {
