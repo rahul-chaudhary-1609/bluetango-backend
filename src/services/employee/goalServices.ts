@@ -238,7 +238,7 @@ export class GoalServices {
 
         teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
         teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployee,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
-        teamGoalAssignModel.hasOne(employeeModel,{ foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
+        teamGoalAssignModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
         return await teamGoalModel.findAndCountAll({
             where: {manager_id: user.uid},
             include: [
