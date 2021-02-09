@@ -897,6 +897,69 @@
         "responses": {}
       }
     },
+    "/employee/getGoalCompletedRequestAsManager": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "goal_id",
+            "in": "formData",
+            "description": "goal_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "team_goal_assign_id",
+            "in": "formData",
+            "description": "team_goal_assign_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "team_goal_assign_completion_by_employee_id",
+            "in": "formData",
+            "description": "team_goal_assign_completion_by_employee_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/goalAcceptReject": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/submitGoalAsEmployee": {
       "post": {
         "tags": [

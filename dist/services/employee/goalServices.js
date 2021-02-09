@@ -252,6 +252,37 @@ class GoalServices {
             }
         });
     }
+    /*
+    * function to get goal request as manager
+    */
+    getGoalCompletedRequestAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            return yield teamGoal_1.teamGoalModel.findAndCountAll({
+                where: { manager_id: user.uid },
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        required: true,
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            },
+                            {
+                                model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee,
+                                where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
+                                required: true
+                            }
+                        ]
+                    }
+                ]
+            });
+        });
+    }
 }
 exports.GoalServices = GoalServices;
 //# sourceMappingURL=goalServices.js.map

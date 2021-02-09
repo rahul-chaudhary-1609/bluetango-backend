@@ -8,6 +8,7 @@ import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { teamGoalAssignCompletionByEmployee } from  "../../models/teamGoalAssignCompletionByEmployee"
+import { Model } from "sequelize/types";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -227,7 +228,37 @@ export class GoalServices {
          } else {
             throw new Error(constants.MESSAGES.invalid_measure);
          }
-       
-        
+     
+    }
+
+    /*
+    * function to get goal request as manager
+    */
+    public async getGoalCompletedRequestAsManager(params: any, user: any) {
+
+        teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployee,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+        teamGoalAssignModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+        return await teamGoalModel.findAndCountAll({
+            where: {manager_id: user.uid},
+            include: [
+                {
+                    model: teamGoalAssignModel,
+                    required: true,
+                    include: [
+                        {
+                            model: employeeModel,
+                            required: true,
+                            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        },
+                        {
+                            model: teamGoalAssignCompletionByEmployee,
+                            where: {status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested},
+                            required: true
+                        }
+                    ]
+                }                        
+            ]
+        })
     }
 }
