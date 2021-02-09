@@ -197,12 +197,10 @@ export class GoalServices {
         }) );
 
         let compeleteData = await helperFunction.convertPromiseToObject( await teamGoalAssignCompletionByEmployee.findAll({
-                where: { goal_id: params.goal_id },
+                where: { team_goal_assign_id: params.team_goal_assign_id },
                  attributes: [ [Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
                 ],
             }) );
-
-         console.log(getGoalData, '..................', compeleteData);
 
          if (getGoalData.enter_measure >= ( parseInt(compeleteData[0].total_complete)+ parseInt(params.complete_measure) ) ) {
             let createObj = <any> {
