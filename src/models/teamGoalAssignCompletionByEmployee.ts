@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../connection";
 
-export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
+export const teamGoalAssignCompletionByEmployee: any = sequelize.define("team_goal_assign_completion_by_employee", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -13,8 +13,12 @@ export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    employee_id: {
+    team_goal_assign_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    description: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
     complete_measure: {
@@ -26,11 +30,11 @@ export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "0=>assign, 1=> approve, 2=> rejected, 3=> requested"
+        comment: "1=> approve, 2=> rejected, 3=> requested"
     }
 },
     {
-        tableName: "team_goal_assign"
+        tableName: "team_goal_assign_completion_by_employee"
     }
 );
-teamGoalAssignModel.sync({ alter: false });
+teamGoalAssignCompletionByEmployee.sync({ alter: true });

@@ -4,14 +4,10 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel } from  "../../models/employee"
-import { adminModel } from "../../models/admin";
-import { employersModel } from  "../../models/employers"
-import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
-import { promises } from "fs";
-import { Model } from "sequelize/types";
+import { teamGoalAssignCompletionByEmployee } from  "../../models/teamGoalAssignCompletionByEmployee"
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -75,17 +71,31 @@ export class GoalServices {
                 });
             if (teamGoalRes) {
                 await teamGoalAssignModel.destroy({
-                    where: { goal_id: params.id}
+                    where: { 
+                        goal_id: params.id,
+                        employee_id: { 
+                            [Op.notIn]: params.employee_ids
+                        }
+                    }
                 });
 
                 for (let j=0; j< (params.employee_ids).length; j++) {
-                    let teamGoalAssignObj = <any> {
-                        goal_id: params.id,
-                        employee_id: params.employee_ids[j]
-                    }
+                    let goalAssignData = await teamGoalAssignModel.findOne({
+                            where: { 
+                                goal_id: params.id, 
+                                employee_id: params.employee_ids[j]
+                            }
+                        });
 
-                    await teamGoalAssignModel.create(teamGoalAssignObj);
-                    
+                    if (_.isEmpty(goalAssignData) ) {
+                        let teamGoalAssignObj = <any> {
+                            goal_id: params.id,
+                            employee_id: params.employee_ids[j]
+                        }
+    
+                        await teamGoalAssignModel.create(teamGoalAssignObj);
+                    } 
+                   
                 }
             }
         }else {
@@ -147,6 +157,7 @@ export class GoalServices {
         teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
         teamGoalModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+        teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
 
         return await teamGoalAssignModel.findAndCountAll({
             where: {employee_id: user.uid },
@@ -161,6 +172,10 @@ export class GoalServices {
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
+                },
+                {
+                    model:teamGoalAssignCompletionByEmployee,
+                    required: false
                 }
             ],
             limit: limit,
@@ -186,4 +201,33 @@ export class GoalServices {
         
     }
 
+
+     /*
+    * function to submit goal for employee
+    */
+    public async submitGoalAsEmployee(params: any, user: any) {
+        let getGoalData = await helperFunction.convertPromiseToObject( await teamGoalModel.findOne({
+            where: { id: params.goal_id}
+        }) );
+
+        let compeleteData = await helperFunction.convertPromiseToObject( await teamGoalAssignCompletionByEmployee.findAll({
+                where: { team_goal_assign_id: params.team_goal_assign_id },
+                 attributes: [ [Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
+                ],
+            }) );
+
+         if (getGoalData.enter_measure >= ( parseInt(compeleteData[0].total_complete)+ parseInt(params.complete_measure) ) ) {
+            let createObj = <any> {
+                team_goal_assign_id: params.team_goal_assign_id,
+                goal_id: params.goal_id,
+                description: params.description,
+                complete_measure: params.complete_measure
+            };
+            return await teamGoalAssignCompletionByEmployee.create(createObj);
+         } else {
+            throw new Error(constants.MESSAGES.invalid_measure);
+         }
+       
+        
+    }
 }

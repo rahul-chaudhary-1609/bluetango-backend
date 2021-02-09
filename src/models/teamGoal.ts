@@ -35,7 +35,7 @@ export const teamGoalModel: any = sequelize.define("team_goal", {
         comment: "1=>Amount, 2=> Quantity",
     },
     enter_measure: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 },

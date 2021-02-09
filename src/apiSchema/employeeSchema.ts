@@ -114,13 +114,9 @@ export const addGoal = Joi.object().keys({
   )
 });
 
-// export const addGoal = Joi.array().items(Joi.object().keys({
-//     title: Joi.string().required(),
-//     description: Joi.string().required(),
-//     start_date: Joi.string().required(),
-//     end_date: Joi.string().required(),
-//     select_measure: Joi.string().required(),
-//     enter_measure: Joi.string().required(),
-//     employee_ids: Joi.string().required(),
-//   })
-// )
+export const submitGoalAsEmployee = Joi.object({
+  complete_measure: Joi.string().required(),
+  description: Joi.string().required(),
+  team_goal_assign_id: Joi.string().required(),
+  goal_id: Joi.string().required()
+});
