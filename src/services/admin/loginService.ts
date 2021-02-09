@@ -22,7 +22,7 @@ export class LoginService {
         const qry = <any>{ where: {} };
         if (isEmail) {
             qry.where = { 
-                email: params.username,
+                email: params.username.toLowerCase(),
                 status: {[Op.in]: [0,1]}
             };
         }
@@ -69,6 +69,7 @@ export class LoginService {
                 let comparePassword = params.password === params.confirmPassword;
                 if (comparePassword) {
                     delete params.confirmPassword;
+                    params.email = params.email.toLowerCase();
                     params.password = await appUtils.bcryptPassword(params.password);
                     params.id = await this.getSerailId();
                     params.admin_role = (params.id == 1)?1:2;
