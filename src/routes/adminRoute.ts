@@ -5,6 +5,7 @@ import * as tokenValidator from "../middleware/tokenValidator";
 
 import * as AdminController from "../controllers/admin/index";
 import * as multer from '../middleware/multerParser';
+import * as validators from "../middleware/validators";
 
 const adminRoute = express.Router();
 
@@ -13,10 +14,10 @@ const employersController = new AdminController.EmployersController();
 
 
 /* add new admin route for admin */
-adminRoute.post("/addNewAdmin", joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
+adminRoute.post("/addNewAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
 
 /* login route for admin login */
-adminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
+adminRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
 
 /* forget pass route for admin */
 adminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), loginController.forgetPassword);
