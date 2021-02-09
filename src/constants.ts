@@ -98,3 +98,9 @@ export const USER_ROLE = {
   employee: 3,
   employer: 4
 }
+
+export const TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
+  approve: 1,
+  rejected: 2,
+  requested: 3
+}
