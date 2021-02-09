@@ -2,45 +2,39 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../connection";
 
-export const teamGoalModel: any = sequelize.define("team_goal", {
+export const teamGoalAssignCompletionByEmployee: any = sequelize.define("team_goal_assign_completion_by_employee", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true
     },
-    manager_id: {
+    goal_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    title: {
-        type: DataTypes.STRING,
+    team_goal_assign_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     description: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    start_date: {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    end_date: {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    select_measure: {
+    complete_measure: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        comment: "1=>Amount, 2=> Quantity",
+        defaultValue: 0
     },
-    enter_measure: {
+    status: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    },
+        defaultValue: 0,
+        comment: "1=> approve, 2=> rejected, 3=> requested"
+    }
 },
     {
-        tableName: "team_goal"
+        tableName: "team_goal_assign_completion_by_employee"
     }
 );
-teamGoalModel.sync({ alter: true });
+teamGoalAssignCompletionByEmployee.sync({ alter: true });

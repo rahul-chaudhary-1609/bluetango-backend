@@ -16,6 +16,7 @@ export class EmployeeManagement {
     */
     public async addEditEmployee(params: any, user: any) {
 
+        params.email = (params.email).toLowerCase();
         // check employee is exist or not
         if (params.manager_id=='0') {
             let checkEmployeeFirst = await employeeModel.findOne();
@@ -27,7 +28,7 @@ export class EmployeeManagement {
         if(params.current_department_id) {
             let departmentExists = await departmentModel.findOne({where:{id: params.current_department_id}});
             if(!departmentExists)
-            throw new Error(constants.MESSAGES.invalid_department);
+                throw new Error(constants.MESSAGES.invalid_department);
         }
         var existingUser; 
         if (params.id) {
@@ -61,40 +62,41 @@ export class EmployeeManagement {
 
         params.current_employer_id = user.uid;
         if (_.isEmpty(existingUser)) {
-          if (params.id) {
-              delete params.password;
-            let updateData =  await employeeModel.update( params, {
-                where: { id: params.id}
-            });
-            if (updateData) {
-                return await employeeModel.findOne({
-                    where: {id: params.id}
-                })
+
+            if (params.id) {
+                delete params.password;
+                let updateData =  await employeeModel.update( params, {
+                    where: { id: params.id}
+                });
+                if (updateData) {
+                    return await employeeModel.findOne({
+                        where: {id: params.id}
+                    })
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+
+                params.password = await appUtils.bcryptPassword(params.password);
+                let employeeRes = await employeeModel.create(params);
+
+                let employeeUpdate = <any> {
+                    is_manager: 1
+                }
+                await employeeModel.update(employeeUpdate, {
+                    where: {id: params.manager_id}
+                })
+
+                let teamMemberObj = <any> {
+                    team_member_id: employeeRes.id,
+                    manager_id: params.manager_id
+                }
+
+                await managerTeamMemberModel.create(teamMemberObj);
+                
+
+                return employeeRes;
             }
-          } else {
-
-            params.password = await appUtils.bcryptPassword(params.password);
-            let employeeRes = await employeeModel.create(params);
-
-            let employeeUpdate = <any> {
-                is_manager: 1
-            }
-            await employeeModel.update(employeeUpdate, {
-                where: {id: params.manager_id}
-            })
-
-            let teamMemberObj = <any> {
-                team_member_id: employeeRes.id,
-                manager_id: params.manager_id
-            }
-
-            await managerTeamMemberModel.create(teamMemberObj);
-            
-
-            return employeeRes;
-          }
 
         } else {
             throw new Error(constants.MESSAGES.email_phone_already_registered);
@@ -109,7 +111,7 @@ export class EmployeeManagement {
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: params.departmentId}});
             if(!departmentExists)
-            throw new Error(constants.MESSAGES.invalid_department);
+                throw new Error(constants.MESSAGES.invalid_department);
         }
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let whereCond = <any>{};
