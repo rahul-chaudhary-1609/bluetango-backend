@@ -27,42 +27,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
-// const s3Client = new AWS.S3({
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//     region : process.env.AWS_REGION
-// });
-// const uploadParams = {
-//     ACL: 'public-read',
-//     Bucket: process.env.AWS_BUCKET_NAME, 
-//     Key: '', // pass key
-//     Body: null, // pass file body
-//     ContentType: null
-// };
+const AWS = __importStar(require("aws-sdk"));
+const fs_1 = __importDefault(require("fs"));
+const s3Client = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+});
+const uploadParams = {
+    ACL: 'public-read',
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: '',
+    Body: null,
+    ContentType: null
+};
 /*
 * Upload A file
 */
 exports.uploadFile = (params, folderName) => __awaiter(void 0, void 0, void 0, function* () {
-    // return new Promise((resolve, reject) => {
-    //     const buffer = fs.createReadStream(params.path);
-    //     //assigining parameters to send the value in s3 bucket
-    //     uploadParams.Key = folderName+ '/'+ `${Date.now()}_ ${params.originalname}`;
-    //     uploadParams.Body = buffer;
-    //     uploadParams.ContentType = params.mimetype;
-    //     var s3upload = s3Client.upload(uploadParams).promise();
-    //     s3upload.then(function(data) {
-    //             resolve(data.Location);
-    //     })
-    //     .catch(function(err) {
-    //         reject(err);
-    //     });
-    // });     
-    return true;
+    return new Promise((resolve, reject) => {
+        const buffer = fs_1.default.createReadStream(params.path);
+        //assigining parameters to send the value in s3 bucket
+        uploadParams.Key = folderName + '/' + `${Date.now()}_ ${params.originalname}`;
+        uploadParams.Body = buffer;
+        uploadParams.ContentType = params.mimetype;
+        var s3upload = s3Client.upload(uploadParams).promise();
+        s3upload.then(function (data) {
+            resolve(data.Location);
+        })
+            .catch(function (err) {
+            reject(err);
+        });
+    });
+    // return true;   
 });
 /**
  *

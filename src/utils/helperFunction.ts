@@ -1,45 +1,45 @@
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import * as constants from '../constants';
-// import * as AWS from 'aws-sdk';
+ import * as AWS from 'aws-sdk';
 import fs from 'fs';
 
-// const s3Client = new AWS.S3({
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//     region : process.env.AWS_REGION
-// });
+const s3Client = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region : process.env.AWS_REGION
+});
 
-// const uploadParams = {
-//     ACL: 'public-read',
-//     Bucket: process.env.AWS_BUCKET_NAME, 
-//     Key: '', // pass key
-//     Body: null, // pass file body
-//     ContentType: null
-// };
+const uploadParams = {
+    ACL: 'public-read',
+    Bucket: process.env.AWS_BUCKET_NAME, 
+    Key: '', // pass key
+    Body: null, // pass file body
+    ContentType: null
+};
 
 /*
 * Upload A file
 */
 export const uploadFile = async (params:any, folderName: any) => {
     
-    // return new Promise((resolve, reject) => {
-    //     const buffer = fs.createReadStream(params.path);
-    //     //assigining parameters to send the value in s3 bucket
+    return new Promise((resolve, reject) => {
+        const buffer = fs.createReadStream(params.path);
+        //assigining parameters to send the value in s3 bucket
        
-    //     uploadParams.Key = folderName+ '/'+ `${Date.now()}_ ${params.originalname}`;
-    //     uploadParams.Body = buffer;
-    //     uploadParams.ContentType = params.mimetype;
+        uploadParams.Key = folderName+ '/'+ `${Date.now()}_ ${params.originalname}`;
+        uploadParams.Body = buffer;
+        uploadParams.ContentType = params.mimetype;
 
-    //     var s3upload = s3Client.upload(uploadParams).promise();
-    //     s3upload.then(function(data) {
-    //             resolve(data.Location);
-    //     })
-    //     .catch(function(err) {
-    //         reject(err);
-    //     });
-    // });     
-    return true;   
+        var s3upload = s3Client.upload(uploadParams).promise();
+        s3upload.then(function(data) {
+                resolve(data.Location);
+        })
+        .catch(function(err) {
+            reject(err);
+        });
+    });     
+   // return true;   
 }
 
 
