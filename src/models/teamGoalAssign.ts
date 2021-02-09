@@ -21,10 +21,16 @@ export const teamGoalAssignModel: any = sequelize.define("team_goal_assign", {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    status: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: "0=>assign, 1=> approve, 2=> rejected, 3=> requested"
     }
 },
     {
         tableName: "team_goal_assign"
     }
 );
-teamGoalAssignModel.sync({ alter: true });
+teamGoalAssignModel.sync({ alter: false });

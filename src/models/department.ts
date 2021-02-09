@@ -18,4 +18,4 @@ export const departmentModel: any = sequelize.define("department", {
         tableName: "department"
     }
 );
-departmentModel.sync({ alter: true });
+departmentModel.sync({ alter: false });

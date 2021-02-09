@@ -1,0 +1,1186 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "BlueTango Api"
+    },
+    "basePath": "/api/v1",
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin related api's"
+        },
+        {
+            "name": "Employee",
+            "description": "Employee related api's"
+        },
+        {
+            "name": "Employer",
+            "description": "Employer related api's"
+        }
+    ],
+    "paths": {
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Admin Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "formData",
+                        "description": "email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/addNewAdmin": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Admin Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "passkey",
+                        "in": "formData",
+                        "description": "admin passkey",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "admin name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "confirmPassword",
+                        "in": "formData",
+                        "description": "confirmPassword",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/forgotPassword": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Admin forget password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/resetPassword": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Admin reset password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "otp",
+                        "in": "formData",
+                        "description": "forget pass otp",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "confirmPassword",
+                        "in": "formData",
+                        "description": "confirmPassword",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/logout": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get admin logout",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/addEditEmployers": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get admin logout",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "id, when you will pass id then it will be update otherwise it will be create",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "address",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "formData",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "industry_type",
+                        "in": "formData",
+                        "description": "industry type",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/getIndustryTypeList": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get employer industry type list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/getEmployersList": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get admin logout",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "search employer by name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "industry_type",
+                        "in": "query",
+                        "description": "industry type",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/changeEmployerStatus": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to change employer status",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "employerId",
+                        "in": "query",
+                        "description": "employer id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "actionType",
+                        "in": "query",
+                        "description": "activate/deactivate/delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/login": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "formData",
+                        "description": "email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/forgotPassword": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee forgot password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user_role",
+                        "in": "formData",
+                        "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4",
+                        "required": true,
+                        "type": "number",
+                        "enum": [1, 2, 3, 4]
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/resetPassword": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee reset password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter any jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/employeeResetPassword": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee reset password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter only employee jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getMyProfile": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee get profile",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getListOfTeamMemberByManagerId": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "list of employee by manager id",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/viewDetailsEmployee": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "get profile of employee",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/searchTeamMember": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Search team members",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search_string",
+                        "in": "query",
+                        "description": "search_string",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/uploadFile": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee get profile",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "description": "file",
+                        "required": true,
+                        "type": "file"
+                    },
+                    {
+                        "name": "folderName",
+                        "in": "formData",
+                        "description": "folderName",
+                        "required": true,
+                        "type": "string",
+                        "enum": ["employee_profile_pic", "other"]
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/updateProfile": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee update profile",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "formData",
+                        "description": "phone_number",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country_code",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date_of_birth",
+                        "in": "formData",
+                        "description": "date_of_birth: YYYY-MM-DD",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "accomplishments",
+                        "in": "formData",
+                        "description": "accomplishments",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "profile_pic_url",
+                        "in": "formData",
+                        "description": "profile_pic_url",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/addGoal": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Add goal",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "goal_details",
+                        "in": "formData",
+                        "description": "goal_details change all single quotes to double quotes and give perfect json, This API will work postman not swagger [{'title':'abc', 'description':'test test', 'start_date':'2020-10-02 13:02:02', 'end_date':'2020-10-02 13:02:02','select_measure':'1/2'(1=>Amount, 2=> Quantity),'enter_measure':'10', 'employee_ids':[1,2,3,4]},{}]",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/editGoal": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee update profile",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "title",
+                        "in": "formData",
+                        "description": "title",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "formData",
+                        "description": "start_date: YYYY-MM-DD HH:MM:SS",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "formData",
+                        "description": "end_date: YYYY-MM-DD HH:MM:SS",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "select_measure",
+                        "in": "formData",
+                        "description": "select_measure, 1=>Amount, 2=> Quantity",
+                        "required": true,
+                        "type": "number",
+                        "enum": [1, 2]
+                    },
+                    {
+                        "name": "enter_measure",
+                        "in": "formData",
+                        "description": "enter_measure",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "employee_ids",
+                        "in": "formData",
+                        "description": "employee_ids",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/viewGoalAsManager": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view goal",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search_string",
+                        "in": "query",
+                        "description": "search_string",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/deleteGoal": {
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view goal",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/submitGoalAsEmployee": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view goal",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "goal_id",
+                        "in": "formData",
+                        "description": "goal_id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "team_goal_assign_id",
+                        "in": "formData",
+                        "description": "team_goal_assign_id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "complete_measure",
+                        "in": "formData",
+                        "description": "complete_measure",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/viewGoalAsEmployee": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view goal",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/login": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "formData",
+                        "description": "email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/addEditEmployee": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to add a employee",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "id, when you will pass id then it will be update otherwise it will be create",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "manager_id",
+                        "in": "formData",
+                        "description": "manager_id, If is_manager=0 then manger_id will pass",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "formData",
+                        "description": "email id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "formData",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "current_department_id",
+                        "in": "formData",
+                        "description": "department type id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "current_designation",
+                        "in": "formData",
+                        "description": "designation",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "current_date_of_joining",
+                        "in": "formData",
+                        "description": "current_date_of_joining",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "employee_code",
+                        "in": "formData",
+                        "description": "employee code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "prev_employer",
+                        "in": "formData",
+                        "description": "prev_employer",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "prev_department",
+                        "in": "formData",
+                        "description": "prev_department",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "prev_designation",
+                        "in": "formData",
+                        "description": "prev_designation",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "prev_date_of_joining",
+                        "in": "formData",
+                        "description": "prev_date_of_joining YYYY-MM-DD",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "prev_exit",
+                        "in": "formData",
+                        "description": "prev_exit YYYY-MM-DD",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/getEmployeeList": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to get employee list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "departmentId",
+                        "in": "query",
+                        "description": "department type id",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {}
+}
