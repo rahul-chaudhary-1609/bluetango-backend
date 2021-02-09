@@ -18,4 +18,4 @@ export const industryTypeModel: any = sequelize.define("industry_type", {
         tableName: "industry_type"
     }
 );
-industryTypeModel.sync({ alter: true });
+industryTypeModel.sync({ alter: false });

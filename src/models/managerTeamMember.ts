@@ -22,4 +22,4 @@ export const managerTeamMemberModel: any = sequelize.define("manager_team_member
         tableName: "manager_team_member"
     }
 );
-managerTeamMemberModel.sync({ alter: true });
+managerTeamMemberModel.sync({ alter: false });
