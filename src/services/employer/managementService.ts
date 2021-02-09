@@ -20,7 +20,7 @@ export class EmployeeManagement {
         // check employee is exist or not
         if (params.manager_id=='0') {
             let checkEmployeeFirst = await employeeModel.findOne();
-            if (!_.isEmpty(existingUser) ) {
+            if (!_.isEmpty(checkEmployeeFirst) ) {
                 throw new Error(constants.MESSAGES.manager_id_required);
             } 
         }
