@@ -43,5 +43,8 @@ adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(admi
 /* change employer status activate/deactivate/delete */
 adminRoute.put("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
 
+/* change employer status activate/deactivate/delete */
+adminRoute.get("/dashboardAnalytics", tokenValidator.validateAdminToken, employersController.dashboardAnalytics);
+
 
 export = adminRoute;

@@ -105,6 +105,22 @@ class EmployersController {
             }
         });
     }
+    /**
+    * get dashboard analytics
+    * @param req :[get data]
+    * @param res : [employers employees count]
+    */
+    dashboardAnalytics(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseObject = yield employersService.dashboardAnalytics(req.user);
+                return appUtils.successResponse(res, responseObject, constants.MESSAGES.dashboardAnalyticsCount);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

@@ -1,4 +1,4 @@
-import { employersModel, industryTypeModel } from "../../models";
+import { employersModel, industryTypeModel, employeeModel } from "../../models";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -145,6 +145,37 @@ export class EmployersService {
         } else {
             throw new Error(constants.MESSAGES.invalid_employer);
         }
+    }
+
+    /**
+    * get dashboard analytics count
+    @param {} params pass all parameters from request
+    */
+    public async dashboardAnalytics (user:any) {
+       
+            let where:any = {}
+            let idArr:any = []
+            where.admin_id = user.uid
+            where.status = 1
+           const employers = await employersModel.findAndCountAll({where: where, raw: true})
+           
+           for(let i=0; i<employers.rows.length; i++) {
+               idArr.push(employers.rows[i].id)
+
+           }
+           
+           let criteria = {
+
+            current_employer_id: { [Op.in]: idArr }
+          
+          }
+           const employees = await employeeModel.count({where: criteria})
+          
+            if(employers) {
+                return {employers:employers.count, employees}
+            }else {
+                throw new Error(constants.MESSAGES.employer_notFound);
+            }
     }
 
 }

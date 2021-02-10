@@ -184,6 +184,32 @@ class EmployersService {
             }
         });
     }
+    /**
+    * get dashboard analytics count
+    @param {} params pass all parameters from request
+    */
+    dashboardAnalytics(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            let idArr = [];
+            where.admin_id = user.uid;
+            where.status = 1;
+            const employers = yield models_1.employersModel.findAndCountAll({ where: where, raw: true });
+            for (let i = 0; i < employers.rows.length; i++) {
+                idArr.push(employers.rows[i].id);
+            }
+            let criteria = {
+                current_employer_id: { [Op.in]: idArr }
+            };
+            const employees = yield models_1.employeeModel.count({ where: criteria });
+            if (employers) {
+                return { employers: employers.count, employees };
+            }
+            else {
+                throw new Error(constants.MESSAGES.employer_notFound);
+            }
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map

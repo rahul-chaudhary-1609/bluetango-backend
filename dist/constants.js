@@ -57,7 +57,9 @@ exports.MESSAGES = {
     status_updated: "Status updated successfully",
     manager_id_required: 'Manager id is required',
     goal_management_check: "Goal management only for manager",
-    invalid_measure: 'Invalid measure value in request'
+    invalid_measure: 'Invalid measure value in request',
+    dashboardAnalyticsCount: 'Dashboard analytics count fetched successfully',
+    employer_notFound: 'Employer not found'
 };
 exports.code = {
     error_code: 400

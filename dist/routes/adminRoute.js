@@ -26,13 +26,14 @@ const adminSchema = __importStar(require("../apiSchema/adminSchema"));
 const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidation"));
 const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const AdminController = __importStar(require("../controllers/admin/index"));
+const validators = __importStar(require("../middleware/validators"));
 const adminRoute = express_1.default.Router();
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
 /* add new admin route for admin */
-adminRoute.post("/addNewAdmin", joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
+adminRoute.post("/addNewAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
 /* login route for admin login */
-adminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
+adminRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
 /* forget pass route for admin */
 adminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), loginController.forgetPassword);
 /* reset pass route for admin */
@@ -49,5 +50,7 @@ adminRoute.get("/getIndustryTypeList", tokenValidator.validateAdminToken, employ
 adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), tokenValidator.validateAdminToken, employersController.getEmployersList);
 /* change employer status activate/deactivate/delete */
 adminRoute.put("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
+/* change employer status activate/deactivate/delete */
+adminRoute.get("/dashboardAnalytics", tokenValidator.validateAdminToken, employersController.dashboardAnalytics);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map
