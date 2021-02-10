@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamGoalAssignCompletionByEmployee = void 0;
+exports.teamGoalAssignCompletionByEmployeeModel = void 0;
 const sequelize_1 = require("sequelize");
 const connection_1 = require("../connection");
-exports.teamGoalAssignCompletionByEmployee = connection_1.sequelize.define("team_goal_assign_completion_by_employee", {
+exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define("team_goal_assign_completion_by_employee", {
     id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -36,5 +36,5 @@ exports.teamGoalAssignCompletionByEmployee = connection_1.sequelize.define("team
 }, {
     tableName: "team_goal_assign_completion_by_employee"
 });
-exports.teamGoalAssignCompletionByEmployee.sync({ alter: true });
+exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
 //# sourceMappingURL=teamGoalAssignCompletionByEmployee.js.map
