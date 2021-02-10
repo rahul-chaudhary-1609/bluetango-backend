@@ -898,6 +898,27 @@
       }
     },
     "/employee/getGoalCompletedRequestAsManager": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }         
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/goalAcceptRejectAsManager": {
       "post": {
         "tags": [
           "Employee"
@@ -934,27 +955,14 @@
             "description": "team_goal_assign_completion_by_employee_id",
             "required": true,
             "type": "number"
-          }
-        ],
-        "responses": {}
-      }
-    },
-    "/employee/goalAcceptReject": {
-      "get": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "view goal",
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "parameters": [
+          },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Enter jwt token for authentication",
+            "name": "status",
+            "in": "formData",
+            "description": "status, approve=>1, rejected=> 2",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "enum":[1,2]
           }
         ],
         "responses": {}

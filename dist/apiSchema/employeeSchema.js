@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -124,5 +124,11 @@ exports.submitGoalAsEmployee = joi_1.default.object({
     description: joi_1.default.string().required(),
     team_goal_assign_id: joi_1.default.string().required(),
     goal_id: joi_1.default.string().required()
+});
+exports.goalAcceptRejectAsManager = joi_1.default.object({
+    goal_id: joi_1.default.string().required(),
+    team_goal_assign_id: joi_1.default.string().required(),
+    team_goal_assign_completion_by_employee_id: joi_1.default.string().required(),
+    status: joi_1.default.string().regex(new RegExp("^(?=.*[1-2])")).required(),
 });
 //# sourceMappingURL=employeeSchema.js.map

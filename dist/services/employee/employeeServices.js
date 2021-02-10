@@ -32,6 +32,8 @@ exports.EmployeeServices = void 0;
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const teamGoalAssign_1 = require("../../models/teamGoalAssign");
+const teamGoal_1 = require("../../models/teamGoal");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployeeServices {
@@ -63,8 +65,22 @@ class EmployeeServices {
     */
     viewDetailsEmployee(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             return yield employee_1.employeeModel.findOne({
                 where: { id: params.id },
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        required: true,
+                        include: [
+                            {
+                                model: teamGoal_1.teamGoalModel,
+                                required: true
+                            }
+                        ]
+                    }
+                ],
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
             });
         });

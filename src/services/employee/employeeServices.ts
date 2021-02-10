@@ -8,8 +8,9 @@ import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
-import { industryTypeModel } from  "../../models/industryType"
+import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { promises } from "fs";
+import { teamGoalModel } from "../../models/teamGoal";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -42,8 +43,22 @@ export class EmployeeServices {
     * function to get details of employee
     */
     public async viewDetailsEmployee(params:any) {
+        employeeModel.hasMany(teamGoalAssignModel,{ foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
+        teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         return await employeeModel.findOne({
             where: { id: params.id},
+            include:[
+                {
+                    model: teamGoalAssignModel,
+                    required: true,
+                    include: [
+                        {
+                            model: teamGoalModel,
+                            required: true
+                        }
+                    ]
+                }
+            ],
             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
 
         })

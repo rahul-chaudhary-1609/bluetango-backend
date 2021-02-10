@@ -69,6 +69,20 @@ export class GoalController {
     }
 
      /**
+    * goal accept reject as manager
+    * @param req :[]
+    * @param res 
+    */
+    public async goalAcceptRejectAsManager(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.goalAcceptRejectAsManager(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
     * view goal as employee
     * @param req :[]
     * @param res 
