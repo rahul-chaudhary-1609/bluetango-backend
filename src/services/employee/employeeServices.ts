@@ -50,11 +50,11 @@ export class EmployeeServices {
             include:[
                 {
                     model: teamGoalAssignModel,
-                    required: true,
+                    required: false,
                     include: [
                         {
                             model: teamGoalModel,
-                            required: true
+                            required: false
                         }
                     ]
                 }
