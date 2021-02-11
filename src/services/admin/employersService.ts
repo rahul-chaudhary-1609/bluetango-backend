@@ -178,4 +178,34 @@ export class EmployersService {
             }
     }
 
+
+    /**
+    * get employers list function
+    @param {} params pass all parameters from request
+    */
+   public async getEmployeeList (params: any) {
+    employeeModel.belongsTo(employersModel,{foreignKey : "current_employer_id"})
+
+    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+    var whereCond: any = {};
+        
+     if(params.searchKey) {
+        whereCond = {
+            name: { [Op.iLike] : `%${params.searchKey}%`},
+            status: 1
+        }
+    }else {
+        whereCond.status = 1
+    }
+
+    return await employeeModel.findAndCountAll({
+        where: whereCond,
+        include: [{model: employersModel, required:true, attributes: ["id", "name"]}],
+        limit: limit,
+        offset: offset,
+        order: [["createdAt", "DESC"]]
+    })
+
+}
+
 }

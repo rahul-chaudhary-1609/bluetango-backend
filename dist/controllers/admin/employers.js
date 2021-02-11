@@ -121,6 +121,22 @@ class EmployersController {
             }
         });
     }
+    /**
+   * get employee list
+   * @param req :[get data]
+   * @param res : [employee data]
+   */
+    getEmployeeList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employersService.getEmployeeList(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

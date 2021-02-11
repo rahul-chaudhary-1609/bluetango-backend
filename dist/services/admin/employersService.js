@@ -210,6 +210,33 @@ class EmployersService {
             }
         });
     }
+    /**
+    * get employers list function
+    @param {} params pass all parameters from request
+    */
+    getEmployeeList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            var whereCond = {};
+            if (params.searchKey) {
+                whereCond = {
+                    name: { [Op.iLike]: `%${params.searchKey}%` },
+                    status: 1
+                };
+            }
+            else {
+                whereCond.status = 1;
+            }
+            return yield models_1.employeeModel.findAndCountAll({
+                where: whereCond,
+                include: [{ model: models_1.employersModel, required: true, attributes: ["id", "name"] }],
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
+            });
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map

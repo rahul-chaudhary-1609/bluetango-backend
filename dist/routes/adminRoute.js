@@ -50,7 +50,9 @@ adminRoute.get("/getIndustryTypeList", tokenValidator.validateAdminToken, employ
 adminRoute.get("/getEmployersList", joiSchemaValidation.validateQueryParams(adminSchema.getEmployersList), tokenValidator.validateAdminToken, employersController.getEmployersList);
 /* change employer status activate/deactivate/delete */
 adminRoute.put("/changeEmployerStatus", tokenValidator.validateAdminToken, employersController.changeEmployerStatus);
-/* change employer status activate/deactivate/delete */
+/*  get dashboard analytics */
 adminRoute.get("/dashboardAnalytics", tokenValidator.validateAdminToken, employersController.dashboardAnalytics);
+/* add thought of the day for employer */
+adminRoute.get("/getEmployeeList", tokenValidator.validateAdminToken, employersController.getEmployeeList);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

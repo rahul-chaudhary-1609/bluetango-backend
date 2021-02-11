@@ -56,7 +56,8 @@ export const MESSAGES = {
   goal_management_check: "Goal management only for manager",
   invalid_measure: 'Invalid measure value in request',
   dashboardAnalyticsCount: 'Dashboard analytics count fetched successfully',
-  employer_notFound: 'Employer not found'
+  employer_notFound: 'Employer not found',
+  employee_list: 'Employees list'
 }
 
 export const code = {

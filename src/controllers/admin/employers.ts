@@ -86,4 +86,19 @@ export class EmployersController {
         }
     }
 
+     /**
+    * get employee list
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+   public async getEmployeeList(req: any, res: any) {
+    try {
+        const responseFromService = await employersService.getEmployeeList(req.query);
+        return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_list);
+        
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
 }
