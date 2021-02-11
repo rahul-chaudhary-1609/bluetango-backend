@@ -72,11 +72,11 @@ class EmployeeServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
-                        required: true,
+                        required: false,
                         include: [
                             {
                                 model: teamGoal_1.teamGoalModel,
-                                required: true
+                                required: false
                             }
                         ]
                     }
