@@ -181,7 +181,7 @@ class GoalServices {
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
-            teamGoalAssign_1.teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
             return yield teamGoalAssign_1.teamGoalAssignModel.findAndCountAll({
                 where: { employee_id: user.uid },
                 include: [
@@ -197,7 +197,7 @@ class GoalServices {
                         ]
                     },
                     {
-                        model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee,
+                        model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
                         required: false
                     }
                 ],
@@ -233,7 +233,7 @@ class GoalServices {
             let getGoalData = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
                 where: { id: params.goal_id }
             }));
-            let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee.findAll({
+            let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
                 where: { team_goal_assign_id: params.team_goal_assign_id },
                 attributes: [[Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
                 ],
@@ -245,10 +245,69 @@ class GoalServices {
                     description: params.description,
                     complete_measure: params.complete_measure
                 };
-                return yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployee.create(createObj);
+                return yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj);
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_measure);
+            }
+        });
+    }
+    /*
+    * function to get goal request as manager
+    */
+    getGoalCompletedRequestAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            return yield teamGoal_1.teamGoalModel.findAndCountAll({
+                where: { manager_id: user.uid },
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        required: true,
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            },
+                            {
+                                model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                                where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
+                                required: true
+                            }
+                        ]
+                    }
+                ]
+            });
+        });
+    }
+    /*
+   * function to goal accept reject as manager
+   */
+    goalAcceptRejectAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let teamGoalAssignCompletionByEmployeeObj = {
+                status: params.status
+            };
+            yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
+                where: { id: params.team_goal_assign_completion_by_employee_id }
+            });
+            if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
+                let getGoalCompleteData = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
+                    where: { id: params.team_goal_assign_completion_by_employee_id }
+                });
+                let teamGoalAssignObj = {
+                    status: 1,
+                    complete_measure: getGoalCompleteData.complete_measure
+                };
+                return teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
+                    where: { id: params.team_goal_assign_id }
+                });
+            }
+            else {
+                return true;
             }
         });
     }

@@ -87,6 +87,38 @@ class GoalController {
         });
     }
     /**
+   * get goal request as manager
+   * @param req :[]
+   * @param res
+   */
+    getGoalCompletedRequestAsManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.getGoalCompletedRequestAsManager(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+   * goal accept reject as manager
+   * @param req :[]
+   * @param res
+   */
+    goalAcceptRejectAsManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.goalAcceptRejectAsManager(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
    * view goal as employee
    * @param req :[]
    * @param res

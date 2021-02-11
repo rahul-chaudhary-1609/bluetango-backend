@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 import { sequelize } from "../connection";
 
-export const teamGoalAssignCompletionByEmployee: any = sequelize.define("team_goal_assign_completion_by_employee", {
+export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("team_goal_assign_completion_by_employee", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -37,4 +37,4 @@ export const teamGoalAssignCompletionByEmployee: any = sequelize.define("team_go
         tableName: "team_goal_assign_completion_by_employee"
     }
 );
-teamGoalAssignCompletionByEmployee.sync({ alter: true });
+teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
