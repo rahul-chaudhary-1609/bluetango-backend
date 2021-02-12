@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -130,5 +130,32 @@ exports.goalAcceptRejectAsManager = joi_1.default.object({
     team_goal_assign_id: joi_1.default.string().required(),
     team_goal_assign_completion_by_employee_id: joi_1.default.string().required(),
     status: joi_1.default.string().regex(new RegExp("^(?=.*[1-2])")).required(),
+});
+exports.addQualitativeMeasurement = joi_1.default.object({
+    employee_id: joi_1.default.string().required(),
+    initiative: joi_1.default.string().required(),
+    initiative_desc: joi_1.default.string().optional(),
+    ability_to_delegate: joi_1.default.string().required(),
+    ability_to_delegate_desc: joi_1.default.string().optional(),
+    clear_Communication: joi_1.default.string().required(),
+    clear_Communication_desc: joi_1.default.string().optional(),
+    self_awareness_of_strengths_and_weaknesses: joi_1.default.string().required(),
+    self_awareness_of_strengths_and_weaknesses_desc: joi_1.default.string().optional(),
+    agile_thinking: joi_1.default.string().required(),
+    agile_thinking_desc: joi_1.default.string().optional(),
+    influence: joi_1.default.string().required(),
+    influence_desc: joi_1.default.string().optional(),
+    empathy: joi_1.default.string().required(),
+    empathy_desc: joi_1.default.string().optional(),
+    leadership_courage: joi_1.default.string().required(),
+    leadership_courage_desc: joi_1.default.string().optional(),
+    customer_client_patient_satisfaction: joi_1.default.string().required(),
+    customer_client_patient_satisfaction_desc: joi_1.default.string().optional(),
+    team_contributions: joi_1.default.string().required(),
+    team_contributions_desc: joi_1.default.string().optional(),
+    time_management: joi_1.default.string().required(),
+    time_management_desc: joi_1.default.string().optional(),
+    work_product: joi_1.default.string().required(),
+    work_product_desc: joi_1.default.string().optional()
 });
 //# sourceMappingURL=employeeSchema.js.map

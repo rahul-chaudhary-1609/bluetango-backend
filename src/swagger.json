@@ -813,7 +813,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "Employee update profile",
+        "description": "edit goal",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -895,7 +895,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "view goal as manager",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -937,7 +937,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "delete goal",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -965,7 +965,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "get goal complete request as manager",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -986,7 +986,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "goal accept reject as manager",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -1036,7 +1036,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "goal submit by employee",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -1086,7 +1086,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "view goal",
+        "description": "view goal as employee",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -1116,7 +1116,202 @@
         "responses": {}
       }
     },
-    
+    "/employee/addQualitativeMeasurement": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "goal submit by employee",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_id",
+            "in": "formData",
+            "description": "employee_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "initiative",
+            "in": "formData",
+            "description": "initiative",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "initiative_desc",
+            "in": "formData",
+            "description": "initiative_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ability_to_delegate",
+            "in": "formData",
+            "description": "ability_to_delegate",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "ability_to_delegate_desc",
+            "in": "formData",
+            "description": "ability_to_delegate_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "clear_Communication",
+            "in": "formData",
+            "description": "clear_Communication",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "clear_Communication_desc",
+            "in": "formData",
+            "description": "clear_Communication_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "self_awareness_of_strengths_and_weaknesses",
+            "in": "formData",
+            "description": "self_awareness_of_strengths_and_weaknesses",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "self_awareness_of_strengths_and_weaknesses_desc",
+            "in": "formData",
+            "description": "self_awareness_of_strengths_and_weaknesses_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "agile_thinking",
+            "in": "formData",
+            "description": "agile_thinking",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "agile_thinking_desc",
+            "in": "formData",
+            "description": "agile_thinking_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "influence",
+            "in": "formData",
+            "description": "influence",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "influence_desc",
+            "in": "formData",
+            "description": "influence_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "empathy",
+            "in": "formData",
+            "description": "empathy",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "empathy_desc",
+            "in": "formData",
+            "description": "empathy_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "leadership_courage",
+            "in": "formData",
+            "description": "leadership_courage",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "leadership_courage_desc",
+            "in": "formData",
+            "description": "leadership_courage_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customer_client_patient_satisfaction",
+            "in": "formData",
+            "description": "customer_client_patient_satisfaction",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "customer_client_patient_satisfaction_desc",
+            "in": "formData",
+            "description": "customer_client_patient_satisfaction_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "team_contributions",
+            "in": "formData",
+            "description": "team_contributions",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "team_contributions_desc",
+            "in": "formData",
+            "description": "team_contributions_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "time_management",
+            "in": "formData",
+            "description": "time_management",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "time_management_desc",
+            "in": "formData",
+            "description": "initiative_desc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "work_product",
+            "in": "formData",
+            "description": "work_product",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "work_product_desc",
+            "in": "formData",
+            "description": "work_product_desc",
+            "required": false,
+            "type": "string"
+          }          
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [

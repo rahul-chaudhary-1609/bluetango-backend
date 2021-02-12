@@ -8,12 +8,14 @@ import { upload } from "../middleware/multerParser";
 import { AuthController } from "../controllers/employee/authController";
 import { EmployeeController } from "../controllers/employee/employeeController";
 import { GoalController } from "../controllers/employee/goalController";
+import { QualitativeMeasurementController } from "../controllers/employee/qualitativeMeasurementController";
 
 const employeeRoute = express.Router();
 
 const authController = new AuthController();
 const employeeController = new EmployeeController();
 const goalController = new GoalController();
+const qualitativeMeasurementController  = new QualitativeMeasurementController();
 
 /* login route for employee login */
 employeeRoute.post("/login",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
@@ -68,5 +70,10 @@ employeeRoute.post("/submitGoalAsEmployee", validators.trimmer, tokenValidator.v
 
 /* view goal for employee */
 employeeRoute.get("/viewGoalAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), goalController.viewGoalAsEmployee);
+
+// QualitativeMeasurement routes
+
+/* add qualitative measurement for employee */
+employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
 
 export = employeeRoute;

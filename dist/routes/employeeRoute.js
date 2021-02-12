@@ -30,10 +30,12 @@ const multerParser_1 = require("../middleware/multerParser");
 const authController_1 = require("../controllers/employee/authController");
 const employeeController_1 = require("../controllers/employee/employeeController");
 const goalController_1 = require("../controllers/employee/goalController");
+const qualitativeMeasurementController_1 = require("../controllers/employee/qualitativeMeasurementController");
 const employeeRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 const employeeController = new employeeController_1.EmployeeController();
 const goalController = new goalController_1.GoalController();
+const qualitativeMeasurementController = new qualitativeMeasurementController_1.QualitativeMeasurementController();
 /* login route for employee login */
 employeeRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
 /* forget pass route for employee */
@@ -70,5 +72,8 @@ employeeRoute.post("/goalAcceptRejectAsManager", validators.trimmer, tokenValida
 employeeRoute.post("/submitGoalAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.submitGoalAsEmployee), goalController.submitGoalAsEmployee);
 /* view goal for employee */
 employeeRoute.get("/viewGoalAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), goalController.viewGoalAsEmployee);
+// QualitativeMeasurement routes
+/* add qualitative measurement for employee */
+employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map
