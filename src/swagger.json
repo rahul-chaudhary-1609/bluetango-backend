@@ -264,6 +264,13 @@
             "description": "industry type",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "thought_of_the_day",
+            "in": "formData",
+            "description": "industry type",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
