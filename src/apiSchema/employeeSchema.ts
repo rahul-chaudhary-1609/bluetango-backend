@@ -127,3 +127,31 @@ export const goalAcceptRejectAsManager = Joi.object({
   team_goal_assign_completion_by_employee_id:  Joi.string().required(),
   status:  Joi.string().regex(new RegExp("^(?=.*[1-2])")).required(),
 });
+
+export const addQualitativeMeasurement = Joi.object({
+  employee_id: Joi.string().required(),
+  initiative: Joi.string().required(),
+  initiative_desc: Joi.string().optional(),
+  ability_to_delegate: Joi.string().required(),
+  ability_to_delegate_desc: Joi.string().optional(),
+  clear_Communication: Joi.string().required(),
+  clear_Communication_desc: Joi.string().optional(),
+  self_awareness_of_strengths_and_weaknesses: Joi.string().required(),
+  self_awareness_of_strengths_and_weaknesses_desc: Joi.string().optional(),
+  agile_thinking: Joi.string().required(),
+  agile_thinking_desc: Joi.string().optional(),
+  influence: Joi.string().required(),
+  influence_desc: Joi.string().optional(),
+  empathy: Joi.string().required(),
+  empathy_desc: Joi.string().optional(),
+  leadership_courage: Joi.string().required(),
+  leadership_courage_desc: Joi.string().optional(),
+  customer_client_patient_satisfaction: Joi.string().required(),
+  customer_client_patient_satisfaction_desc: Joi.string().optional(),
+  team_contributions: Joi.string().required(),
+  team_contributions_desc: Joi.string().optional(),
+  time_management: Joi.string().required(),
+  time_management_desc: Joi.string().optional(),
+  work_product: Joi.string().required(),
+  work_product_desc: Joi.string().optional()
+})

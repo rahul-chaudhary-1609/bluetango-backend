@@ -57,7 +57,9 @@ export const MESSAGES = {
   invalid_measure: 'Invalid measure value in request',
   dashboardAnalyticsCount: 'Dashboard analytics count fetched successfully',
   employer_notFound: 'Employer not found',
-  employee_list: 'Employees list'
+  employee_list: 'Employees list',
+  add_qualitative_measure_check: 'You are not elligible to rate qualitative measure',
+  invalid_employee_id: 'Invalid employee id, You can rate only your empoyee '
 }
 
 export const code = {
