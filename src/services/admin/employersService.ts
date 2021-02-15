@@ -1,4 +1,4 @@
-import { employersModel, industryTypeModel, employeeModel } from "../../models";
+import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -186,8 +186,24 @@ export class EmployersService {
    public async getEmployeeList (params: any) {
     employeeModel.belongsTo(employersModel,{foreignKey : "current_employer_id"})
 
+    employeeModel.belongsTo(departmentModel, {foreignKey: "current_department_id"})
+
     let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
     var whereCond: any = {};
+    var employer: any = {};
+    var department: any = {}
+    if(params.employerName) {
+        employer = {
+            name: { [Op.iLike] : `%${params.employerName}%`},
+            status: 1
+        }
+    }
+
+    if(params.departmentName) {
+        department = {
+            name: { [Op.iLike] : `%${params.departmentName}%`}
+        }
+    }
         
      if(params.searchKey) {
         whereCond = {
@@ -200,7 +216,20 @@ export class EmployersService {
 
     return await employeeModel.findAndCountAll({
         where: whereCond,
-        include: [{model: employersModel, required:true, attributes: ["id", "name"]}],
+        include: [
+            {
+                model: employersModel,
+                where: employer,
+                required: true,
+                attributes: ["id", "name"]
+            },
+            {
+                model: departmentModel,
+                where: department,
+                required: true,
+                attributes: ["id", "name"]
+            }
+        ],
         limit: limit,
         offset: offset,
         order: [["createdAt", "DESC"]]

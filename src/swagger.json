@@ -427,6 +427,20 @@
             "type": "string"
           },
           {
+            "name": "employerName",
+            "in": "query",
+            "description": "filter employee list by employer name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "departmentName",
+            "in": "query",
+            "description": "filter employee list by department name",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",
