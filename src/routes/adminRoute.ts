@@ -49,5 +49,11 @@ adminRoute.get("/dashboardAnalytics", tokenValidator.validateAdminToken, employe
 /* add thought of the day for employer */
 adminRoute.get("/getEmployeeList", tokenValidator.validateAdminToken, employersController.getEmployeeList);
 
+/* change employee status activate/deactivate/delete */
+adminRoute.put("/changeEmployeeStatus", tokenValidator.validateAdminToken, employersController.changeEmployeeStatus);
+
+/* edit employee details */
+adminRoute.put("/editEmployeeDetails", tokenValidator.validateAdminToken, employersController.editEmployeeDetails);
+
 
 export = adminRoute;

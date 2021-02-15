@@ -264,6 +264,77 @@ class EmployersService {
             });
         });
     }
+    /**
+    * change employee status: activate/deactivate/delete
+    @param {} params pass all parameters from request
+    */
+    changeEmployeeStatus(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = { where: { id: params.employeeId } };
+            let accountExists = yield models_1.employeeModel.findOne(query);
+            if (accountExists) {
+                let updates = {};
+                if (params.actionType == "activate") {
+                    if (accountExists && accountExists.status == 1)
+                        throw new Error(constants.MESSAGES.already_activated);
+                    updates.status = 1;
+                }
+                else if (params.actionType == "deactivate") {
+                    if (accountExists && accountExists.status == 0)
+                        throw new Error(constants.MESSAGES.already_deactivated);
+                    updates.status = 0;
+                }
+                else if (params.actionType == "delete") {
+                    if (accountExists && accountExists.status == 2)
+                        throw new Error(constants.MESSAGES.already_deleted);
+                    updates.status = 2;
+                }
+                else {
+                    throw new Error(constants.MESSAGES.invalid_action);
+                }
+                yield models_1.employeeModel.update(updates, query);
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_employee);
+            }
+        });
+    }
+    /**
+   * edit employee details
+   @param {} params pass all parameters from request
+   */
+    editEmployeeDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {};
+            if (params.employerId) {
+                query = { where: { id: params.employerId } };
+                let employerExists = yield models_1.employersModel.findOne(query);
+                if (!employerExists) {
+                    throw new Error(constants.MESSAGES.invalid_employer);
+                }
+                params.current_employer_id = employerExists.id;
+            }
+            if (params.departmentId) {
+                query = { where: { id: params.departmentId } };
+                let departmentExists = yield models_1.departmentModel.findOne(query);
+                if (!departmentExists) {
+                    throw new Error(constants.MESSAGES.invalid_department);
+                }
+                params.current_department_id = departmentExists.id;
+            }
+            if (params.status) {
+                let status = [1, 2, 3];
+                if (!status.includes(JSON.parse(params.status))) {
+                    throw new Error(constants.MESSAGES.invalid_action);
+                }
+            }
+            const updateEmployee = yield models_1.employeeModel.update(params, { where: { id: params.id }, raw: true, returning: true });
+            if (updateEmployee[0] == 0) {
+                throw new Error(constants.MESSAGES.invalid_employee);
+            }
+            return updateEmployee;
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map
