@@ -107,6 +107,7 @@ export class AuthController {
     */
     public async uploadFile(req: any, res: any, next: any) {
         try {
+            console.log(req.file,'-----------------------', req.headers);
             const responseFromService = await authService.uploadFile(req.file, req.body.folderName);
             await deleteFile(req.file.filename);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
