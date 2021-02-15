@@ -217,8 +217,22 @@ class EmployersService {
     getEmployeeList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
+            models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             var whereCond = {};
+            var employer = {};
+            var department = {};
+            if (params.employerName) {
+                employer = {
+                    name: { [Op.iLike]: `%${params.employerName}%` },
+                    status: 1
+                };
+            }
+            if (params.departmentName) {
+                department = {
+                    name: { [Op.iLike]: `%${params.departmentName}%` }
+                };
+            }
             if (params.searchKey) {
                 whereCond = {
                     name: { [Op.iLike]: `%${params.searchKey}%` },
@@ -230,7 +244,20 @@ class EmployersService {
             }
             return yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,
-                include: [{ model: models_1.employersModel, required: true, attributes: ["id", "name"] }],
+                include: [
+                    {
+                        model: models_1.employersModel,
+                        where: employer,
+                        required: true,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: models_1.departmentModel,
+                        where: department,
+                        required: true,
+                        attributes: ["id", "name"]
+                    }
+                ],
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
