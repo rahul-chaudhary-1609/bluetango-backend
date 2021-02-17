@@ -73,6 +73,16 @@ class QualitativeMeasuremetServices {
             }
         });
     }
+    /*
+    * get to add qualitative measurement
+    */
+    getQualitativeMeasurement(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
+                where: { employee_id: params.employee_id }
+            });
+        });
+    }
 }
 exports.QualitativeMeasuremetServices = QualitativeMeasuremetServices;
 //# sourceMappingURL=qualitativeMeasurementServices.js.map

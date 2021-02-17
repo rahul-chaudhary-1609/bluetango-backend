@@ -9,6 +9,7 @@ import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
+import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
 import { promises } from "fs";
 import { teamGoalModel } from "../../models/teamGoal";
 const Sequelize = require('sequelize');
@@ -45,23 +46,45 @@ export class EmployeeServices {
     public async viewDetailsEmployee(params:any) {
         employeeModel.hasMany(teamGoalAssignModel,{ foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
         teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
-        return await employeeModel.findOne({
-            where: { id: params.id},
-            include:[
-                {
-                    model: teamGoalAssignModel,
-                    required: false,
-                    include: [
-                        {
-                            model: teamGoalModel,
-                            required: false
-                        }
-                    ]
-                }
-            ],
-            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+        let employeeDetails = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
+                where: { id: params.id},
+                include:[
+                    {
+                        model: teamGoalAssignModel,
+                        required: false,
+                        include: [
+                            {
+                                model: teamGoalModel,
+                                required: false
+                            }
+                        ]
+                    }
+                ],
+                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+            }) );
 
+        let qualitativeMeasurementDetails = await qualitativeMeasurementModel.findOne({
+            where:{ employee_id: params.id},
+            group: 'employee_id',
+            attributes:[
+                'employee_id',
+                [Sequelize.fn('AVG', Sequelize.col('initiative')), 'initiative_count'],
+                [Sequelize.fn('AVG', Sequelize.col('ability_to_delegate')), 'ability_to_delegate_count'],
+                [Sequelize.fn('AVG', Sequelize.col('clear_Communication')), 'clear_Communication_count'],
+                [Sequelize.fn('AVG', Sequelize.col('self_awareness_of_strengths_and_weaknesses')), 'self_awareness_of_strengths_and_weaknesses_count'],
+                [Sequelize.fn('AVG', Sequelize.col('agile_thinking')), 'agile_thinking_count'],
+                [Sequelize.fn('AVG', Sequelize.col('influence')), 'influence_count'], 
+                [Sequelize.fn('AVG', Sequelize.col('empathy')), 'empathy_count'],
+                [Sequelize.fn('AVG', Sequelize.col('leadership_courage')), 'leadership_courage_count'], 
+                [Sequelize.fn('AVG', Sequelize.col('customer_client_patient_satisfaction')), 'customer_client_patient_satisfaction_count'],
+                [Sequelize.fn('AVG', Sequelize.col('team_contributions')), 'team_contributions_count'], 
+                [Sequelize.fn('AVG', Sequelize.col('time_management')), 'time_management_count'],
+                [Sequelize.fn('AVG', Sequelize.col('work_product')), 'work_product_count']
+            ]
         })
+
+        employeeDetails.qualitativeMeasurementDetails = qualitativeMeasurementDetails;
+        return employeeDetails;
     }
 
     /*

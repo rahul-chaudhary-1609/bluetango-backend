@@ -24,4 +24,17 @@ export class QualitativeMeasurementController {
         }
     }
     
+     /**
+    * get qualitative measurement
+    * @param req :[]
+    * @param res 
+    */
+    public async getQualitativeMeasurement(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await qualitativeMeasuremetServices.getQualitativeMeasurement(req.query);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }
