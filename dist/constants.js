@@ -62,7 +62,9 @@ exports.MESSAGES = {
     employer_notFound: 'Employer not found',
     employee_list: 'Employees list',
     add_qualitative_measure_check: 'You are not elligible to rate qualitative measure',
-    invalid_employee_id: 'Invalid employee id, You can rate only your empoyee '
+    invalid_employee_id: 'Invalid employee id, You can rate only your empoyee',
+    invalid_employee: "Invalid employee id",
+    employee_update: "Employee details updated successfully"
 };
 exports.code = {
     error_code: 400

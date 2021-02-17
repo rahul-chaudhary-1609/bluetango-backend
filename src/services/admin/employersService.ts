@@ -13,7 +13,7 @@ export class EmployersService {
     * get employers industry type list
     @param {} params pass all parameters from request
     */
-    public async getIndustryTypeList (params: any) {
+    public async getIndustryTypeList(params: any) {
         return await industryTypeModel.findAndCountAll({
             where: {},
             order: [["name", "ASC"]]
@@ -28,21 +28,21 @@ export class EmployersService {
         var isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {
-            qry.where = { 
+            qry.where = {
                 email: params.username,
-                status: {[Op.in]: [0,1]}
+                status: { [Op.in]: [0, 1] }
             };
         }
-        var existingUser; 
+        var existingUser;
         if (params.id) {
             existingUser = await employersModel.findOne({
                 where: {
-                    [Op.or]:[
-                        {email: params.email},
-                        {phone_number: params.phone_number},
+                    [Op.or]: [
+                        { email: params.email },
+                        { phone_number: params.phone_number },
                     ],
                     status: {
-                        [Op.in]: [0,1]
+                        [Op.in]: [0, 1]
                     },
                     id: {
                         [Op.ne]: params.id
@@ -52,34 +52,34 @@ export class EmployersService {
         } else {
             existingUser = await employersModel.findOne({
                 where: {
-                    [Op.or]:[
-                        {email: params.email},
-                        {phone_number: params.phone_number},
+                    [Op.or]: [
+                        { email: params.email },
+                        { phone_number: params.phone_number },
                     ],
                     status: {
-                        [Op.in]: [0,1]
+                        [Op.in]: [0, 1]
                     }
                 }
             });
-        }       
+        }
         params.admin_id = user.uid;
         if (_.isEmpty(existingUser)) {
-          if (params.id) {
-              delete params.password;
-            let updateData =  await employersModel.update( params, {
-                where: { id: params.id}
-            });
-            if (updateData) {
-                return await employersModel.findOne({
-                    where: {id: params.id}
-                })
+            if (params.id) {
+                delete params.password;
+                let updateData = await employersModel.update(params, {
+                    where: { id: params.id }
+                });
+                if (updateData) {
+                    return await employersModel.findOne({
+                        where: { id: params.id }
+                    })
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                params.password = await appUtils.bcryptPassword(params.password);
+                return await employersModel.create(params);
             }
-          } else {
-            params.password = await appUtils.bcryptPassword(params.password);
-            return await employersModel.create(params);
-          }
 
         } else {
             throw new Error(constants.MESSAGES.email_phone_already_registered);
@@ -90,16 +90,16 @@ export class EmployersService {
     * get employers list function
     @param {} params pass all parameters from request
     */
-    public async getEmployersList (params: any) {
+    public async getEmployersList(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         var whereCond = {};
         if (params.industry_type) {
             whereCond = {
                 industry_type: params.industry_type
             }
-        } else if(params.searchKey) {
+        } else if (params.searchKey) {
             whereCond = {
-                name: { [Op.iLike] : `%${params.searchKey}%`}
+                name: { [Op.iLike]: `%${params.searchKey}%` }
             }
         }
 
@@ -116,24 +116,24 @@ export class EmployersService {
     * change employers status: activate/deactivate/delete
     @param {} params pass all parameters from request
     */
-    public async changeEmployerStatus (params: any) {
-        let query = {where:{id: params.employerId}};
+    public async changeEmployerStatus(params: any) {
+        let query = { where: { id: params.employerId } };
         let accountExists = await employersModel.findOne(query);
-        if(accountExists) {
+        if (accountExists) {
             let updates = <any>{};
-            if(params.actionType == "activate") {
-                if(accountExists && accountExists.status == 1)
-                throw new Error(constants.MESSAGES.already_activated);
+            if (params.actionType == "activate") {
+                if (accountExists && accountExists.status == 1)
+                    throw new Error(constants.MESSAGES.already_activated);
 
                 updates.status = 1;
-            } else if(params.actionType == "deactivate") {
-                if(accountExists && accountExists.status == 0)
-                throw new Error(constants.MESSAGES.already_deactivated);
+            } else if (params.actionType == "deactivate") {
+                if (accountExists && accountExists.status == 0)
+                    throw new Error(constants.MESSAGES.already_deactivated);
 
                 updates.status = 0;
-            } else if(params.actionType == "delete") {
-                if(accountExists && accountExists.status == 2)
-                throw new Error(constants.MESSAGES.already_deleted);
+            } else if (params.actionType == "delete") {
+                if (accountExists && accountExists.status == 2)
+                    throw new Error(constants.MESSAGES.already_deleted);
 
                 updates.status = 2;
             } else {
@@ -151,31 +151,31 @@ export class EmployersService {
     * get dashboard analytics count
     @param {} params pass all parameters from request
     */
-    public async dashboardAnalytics (user:any) {
-       
-            let where:any = {}
-            let idArr:any = []
-            where.admin_id = user.uid
-            where.status = 1
-           const employers = await employersModel.findAndCountAll({where: where, raw: true})
-           
-           for(let i=0; i<employers.rows.length; i++) {
-               idArr.push(employers.rows[i].id)
+    public async dashboardAnalytics(user: any) {
 
-           }
-           
-           let criteria = {
+        let where: any = {}
+        let idArr: any = []
+        where.admin_id = user.uid
+        where.status = 1
+        const employers = await employersModel.findAndCountAll({ where: where, raw: true })
+
+        for (let i = 0; i < employers.rows.length; i++) {
+            idArr.push(employers.rows[i].id)
+
+        }
+
+        let criteria = {
 
             current_employer_id: { [Op.in]: idArr }
-          
-          }
-           const employees = await employeeModel.count({where: criteria})
-          
-            if(employers) {
-                return {employers:employers.count, employees}
-            }else {
-                throw new Error(constants.MESSAGES.employer_notFound);
-            }
+
+        }
+        const employees = await employeeModel.count({ where: criteria })
+
+        if (employers) {
+            return { employers: employers.count, employees }
+        } else {
+            throw new Error(constants.MESSAGES.employer_notFound);
+        }
     }
 
 
@@ -183,58 +183,132 @@ export class EmployersService {
     * get employers list function
     @param {} params pass all parameters from request
     */
-   public async getEmployeeList (params: any) {
-    employeeModel.belongsTo(employersModel,{foreignKey : "current_employer_id"})
+    public async getEmployeeList(params: any) {
+        employeeModel.belongsTo(employersModel, { foreignKey: "current_employer_id" })
 
-    employeeModel.belongsTo(departmentModel, {foreignKey: "current_department_id"})
+        employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
 
-    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-    var whereCond: any = {};
-    var employer: any = {};
-    var department: any = {}
-    if(params.employerName) {
-        employer = {
-            name: { [Op.iLike] : `%${params.employerName}%`},
-            status: 1
-        }
-    }
-
-    if(params.departmentName) {
-        department = {
-            name: { [Op.iLike] : `%${params.departmentName}%`}
-        }
-    }
-        
-     if(params.searchKey) {
-        whereCond = {
-            name: { [Op.iLike] : `%${params.searchKey}%`},
-            status: 1
-        }
-    }else {
-        whereCond.status = 1
-    }
-
-    return await employeeModel.findAndCountAll({
-        where: whereCond,
-        include: [
-            {
-                model: employersModel,
-                where: employer,
-                required: true,
-                attributes: ["id", "name"]
-            },
-            {
-                model: departmentModel,
-                where: department,
-                required: true,
-                attributes: ["id", "name"]
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        var whereCond: any = {};
+        var employer: any = {};
+        var department: any = {}
+        if (params.employerName) {
+            employer = {
+                name: { [Op.iLike]: `%${params.employerName}%` },
+                status: 1
             }
-        ],
-        limit: limit,
-        offset: offset,
-        order: [["createdAt", "DESC"]]
-    })
+        }
 
-}
+        if (params.departmentName) {
+            department = {
+                name: { [Op.iLike]: `%${params.departmentName}%` }
+            }
+        }
+
+        if (params.searchKey) {
+            whereCond = {
+                name: { [Op.iLike]: `%${params.searchKey}%` },
+                status: 1
+            }
+        } else {
+            whereCond.status = 1
+        }
+
+        return await employeeModel.findAndCountAll({
+            where: whereCond,
+            include: [
+                {
+                    model: employersModel,
+                    where: employer,
+                    required: true,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: departmentModel,
+                    where: department,
+                    required: true,
+                    attributes: ["id", "name"]
+                }
+            ],
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
+        })
+
+    }
+
+
+    /**
+    * change employee status: activate/deactivate/delete
+    @param {} params pass all parameters from request
+    */
+    public async changeEmployeeStatus(params: any) {
+        let query = { where: { id: params.employeeId } };
+
+        let accountExists = await employeeModel.findOne(query);
+        if (accountExists) {
+            let updates = <any>{};
+            if (params.actionType == "activate") {
+                if (accountExists && accountExists.status == 1)
+                    throw new Error(constants.MESSAGES.already_activated);
+
+                updates.status = 1;
+            } else if (params.actionType == "deactivate") {
+                if (accountExists && accountExists.status == 0)
+                    throw new Error(constants.MESSAGES.already_deactivated);
+
+                updates.status = 0;
+            } else if (params.actionType == "delete") {
+                if (accountExists && accountExists.status == 2)
+                    throw new Error(constants.MESSAGES.already_deleted);
+
+                updates.status = 2;
+            } else {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }
+
+            await employeeModel.update(updates, query);
+
+        } else {
+            throw new Error(constants.MESSAGES.invalid_employee);
+        }
+    }
+
+    /**
+   * edit employee details
+   @param {} params pass all parameters from request
+   */
+    public async editEmployeeDetails(params: any) {
+    
+        let query: any = {}
+        if (params.employerId) {
+            query = { where: { id: params.employerId } };
+            let employerExists = await employersModel.findOne(query);
+            if (!employerExists) {
+                throw new Error(constants.MESSAGES.invalid_employer);
+            }
+            params.current_employer_id = employerExists.id
+        }
+        if (params.departmentId) {
+            query = { where: { id: params.departmentId } };
+            let departmentExists = await departmentModel.findOne(query);
+            if (!departmentExists) {
+                throw new Error(constants.MESSAGES.invalid_department);
+            }
+            params.current_department_id = departmentExists.id
+        }
+        if(params.status) {
+            let status:any = [1,2,3]
+            if(!status.includes(JSON.parse(params.status))) {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }
+        }
+
+        const updateEmployee = await employeeModel.update(params, { where: { id: params.id }, raw: true, returning: true })
+        if (updateEmployee[0] == 0) {
+            throw new Error(constants.MESSAGES.invalid_employee);
+        }
+        return updateEmployee
+    }
 
 }
