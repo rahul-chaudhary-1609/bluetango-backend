@@ -52,6 +52,22 @@ class QualitativeMeasurementController {
             }
         });
     }
+    /**
+   * get qualitative measurement
+   * @param req :[]
+   * @param res
+   */
+    getQualitativeMeasurement(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield qualitativeMeasuremetServices.getQualitativeMeasurement(req.query);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.QualitativeMeasurementController = QualitativeMeasurementController;
 //# sourceMappingURL=qualitativeMeasurementController.js.map

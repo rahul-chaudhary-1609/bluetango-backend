@@ -33,6 +33,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
+const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoal_1 = require("../../models/teamGoal");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -67,7 +68,7 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             employee_1.employeeModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
-            return yield employee_1.employeeModel.findOne({
+            let employeeDetails = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: { id: params.id },
                 include: [
                     {
@@ -82,7 +83,28 @@ class EmployeeServices {
                     }
                 ],
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+            }));
+            let qualitativeMeasurementDetails = yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
+                where: { employee_id: params.id },
+                group: 'employee_id',
+                attributes: [
+                    'employee_id',
+                    [Sequelize.fn('AVG', Sequelize.col('initiative')), 'initiative_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('ability_to_delegate')), 'ability_to_delegate_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('clear_Communication')), 'clear_Communication_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('self_awareness_of_strengths_and_weaknesses')), 'self_awareness_of_strengths_and_weaknesses_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('agile_thinking')), 'agile_thinking_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('influence')), 'influence_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('empathy')), 'empathy_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('leadership_courage')), 'leadership_courage_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('customer_client_patient_satisfaction')), 'customer_client_patient_satisfaction_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('team_contributions')), 'team_contributions_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('time_management')), 'time_management_count'],
+                    [Sequelize.fn('AVG', Sequelize.col('work_product')), 'work_product_count']
+                ]
             });
+            employeeDetails.qualitativeMeasurementDetails = qualitativeMeasurementDetails;
+            return employeeDetails;
         });
     }
     /*
