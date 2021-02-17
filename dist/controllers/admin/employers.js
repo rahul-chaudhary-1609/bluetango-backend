@@ -137,6 +137,38 @@ class EmployersController {
             }
         });
     }
+    /**
+       * change employee status
+       * @param req :[get data]
+       * @param res : [employere data]
+       */
+    changeEmployeeStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield employersService.changeEmployeeStatus(req.query);
+                return appUtils.successResponse(res, {}, constants.MESSAGES.status_updated);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+       * change employee status
+       * @param req :[get data]
+       * @param res : [employere data]
+       */
+    editEmployeeDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updateEmployee = yield employersService.editEmployeeDetails(req.body);
+                return appUtils.successResponse(res, updateEmployee[1][0], constants.MESSAGES.employee_update);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map
