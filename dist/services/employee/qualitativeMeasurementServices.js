@@ -36,6 +36,7 @@ const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class QualitativeMeasuremetServices {
@@ -78,8 +79,16 @@ class QualitativeMeasuremetServices {
     */
     getQualitativeMeasurement(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            qualitativeMeasurement_1.qualitativeMeasurementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             return yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
-                where: { employee_id: params.employee_id }
+                where: { employee_id: params.employee_id },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ]
             });
         });
     }

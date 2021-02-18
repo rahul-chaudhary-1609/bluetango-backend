@@ -7,9 +7,6 @@ import { employeeModel } from  "../../models/employee"
 import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
-import { managerTeamMemberModel } from  "../../models/managerTeamMember"
-import { industryTypeModel } from  "../../models/industryType"
-import { promises } from "fs";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -174,6 +171,31 @@ export class AuthService {
     */
     public async uploadFile(params: any, folderName) {
         return await helperFunction.uploadFile(params, folderName);
+    }
+
+    /*
+    * function to change password 
+    */
+    public async changePassword(params: any, user: any) {
+        let getEmployeeData = await helperFunction.convertPromiseToObject( 
+            await employeeModel.findOne({
+                where: { id: user.uid}
+            })
+        );
+        console.log(params, getEmployeeData);
+        let comparePassword = await appUtils.comparePassword(params.old_password, getEmployeeData.password);
+        if (comparePassword) {
+            let update = {
+                'password': await appUtils.bcryptPassword(params.new_password)
+            };
+            
+            return await employeeModel.update(update, {
+                where: { id: user.uid }
+            });
+        } else {
+            throw new Error(constants.MESSAGES.invalid_password);
+        }
+
     }
 
 }

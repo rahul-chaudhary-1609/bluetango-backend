@@ -5,6 +5,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
+import { employeeModel } from "../../models/employee";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -49,8 +50,16 @@ export class QualitativeMeasuremetServices {
     * get to add qualitative measurement
     */
    public async getQualitativeMeasurement(params: any) {
+    qualitativeMeasurementModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
        return await qualitativeMeasurementModel.findAll({
-           where:{employee_id: params.employee_id}
+           where:{employee_id: params.employee_id},
+           include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+           ]
        })
    }
 

@@ -205,6 +205,29 @@ class AuthService {
             return yield helperFunction.uploadFile(params, folderName);
         });
     }
+    /*
+    * function to change password
+    */
+    changePassword(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getEmployeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: { id: user.uid }
+            }));
+            console.log(params, getEmployeeData);
+            let comparePassword = yield appUtils.comparePassword(params.old_password, getEmployeeData.password);
+            if (comparePassword) {
+                let update = {
+                    'password': yield appUtils.bcryptPassword(params.new_password)
+                };
+                return yield employee_1.employeeModel.update(update, {
+                    where: { id: user.uid }
+                });
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_password);
+            }
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map
