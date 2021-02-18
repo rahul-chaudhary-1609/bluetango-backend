@@ -351,12 +351,6 @@ class EmployersService {
      */
     updateSubscriptionPlan(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (params.status) {
-                let status = [0, 1, 2];
-                if (!status.includes(JSON.parse(params.status))) {
-                    throw new Error(constants.MESSAGES.invalid_action);
-                }
-            }
             const plans = yield subscriptionManagement_1.subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true });
             if (plans && plans[1][0]) {
                 return plans[1][0];
@@ -374,13 +368,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {};
             if (params.status) {
-                let status = [0, 1];
-                if (!status.includes(JSON.parse(params.status))) {
-                    throw new Error(constants.MESSAGES.invalid_action);
-                }
-                else {
-                    where.status = params.status;
-                }
+                where.status = params.status;
             }
             else {
                 where.status = 1;

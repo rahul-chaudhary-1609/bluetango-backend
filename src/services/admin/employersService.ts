@@ -328,12 +328,6 @@ export class EmployersService {
      */
     public async updateSubscriptionPlan(params: any) {
 
-        if (params.status) {
-            let status: any = [0, 1, 2]
-            if (!status.includes(JSON.parse(params.status))) {
-                throw new Error(constants.MESSAGES.invalid_action);
-            }
-        }
             const plans = await subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true })
            
             if(plans && plans[1][0]) {
@@ -352,12 +346,8 @@ export class EmployersService {
     public async viewSubscriptionPlan(params: any) {
         let where:any = {}
         if (params.status) {
-            let status: any = [0, 1]
-            if (!status.includes(JSON.parse(params.status))) {
-                throw new Error(constants.MESSAGES.invalid_action);
-            }else{
                 where.status = params.status
-            }
+        
         }else {
             where.status = 1
         }

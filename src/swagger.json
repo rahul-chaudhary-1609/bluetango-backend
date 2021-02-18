@@ -584,28 +584,28 @@
             "name": "plan_name",
             "in": "formData",
             "description": "plan name",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
             "name": "description",
             "in": "formData",
             "description": "description",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
             "name": "charge",
             "in": "formData",
             "description": "charge",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
             "name": "duration",
             "in": "formData",
             "description": "in days",
-            "required": false,
+            "required": true,
             "type": "number"
           }
         ],
@@ -633,7 +633,7 @@
             "name": "id",
             "in": "formData",
             "description": "plan id",
-            "required": false,
+            "required": true,
             "type": "number"
           },
           {
@@ -667,9 +667,10 @@
           {
             "name": "status",
             "in": "formData",
-            "description": "0=>inactive,1=>active,2=>deleted",
+            "description": "0=>inactive,1=>active",
             "required": false,
-            "type": "number"
+            "type": "number",
+            "enum": [0, 1]
           }
         ],
         "responses": {}
@@ -697,7 +698,8 @@
             "in": "query",
             "description": "0=>inactive,1=>active",
             "required": false,
-            "type": "number"
+            "type": "number",
+            "enum": [0, 1]
           }
         ],
         "responses": {}
