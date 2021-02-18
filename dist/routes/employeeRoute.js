@@ -36,12 +36,15 @@ const authController = new authController_1.AuthController();
 const employeeController = new employeeController_1.EmployeeController();
 const goalController = new goalController_1.GoalController();
 const qualitativeMeasurementController = new qualitativeMeasurementController_1.QualitativeMeasurementController();
+// auth API
 /* login route for employee login */
 employeeRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
 /* forget pass route for employee */
 employeeRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.forgotPassword), authController.forgotPassword);
 /* reset pass route for all */
 employeeRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.resetPassword), tokenValidator.validateForgotPasswordToken, authController.resetPassword);
+/* change pass route for employee */
+employeeRoute.post("/changePassword", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.changePassword), tokenValidator.validateEmployeeToken, authController.changePassword);
 /* reset pass route for employee */
 employeeRoute.post("/employeeResetPassword", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.resetPassword), tokenValidator.validateEmployeeToken, authController.employeeResetPassword);
 /* get my profile route for employee */
@@ -50,6 +53,7 @@ employeeRoute.get("/getMyProfile", validators.trimmer, tokenValidator.validateEm
 employeeRoute.post("/updateProfile", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateProfile), authController.updateProfile);
 /* upload file route for employee */
 employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, multerParser_1.upload.single('file'), authController.uploadFile);
+// employee API
 /* get my profile route for employee */
 employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), employeeController.getListOfTeamMemberByManagerId);
 /* view details route for employee */

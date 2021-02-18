@@ -107,9 +107,22 @@ export class AuthController {
     */
     public async uploadFile(req: any, res: any, next: any) {
         try {
-            console.log(req.file,'-----------------------', req.headers);
             const responseFromService = await authService.uploadFile(req.file, req.body.folderName);
             await deleteFile(req.file.filename);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+     /**
+    * update profile
+    * @param req :[]
+    * @param res 
+    */
+    public async changePassword(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.changePassword(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

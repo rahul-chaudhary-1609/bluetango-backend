@@ -17,6 +17,7 @@ const employeeController = new EmployeeController();
 const goalController = new GoalController();
 const qualitativeMeasurementController  = new QualitativeMeasurementController();
 
+// auth API
 /* login route for employee login */
 employeeRoute.post("/login",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
 
@@ -25,6 +26,9 @@ employeeRoute.post("/forgotPassword",validators.trimmer, joiSchemaValidation.val
 
 /* reset pass route for all */
 employeeRoute.post("/resetPassword",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.resetPassword), tokenValidator.validateForgotPasswordToken, authController.resetPassword);
+
+/* change pass route for employee */
+employeeRoute.post("/changePassword",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.changePassword), tokenValidator.validateEmployeeToken, authController.changePassword);
 
 /* reset pass route for employee */
 employeeRoute.post("/employeeResetPassword",validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.resetPassword), tokenValidator.validateEmployeeToken, authController.employeeResetPassword);
@@ -38,6 +42,8 @@ employeeRoute.post("/updateProfile", validators.trimmer, tokenValidator.validate
 /* upload file route for employee */
 employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, upload.single('file'), authController.uploadFile);
 
+
+// employee API
 /* get my profile route for employee */
 employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), employeeController.getListOfTeamMemberByManagerId);
 
@@ -70,6 +76,8 @@ employeeRoute.post("/submitGoalAsEmployee", validators.trimmer, tokenValidator.v
 
 /* view goal for employee */
 employeeRoute.get("/viewGoalAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), goalController.viewGoalAsEmployee);
+
+
 
 // QualitativeMeasurement routes
 
