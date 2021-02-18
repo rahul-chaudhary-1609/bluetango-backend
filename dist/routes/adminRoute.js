@@ -58,5 +58,11 @@ adminRoute.get("/getEmployeeList", tokenValidator.validateAdminToken, employersC
 adminRoute.put("/changeEmployeeStatus", tokenValidator.validateAdminToken, employersController.changeEmployeeStatus);
 /* edit employee details */
 adminRoute.put("/editEmployeeDetails", tokenValidator.validateAdminToken, employersController.editEmployeeDetails);
+/* add subscription plan */
+adminRoute.post("/addSubscriptionPlan", joiSchemaValidation.validateBody(adminSchema.addSubscriptionPlan), tokenValidator.validateAdminToken, employersController.addSubscriptionPlan);
+/* edit subscription plan */
+adminRoute.put("/updateSubscriptionPlan", joiSchemaValidation.validateBody(adminSchema.updateSubscriptionPlan), tokenValidator.validateAdminToken, employersController.updateSubscriptionPlan);
+/* edit subscription plan */
+adminRoute.get("/viewSubscriptionPlan", tokenValidator.validateAdminToken, employersController.viewSubscriptionPlan);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

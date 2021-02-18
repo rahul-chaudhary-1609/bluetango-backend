@@ -33,6 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployersService = void 0;
 const models_1 = require("../../models");
+const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
@@ -323,7 +324,7 @@ class EmployersService {
                 params.current_department_id = departmentExists.id;
             }
             if (params.status) {
-                let status = [1, 2, 3];
+                let status = [0, 1, 2];
                 if (!status.includes(JSON.parse(params.status))) {
                     throw new Error(constants.MESSAGES.invalid_action);
                 }
@@ -333,6 +334,46 @@ class EmployersService {
                 throw new Error(constants.MESSAGES.invalid_employee);
             }
             return updateEmployee;
+        });
+    }
+    /**
+     *
+     * @param {} params pass all parameters from request
+     */
+    addSubscriptionPlan(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield subscriptionManagement_1.subscriptionManagementModel.create(params);
+        });
+    }
+    /**
+     *
+     * @param {} params pass all parameters from request
+     */
+    updateSubscriptionPlan(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const plans = yield subscriptionManagement_1.subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true });
+            if (plans && plans[1][0]) {
+                return plans[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.plan_notFound);
+            }
+        });
+    }
+    /**
+     *
+     * @param {} params pass all parameters from request
+     */
+    viewSubscriptionPlan(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            if (params.status) {
+                where.status = params.status;
+            }
+            else {
+                where.status = 1;
+            }
+            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where });
         });
     }
 }

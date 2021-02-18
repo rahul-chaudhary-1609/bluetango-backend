@@ -121,10 +121,52 @@ export class EmployersController {
        * @param req :[get data]
        * @param res : [employere data]
        */
-      public async editEmployeeDetails(req: any, res: any) {
+    public async editEmployeeDetails(req: any, res: any) {
         try {
             const updateEmployee = await employersService.editEmployeeDetails(req.body);
             return appUtils.successResponse(res, updateEmployee[1][0], constants.MESSAGES.employee_update);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+       * add subscription plan
+       * @param req :[subscription plan details]
+       * @param res : [subscription plans]
+       */
+    public async addSubscriptionPlan(req: any, res: any) {
+        try {
+            const subscriptionPlan = await employersService.addSubscriptionPlan(req.body);
+            return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_add);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+       * update subscription plan
+       * @param req :[subscription plan details]
+       * @param res : [subscription plans]
+       */
+    public async updateSubscriptionPlan(req: any, res: any) {
+        try {
+            const subscriptionPlan = await employersService.updateSubscriptionPlan(req.body);
+            return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_update);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+       * view subscription plan
+       * @param req :[]
+       * @param res : [subscription plans]
+       */
+      public async viewSubscriptionPlan(req: any, res: any) {
+        try {
+            const subscriptionPlan = await employersService.viewSubscriptionPlan(req.query);
+            return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_fetch);
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }

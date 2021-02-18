@@ -64,7 +64,11 @@ exports.MESSAGES = {
     add_qualitative_measure_check: 'You are not elligible to rate qualitative measure',
     invalid_employee_id: 'Invalid employee id, You can rate only your empoyee',
     invalid_employee: "Invalid employee id",
-    employee_update: "Employee details updated successfully"
+    employee_update: "Employee details updated successfully",
+    plan_notFound: "No plans found with this id",
+    subscription_plan_update: "Subscription plan updated successfully",
+    subscription_plan_add: "Subscription plan added successfully",
+    subscription_plan_fetch: "Subscription plan fetched successfully"
 };
 exports.code = {
     error_code: 400

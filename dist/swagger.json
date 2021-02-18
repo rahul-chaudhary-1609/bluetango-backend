@@ -555,9 +555,151 @@
                     {
                         "name": "status",
                         "in": "formData",
-                        "description": "activate/deactivate/delete",
+                        "description": "0=>inactive,1=>active,2=>deleted",
                         "required": false,
                         "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/addSubscriptionPlan": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to add the subscription plan",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "plan_name",
+                        "in": "formData",
+                        "description": "plan name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "charge",
+                        "in": "formData",
+                        "description": "charge",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "duration",
+                        "in": "formData",
+                        "description": "in days",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/updateSubscriptionPlan": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to update the subscription plan",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "plan id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "plan_name",
+                        "in": "formData",
+                        "description": "plan name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "charge",
+                        "in": "formData",
+                        "description": "charge",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "duration",
+                        "in": "formData",
+                        "description": "in days",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "status",
+                        "in": "formData",
+                        "description": "0=>inactive,1=>active",
+                        "required": false,
+                        "type": "number",
+                        "enum": [0, 1]
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/viewSubscriptionPlan": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to view the subscription plan",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "0=>inactive,1=>active",
+                        "required": false,
+                        "type": "number",
+                        "enum": [0, 1]
                     }
                 ],
                 "responses": {}

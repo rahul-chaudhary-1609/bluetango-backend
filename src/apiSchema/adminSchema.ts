@@ -131,6 +131,22 @@ export const addEditEmployers = Joi.object ({
 
 })
 
+export const addSubscriptionPlan = Joi.object ({
+  plan_name: Joi.string().required(),
+  description: Joi.string().required(),
+  charge: Joi.string().required(),
+  duration: Joi.string().required()
+})
+
+export const updateSubscriptionPlan = Joi.object ({
+  id: Joi.string().required(),
+  plan_name: Joi.string().allow(),
+  description: Joi.string().allow(),
+  charge: Joi.string().allow(),
+  duration: Joi.string().allow(),
+  status: Joi.number().allow()
+})
+
 export const getEmployersList = Joi.object ({
   industry_type: Joi.string().optional(),
   limit: Joi.string().optional(),
