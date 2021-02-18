@@ -145,7 +145,10 @@ class GoalServices {
                     name: { [Op.iLike]: `%${params.search_string}%` }
                 };
             }
-            return yield teamGoal_1.teamGoalModel.findAndCountAll({
+            let count = yield teamGoal_1.teamGoalModel.count({
+                where: { manager_id: user.uid }
+            });
+            let rows = yield teamGoal_1.teamGoalModel.findAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
@@ -169,6 +172,7 @@ class GoalServices {
                 offset: offset,
                 order: [["createdAt", "DESC"]]
             });
+            return { count, rows };
         });
     }
     /*

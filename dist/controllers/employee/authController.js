@@ -146,9 +146,24 @@ class AuthController {
     uploadFile(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.file, '-----------------------', req.headers);
                 const responseFromService = yield authService.uploadFile(req.file, req.body.folderName);
                 yield multerParser_1.deleteFile(req.file.filename);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+   * update profile
+   * @param req :[]
+   * @param res
+   */
+    changePassword(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.changePassword(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

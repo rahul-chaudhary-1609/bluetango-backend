@@ -121,8 +121,12 @@ export class GoalServices {
                name: { [Op.iLike]: `%${params.search_string}%` }
             }
         }
+
+        let count = await teamGoalModel.count({
+            where: {manager_id: user.uid }
+        })
        
-        return await teamGoalModel.findAndCountAll({
+        let rows =  await teamGoalModel.findAll({
             where: {manager_id: user.uid },
             include: [
                 {
@@ -146,6 +150,8 @@ export class GoalServices {
             offset: offset,
             order: [["createdAt", "DESC"]]
         })
+
+        return { count, rows}
     }
 
      /*
