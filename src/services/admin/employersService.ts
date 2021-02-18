@@ -1,4 +1,5 @@
 import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
+import { subscriptionManagementModel } from "../../models/subscriptionManagement"
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -279,7 +280,7 @@ export class EmployersService {
    @param {} params pass all parameters from request
    */
     public async editEmployeeDetails(params: any) {
-    
+
         let query: any = {}
         if (params.employerId) {
             query = { where: { id: params.employerId } };
@@ -297,9 +298,9 @@ export class EmployersService {
             }
             params.current_department_id = departmentExists.id
         }
-        if(params.status) {
-            let status:any = [1,2,3]
-            if(!status.includes(JSON.parse(params.status))) {
+        if (params.status) {
+            let status: any = [0, 1, 2]
+            if (!status.includes(JSON.parse(params.status))) {
                 throw new Error(constants.MESSAGES.invalid_action);
             }
         }
@@ -309,6 +310,59 @@ export class EmployersService {
             throw new Error(constants.MESSAGES.invalid_employee);
         }
         return updateEmployee
+    }
+
+    /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async addSubscriptionPlan(params: any) {
+
+            return await subscriptionManagementModel.create(params);
+        
+    }
+
+    /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async updateSubscriptionPlan(params: any) {
+
+        if (params.status) {
+            let status: any = [0, 1, 2]
+            if (!status.includes(JSON.parse(params.status))) {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }
+        }
+            const plans = await subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true })
+           
+            if(plans && plans[1][0]) {
+                return plans[1][0]
+            }
+            else {
+                throw new Error(constants.MESSAGES.plan_notFound);
+            }
+        
+    }
+
+    /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async viewSubscriptionPlan(params: any) {
+        let where:any = {}
+        if (params.status) {
+            let status: any = [0, 1]
+            if (!status.includes(JSON.parse(params.status))) {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }else{
+                where.status = params.status
+            }
+        }else {
+            where.status = 1
+        }
+            return await subscriptionManagementModel.findAll({where: where})
+        
     }
 
 }

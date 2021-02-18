@@ -169,6 +169,54 @@ class EmployersController {
             }
         });
     }
+    /**
+       * add subscription plan
+       * @param req :[subscription plan details]
+       * @param res : [subscription plans]
+       */
+    addSubscriptionPlan(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const subscriptionPlan = yield employersService.addSubscriptionPlan(req.body);
+                return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_add);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+       * update subscription plan
+       * @param req :[subscription plan details]
+       * @param res : [subscription plans]
+       */
+    updateSubscriptionPlan(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const subscriptionPlan = yield employersService.updateSubscriptionPlan(req.body);
+                return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_update);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+       * view subscription plan
+       * @param req :[]
+       * @param res : [subscription plans]
+       */
+    viewSubscriptionPlan(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const subscriptionPlan = yield employersService.viewSubscriptionPlan(req.query);
+                return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_fetch);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

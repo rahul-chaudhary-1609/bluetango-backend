@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEmployersList = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
+exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -147,6 +147,20 @@ exports.addEditEmployers = joi_1.default.object({
     phone_number: joi_1.default.string().required(),
     industry_type: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
+});
+exports.addSubscriptionPlan = joi_1.default.object({
+    plan_name: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+    charge: joi_1.default.string().required(),
+    duration: joi_1.default.string().required()
+});
+exports.updateSubscriptionPlan = joi_1.default.object({
+    id: joi_1.default.string().required(),
+    plan_name: joi_1.default.string().allow(),
+    description: joi_1.default.string().allow(),
+    charge: joi_1.default.string().allow(),
+    duration: joi_1.default.string().allow(),
+    status: joi_1.default.number().allow()
 });
 exports.getEmployersList = joi_1.default.object({
     industry_type: joi_1.default.string().optional(),
