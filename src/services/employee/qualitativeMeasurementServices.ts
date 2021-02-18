@@ -45,5 +45,13 @@ export class QualitativeMeasuremetServices {
         
     }
    
+    /*
+    * get to add qualitative measurement
+    */
+   public async getQualitativeMeasurement(params: any) {
+       return await qualitativeMeasurementModel.findAll({
+           where:{employee_id: params.employee_id}
+       })
+   }
 
 }
