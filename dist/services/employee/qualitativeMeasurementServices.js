@@ -37,6 +37,7 @@ const constants = __importStar(require("../../constants"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const employee_1 = require("../../models/employee");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class QualitativeMeasuremetServices {
@@ -67,7 +68,16 @@ class QualitativeMeasuremetServices {
             });
             params.manager_id = user.uid;
             if (lodash_1.default.isEmpty(qualitativeMeasurementData)) {
-                return yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
+                let resData = yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
+                // add notification for employee
+                let notificationObj = {
+                    type_id: resData.id,
+                    sender_id: user.uid,
+                    reciever_id: params.employee_id,
+                    type: constants.NOTIFICATION_TYPE.rating
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                return resData;
             }
             else {
                 throw new Error(constants.MESSAGES.add_qualitative_measure_check);

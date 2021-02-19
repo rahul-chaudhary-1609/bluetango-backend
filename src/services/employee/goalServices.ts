@@ -42,7 +42,7 @@ export class GoalServices {
 
                     // add notification for employee
                     let notificationObj = <any> {
-                        goal_id: teamGoaRes.id,
+                        type_id: teamGoaRes.id,
                         sender_id: user.uid,
                         reciever_id: params[i].employee_ids[j],
                         type: constants.NOTIFICATION_TYPE.assign_new_goal
@@ -101,9 +101,19 @@ export class GoalServices {
                         }
     
                         await teamGoalAssignModel.create(teamGoalAssignObj);
+
+                         // add notification for employee
+                        let notificationObj = <any> {
+                            type_id: params.id,
+                            sender_id: user.uid,
+                            reciever_id: params.employee_ids[j],
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                        }
+                        await notificationModel.create(notificationObj);
                     } 
                    
                 }
+                return true;
             }
         }else {
             throw new Error(constants.MESSAGES.goal_management_check);
