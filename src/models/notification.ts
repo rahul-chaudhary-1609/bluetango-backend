@@ -9,7 +9,7 @@ export const notificationModel: any = sequelize.define("notification", {
         primaryKey: true,
         autoIncrement: true
     },
-    goal_id: {
+    type_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0

@@ -6,6 +6,7 @@ import * as tokenResponse from "../../utils/tokenResponse";
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
+import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -39,7 +40,17 @@ export class QualitativeMeasuremetServices {
         params.manager_id = user.uid;
 
         if (_.isEmpty(qualitativeMeasurementData)) {
-            return await  qualitativeMeasurementModel.create(params);
+            let resData =  await  qualitativeMeasurementModel.create(params);
+
+             // add notification for employee
+             let notificationObj = <any> {
+                type_id: resData.id,
+                sender_id: user.uid,
+                reciever_id: params.employee_id,
+                type: constants.NOTIFICATION_TYPE.rating
+            }
+            await notificationModel.create(notificationObj);
+            return resData;
         } else {
             throw new Error(constants.MESSAGES.add_qualitative_measure_check);
         }

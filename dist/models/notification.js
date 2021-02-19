@@ -10,7 +10,7 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
         primaryKey: true,
         autoIncrement: true
     },
-    goal_id: {
+    type_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
