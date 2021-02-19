@@ -39,6 +39,7 @@ const employee_1 = require("../../models/employee");
 const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class GoalServices {
@@ -69,6 +70,15 @@ class GoalServices {
                             employee_id: params[i].employee_ids[j]
                         };
                         yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                        // add notification for employee
+                        let notificationObj = {
+                            goal_id: teamGoaRes.id,
+                            sender_id: user.uid,
+                            reciever_id: params[i].employee_ids[j],
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                        };
+                        console.log(notificationObj);
+                        yield notification_1.notificationModel.create(notificationObj);
                     }
                 }
                 return true;
