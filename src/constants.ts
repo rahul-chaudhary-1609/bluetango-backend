@@ -115,3 +115,11 @@ export const TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
   rejected: 2,
   requested: 3
 }
+
+export const NOTIFICATION_TYPE = {
+  other: 0,
+  assign_new_goal: 1,
+  goal_complete: 2,
+  rating: 3,
+  message: 4
+}

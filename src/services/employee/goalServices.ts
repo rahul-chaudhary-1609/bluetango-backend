@@ -2,13 +2,11 @@ import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
-import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel } from  "../../models/employee"
-import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { teamGoalAssignCompletionByEmployeeModel } from  "../../models/teamGoalAssignCompletionByEmployee"
-import { Model } from "sequelize/types";
+import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -40,8 +38,16 @@ export class GoalServices {
                         goal_id: teamGoaRes.id,
                         employee_id: params[i].employee_ids[j]
                     }
-
                     await teamGoalAssignModel.create(teamGoalAssignObj);
+
+                    // add notification for employee
+                    let notificationObj = <any> {
+                        goal_id: teamGoaRes.id,
+                        sender_id: user.uid,
+                        reciever_id: params[i].employee_ids[j],
+                        type: constants.NOTIFICATION_TYPE.assign_new_goal
+                    }
+                    await notificationModel.create(notificationObj);
                 }
             }
             return true;
