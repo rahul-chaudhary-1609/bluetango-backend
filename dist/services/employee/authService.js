@@ -77,6 +77,11 @@ class AuthService {
                     delete existingUser.password;
                     let token = yield tokenResponse.employeeTokenResponse(existingUser);
                     existingUser.token = token.token;
+                    if (params.device_token) {
+                        yield employee_1.employeeModel.update({
+                            device_token: params.device_token
+                        }, { where: { id: existingUser.id } });
+                    }
                     return existingUser;
                 }
                 else {

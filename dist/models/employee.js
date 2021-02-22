@@ -105,6 +105,10 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     accomplishments: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
+    },
+    device_token: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
     }
 }, {
     tableName: "employee"

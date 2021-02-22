@@ -46,7 +46,14 @@ export class AuthService {
                 delete existingUser.password;
                 let token = await tokenResponse.employeeTokenResponse(existingUser);
                 existingUser.token = token.token;
-
+                if (params.device_token) {
+                    await employeeModel.update({
+                            device_token: params.device_token
+                        },
+                        { where: {id: existingUser.id}}
+                    );
+                }
+               
                return existingUser;
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);

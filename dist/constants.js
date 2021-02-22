@@ -117,6 +117,8 @@ exports.NOTIFICATION_TYPE = {
     assign_new_goal: 1,
     goal_complete: 2,
     rating: 3,
-    message: 4
+    message: 4,
+    goal_accept: 5,
+    goal_reject: 6
 };
 //# sourceMappingURL=constants.js.map

@@ -77,6 +77,16 @@ class QualitativeMeasuremetServices {
                     type: constants.NOTIFICATION_TYPE.rating
                 };
                 yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Rating',
+                //     body: `Your manager giv rating you`,
+                //     data: {
+                //         id: resData.id,
+                // type: rating
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                 return resData;
             }
             else {
