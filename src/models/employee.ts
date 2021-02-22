@@ -104,6 +104,10 @@ export const employeeModel: any = sequelize.define("employee", {
     accomplishments: {
         type: DataTypes.TEXT,
         allowNull: true,
+    },
+    device_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 },
     {

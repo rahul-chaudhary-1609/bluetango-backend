@@ -728,6 +728,13 @@
                         "description": "password",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "formData",
+                        "description": "device_token",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}

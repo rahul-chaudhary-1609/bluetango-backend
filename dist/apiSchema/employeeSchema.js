@@ -43,7 +43,8 @@ exports.login = joi_1.default.object({
         "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    })
+    }),
+    device_token: joi_1.default.string().optional()
 });
 exports.forgotPassword = joi_1.default.object({
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()

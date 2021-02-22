@@ -78,6 +78,17 @@ class GoalServices {
                             type: constants.NOTIFICATION_TYPE.assign_new_goal
                         };
                         yield notification_1.notificationModel.create(notificationObj);
+                        // send push notification
+                        // let notificationData = <any> {
+                        //     title: 'Assign new goal',
+                        //     body: `Your manager assign a new goal- ${(params[i].title?params[i].title: '')}`,
+                        //     data: {
+                        //         goal_id: teamGoaRes.id,
+                        //         title: (params[i].title?params[i].title: '')
+                        //          type: ADD_GOAL
+                        //     },                        
+                        // }
+                        // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                     }
                 }
                 return true;
@@ -138,6 +149,17 @@ class GoalServices {
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal
                             };
                             yield notification_1.notificationModel.create(notificationObj);
+                            // send push notification
+                            // let notificationData = <any> {
+                            //     title: 'Assign new goal',
+                            //     body: `Your manager assign a new goal- ${(params[i].title?params[i].title: '')}`,
+                            //     data: {
+                            //         goal_id: teamGoaRes.id,
+                            //         title: (params[i].title?params[i].title: '')
+                            //          type: ADD_GOAL
+                            //     },                        
+                            // }
+                            // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                         }
                     }
                     return true;
@@ -316,7 +338,28 @@ class GoalServices {
             yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
                 where: { id: params.team_goal_assign_completion_by_employee_id }
             });
+            var getEmployeeId = yield teamGoalAssign_1.teamGoalAssignModel.findOne({
+                where: params.team_goal_assign_id
+            });
             if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
+                // add goal approve notification
+                let notificationObj = {
+                    type_id: params.goal_id,
+                    sender_id: user.uid,
+                    reciever_id: getEmployeeId.employee_id,
+                    type: constants.NOTIFICATION_TYPE.goal_accept
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Accept your goal',
+                //     body: `Your manager accept your goal`,
+                //     data: {
+                //         goal_id: params.goal_id,
+                //          type: ACCEPT_GOAL_REQUEST
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                 let getGoalCompleteData = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
                     where: { id: params.team_goal_assign_completion_by_employee_id }
                 });
@@ -329,6 +372,24 @@ class GoalServices {
                 });
             }
             else {
+                // add goal reject notification
+                let notificationObj = {
+                    type_id: params.goal_id,
+                    sender_id: user.uid,
+                    reciever_id: getEmployeeId.employee_id,
+                    type: constants.NOTIFICATION_TYPE.goal_reject
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Reject your goal',
+                //     body: `Your manager accept your goal`,
+                //     data: {
+                //         goal_id: params.goal_id,
+                //          type: REJECT_GOAL_REQUEST
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                 return true;
             }
         });

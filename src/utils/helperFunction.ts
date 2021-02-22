@@ -1,8 +1,10 @@
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import * as constants from '../constants';
- import * as AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 import fs from 'fs';
+const FCM = require('fcm-node');
+const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 
 const s3Client = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -96,4 +98,35 @@ export const convertPromiseToObject = async (promise) => {
 
 export const getCurrentDate = async ()=> {
     return new Date().toISOString().split('T')[0];
+}
+
+/**
+ * 
+ * @param tokens - fcm-device token for user's device
+ * @param notification - object with body and title
+ * @param payload 
+ */
+export const sendFcmNotification = async (tokens: any, notification: any) => {
+    
+
+    var message = { 
+        registration_ids: tokens,
+        notification: {
+            title: notification.title,
+            body: notification.body
+        },
+        data: notification.data
+    };
+    if(tokens.length) {
+        fcm.send(message, function (err, response) {
+            if (err) {
+                console.log("Something has gone wrong!", notification, JSON.stringify(err));
+            } else {
+                console.log("Successfully sent with response: ", response);
+                return response;
+            }
+        });
+    } else {
+        console.log("No FCM Device token registered yet.");
+    }
 }
