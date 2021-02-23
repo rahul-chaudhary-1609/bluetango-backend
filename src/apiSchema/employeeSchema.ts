@@ -117,6 +117,10 @@ export const viewGoalAsManager = Joi.object({
   offset: Joi.string().optional()
 })
 
+export const viewGoalDetailsAsManager = Joi.object({
+  goal_id: Joi.string().required()
+})
+
 export const editGoal = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),
