@@ -194,6 +194,39 @@ export class GoalServices {
         return { count, rows}
     }
 
+    /*
+    * function to view goal details as manager
+    */
+    public async viewGoalDetailsAsManager (params: any, user: any) {
+
+        teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        teamGoalModel.hasMany(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+
+    
+        return  await teamGoalModel.findOne({
+            where: {manager_id: user.uid, id: params.goal_id },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                },
+                {
+                    model: teamGoalAssignModel,
+                    include: [
+                        {
+                            model: employeeModel,
+                            required: true,
+                            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        }
+                    ]
+                }
+            ],
+            order: [["createdAt", "DESC"]]
+        })
+    }
+
      /*
     * function to view goal as employee
     */

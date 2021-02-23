@@ -216,6 +216,37 @@ class GoalServices {
         });
     }
     /*
+    * function to view goal details as manager
+    */
+    viewGoalDetailsAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            return yield teamGoal_1.teamGoalModel.findOne({
+                where: { manager_id: user.uid, id: params.goal_id },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    },
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            }
+                        ]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            });
+        });
+    }
+    /*
    * function to view goal as employee
    */
     viewGoalAsEmployee(params, user) {

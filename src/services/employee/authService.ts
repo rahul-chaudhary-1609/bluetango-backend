@@ -7,6 +7,7 @@ import { employeeModel } from  "../../models/employee"
 import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
+import { managerTeamMemberModel } from "../../models/managerTeamMember";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -137,6 +138,8 @@ export class AuthService {
 
         employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        employeeModel.hasOne(managerTeamMemberModel,{ foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let existingUser = await employeeModel.findOne({
             where: {
                 id: params.uid
@@ -150,6 +153,16 @@ export class AuthService {
                     model: employersModel, 
                     required: false,
                     attributes: ['id', 'name', 'email']
+                },
+                {
+                    model: managerTeamMemberModel,
+                    required: false,
+                    attributes: ['id', 'manager_id'] ,
+                    include: [{
+                        model: employeeModel,
+                        required: false,
+                        attributes: ['id', 'name', 'email', 'profile_pic_url']
+                    }]
                 }
             ],
             
