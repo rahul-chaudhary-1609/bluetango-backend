@@ -128,7 +128,7 @@ export const addEditEmployers = Joi.object ({
   phone_number: Joi.string().required(),
   industry_type: Joi.string().required(),
   address: Joi.string().required(),
-
+  thought_of_the_day: Joi.string().optional()
 })
 
 export const addSubscriptionPlan = Joi.object ({
@@ -150,5 +150,6 @@ export const updateSubscriptionPlan = Joi.object ({
 export const getEmployersList = Joi.object ({
   industry_type: Joi.string().optional(),
   limit: Joi.string().optional(),
-  offset: Joi.string().optional()
+  offset: Joi.string().optional(),
+  searchKey: Joi.string().optional()
 })

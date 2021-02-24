@@ -194,7 +194,24 @@ export class EmployersService {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         var whereCond: any = {};
         var employer: any = {};
-        var department: any = {}
+        var department: any = {};
+        let where = {
+            admin_id: params.admin_id
+        }
+        var employerId = []
+        const employers = await employersModel.findAndCountAll({ where: where, raw: true })
+
+        for (let i = 0; i < employers.rows.length; i++) {
+            employerId.push(employers.rows[i].id)
+
+        }
+
+        whereCond = {
+
+            current_employer_id: { [Op.in]: employerId },
+            status: 1
+
+        }
         if (params.employerName) {
             employer = {
                 name: { [Op.iLike]: `%${params.employerName}%` },
@@ -210,12 +227,11 @@ export class EmployersService {
 
         if (params.searchKey) {
             whereCond = {
+                current_employer_id: { [Op.in]: employerId },
                 name: { [Op.iLike]: `%${params.searchKey}%` },
                 status: 1
             }
-        } else {
-            whereCond.status = 1
-        }
+        } 
 
         return await employeeModel.findAndCountAll({
             where: whereCond,

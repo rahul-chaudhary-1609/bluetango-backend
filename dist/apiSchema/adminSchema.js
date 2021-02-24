@@ -147,6 +147,7 @@ exports.addEditEmployers = joi_1.default.object({
     phone_number: joi_1.default.string().required(),
     industry_type: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
+    thought_of_the_day: joi_1.default.string().optional()
 });
 exports.addSubscriptionPlan = joi_1.default.object({
     plan_name: joi_1.default.string().required(),
@@ -165,6 +166,7 @@ exports.updateSubscriptionPlan = joi_1.default.object({
 exports.getEmployersList = joi_1.default.object({
     industry_type: joi_1.default.string().optional(),
     limit: joi_1.default.string().optional(),
-    offset: joi_1.default.string().optional()
+    offset: joi_1.default.string().optional(),
+    searchKey: joi_1.default.string().optional()
 });
 //# sourceMappingURL=adminSchema.js.map

@@ -129,6 +129,7 @@ class EmployersController {
     getEmployeeList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                req.query.admin_id = req.user.uid;
                 const responseFromService = yield employersService.getEmployeeList(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_list);
             }
