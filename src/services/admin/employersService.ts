@@ -1,9 +1,11 @@
 import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
-import { subscriptionManagementModel } from "../../models/subscriptionManagement"
+import { subscriptionManagementModel } from "../../models/subscriptionManagement";
+import { paymentManagementModel } from "../../models/paymentManagement"
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
+import { where, Model } from "sequelize/types";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -352,6 +354,67 @@ export class EmployersService {
             where.status = 1
         }
             return await subscriptionManagementModel.findAll({where: where})
+        
+    }
+
+     /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async viewPaymentList(params: any) {
+        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let where:any = {}
+        let whereCond:any = {}
+        if (params.searchKey) {
+            where = {
+                name: { [Op.iLike]: `%${params.searchKey}%` }
+            }
+        }
+        whereCond.status = 1
+        whereCond.admin_id = params.admin_id
+         return await paymentManagementModel.findAndCountAll({
+             where: whereCond,
+             include: [{
+                model: employersModel,
+                required: true,
+                where: where,
+                attributes: ["name"]
+                }],
+            attributes: ["plan_type", "expiry_date"],
+             limit: limit,
+             offset: offset
+         })   
+        
+    }
+
+    /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async viewPaymentDetails(params: any) {
+        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let where:any = {}
+        let whereCond:any = {}
+        if (params.searchKey) {
+            where = {
+                name: { [Op.iLike]: `%${params.searchKey}%` }
+            }
+        }
+        whereCond.status = 1
+        whereCond.employer_id = params.employerId
+        whereCond.admin_id = params.admin_id
+         return await paymentManagementModel.findOne({
+             where: whereCond,
+             include: [{
+                model: employersModel,
+                required: true,
+                where: where,
+                }],
+             limit: limit,
+             offset: offset
+         })   
         
     }
 

@@ -172,4 +172,34 @@ export class EmployersController {
         }
     }
 
+    /**
+       * view payment list
+       * @param req :[]
+       * @param res : [payment list]
+       */
+      public async viewPaymentList(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const paymentList = await employersService.viewPaymentList(req.query);
+            return appUtils.successResponse(res, paymentList, constants.MESSAGES.payment_list_fetch);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+       * view payment details
+       * @param req :[]
+       * @param res : [payment list]
+       */
+      public async viewPaymentDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const paymentDetails = await employersService.viewPaymentDetails(req.query);
+            return appUtils.successResponse(res, paymentDetails, constants.MESSAGES.payment_detail_fetch);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }
