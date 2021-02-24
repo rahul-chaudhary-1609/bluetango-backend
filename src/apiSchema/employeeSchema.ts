@@ -22,7 +22,8 @@ export const login = Joi.object({
     "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
     "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
     "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-  })
+  }),
+  device_token: Joi.string().optional()
 });
 
 export const forgotPassword = Joi.object({
@@ -114,6 +115,10 @@ export const viewGoalAsManager = Joi.object({
   search_string: Joi.string().optional(),
   limit: Joi.string().optional(),
   offset: Joi.string().optional()
+})
+
+export const viewGoalDetailsAsManager = Joi.object({
+  goal_id: Joi.string().required()
 })
 
 export const editGoal = Joi.object({

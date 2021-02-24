@@ -39,6 +39,7 @@ const employee_1 = require("../../models/employee");
 const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class GoalServices {
@@ -69,6 +70,25 @@ class GoalServices {
                             employee_id: params[i].employee_ids[j]
                         };
                         yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                        // add notification for employee
+                        let notificationObj = {
+                            type_id: teamGoaRes.id,
+                            sender_id: user.uid,
+                            reciever_id: params[i].employee_ids[j],
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                        };
+                        yield notification_1.notificationModel.create(notificationObj);
+                        // send push notification
+                        // let notificationData = <any> {
+                        //     title: 'Assign new goal',
+                        //     body: `Your manager assign a new goal- ${(params[i].title?params[i].title: '')}`,
+                        //     data: {
+                        //         goal_id: teamGoaRes.id,
+                        //         title: (params[i].title?params[i].title: '')
+                        //          type: ADD_GOAL
+                        //     },                        
+                        // }
+                        // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                     }
                 }
                 return true;
@@ -121,8 +141,28 @@ class GoalServices {
                                 employee_id: params.employee_ids[j]
                             };
                             yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                            // add notification for employee
+                            let notificationObj = {
+                                type_id: params.id,
+                                sender_id: user.uid,
+                                reciever_id: params.employee_ids[j],
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            };
+                            yield notification_1.notificationModel.create(notificationObj);
+                            // send push notification
+                            // let notificationData = <any> {
+                            //     title: 'Assign new goal',
+                            //     body: `Your manager assign a new goal- ${(params[i].title?params[i].title: '')}`,
+                            //     data: {
+                            //         goal_id: teamGoaRes.id,
+                            //         title: (params[i].title?params[i].title: '')
+                            //          type: ADD_GOAL
+                            //     },                        
+                            // }
+                            // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                         }
                     }
+                    return true;
                 }
             }
             else {
@@ -173,6 +213,37 @@ class GoalServices {
                 order: [["createdAt", "DESC"]]
             });
             return { count, rows };
+        });
+    }
+    /*
+    * function to view goal details as manager
+    */
+    viewGoalDetailsAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            return yield teamGoal_1.teamGoalModel.findOne({
+                where: { manager_id: user.uid, id: params.goal_id },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    },
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            }
+                        ]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            });
         });
     }
     /*
@@ -298,7 +369,28 @@ class GoalServices {
             yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
                 where: { id: params.team_goal_assign_completion_by_employee_id }
             });
+            var getEmployeeId = yield teamGoalAssign_1.teamGoalAssignModel.findOne({
+                where: params.team_goal_assign_id
+            });
             if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
+                // add goal approve notification
+                let notificationObj = {
+                    type_id: params.goal_id,
+                    sender_id: user.uid,
+                    reciever_id: getEmployeeId.employee_id,
+                    type: constants.NOTIFICATION_TYPE.goal_accept
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Accept your goal',
+                //     body: `Your manager accept your goal`,
+                //     data: {
+                //         goal_id: params.goal_id,
+                //          type: ACCEPT_GOAL_REQUEST
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                 let getGoalCompleteData = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
                     where: { id: params.team_goal_assign_completion_by_employee_id }
                 });
@@ -311,6 +403,24 @@ class GoalServices {
                 });
             }
             else {
+                // add goal reject notification
+                let notificationObj = {
+                    type_id: params.goal_id,
+                    sender_id: user.uid,
+                    reciever_id: getEmployeeId.employee_id,
+                    type: constants.NOTIFICATION_TYPE.goal_reject
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Reject your goal',
+                //     body: `Your manager accept your goal`,
+                //     data: {
+                //         goal_id: params.goal_id,
+                //          type: REJECT_GOAL_REQUEST
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                 return true;
             }
         });

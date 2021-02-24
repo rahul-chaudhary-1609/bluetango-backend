@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurement = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurement = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -43,7 +43,8 @@ exports.login = joi_1.default.object({
         "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    })
+    }),
+    device_token: joi_1.default.string().optional()
 });
 exports.forgotPassword = joi_1.default.object({
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
@@ -123,6 +124,9 @@ exports.viewGoalAsManager = joi_1.default.object({
     search_string: joi_1.default.string().optional(),
     limit: joi_1.default.string().optional(),
     offset: joi_1.default.string().optional()
+});
+exports.viewGoalDetailsAsManager = joi_1.default.object({
+    goal_id: joi_1.default.string().required()
 });
 exports.editGoal = joi_1.default.object({
     id: joi_1.default.string().required(),

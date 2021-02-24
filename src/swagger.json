@@ -798,6 +798,13 @@
             "description": "password",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "device_token",
+            "in": "formData",
+            "description": "device_token",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1265,6 +1272,34 @@
               "description": "page size",
               "required": false,
               "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/viewGoalDetailsAsManager": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view goal as manager",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+           {
+            "name": "goal_id",
+            "in": "query",
+            "description": "goal_id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
