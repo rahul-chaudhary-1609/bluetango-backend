@@ -224,6 +224,18 @@ class EmployersService {
             var whereCond = {};
             var employer = {};
             var department = {};
+            let where = {
+                admin_id: params.admin_id
+            };
+            var employerId = [];
+            const employers = yield models_1.employersModel.findAndCountAll({ where: where, raw: true });
+            for (let i = 0; i < employers.rows.length; i++) {
+                employerId.push(employers.rows[i].id);
+            }
+            whereCond = {
+                current_employer_id: { [Op.in]: employerId },
+                status: 1
+            };
             if (params.employerName) {
                 employer = {
                     name: { [Op.iLike]: `%${params.employerName}%` },
@@ -237,12 +249,10 @@ class EmployersService {
             }
             if (params.searchKey) {
                 whereCond = {
+                    current_employer_id: { [Op.in]: employerId },
                     name: { [Op.iLike]: `%${params.searchKey}%` },
                     status: 1
                 };
-            }
-            else {
-                whereCond.status = 1;
             }
             return yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,

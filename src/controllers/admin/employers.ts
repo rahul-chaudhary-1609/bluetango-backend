@@ -93,6 +93,7 @@ export class EmployersController {
    */
     public async getEmployeeList(req: any, res: any) {
         try {
+            req.query.admin_id = req.user.uid;
             const responseFromService = await employersService.getEmployeeList(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_list);
 
