@@ -34,6 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployersService = void 0;
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
+const paymentManagement_1 = require("../../models/paymentManagement");
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
@@ -374,6 +375,67 @@ class EmployersService {
                 where.status = 1;
             }
             return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    viewPaymentList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let where = {};
+            let whereCond = {};
+            if (params.searchKey) {
+                where = {
+                    name: { [Op.iLike]: `%${params.searchKey}%` }
+                };
+            }
+            whereCond.status = 1;
+            whereCond.admin_id = params.admin_id;
+            return yield paymentManagement_1.paymentManagementModel.findAndCountAll({
+                where: whereCond,
+                include: [{
+                        model: models_1.employersModel,
+                        required: true,
+                        where: where,
+                        attributes: ["name"]
+                    }],
+                attributes: ["plan_type", "expiry_date"],
+                limit: limit,
+                offset: offset
+            });
+        });
+    }
+    /**
+     *
+     * @param {} params pass all parameters from request
+     */
+    viewPaymentDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let where = {};
+            let whereCond = {};
+            if (params.searchKey) {
+                where = {
+                    name: { [Op.iLike]: `%${params.searchKey}%` }
+                };
+            }
+            whereCond.status = 1;
+            whereCond.employer_id = params.employerId;
+            whereCond.admin_id = params.admin_id;
+            return yield paymentManagement_1.paymentManagementModel.findOne({
+                where: whereCond,
+                include: [{
+                        model: models_1.employersModel,
+                        required: true,
+                        where: where,
+                    }],
+                limit: limit,
+                offset: offset
+            });
         });
     }
 }

@@ -217,6 +217,40 @@ class EmployersController {
             }
         });
     }
+    /**
+       * view payment list
+       * @param req :[]
+       * @param res : [payment list]
+       */
+    viewPaymentList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const paymentList = yield employersService.viewPaymentList(req.query);
+                return appUtils.successResponse(res, paymentList, constants.MESSAGES.payment_list_fetch);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+       * view payment details
+       * @param req :[]
+       * @param res : [payment list]
+       */
+    viewPaymentDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const paymentDetails = yield employersService.viewPaymentDetails(req.query);
+                return appUtils.successResponse(res, paymentDetails, constants.MESSAGES.payment_detail_fetch);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

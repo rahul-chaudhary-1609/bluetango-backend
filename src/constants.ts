@@ -65,7 +65,9 @@ export const MESSAGES = {
   plan_notFound: "No plans found with this id",
   subscription_plan_update: "Subscription plan updated successfully",
   subscription_plan_add: "Subscription plan added successfully",
-  subscription_plan_fetch: "Subscription plan fetched successfully" 
+  subscription_plan_fetch: "Subscription plan fetched successfully",
+  payment_list_fetch: "Payment List Fetched successfully",
+  payment_detail_fetch: "Payment details fetched successfully"
 }
 
 export const code = {

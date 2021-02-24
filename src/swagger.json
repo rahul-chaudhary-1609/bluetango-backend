@@ -705,6 +705,76 @@
         "responses": {}
       }
     },
+    "/admin/viewPaymentList": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "api to view the payment list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search employer by name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/viewPaymentDetails": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "api to view the payment details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employerId",
+            "in": "query",
+            "description": "employer id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/login": {
       "post": {
         "tags": [
