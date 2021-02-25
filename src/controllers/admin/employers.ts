@@ -1,6 +1,7 @@
 import { EmployersService } from "../../services/admin/employersService";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
+const json2csv = require('json2csv').parse;
 
 
 //Instantiates a Home services  
@@ -198,6 +199,26 @@ export class EmployersController {
             req.query.admin_id = req.user.uid;
             const paymentDetails = await employersService.viewPaymentDetails(req.query);
             return appUtils.successResponse(res, paymentDetails, constants.MESSAGES.payment_detail_fetch);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+       * export csv for payment list
+       * @param req :[]
+       * @param res : [csv file]
+       */
+      public async exportCsv(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            let result = await employersService.exportCsv(req.query);
+            const csvString = json2csv(result)
+            res.setHeader('Content-disposition', 'attachment; filename=paymentList.csv');
+            res.set('Content-Type', 'text/csv');
+            res.status(200).send(csvString);
+            //return res.csv("paymenrList.csv",results)
+            //return appUtils.successResponse(res,{}, constants.MESSAGES.payment_list_fetch);
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }

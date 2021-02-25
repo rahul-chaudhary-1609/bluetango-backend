@@ -6,6 +6,8 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import { where, Model } from "sequelize/types";
+import { AnyAaaaRecord } from "dns";
+import { employeeTokenResponse } from "../../utils/tokenResponse";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -94,25 +96,25 @@ export class EmployersService {
     @param {} params pass all parameters from request
     */
     public async getEmployersList(params: any) {
+        employersModel.hasMany(employeeModel, {foreignKey: "current_employer_id"})
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        var whereCond = {};
-        if (params.industry_type) {
-            whereCond = {
-                industry_type: params.industry_type
-            }
-        } else if (params.searchKey) {
-            whereCond = {
-                name: { [Op.iLike]: `%${params.searchKey}%` }
-            }
+        var whereCond:any = {};
+        if (params.searchKey) {
+            whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` }
+            
         }
-
-        return await employersModel.findAndCountAll({
+        if (params.industry_type) {
+            whereCond["industry_type"] = params.industry_type
+        }
+        whereCond["status"] = 1
+         
+            return await employersModel.findAndCountAll({
             where: whereCond,
+            include: [{model: employeeModel, required: false, attributes: ["id"]}],
             limit: limit,
             offset: offset,
             order: [["createdAt", "DESC"]]
         })
-
     }
 
     /**
@@ -433,5 +435,38 @@ export class EmployersService {
          })   
         
     }
+
+
+     /**
+     * 
+     * @param {} params pass all parameters from request
+     */
+    public async exportCsv(params: any) {
+        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let where:any = {}
+        let whereCond:any = {}
+        if (params.searchKey) {
+            where = {
+                name: { [Op.iLike]: `%${params.searchKey}%` }
+            }
+        }
+        whereCond.status = 1
+        whereCond.admin_id = params.admin_id
+         return await paymentManagementModel.findAndCountAll({
+             where: whereCond,
+             include: [{
+                model: employersModel,
+                required: true,
+                where: where,
+                attributes: ["name"]
+                }],
+            attributes: ["plan_type", "expiry_date"],
+             limit: limit,
+             offset: offset
+         })   
+        
+    }
+
 
 }

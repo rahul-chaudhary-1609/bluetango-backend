@@ -131,20 +131,19 @@ class EmployersService {
     */
     getEmployersList(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             var whereCond = {};
+            if (params.searchKey) {
+                whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` };
+            }
             if (params.industry_type) {
-                whereCond = {
-                    industry_type: params.industry_type
-                };
+                whereCond["industry_type"] = params.industry_type;
             }
-            else if (params.searchKey) {
-                whereCond = {
-                    name: { [Op.iLike]: `%${params.searchKey}%` }
-                };
-            }
+            whereCond["status"] = 1;
             return yield models_1.employersModel.findAndCountAll({
                 where: whereCond,
+                include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }],
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
@@ -443,6 +442,37 @@ class EmployersService {
                         required: true,
                         where: where,
                     }],
+                limit: limit,
+                offset: offset
+            });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    exportCsv(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let where = {};
+            let whereCond = {};
+            if (params.searchKey) {
+                where = {
+                    name: { [Op.iLike]: `%${params.searchKey}%` }
+                };
+            }
+            whereCond.status = 1;
+            whereCond.admin_id = params.admin_id;
+            return yield paymentManagement_1.paymentManagementModel.findAndCountAll({
+                where: whereCond,
+                include: [{
+                        model: models_1.employersModel,
+                        required: true,
+                        where: where,
+                        attributes: ["name"]
+                    }],
+                attributes: ["plan_type", "expiry_date"],
                 limit: limit,
                 offset: offset
             });
