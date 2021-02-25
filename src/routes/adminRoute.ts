@@ -70,5 +70,8 @@ adminRoute.get("/viewPaymentList", tokenValidator.validateAdminToken, employersC
 /* view payment details */
 adminRoute.get("/viewPaymentDetails", tokenValidator.validateAdminToken, employersController.viewPaymentDetails);
 
+/* view payment details */
+adminRoute.get("/exportCsv", tokenValidator.validateAdminToken, employersController.exportCsv);
+
 
 export = adminRoute;

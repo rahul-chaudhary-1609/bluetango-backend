@@ -32,6 +32,7 @@ exports.EmployersController = void 0;
 const employersService_1 = require("../../services/admin/employersService");
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
+const json2csv = require('json2csv').parse;
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 class EmployersController {
@@ -246,6 +247,28 @@ class EmployersController {
                 req.query.admin_id = req.user.uid;
                 const paymentDetails = yield employersService.viewPaymentDetails(req.query);
                 return appUtils.successResponse(res, paymentDetails, constants.MESSAGES.payment_detail_fetch);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+       * export csv for payment list
+       * @param req :[]
+       * @param res : [csv file]
+       */
+    exportCsv(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                let result = yield employersService.exportCsv(req.query);
+                const csvString = json2csv(result);
+                res.setHeader('Content-disposition', 'attachment; filename=paymentList.csv');
+                res.set('Content-Type', 'text/csv');
+                res.status(200).send(csvString);
+                //return res.csv("paymenrList.csv",results)
+                //return appUtils.successResponse(res,{}, constants.MESSAGES.payment_list_fetch);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
