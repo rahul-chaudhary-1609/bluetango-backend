@@ -293,7 +293,6 @@ export class GoalServices {
                 where: { id: params.team_goal_assign_id }
             }) );
 
-            console.log('aaaaaaaaaaaaaaaaaaaa', compeleteData)
         if (getGoalData.enter_measure >= ( parseInt(compeleteData.complete_measure)+ parseInt(params.complete_measure) ) ) {
             let createObj = <any> {
                 team_goal_assign_id: params.team_goal_assign_id,
@@ -304,7 +303,6 @@ export class GoalServices {
             let teamGoalAssignRequestRes = await helperFunction.convertPromiseToObject(  
                 await teamGoalAssignCompletionByEmployeeModel.create(createObj)
             );
-            console.log('ccccccccccccccccccccccccccccccccccccc',teamGoalAssignRequestRes);
             // notification add
             let notificationReq = <any> {
                 type_id: params.goal_id,

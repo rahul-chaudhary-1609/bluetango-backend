@@ -61,4 +61,23 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+    * add thought of the day
+    * @param req :[]
+    * @param res 
+    */
+    public async thoughtOfTheDay(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.thoughtOfTheDay(req.body, req.user);
+            if (responseFromService) {
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+            
+        } catch (e) {
+            next(e)
+        }
+    }
 }

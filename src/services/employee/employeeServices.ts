@@ -90,31 +90,49 @@ export class EmployeeServices {
     /*
     * function to get details of employee
     */
-   public async searchTeamMember(params:any, user: any) {
-    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
+    public async searchTeamMember(params:any, user: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
-    managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-    return await managerTeamMemberModel.findAndCountAll({
-        where: { manager_id: user.uid},
-        include: [
+        managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        return await managerTeamMemberModel.findAndCountAll({
+            where: { manager_id: user.uid},
+            include: [
+                {
+                    model: employeeModel, 
+                    required: true,
+                    where: {
+                        [Op.or]:[
+                            {name: { [Op.iLike]: `%${params.search_string}%` }},
+                            {phone_number: {[Op.iLike]: `%${params.search_string}%`}},
+                            {email: { [Op.iLike]: `%${params.search_string}%`}}
+                        ]
+                    },
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
+
+        })
+    }
+
+    /*
+    * function to add thought of the day
+    */
+    public async thoughtOfTheDay(params:any, user: any) {
+        await employeeModel.update(
             {
-                model: employeeModel, 
-                required: true,
-                where: {
-                    [Op.or]:[
-                        {name: { [Op.iLike]: `%${params.search_string}%` }},
-                        {phone_number: {[Op.iLike]: `%${params.search_string}%`}},
-                        {email: { [Op.iLike]: `%${params.search_string}%`}}
-                    ]
-                },
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                thought_of_the_day: params.thought_of_the_day
+            },
+            {
+                where: { id: user.uid}
             }
-        ],
-        limit: limit,
-        offset: offset,
-        order: [["createdAt", "DESC"]]
+        )
 
-    })
-}
+        return employeeModel.findOne({
+            where: { id: user.uid}
+        })
+    }
 
 }

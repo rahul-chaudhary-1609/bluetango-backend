@@ -310,7 +310,6 @@ class GoalServices {
             let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findOne({
                 where: { id: params.team_goal_assign_id }
             }));
-            console.log('aaaaaaaaaaaaaaaaaaaa', compeleteData);
             if (getGoalData.enter_measure >= (parseInt(compeleteData.complete_measure) + parseInt(params.complete_measure))) {
                 let createObj = {
                     team_goal_assign_id: params.team_goal_assign_id,
@@ -319,7 +318,6 @@ class GoalServices {
                     complete_measure: params.complete_measure
                 };
                 let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
-                console.log('ccccccccccccccccccccccccccccccccccccc', teamGoalAssignRequestRes);
                 // notification add
                 let notificationReq = {
                     type_id: params.goal_id,
