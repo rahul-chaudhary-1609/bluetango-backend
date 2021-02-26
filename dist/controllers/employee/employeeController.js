@@ -94,6 +94,27 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * add thought of the day
+    * @param req :[]
+    * @param res
+    */
+    thoughtOfTheDay(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.thoughtOfTheDay(req.body, req.user);
+                if (responseFromService) {
+                    appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

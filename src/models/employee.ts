@@ -108,6 +108,10 @@ export const employeeModel: any = sequelize.define("employee", {
     device_token: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    thought_of_the_day: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 },
     {
