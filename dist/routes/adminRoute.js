@@ -68,5 +68,7 @@ adminRoute.get("/viewSubscriptionPlan", tokenValidator.validateAdminToken, emplo
 adminRoute.get("/viewPaymentList", tokenValidator.validateAdminToken, employersController.viewPaymentList);
 /* view payment details */
 adminRoute.get("/viewPaymentDetails", tokenValidator.validateAdminToken, employersController.viewPaymentDetails);
+/* view payment details */
+adminRoute.get("/exportCsv", tokenValidator.validateAdminToken, employersController.exportCsv);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

@@ -7,6 +7,8 @@ const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
 import cors from 'cors';
+//import json2csv from 'json2csv';
+const json2csv = require('json2csv');
 
 app.use(bodyParser.urlencoded(
     {
@@ -15,6 +17,8 @@ app.use(bodyParser.urlencoded(
     },
 ));
 app.use(bodyParser.json({ limit: "50mb" }));
+
+//app.use(json2csv.middleware)
 
 // //options for cors midddleware
 // const options: cors.CorsOptions = {
