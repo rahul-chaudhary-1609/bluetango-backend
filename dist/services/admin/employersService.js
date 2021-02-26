@@ -140,14 +140,16 @@ class EmployersService {
             if (params.industry_type) {
                 whereCond["industry_type"] = params.industry_type;
             }
-            whereCond["status"] = 1;
-            return yield models_1.employersModel.findAndCountAll({
-                where: whereCond,
+            whereCond["status"] = { [Op.or]: [0, 1] };
+            const employer = yield models_1.employersModel.findAll({
                 include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }],
+                where: whereCond,
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
             });
+            const countEmployer = yield models_1.employersModel.count({ where: whereCond });
+            return { employer, count: countEmployer };
         });
     }
     /**

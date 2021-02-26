@@ -106,15 +106,21 @@ export class EmployersService {
         if (params.industry_type) {
             whereCond["industry_type"] = params.industry_type
         }
-        whereCond["status"] = 1
+
+        whereCond["status"] = {[Op.or]: [0,1]}
          
-            return await employersModel.findAndCountAll({
-            where: whereCond,
+            const employer = await employersModel.findAll({
             include: [{model: employeeModel, required: false, attributes: ["id"]}],
+            where: whereCond,
             limit: limit,
             offset: offset,
             order: [["createdAt", "DESC"]]
+
+            
         })
+
+        const countEmployer = await employersModel.count({where: whereCond})
+        return{employer,count:countEmployer}
     }
 
     /**
