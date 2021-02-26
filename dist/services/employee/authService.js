@@ -56,8 +56,7 @@ class AuthService {
             employee_1.employeeModel.hasOne(employers_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
             let existingUser = yield employee_1.employeeModel.findOne({
                 where: {
-                    email: params.username.toLowerCase(),
-                    status: { [Op.in]: [0, 1] }
+                    email: params.username.toLowerCase()
                 },
                 include: [
                     {
@@ -71,7 +70,13 @@ class AuthService {
                     }
                 ],
             });
-            if (!lodash_1.default.isEmpty(existingUser)) {
+            if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
+                throw new Error(constants.MESSAGES.deactivate_account);
+            }
+            else if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 2) {
+                throw new Error(constants.MESSAGES.delete_account);
+            }
+            else if (!lodash_1.default.isEmpty(existingUser)) {
                 existingUser = yield helperFunction.convertPromiseToObject(existingUser);
                 let comparePassword = yield appUtils.comparePassword(params.password, existingUser.password);
                 if (comparePassword) {

@@ -251,7 +251,6 @@ class GoalServices {
    */
     viewGoalAsEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(params);
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
@@ -308,19 +307,40 @@ class GoalServices {
             let getGoalData = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
                 where: { id: params.goal_id }
             }));
-            let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
-                where: { team_goal_assign_id: params.team_goal_assign_id },
-                attributes: [[Sequelize.fn('sum', Sequelize.col('complete_measure')), 'total_complete'],
-                ],
+            let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findOne({
+                where: { id: params.team_goal_assign_id }
             }));
-            if (getGoalData.enter_measure >= (parseInt(compeleteData[0].total_complete) + parseInt(params.complete_measure))) {
+            console.log('aaaaaaaaaaaaaaaaaaaa', compeleteData);
+            if (getGoalData.enter_measure >= (parseInt(compeleteData.complete_measure) + parseInt(params.complete_measure))) {
                 let createObj = {
                     team_goal_assign_id: params.team_goal_assign_id,
                     goal_id: params.goal_id,
                     description: params.description,
                     complete_measure: params.complete_measure
                 };
-                return yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj);
+                let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
+                console.log('ccccccccccccccccccccccccccccccccccccc', teamGoalAssignRequestRes);
+                // notification add
+                let notificationReq = {
+                    type_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
+                    team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
+                    sender_id: user.uid,
+                    reciever_id: getGoalData.manager_id,
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request
+                };
+                yield notification_1.notificationModel.create(notificationReq);
+                // send push notification
+                // let notificationData = <any> {
+                //     title: 'Accept your goal',
+                //     body: `Your manager accept your goal`,
+                //     data: {
+                //         goal_id: params.goal_id,
+                //          type: ACCEPT_GOAL_REQUEST
+                //     },                        
+                // }
+                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                return teamGoalAssignRequestRes;
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_measure);
@@ -364,64 +384,77 @@ class GoalServices {
     goalAcceptRejectAsManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let teamGoalAssignCompletionByEmployeeObj = {
-                status: params.status
+                status: parseInt(params.status)
             };
-            yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
-                where: { id: params.team_goal_assign_completion_by_employee_id }
+            let teamGoalAssignCompletionByEmployeeCheck = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
+                where: {
+                    goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
+                    id: params.team_goal_assign_completion_by_employee_id,
+                    status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
+                }
             });
-            var getEmployeeId = yield teamGoalAssign_1.teamGoalAssignModel.findOne({
-                where: params.team_goal_assign_id
-            });
-            if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
-                // add goal approve notification
-                let notificationObj = {
-                    type_id: params.goal_id,
-                    sender_id: user.uid,
-                    reciever_id: getEmployeeId.employee_id,
-                    type: constants.NOTIFICATION_TYPE.goal_accept
-                };
-                yield notification_1.notificationModel.create(notificationObj);
-                // send push notification
-                // let notificationData = <any> {
-                //     title: 'Accept your goal',
-                //     body: `Your manager accept your goal`,
-                //     data: {
-                //         goal_id: params.goal_id,
-                //          type: ACCEPT_GOAL_REQUEST
-                //     },                        
-                // }
-                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
-                let getGoalCompleteData = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
+            if (teamGoalAssignCompletionByEmployeeCheck) {
+                yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
                     where: { id: params.team_goal_assign_completion_by_employee_id }
                 });
-                let teamGoalAssignObj = {
-                    status: 1,
-                    complete_measure: getGoalCompleteData.complete_measure
-                };
-                return teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
+                var getEmployeeId = yield teamGoalAssign_1.teamGoalAssignModel.findOne({
                     where: { id: params.team_goal_assign_id }
                 });
+                if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
+                    // add goal approve notification
+                    let notificationObj = {
+                        type_id: params.goal_id,
+                        sender_id: user.uid,
+                        reciever_id: getEmployeeId.employee_id,
+                        type: constants.NOTIFICATION_TYPE.goal_accept
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    // let notificationData = <any> {
+                    //     title: 'Accept your goal',
+                    //     body: `Your manager accept your goal`,
+                    //     data: {
+                    //         goal_id: params.goal_id,
+                    //          type: ACCEPT_GOAL_REQUEST
+                    //     },                        
+                    // }
+                    // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                    let getGoalCompleteData = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
+                        where: { id: params.team_goal_assign_completion_by_employee_id }
+                    });
+                    let teamGoalAssignObj = {
+                        status: 1,
+                        complete_measure: getGoalCompleteData.complete_measure
+                    };
+                    return teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
+                        where: { id: params.team_goal_assign_id }
+                    });
+                }
+                else {
+                    // add goal reject notification
+                    let notificationObj = {
+                        type_id: params.goal_id,
+                        sender_id: user.uid,
+                        reciever_id: getEmployeeId.employee_id,
+                        type: constants.NOTIFICATION_TYPE.goal_reject
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    // let notificationData = <any> {
+                    //     title: 'Reject your goal',
+                    //     body: `Your manager accept your goal`,
+                    //     data: {
+                    //         goal_id: params.goal_id,
+                    //          type: REJECT_GOAL_REQUEST
+                    //     },                        
+                    // }
+                    // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                    return true;
+                }
             }
             else {
-                // add goal reject notification
-                let notificationObj = {
-                    type_id: params.goal_id,
-                    sender_id: user.uid,
-                    reciever_id: getEmployeeId.employee_id,
-                    type: constants.NOTIFICATION_TYPE.goal_reject
-                };
-                yield notification_1.notificationModel.create(notificationObj);
-                // send push notification
-                // let notificationData = <any> {
-                //     title: 'Reject your goal',
-                //     body: `Your manager accept your goal`,
-                //     data: {
-                //         goal_id: params.goal_id,
-                //          type: REJECT_GOAL_REQUEST
-                //     },                        
-                // }
-                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
-                return true;
+                throw new Error(constants.MESSAGES.bad_request);
             }
         });
     }
