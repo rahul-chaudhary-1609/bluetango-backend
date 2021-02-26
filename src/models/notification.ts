@@ -14,6 +14,16 @@ export const notificationModel: any = sequelize.define("notification", {
         allowNull: false,
         defaultValue: 0
     },
+    team_goal_assign_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    team_goal_assign_completion_by_employee_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
     sender_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
