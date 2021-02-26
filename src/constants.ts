@@ -4,6 +4,8 @@ export const MESSAGES = {
   email_phone_already_registered: "An account with given email or phone already exists",
   invalid_password: "Incorrect Password",
   invalid_email: "Incorrect Email",
+  deactivate_account:'Your account has been de-activated by Admin. Please contact to admin',
+  delete_account:'Your account has been deleted by Admin. Please contact to admin',
   not_same_password: "New Password should not be same as the Current Password",
   current_password_not_match: "Current Password Not matches with the existing one",
   signup_success: 'Signup Success',
@@ -121,7 +123,7 @@ export const TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
 export const NOTIFICATION_TYPE = {
   other: 0,
   assign_new_goal: 1,
-  goal_complete: 2,
+  goal_complete_request: 2,
   rating: 3,
   message: 4,
   goal_accept: 5,

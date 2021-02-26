@@ -15,6 +15,16 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
         allowNull: false,
         defaultValue: 0
     },
+    team_goal_assign_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    team_goal_assign_completion_by_employee_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
     sender_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
