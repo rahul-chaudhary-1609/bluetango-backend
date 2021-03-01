@@ -117,6 +117,9 @@ class EmployersService {
                     }
                 }
                 else {
+                    if (!params.password) {
+                        throw new Error(constants.MESSAGES.password_not_provided);
+                    }
                     params.password = yield appUtils.bcryptPassword(params.password);
                     return yield models_1.employersModel.create(params);
                 }
