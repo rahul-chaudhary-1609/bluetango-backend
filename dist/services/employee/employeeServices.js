@@ -136,6 +136,21 @@ class EmployeeServices {
             });
         });
     }
+    /*
+    * function to add thought of the day
+    */
+    thoughtOfTheDay(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield employee_1.employeeModel.update({
+                thought_of_the_day: params.thought_of_the_day
+            }, {
+                where: { id: user.uid }
+            });
+            return employee_1.employeeModel.findOne({
+                where: { id: user.uid }
+            });
+        });
+    }
 }
 exports.EmployeeServices = EmployeeServices;
 //# sourceMappingURL=employeeServices.js.map

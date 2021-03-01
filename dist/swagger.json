@@ -1800,6 +1800,34 @@
                 "responses": {}
             }
         },
+        "/employee/thoughtOfTheDay": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "thought of the day",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "thought_of_the_day",
+                        "in": "formData",
+                        "description": "thought_of_the_day",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/login": {
             "post": {
                 "tags": [
