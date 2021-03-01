@@ -114,7 +114,8 @@ class EmployersController {
     dashboardAnalytics(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseObject = yield employersService.dashboardAnalytics(req.user);
+                req.query.admin_id = req.user.uid;
+                const responseObject = yield employersService.dashboardAnalytics(req.query);
                 return appUtils.successResponse(res, responseObject, constants.MESSAGES.dashboardAnalyticsCount);
             }
             catch (error) {

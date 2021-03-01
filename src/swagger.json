@@ -397,6 +397,20 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "ISO string",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "ISO String",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}

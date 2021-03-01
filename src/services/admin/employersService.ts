@@ -8,8 +8,11 @@ import * as helperFunction from "../../utils/helperFunction";
 import { where, Model } from "sequelize/types";
 import { AnyAaaaRecord } from "dns";
 import { employeeTokenResponse } from "../../utils/tokenResponse";
+import { sequelize } from "../../connection";
+import { now } from "sequelize/types/lib/utils";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+
 
 export class EmployersService {
     constructor() { }
@@ -162,31 +165,39 @@ export class EmployersService {
     * get dashboard analytics count
     @param {} params pass all parameters from request
     */
-    public async dashboardAnalytics(user: any) {
+    public async dashboardAnalytics(params) {
 
+        let rawQuery = ""
         let where: any = {}
-        let idArr: any = []
-        where.admin_id = user.uid
-        where.status = 1
-        const employers = await employersModel.findAndCountAll({ where: where, raw: true })
+        let employees;
+       
+        let admin_id = params.admin_id
 
-        for (let i = 0; i < employers.rows.length; i++) {
-            idArr.push(employers.rows[i].id)
+        rawQuery = `SELECT * FROM "employers" AS "employers" 
+            WHERE "employers"."admin_id" = ${admin_id} AND "employers"."status" = 1 AND
+             "employers"."createdAt" BETWEEN date '${params.from}'
+             AND date '${params.to}'
+              `
 
-        }
+        let employers = await sequelize.query(rawQuery, {
+            raw: true
+        });    
 
-        let criteria = {
+        let employerCount = employers[0] ? employers[0].length : 0
 
-            current_employer_id: { [Op.in]: idArr }
+        rawQuery = `SELECT * FROM "employee" AS "employees" 
+        WHERE "employees"."status" = 1 AND
+         "employees"."createdAt" BETWEEN date '${params.from}'
+         AND date '${params.to}'`
 
-        }
-        const employees = await employeeModel.count({ where: criteria })
+         employees = await sequelize.query(rawQuery, {
+            raw: true
+        });
 
-        if (employers) {
-            return { employers: employers.count, employees }
-        } else {
-            throw new Error(constants.MESSAGES.employer_notFound);
-        }
+        let employeeCount = employees[0] ? employees[0].length : 0
+        
+        return { employers: employerCount, employees: employeeCount }
+        
     }
 
 

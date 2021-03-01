@@ -80,7 +80,8 @@ export class EmployersController {
     */
     public async dashboardAnalytics(req: any, res: any) {
         try {
-            const responseObject = await employersService.dashboardAnalytics(req.user);
+            req.query.admin_id = req.user.uid;
+            const responseObject = await employersService.dashboardAnalytics(req.query);
             return appUtils.successResponse(res, responseObject, constants.MESSAGES.dashboardAnalyticsCount)
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
