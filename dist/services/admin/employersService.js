@@ -39,6 +39,7 @@ const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
+const connection_1 = require("../../connection");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -191,26 +192,30 @@ class EmployersService {
     * get dashboard analytics count
     @param {} params pass all parameters from request
     */
-    dashboardAnalytics(user) {
+    dashboardAnalytics(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let rawQuery = "";
             let where = {};
-            let idArr = [];
-            where.admin_id = user.uid;
-            where.status = 1;
-            const employers = yield models_1.employersModel.findAndCountAll({ where: where, raw: true });
-            for (let i = 0; i < employers.rows.length; i++) {
-                idArr.push(employers.rows[i].id);
-            }
-            let criteria = {
-                current_employer_id: { [Op.in]: idArr }
-            };
-            const employees = yield models_1.employeeModel.count({ where: criteria });
-            if (employers) {
-                return { employers: employers.count, employees };
-            }
-            else {
-                throw new Error(constants.MESSAGES.employer_notFound);
-            }
+            let employees;
+            let admin_id = params.admin_id;
+            rawQuery = `SELECT * FROM "employers" AS "employers" 
+            WHERE "employers"."admin_id" = ${admin_id} AND "employers"."status" = 1 AND
+             "employers"."createdAt" BETWEEN date '${params.from}'
+             AND date '${params.to}'
+              `;
+            let employers = yield connection_1.sequelize.query(rawQuery, {
+                raw: true
+            });
+            let employerCount = employers[0] ? employers[0].length : 0;
+            rawQuery = `SELECT * FROM "employee" AS "employees" 
+        WHERE "employees"."status" = 1 AND
+         "employees"."createdAt" BETWEEN date '${params.from}'
+         AND date '${params.to}'`;
+            employees = yield connection_1.sequelize.query(rawQuery, {
+                raw: true
+            });
+            let employeeCount = employees[0] ? employees[0].length : 0;
+            return { employers: employerCount, employees: employeeCount };
         });
     }
     /**
