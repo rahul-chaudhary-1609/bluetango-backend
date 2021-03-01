@@ -73,7 +73,9 @@ exports.MESSAGES = {
     subscription_plan_fetch: "Subscription plan fetched successfully",
     payment_list_fetch: "Payment List Fetched successfully",
     payment_detail_fetch: "Payment details fetched successfully",
-    invalid_date_format: "Invalid date format"
+    invalid_date_format: "Invalid date format",
+    employer_add_update: "Employer added/updated",
+    password_not_provided: "Pease enter password"
 };
 exports.code = {
     error_code: 400

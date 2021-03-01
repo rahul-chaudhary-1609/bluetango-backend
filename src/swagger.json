@@ -241,7 +241,7 @@
             "name": "password",
             "in": "formData",
             "description": "password",
-            "required": true,
+            "required": false,
             "type": "string"
           },
           {

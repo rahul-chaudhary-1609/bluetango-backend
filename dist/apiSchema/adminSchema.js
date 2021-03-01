@@ -131,7 +131,7 @@ exports.addEditEmployers = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8)
+    password: joi_1.default.string().min(8).optional()
         .max(15)
         .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         // .required()

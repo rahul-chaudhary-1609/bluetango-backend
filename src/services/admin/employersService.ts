@@ -85,6 +85,10 @@ export class EmployersService {
                     return false;
                 }
             } else {
+                if(!params.password) {
+                    throw new Error(constants.MESSAGES.password_not_provided)
+                }
+                
                 params.password = await appUtils.bcryptPassword(params.password);
                 return await employersModel.create(params);
             }

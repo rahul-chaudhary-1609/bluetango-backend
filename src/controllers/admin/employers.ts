@@ -35,7 +35,7 @@ export class EmployersController {
         try {
             const responseFromService = await employersService.addEditEmployers(req.body, req.user);
             if (responseFromService) {
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employer_add_update);
             } else {
                 appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
             }
