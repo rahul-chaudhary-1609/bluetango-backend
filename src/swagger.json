@@ -1860,6 +1860,27 @@
         "responses": {}
       }
     },
+    "/employee/getEmoji": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [

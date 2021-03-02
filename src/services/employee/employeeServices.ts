@@ -10,8 +10,8 @@ import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
-import { promises } from "fs";
 import { teamGoalModel } from "../../models/teamGoal";
+import { emojiModel } from "../../models/emoji";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -133,6 +133,13 @@ export class EmployeeServices {
         return employeeModel.findOne({
             where: { id: user.uid}
         })
+    }
+
+    /*
+    * function to add thought of the day
+    */
+    public async getEmoji() {
+        return await emojiModel.findAll();
     }
 
 }
