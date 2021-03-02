@@ -27,6 +27,10 @@ export const adminModel: any = sequelize.define("admins", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    thought_of_the_day: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     reset_pass_expiry: {
         type: DataTypes.DATE,
         allowNull: true,
