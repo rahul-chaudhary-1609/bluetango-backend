@@ -193,16 +193,17 @@ class GoalServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        required: false,
                         include: [
                             {
                                 model: employee_1.employeeModel,
                                 where: whereCondition,
-                                required: true,
+                                required: false,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
                         ]

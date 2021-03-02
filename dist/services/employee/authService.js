@@ -178,6 +178,7 @@ class AuthService {
             employee_1.employeeModel.hasOne(employers_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
             employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            employers_1.employersModel.hasOne(admin_1.adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" });
             let existingUser = yield employee_1.employeeModel.findOne({
                 where: {
                     id: params.uid
@@ -190,7 +191,12 @@ class AuthService {
                     {
                         model: employers_1.employersModel,
                         required: false,
-                        attributes: ['id', 'name', 'email']
+                        attributes: ['id', 'name', 'email'],
+                        include: [{
+                                model: admin_1.adminModel,
+                                required: false,
+                                attributes: ['id', 'thought_of_the_day']
+                            }]
                     },
                     {
                         model: managerTeamMember_1.managerTeamMemberModel,
