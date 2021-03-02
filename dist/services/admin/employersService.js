@@ -493,10 +493,13 @@ class EmployersService {
     */
     employerDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let where = {};
             where.admin_id = params.admin_id;
             where.id = params.employerId;
-            const employer = yield models_1.employersModel.findOne({ where: where, raw: true });
+            const employer = yield models_1.employersModel.findOne({ where: where,
+                include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }]
+            });
             if (employer) {
                 return employer;
             }

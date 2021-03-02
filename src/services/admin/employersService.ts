@@ -493,12 +493,14 @@ export class EmployersService {
     * @param {} params pass all parameters from request
     */
    public async employerDetails(params: any) {
-
+    employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
            let where:any = {}
            where.admin_id = params.admin_id
            where.id = params.employerId
 
-           const employer = await employersModel.findOne({where: where, raw: true})
+           const employer = await employersModel.findOne({where: where,
+            include: [{model: employeeModel, required: false, attributes: ["id"]}]
+            })
           
            if(employer) {
                return employer
