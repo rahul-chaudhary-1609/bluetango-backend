@@ -298,6 +298,27 @@ class EmployersController {
             }
         });
     }
+    /**
+* add edit coach
+* @param req :[Body data]
+* @param res : [coach data object]
+*/
+    addEditCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employersService.addEditCoach(req.body, req.user);
+                if (responseFromService) {
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employer_add_update);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

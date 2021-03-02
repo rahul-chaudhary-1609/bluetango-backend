@@ -72,5 +72,7 @@ adminRoute.get("/viewPaymentDetails", tokenValidator.validateAdminToken, employe
 adminRoute.get("/exportCsv", tokenValidator.validateAdminToken, employersController.exportCsv);
 /* view employer details */
 adminRoute.get("/employerDetails", tokenValidator.validateAdminToken, employersController.employerDetails);
+/* add coach */
+adminRoute.post("/addEditCoach", joiSchemaValidation.validateBody(adminSchema.addEditCoach), tokenValidator.validateAdminToken, employersController.addEditCoach);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

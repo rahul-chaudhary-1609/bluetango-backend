@@ -244,4 +244,22 @@ export class EmployersController {
         }
     }
 
+        /**
+    * add edit coach
+    * @param req :[Body data]
+    * @param res : [coach data object]
+    */
+   public async addEditCoach(req: any, res: any) {
+    try {
+        const responseFromService = await employersService.addEditCoach(req.body, req.user);
+        if (responseFromService) {
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employer_add_update);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
 }

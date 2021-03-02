@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
+exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -168,5 +168,25 @@ exports.getEmployersList = joi_1.default.object({
     limit: joi_1.default.string().optional(),
     offset: joi_1.default.string().optional(),
     searchKey: joi_1.default.string().optional()
+});
+exports.addEditCoach = joi_1.default.object({
+    id: joi_1.default.string().optional(),
+    name: joi_1.default.string().required(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    password: joi_1.default.string().min(8).optional()
+        .max(15)
+        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .required()
+        .messages({
+        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
+    country_code: joi_1.default.string().required(),
+    phone_number: joi_1.default.string().required(),
+    description: joi_1.default.string().required()
 });
 //# sourceMappingURL=adminSchema.js.map
