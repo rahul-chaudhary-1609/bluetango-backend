@@ -155,16 +155,38 @@ export class GoalServices {
         teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
         teamGoalModel.hasMany(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
-
+        var count, whereCondition;
         if (params.search_string) {
-            var whereCondition = <any> {
+            whereCondition = <any> {
                name: { [Op.iLike]: `%${params.search_string}%` }
             }
+            count = await teamGoalModel.count({
+                where: {manager_id: user.uid },
+                include: [
+                    {
+                        model: employeeModel,
+                        required: false,
+                    },
+                    {
+                        model: teamGoalAssignModel,
+                        required: true,
+                        include: [
+                            {
+                                model: employeeModel,
+                                where: whereCondition,
+                                required: true,
+                            }
+                        ]
+                    }
+                ],
+            })
+        } else {
+            count = await teamGoalModel.count({
+                where: {manager_id: user.uid }
+            })
         }
 
-        let count = await teamGoalModel.count({
-            where: {manager_id: user.uid }
-        })
+       
        
         let rows =  await teamGoalModel.findAll({
             where: {manager_id: user.uid },
@@ -181,7 +203,7 @@ export class GoalServices {
                         {
                             model: employeeModel,
                             where: whereCondition,
-                            required: false,
+                            required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]

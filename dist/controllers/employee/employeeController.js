@@ -115,6 +115,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+   * add thought of the day
+   * @param req :[]
+   * @param res
+   */
+    getEmoji(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getEmoji();
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map
