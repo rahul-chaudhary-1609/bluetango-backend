@@ -200,9 +200,9 @@ class EmployersService {
             let rawQuery = "";
             let where = {};
             let employees;
-            let admin_id = params.admin_id;
+            // let admin_id = params.admin_id
             rawQuery = `SELECT * FROM "employers" AS "employers" 
-            WHERE "employers"."admin_id" = ${admin_id} AND "employers"."status" = 1 AND
+            WHERE "employers"."status" = 1 AND
              "employers"."createdAt" BETWEEN date '${params.from}'
              AND date '${params.to}'
               `;
@@ -495,9 +495,9 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let where = {};
-            where.admin_id = params.admin_id;
             where.id = params.employerId;
-            const employer = yield models_1.employersModel.findOne({ where: where,
+            const employer = yield models_1.employersModel.findOne({
+                where: where,
                 include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }]
             });
             if (employer) {

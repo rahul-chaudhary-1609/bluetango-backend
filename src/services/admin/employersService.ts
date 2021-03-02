@@ -175,10 +175,10 @@ export class EmployersService {
         let where: any = {}
         let employees;
 
-        let admin_id = params.admin_id
+       // let admin_id = params.admin_id
 
         rawQuery = `SELECT * FROM "employers" AS "employers" 
-            WHERE "employers"."admin_id" = ${admin_id} AND "employers"."status" = 1 AND
+            WHERE "employers"."status" = 1 AND
              "employers"."createdAt" BETWEEN date '${params.from}'
              AND date '${params.to}'
               `
@@ -492,24 +492,24 @@ export class EmployersService {
     /* 
     * @param {} params pass all parameters from request
     */
-   public async employerDetails(params: any) {
-    employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
-           let where:any = {}
-           where.admin_id = params.admin_id
-           where.id = params.employerId
+    public async employerDetails(params: any) {
+        employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
+        let where: any = {}
+        where.id = params.employerId
 
-           const employer = await employersModel.findOne({where: where,
-            include: [{model: employeeModel, required: false, attributes: ["id"]}]
-            })
-          
-           if(employer) {
-               return employer
-           }
-           else {
-               throw new Error(constants.MESSAGES.employer_notFound);
-           }
-       
-   }
+        const employer = await employersModel.findOne({
+            where: where,
+            include: [{ model: employeeModel, required: false, attributes: ["id"] }]
+        })
+
+        if (employer) {
+            return employer
+        }
+        else {
+            throw new Error(constants.MESSAGES.employer_notFound);
+        }
+
+    }
 
 
 }
