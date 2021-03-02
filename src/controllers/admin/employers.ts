@@ -166,7 +166,7 @@ export class EmployersController {
        * @param req :[]
        * @param res : [subscription plans]
        */
-      public async viewSubscriptionPlan(req: any, res: any) {
+    public async viewSubscriptionPlan(req: any, res: any) {
         try {
             const subscriptionPlan = await employersService.viewSubscriptionPlan(req.query);
             return appUtils.successResponse(res, subscriptionPlan, constants.MESSAGES.subscription_plan_fetch);
@@ -180,7 +180,7 @@ export class EmployersController {
        * @param req :[]
        * @param res : [payment list]
        */
-      public async viewPaymentList(req: any, res: any) {
+    public async viewPaymentList(req: any, res: any) {
         try {
             req.query.admin_id = req.user.uid;
             const paymentList = await employersService.viewPaymentList(req.query);
@@ -195,7 +195,7 @@ export class EmployersController {
        * @param req :[]
        * @param res : [payment list]
        */
-      public async viewPaymentDetails(req: any, res: any) {
+    public async viewPaymentDetails(req: any, res: any) {
         try {
             req.query.admin_id = req.user.uid;
             const paymentDetails = await employersService.viewPaymentDetails(req.query);
@@ -210,7 +210,7 @@ export class EmployersController {
        * @param req :[]
        * @param res : [csv file]
        */
-      public async exportCsv(req: any, res: any) {
+    public async exportCsv(req: any, res: any) {
         try {
             req.query.admin_id = req.user.uid;
             let result = await employersService.exportCsv(req.query);
@@ -220,6 +220,25 @@ export class EmployersController {
             res.status(200).send(csvString);
             //return res.csv("paymenrList.csv",results)
             //return appUtils.successResponse(res,{}, constants.MESSAGES.payment_list_fetch);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * employer detail employee
+    * @param req :[Body data]
+    * @param res : [employers data object]
+    */
+    public async employerDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const employer = await employersService.employerDetails(req.query);
+            if (employer) {
+                return appUtils.successResponse(res, employer, constants.MESSAGES.employer_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }

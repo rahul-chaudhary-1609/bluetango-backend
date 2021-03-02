@@ -488,6 +488,23 @@ class EmployersService {
             });
         });
     }
+    /*
+    * @param {} params pass all parameters from request
+    */
+    employerDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.admin_id = params.admin_id;
+            where.id = params.employerId;
+            const employer = yield models_1.employersModel.findOne({ where: where, raw: true });
+            if (employer) {
+                return employer;
+            }
+            else {
+                throw new Error(constants.MESSAGES.employer_notFound);
+            }
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map
