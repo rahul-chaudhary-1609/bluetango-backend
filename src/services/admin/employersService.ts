@@ -1,6 +1,7 @@
 import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
-import { paymentManagementModel } from "../../models/paymentManagement"
+import { paymentManagementModel } from "../../models/paymentManagement";
+import { coachManagementModel } from "../../models/coachManagement"
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -510,6 +511,76 @@ export class EmployersService {
         }
 
     }
+
+    /**
+    * add edit employers function
+    @param {} params pass all parameters from request
+    */
+   public async addEditCoach(params: any, user: any) {
+    var isEmail = await appUtils.CheckEmail(params);
+    const qry = <any>{ where: {} };
+    if (isEmail) {
+        qry.where = {
+            email: params.username,
+            status: { [Op.in]: [0, 1] }
+        };
+    }
+    var existingUser;
+    if (params.id) {
+        existingUser = await coachManagementModel.findOne({
+            where: {
+                [Op.or]: [
+                    { email: params.email },
+                    { phone_number: params.phone_number },
+                ],
+                status: {
+                    [Op.in]: [0, 1]
+                },
+                id: {
+                    [Op.ne]: params.id
+                }
+            }
+        });
+    } else {
+        existingUser = await coachManagementModel.findOne({
+            where: {
+                [Op.or]: [
+                    { email: params.email },
+                    { phone_number: params.phone_number },
+                ],
+                status: {
+                    [Op.in]: [0, 1]
+                }
+            }
+        });
+    }
+    params.admin_id = user.uid;
+    if (_.isEmpty(existingUser)) {
+        if (params.id) {
+            delete params.password;
+            let updateData = await coachManagementModel.update(params, {
+                where: { id: params.id }
+            });
+            if (updateData) {
+                return await coachManagementModel.findOne({
+                    where: { id: params.id }
+                })
+            } else {
+                return false;
+            }
+        } else {
+            if (!params.password) {
+                throw new Error(constants.MESSAGES.password_not_provided)
+            }
+
+            params.password = await appUtils.bcryptPassword(params.password);
+            return await coachManagementModel.create(params);
+        }
+
+    } else {
+        throw new Error(constants.MESSAGES.email_phone_already_registered);
+    }
+}
 
 
 }

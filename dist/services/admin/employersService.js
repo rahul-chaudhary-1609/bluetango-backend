@@ -35,6 +35,7 @@ exports.EmployersService = void 0;
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
+const coachManagement_1 = require("../../models/coachManagement");
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
@@ -505,6 +506,79 @@ class EmployersService {
             }
             else {
                 throw new Error(constants.MESSAGES.employer_notFound);
+            }
+        });
+    }
+    /**
+    * add edit employers function
+    @param {} params pass all parameters from request
+    */
+    addEditCoach(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var isEmail = yield appUtils.CheckEmail(params);
+            const qry = { where: {} };
+            if (isEmail) {
+                qry.where = {
+                    email: params.username,
+                    status: { [Op.in]: [0, 1] }
+                };
+            }
+            var existingUser;
+            if (params.id) {
+                existingUser = yield coachManagement_1.coachManagementModel.findOne({
+                    where: {
+                        [Op.or]: [
+                            { email: params.email },
+                            { phone_number: params.phone_number },
+                        ],
+                        status: {
+                            [Op.in]: [0, 1]
+                        },
+                        id: {
+                            [Op.ne]: params.id
+                        }
+                    }
+                });
+            }
+            else {
+                existingUser = yield coachManagement_1.coachManagementModel.findOne({
+                    where: {
+                        [Op.or]: [
+                            { email: params.email },
+                            { phone_number: params.phone_number },
+                        ],
+                        status: {
+                            [Op.in]: [0, 1]
+                        }
+                    }
+                });
+            }
+            params.admin_id = user.uid;
+            if (lodash_1.default.isEmpty(existingUser)) {
+                if (params.id) {
+                    delete params.password;
+                    let updateData = yield coachManagement_1.coachManagementModel.update(params, {
+                        where: { id: params.id }
+                    });
+                    if (updateData) {
+                        return yield coachManagement_1.coachManagementModel.findOne({
+                            where: { id: params.id }
+                        });
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    if (!params.password) {
+                        throw new Error(constants.MESSAGES.password_not_provided);
+                    }
+                    params.password = yield appUtils.bcryptPassword(params.password);
+                    return yield coachManagement_1.coachManagementModel.create(params);
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.email_phone_already_registered);
             }
         });
     }
