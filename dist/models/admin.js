@@ -28,6 +28,10 @@ exports.adminModel = connection_1.sequelize.define("admins", {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    thought_of_the_day: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
     reset_pass_expiry: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: true,

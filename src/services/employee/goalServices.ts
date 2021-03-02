@@ -171,16 +171,17 @@ export class GoalServices {
             include: [
                 {
                     model: employeeModel,
-                    required: true,
+                    required: false,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 },
                 {
                     model: teamGoalAssignModel,
+                    required: false,
                     include: [
                         {
                             model: employeeModel,
                             where: whereCondition,
-                            required: true,
+                            required: false,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
