@@ -35,6 +35,7 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoal_1 = require("../../models/teamGoal");
+const emoji_1 = require("../../models/emoji");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployeeServices {
@@ -149,6 +150,14 @@ class EmployeeServices {
             return employee_1.employeeModel.findOne({
                 where: { id: user.uid }
             });
+        });
+    }
+    /*
+    * function to add thought of the day
+    */
+    getEmoji() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield emoji_1.emojiModel.findAll();
         });
     }
 }

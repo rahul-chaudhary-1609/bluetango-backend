@@ -80,4 +80,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+     /**
+    * add thought of the day
+    * @param req :[]
+    * @param res 
+    */
+    public async getEmoji(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getEmoji();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            
+        } catch (e) {
+            next(e)
+        }
+    }
 }
