@@ -85,10 +85,10 @@ export class EmployersService {
                     return false;
                 }
             } else {
-                if(!params.password) {
+                if (!params.password) {
                     throw new Error(constants.MESSAGES.password_not_provided)
                 }
-                
+
                 params.password = await appUtils.bcryptPassword(params.password);
                 return await employersModel.create(params);
             }
@@ -103,31 +103,31 @@ export class EmployersService {
     @param {} params pass all parameters from request
     */
     public async getEmployersList(params: any) {
-        employersModel.hasMany(employeeModel, {foreignKey: "current_employer_id"})
+        employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        var whereCond:any = {};
+        var whereCond: any = {};
         if (params.searchKey) {
             whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` }
-            
+
         }
         if (params.industry_type) {
             whereCond["industry_type"] = params.industry_type
         }
 
-        whereCond["status"] = {[Op.or]: [0,1]}
-         
-            const employer = await employersModel.findAll({
-            include: [{model: employeeModel, required: false, attributes: ["id"]}],
+        whereCond["status"] = { [Op.or]: [0, 1] }
+
+        const employer = await employersModel.findAll({
+            include: [{ model: employeeModel, required: false, attributes: ["id"] }],
             where: whereCond,
             limit: limit,
             offset: offset,
             order: [["createdAt", "DESC"]]
 
-            
+
         })
 
-        const countEmployer = await employersModel.count({where: whereCond})
-        return{employer,count:countEmployer}
+        const countEmployer = await employersModel.count({ where: whereCond })
+        return { employer, count: countEmployer }
     }
 
     /**
@@ -174,7 +174,7 @@ export class EmployersService {
         let rawQuery = ""
         let where: any = {}
         let employees;
-       
+
         let admin_id = params.admin_id
 
         rawQuery = `SELECT * FROM "employers" AS "employers" 
@@ -185,7 +185,7 @@ export class EmployersService {
 
         let employers = await sequelize.query(rawQuery, {
             raw: true
-        });    
+        });
 
         let employerCount = employers[0] ? employers[0].length : 0
 
@@ -194,14 +194,14 @@ export class EmployersService {
          "employees"."createdAt" BETWEEN date '${params.from}'
          AND date '${params.to}'`
 
-         employees = await sequelize.query(rawQuery, {
+        employees = await sequelize.query(rawQuery, {
             raw: true
         });
 
         let employeeCount = employees[0] ? employees[0].length : 0
-        
+
         return { employers: employerCount, employees: employeeCount }
-        
+
     }
 
 
@@ -254,7 +254,7 @@ export class EmployersService {
                 name: { [Op.iLike]: `%${params.searchKey}%` },
                 status: 1
             }
-        } 
+        }
 
         return await employeeModel.findAndCountAll({
             where: whereCond,
@@ -359,8 +359,8 @@ export class EmployersService {
      */
     public async addSubscriptionPlan(params: any) {
 
-            return await subscriptionManagementModel.create(params);
-        
+        return await subscriptionManagementModel.create(params);
+
     }
 
     /**
@@ -369,15 +369,15 @@ export class EmployersService {
      */
     public async updateSubscriptionPlan(params: any) {
 
-            const plans = await subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true })
-           
-            if(plans && plans[1][0]) {
-                return plans[1][0]
-            }
-            else {
-                throw new Error(constants.MESSAGES.plan_notFound);
-            }
-        
+        const plans = await subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true })
+
+        if (plans && plans[1][0]) {
+            return plans[1][0]
+        }
+        else {
+            throw new Error(constants.MESSAGES.plan_notFound);
+        }
+
     }
 
     /**
@@ -385,26 +385,26 @@ export class EmployersService {
      * @param {} params pass all parameters from request
      */
     public async viewSubscriptionPlan(params: any) {
-        let where:any = {}
+        let where: any = {}
         if (params.status) {
-                where.status = params.status
-        
-        }else {
+            where.status = params.status
+
+        } else {
             where.status = 1
         }
-            return await subscriptionManagementModel.findAll({where: where})
-        
+        return await subscriptionManagementModel.findAll({ where: where })
+
     }
 
-     /**
-     * 
-     * @param {} params pass all parameters from request
-     */
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
     public async viewPaymentList(params: any) {
-        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where:any = {}
-        let whereCond:any = {}
+        let where: any = {}
+        let whereCond: any = {}
         if (params.searchKey) {
             where = {
                 name: { [Op.iLike]: `%${params.searchKey}%` }
@@ -412,19 +412,19 @@ export class EmployersService {
         }
         whereCond.status = 1
         whereCond.admin_id = params.admin_id
-         return await paymentManagementModel.findAndCountAll({
-             where: whereCond,
-             include: [{
+        return await paymentManagementModel.findAndCountAll({
+            where: whereCond,
+            include: [{
                 model: employersModel,
                 required: true,
                 where: where,
                 attributes: ["name"]
-                }],
+            }],
             attributes: ["plan_type", "expiry_date"],
-             limit: limit,
-             offset: offset
-         })   
-        
+            limit: limit,
+            offset: offset
+        })
+
     }
 
     /**
@@ -432,10 +432,10 @@ export class EmployersService {
      * @param {} params pass all parameters from request
      */
     public async viewPaymentDetails(params: any) {
-        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where:any = {}
-        let whereCond:any = {}
+        let where: any = {}
+        let whereCond: any = {}
         if (params.searchKey) {
             where = {
                 name: { [Op.iLike]: `%${params.searchKey}%` }
@@ -444,29 +444,29 @@ export class EmployersService {
         whereCond.status = 1
         whereCond.employer_id = params.employerId
         whereCond.admin_id = params.admin_id
-         return await paymentManagementModel.findOne({
-             where: whereCond,
-             include: [{
+        return await paymentManagementModel.findOne({
+            where: whereCond,
+            include: [{
                 model: employersModel,
                 required: true,
                 where: where,
-                }],
-             limit: limit,
-             offset: offset
-         })   
-        
+            }],
+            limit: limit,
+            offset: offset
+        })
+
     }
 
 
-     /**
-     * 
-     * @param {} params pass all parameters from request
-     */
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
     public async exportCsv(params: any) {
-        paymentManagementModel.belongsTo(employersModel, {foreignKey: "employer_id"})
+        paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where:any = {}
-        let whereCond:any = {}
+        let where: any = {}
+        let whereCond: any = {}
         if (params.searchKey) {
             where = {
                 name: { [Op.iLike]: `%${params.searchKey}%` }
@@ -474,20 +474,40 @@ export class EmployersService {
         }
         whereCond.status = 1
         whereCond.admin_id = params.admin_id
-         return await paymentManagementModel.findAndCountAll({
-             where: whereCond,
-             include: [{
+        return await paymentManagementModel.findAndCountAll({
+            where: whereCond,
+            include: [{
                 model: employersModel,
                 required: true,
                 where: where,
                 attributes: ["name"]
-                }],
+            }],
             attributes: ["plan_type", "expiry_date"],
-             limit: limit,
-             offset: offset
-         })   
-        
+            limit: limit,
+            offset: offset
+        })
+
     }
+
+    /* 
+    * @param {} params pass all parameters from request
+    */
+   public async employerDetails(params: any) {
+
+           let where:any = {}
+           where.admin_id = params.admin_id
+           where.id = params.employerId
+
+           const employer = await employersModel.findOne({where: where, raw: true})
+          
+           if(employer) {
+               return employer
+           }
+           else {
+               throw new Error(constants.MESSAGES.employer_notFound);
+           }
+       
+   }
 
 
 }

@@ -72,7 +72,8 @@ export const MESSAGES = {
   payment_detail_fetch: "Payment details fetched successfully",
   invalid_date_format: "Invalid date format",
   employer_add_update: "Employer added/updated",
-  password_not_provided: "Pease enter password"
+  password_not_provided: "Pease enter password",
+  employer_details_fetched: "Employer details fetched successfully"
 }
 
 export const code = {
