@@ -53,7 +53,7 @@ exports.employersModel = connection_1.sequelize.define("employers", {
         allowNull: false,
     },
     address: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
     thought_of_the_day: {
@@ -63,5 +63,5 @@ exports.employersModel = connection_1.sequelize.define("employers", {
 }, {
     tableName: "employers"
 });
-exports.employersModel.sync({ alter: false });
+exports.employersModel.sync({ alter: true });
 //# sourceMappingURL=employers.js.map
