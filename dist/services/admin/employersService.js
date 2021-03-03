@@ -510,7 +510,7 @@ class EmployersService {
         });
     }
     /**
-    * add edit employers function
+    * add/ update coach management
     @param {} params pass all parameters from request
     */
     addEditCoach(params, user) {
@@ -580,6 +580,26 @@ class EmployersService {
             else {
                 throw new Error(constants.MESSAGES.email_phone_already_registered);
             }
+        });
+    }
+    /**
+   *
+   * @param {} params pass all parameters from request
+   */
+    getCoachList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let where = {};
+            if (params.searchKey) {
+                where["name"] = { [Op.iLike]: `%${params.searchKey}%` };
+            }
+            where["status"] = 1;
+            return yield coachManagement_1.coachManagementModel.findAndCountAll({
+                where: where,
+                attributes: ["id", "name", "email", "phone_number"],
+                limit: limit,
+                offset: offset
+            });
         });
     }
 }

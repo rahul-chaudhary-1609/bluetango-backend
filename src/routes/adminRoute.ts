@@ -79,4 +79,8 @@ adminRoute.get("/employerDetails", tokenValidator.validateAdminToken, employersC
 /* add coach */
 adminRoute.post("/addEditCoach",joiSchemaValidation.validateBody(adminSchema.addEditCoach), tokenValidator.validateAdminToken, employersController.addEditCoach);
 
+/* get coach list */
+adminRoute.get("/getCoachList", tokenValidator.validateAdminToken, employersController.getCoachList);
+
+
 export = adminRoute;

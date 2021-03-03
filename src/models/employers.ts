@@ -52,7 +52,7 @@ export const employersModel: any = sequelize.define("employers", {
         allowNull: false,
     },
     address: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     thought_of_the_day: {
@@ -64,4 +64,4 @@ export const employersModel: any = sequelize.define("employers", {
         tableName: "employers"
     }
 );
-employersModel.sync({ alter: false });
+employersModel.sync({ alter: true });
