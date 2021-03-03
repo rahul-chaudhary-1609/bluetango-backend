@@ -176,7 +176,7 @@ export class EmployersService {
         let where: any = {}
         let employees;
 
-       // let admin_id = params.admin_id
+        // let admin_id = params.admin_id
 
         rawQuery = `SELECT * FROM "employers" AS "employers" 
             WHERE "employers"."status" = 1 AND
@@ -513,74 +513,96 @@ export class EmployersService {
     }
 
     /**
-    * add edit employers function
+    * add/ update coach management
     @param {} params pass all parameters from request
     */
-   public async addEditCoach(params: any, user: any) {
-    var isEmail = await appUtils.CheckEmail(params);
-    const qry = <any>{ where: {} };
-    if (isEmail) {
-        qry.where = {
-            email: params.username,
-            status: { [Op.in]: [0, 1] }
-        };
-    }
-    var existingUser;
-    if (params.id) {
-        existingUser = await coachManagementModel.findOne({
-            where: {
-                [Op.or]: [
-                    { email: params.email },
-                    { phone_number: params.phone_number },
-                ],
-                status: {
-                    [Op.in]: [0, 1]
-                },
-                id: {
-                    [Op.ne]: params.id
-                }
-            }
-        });
-    } else {
-        existingUser = await coachManagementModel.findOne({
-            where: {
-                [Op.or]: [
-                    { email: params.email },
-                    { phone_number: params.phone_number },
-                ],
-                status: {
-                    [Op.in]: [0, 1]
-                }
-            }
-        });
-    }
-    params.admin_id = user.uid;
-    if (_.isEmpty(existingUser)) {
-        if (params.id) {
-            delete params.password;
-            let updateData = await coachManagementModel.update(params, {
-                where: { id: params.id }
-            });
-            if (updateData) {
-                return await coachManagementModel.findOne({
-                    where: { id: params.id }
-                })
-            } else {
-                return false;
-            }
-        } else {
-            if (!params.password) {
-                throw new Error(constants.MESSAGES.password_not_provided)
-            }
-
-            params.password = await appUtils.bcryptPassword(params.password);
-            return await coachManagementModel.create(params);
+    public async addEditCoach(params: any, user: any) {
+        var isEmail = await appUtils.CheckEmail(params);
+        const qry = <any>{ where: {} };
+        if (isEmail) {
+            qry.where = {
+                email: params.username,
+                status: { [Op.in]: [0, 1] }
+            };
         }
+        var existingUser;
+        if (params.id) {
+            existingUser = await coachManagementModel.findOne({
+                where: {
+                    [Op.or]: [
+                        { email: params.email },
+                        { phone_number: params.phone_number },
+                    ],
+                    status: {
+                        [Op.in]: [0, 1]
+                    },
+                    id: {
+                        [Op.ne]: params.id
+                    }
+                }
+            });
+        } else {
+            existingUser = await coachManagementModel.findOne({
+                where: {
+                    [Op.or]: [
+                        { email: params.email },
+                        { phone_number: params.phone_number },
+                    ],
+                    status: {
+                        [Op.in]: [0, 1]
+                    }
+                }
+            });
+        }
+        params.admin_id = user.uid;
+        if (_.isEmpty(existingUser)) {
+            if (params.id) {
+                delete params.password;
+                let updateData = await coachManagementModel.update(params, {
+                    where: { id: params.id }
+                });
+                if (updateData) {
+                    return await coachManagementModel.findOne({
+                        where: { id: params.id }
+                    })
+                } else {
+                    return false;
+                }
+            } else {
+                if (!params.password) {
+                    throw new Error(constants.MESSAGES.password_not_provided)
+                }
 
-    } else {
-        throw new Error(constants.MESSAGES.email_phone_already_registered);
+                params.password = await appUtils.bcryptPassword(params.password);
+                return await coachManagementModel.create(params);
+            }
+
+        } else {
+            throw new Error(constants.MESSAGES.email_phone_already_registered);
+        }
     }
-}
+
+    /**
+   * 
+   * @param {} params pass all parameters from request
+   */
+    public async getCoachList(params: any) {
+        
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let where: any = {}
+        
+        if (params.searchKey) {
+            where["name"]= { [Op.iLike]: `%${params.searchKey}%` }
+        }
+        where["status"] = 1
+        return await coachManagementModel.findAndCountAll({
+            where: where,
+            attributes: ["id", "name", "email", "phone_number"],
+            limit: limit,
+            offset: offset
+        })
+
+    }
 
 
 }
