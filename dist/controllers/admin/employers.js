@@ -308,7 +308,29 @@ class EmployersController {
             try {
                 const responseFromService = yield employersService.addEditCoach(req.body, req.user);
                 if (responseFromService) {
-                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employer_add_update);
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.coach_add_update);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+   * get coach list
+   * @param req :[query params]
+   * @param res : [coach list]
+   */
+    getCoachList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const coach = yield employersService.getCoachList(req.query);
+                if (coach) {
+                    return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);

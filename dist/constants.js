@@ -76,7 +76,9 @@ exports.MESSAGES = {
     invalid_date_format: "Invalid date format",
     employer_add_update: "Employer added/updated",
     password_not_provided: "Pease enter password",
-    employer_details_fetched: "Employer details fetched successfully"
+    employer_details_fetched: "Employer details fetched successfully",
+    coach_add_update: "Coach added/updated successfully",
+    coach_list_fetched: "Coach list fetched successfully"
 };
 exports.code = {
     error_code: 400

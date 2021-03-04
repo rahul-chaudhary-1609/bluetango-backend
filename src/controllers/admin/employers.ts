@@ -244,16 +244,35 @@ export class EmployersController {
         }
     }
 
-        /**
-    * add edit coach
-    * @param req :[Body data]
-    * @param res : [coach data object]
+    /**
+* add edit coach
+* @param req :[Body data]
+* @param res : [coach data object]
+*/
+    public async addEditCoach(req: any, res: any) {
+        try {
+            const responseFromService = await employersService.addEditCoach(req.body, req.user);
+            if (responseFromService) {
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.coach_add_update);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+     /**
+    * get coach list
+    * @param req :[query params]
+    * @param res : [coach list]
     */
-   public async addEditCoach(req: any, res: any) {
+   public async getCoachList(req: any, res: any) {
     try {
-        const responseFromService = await employersService.addEditCoach(req.body, req.user);
-        if (responseFromService) {
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employer_add_update);
+        req.query.admin_id = req.user.uid;
+        const coach = await employersService.getCoachList(req.query);
+        if (coach) {
+            return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
         } else {
             appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
         }
