@@ -112,7 +112,11 @@ export const employeeModel: any = sequelize.define("employee", {
     thought_of_the_day: {
         type: DataTypes.STRING,
         allowNull: true,
-    }
+    },
+    energy_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
 },
     {
         tableName: "employee"

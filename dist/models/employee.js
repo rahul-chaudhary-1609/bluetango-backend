@@ -113,7 +113,11 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     thought_of_the_day: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
-    }
+    },
+    energy_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true,
+    },
 }, {
     tableName: "employee"
 });
