@@ -78,7 +78,10 @@ exports.MESSAGES = {
     password_not_provided: "Pease enter password",
     employer_details_fetched: "Employer details fetched successfully",
     coach_add_update: "Coach added/updated successfully",
-    coach_list_fetched: "Coach list fetched successfully"
+    coach_list_fetched: "Coach list fetched successfully",
+    coach_deleted: "Coach deleted",
+    coach_not_found: "Coach not found",
+    coach_details_fetched: "Coach details fetched successfully"
 };
 exports.code = {
     error_code: 400

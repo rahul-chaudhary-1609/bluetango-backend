@@ -121,8 +121,14 @@ class EmployersService {
                     if (!params.password) {
                         throw new Error(constants.MESSAGES.password_not_provided);
                     }
+                    //const password = params.password
                     params.password = yield appUtils.bcryptPassword(params.password);
-                    return yield models_1.employersModel.create(params);
+                    const employer = yield models_1.employersModel.create(params);
+                    // let emailObj = {
+                    //     to: params.email,
+                    //     subject: "new employer",
+                    // }
+                    return employer;
                 }
             }
             else {
@@ -600,6 +606,49 @@ class EmployersService {
                 limit: limit,
                 offset: offset
             });
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    getCoachDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                id: params.coachId,
+                status: 1
+            };
+            const coach = yield coachManagement_1.coachManagementModel.findOne({
+                where: where,
+                attributes: ["id", "name", "email", "phone_number"],
+            });
+            if (coach) {
+                return coach;
+            }
+            else {
+                throw new Error(constants.MESSAGES.coach_not_found);
+            }
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    deleteCoach(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                id: params.coachId
+            };
+            let update = {
+                status: 2
+            };
+            const coach = yield coachManagement_1.coachManagementModel.update(update, { where: where, returning: true });
+            if (coach && coach[1][0]) {
+                return coach;
+            }
+            else {
+                throw new Error(constants.MESSAGES.coach_not_found);
+            }
         });
     }
 }

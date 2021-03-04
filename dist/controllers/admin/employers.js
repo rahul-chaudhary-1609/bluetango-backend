@@ -341,6 +341,50 @@ class EmployersController {
             }
         });
     }
+    /**
+  * get coach details
+  * @param req :[query params]
+  * @param res : [coach list]
+  */
+    getCoachDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const coach = yield employersService.getCoachDetails(req.query);
+                if (coach) {
+                    return appUtils.successResponse(res, coach, constants.MESSAGES.coach_details_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * delete coach
+  * @param req :[query params]
+  * @param res : [coach list]
+  */
+    deleteCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const coach = yield employersService.deleteCoach(req.query);
+                if (coach) {
+                    return appUtils.successResponse(res, {}, constants.MESSAGES.coach_deleted);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

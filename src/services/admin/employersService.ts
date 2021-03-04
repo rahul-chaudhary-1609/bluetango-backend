@@ -89,9 +89,15 @@ export class EmployersService {
                 if (!params.password) {
                     throw new Error(constants.MESSAGES.password_not_provided)
                 }
-
+                //const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
-                return await employersModel.create(params);
+                const employer =  await employersModel.create(params);
+                // let emailObj = {
+                //     to: params.email,
+                //     subject: "new employer",
+
+                // }
+                return employer
             }
 
         } else {
@@ -603,6 +609,51 @@ export class EmployersService {
         })
 
     }
+
+     /**
+   * 
+   * @param {} params pass all parameters from request
+   */
+  public async getCoachDetails(params: any) {
+        
+    let where = {
+        id: params.coachId,
+        status: 1
+    }
+    const coach = await coachManagementModel.findOne({
+        where: where,
+        attributes: ["id", "name", "email", "phone_number"],
+    })
+    if(coach) {
+        return coach
+    }
+    else{
+        throw new Error(constants.MESSAGES.coach_not_found)
+    }
+
+}
+
+     /**
+   * 
+   * @param {} params pass all parameters from request
+   */
+  public async deleteCoach(params: any) {
+    let where = {
+        id: params.coachId
+    }
+    let update = {
+        status: 2
+    }
+   const coach = await coachManagementModel.update(update, {where: where, returning: true})
+   
+   if(coach && coach[1][0]) {
+       return coach
+   }else {
+       throw new Error(constants.MESSAGES.coach_not_found);
+       
+   }
+
+}
 
 
 }
