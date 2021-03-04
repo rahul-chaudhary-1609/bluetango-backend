@@ -27,20 +27,44 @@ export class EmployeeServices {
     public async getListOfTeamMemberByManagerId(params:any, user: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-        return await managerTeamMemberModel.findAndCountAll({
-            where: { manager_id: user.uid},
-            include: [
-                {
-                    model: employeeModel, 
-                    required: false,
-                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
-                }
-            ],
-            limit: limit,
-            offset: offset,
-            order: [["createdAt", "DESC"]]
+        
+        let teamMembersData = await helperFunction.convertPromiseToObject(  await managerTeamMemberModel.findAndCountAll({
+                where: { manager_id: user.uid},
+                include: [
+                    {
+                        model: employeeModel, 
+                        required: false,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ],
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
 
-        })
+            })
+        );
+
+        let date = new Date();
+        date.setMonth(date.getMonth()-3);
+        let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        for (let i=0; i< teamMembersData.rows.length; i++ ) {
+            let rateCheck = await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findOne({
+                    where: {
+                        manager_id: user.uid,
+                        employee_id: teamMembersData.rows[i].team_member_id,
+                        updatedAt:{[Op.gte]: dateCheck }
+                    }
+                })
+            );
+            if (_.isEmpty(rateCheck)) {
+                teamMembersData.rows[i].rate_valid = 1;
+            } else {
+                teamMembersData.rows[i].rate_valid = 0;
+            }
+        }
+
+        return teamMembersData;
+           
     }
 
     /*
@@ -158,6 +182,33 @@ export class EmployeeServices {
             }
         )
         return authService.getMyProfile(user);
+    }
+
+    /*
+    * function to view energy check
+    */
+    public async viewEnergyCheckTeamMembers(user: any) {
+
+       managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+       employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+       
+        return await managerTeamMemberModel.findAll({
+           where: { manager_id: user.uid },
+           include:[
+               {
+                    model: employeeModel,
+                    required: false,
+                    attributes:['id', 'name', 'energy_id'],
+                    include: [
+                        {
+                            model: emojiModel,
+                            required: false,
+                            attributes:['image_url', 'caption'],
+                        }
+                    ]
+               }
+           ]
+       })
     }
 
 }

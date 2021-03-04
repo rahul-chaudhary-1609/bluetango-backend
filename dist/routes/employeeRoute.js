@@ -84,6 +84,8 @@ employeeRoute.post("/thoughtOfTheDay", validators.trimmer, tokenValidator.valida
 employeeRoute.get("/getEmoji", tokenValidator.validateEmployeeToken, employeeController.getEmoji);
 /* update energy of the employee */
 employeeRoute.post("/updateEnergyCheck", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateEnergyCheck), employeeController.updateEnergyCheck);
+/* View energy check of the team member */
+employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEnergyCheckTeamMembers);
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);

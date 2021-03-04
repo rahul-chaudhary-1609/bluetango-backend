@@ -19,7 +19,7 @@ exports.teamGoalAssignModel = connection_1.sequelize.define("team_goal_assign", 
         allowNull: false,
     },
     complete_measure: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,
         defaultValue: 0
     },

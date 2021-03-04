@@ -2073,6 +2073,27 @@
                 "responses": {}
             }
         },
+        "/employee/viewEnergyCheckTeamMembers": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view energy check",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/login": {
             "post": {
                 "tags": [
