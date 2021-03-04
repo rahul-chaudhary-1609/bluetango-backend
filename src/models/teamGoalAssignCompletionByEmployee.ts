@@ -22,7 +22,7 @@ export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("te
         allowNull: false,
     },
     complete_measure: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
         defaultValue: 0
     },

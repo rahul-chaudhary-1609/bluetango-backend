@@ -110,4 +110,20 @@ export class EmployeeController {
             next(e)
         }
     }
+
+     /**
+    * view energy of the team members
+    * @param req :[]
+    * @param res 
+    */
+    public async viewEnergyCheckTeamMembers(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.viewEnergyCheckTeamMembers(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
