@@ -8,6 +8,7 @@ import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { emojiModel } from "../../models/emoji";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -49,7 +50,11 @@ export class AuthService {
             if (comparePassword) {
                 delete existingUser.password;
                 let token = await tokenResponse.employeeTokenResponse(existingUser);
-                existingUser.token = token.token;
+                let reqdata = <any>{
+                    uid: existingUser.id
+                }
+                let profileData = await this.getMyProfile(reqdata);
+                profileData.token = token.token;
                 if (params.device_token) {
                     await employeeModel.update({
                             device_token: params.device_token
@@ -58,7 +63,7 @@ export class AuthService {
                     );
                 }
                
-               return existingUser;
+               return profileData;
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }
@@ -144,6 +149,7 @@ export class AuthService {
         employeeModel.hasOne(managerTeamMemberModel,{ foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         employersModel.hasOne(adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" } )
+        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
         
         let existingUser = await employeeModel.findOne({
             where: {
@@ -152,6 +158,10 @@ export class AuthService {
             include: [
                 {
                     model: departmentModel, 
+                    required: false,
+                },
+                {
+                    model: emojiModel, 
                     required: false,
                 },
                 {

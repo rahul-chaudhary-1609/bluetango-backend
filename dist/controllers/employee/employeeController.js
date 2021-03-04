@@ -131,6 +131,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * update energy of the employee
+    * @param req :[]
+    * @param res
+    */
+    updateEnergyCheck(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.updateEnergyCheck(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

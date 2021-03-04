@@ -1898,6 +1898,34 @@
                 "responses": {}
             }
         },
+        "/employee/updateEnergyCheck": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Employee change password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "energy_id",
+                        "in": "formData",
+                        "description": "energy_id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/thoughtOfTheDay": {
             "post": {
                 "tags": [

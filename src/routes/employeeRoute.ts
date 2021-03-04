@@ -86,6 +86,14 @@ employeeRoute.post("/thoughtOfTheDay", validators.trimmer, tokenValidator.valida
 /* view goal for employee */
 employeeRoute.get("/getEmoji", tokenValidator.validateEmployeeToken, employeeController.getEmoji);
 
+/* update energy of the employee */
+employeeRoute.post("/updateEnergyCheck", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateEnergyCheck), employeeController.updateEnergyCheck);
+
+
+
+
+
+
 // QualitativeMeasurement routes
 
 /* add qualitative measurement for employee */

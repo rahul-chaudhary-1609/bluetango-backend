@@ -105,6 +105,10 @@ export const thoughtOfTheDay = Joi.object({
   thought_of_the_day: Joi.string().required()
 })
 
+export const updateEnergyCheck = Joi.object({
+  energy_id: Joi.string().required()
+})
+
 export const getQualitativeMeasurement = Joi.object({
   employee_id: Joi.string().required()
 })

@@ -12,8 +12,11 @@ import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
 import { teamGoalModel } from "../../models/teamGoal";
 import { emojiModel } from "../../models/emoji";
+import { AuthService } from "./authService";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+
+const authService = new AuthService();
 
 export class EmployeeServices {
     constructor() { }
@@ -140,6 +143,21 @@ export class EmployeeServices {
     */
     public async getEmoji() {
         return await emojiModel.findAll();
+    }
+
+     /*
+    * function to add thought of the day
+    */
+    public async updateEnergyCheck(params:any, user: any) {
+        await employeeModel.update(
+            {
+                energy_id: params.energy_id
+            },
+            {
+                where: { id: user.uid }
+            }
+        )
+        return authService.getMyProfile(user);
     }
 
 }

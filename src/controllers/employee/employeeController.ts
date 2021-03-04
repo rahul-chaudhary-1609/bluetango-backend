@@ -95,4 +95,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+    * update energy of the employee
+    * @param req :[]
+    * @param res 
+    */
+    public async updateEnergyCheck(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.updateEnergyCheck(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            
+        } catch (e) {
+            next(e)
+        }
+    }
 }
