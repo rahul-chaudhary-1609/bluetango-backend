@@ -42,6 +42,7 @@ const admin_1 = require("../../models/admin");
 const employers_1 = require("../../models/employers");
 const department_1 = require("../../models/department");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const emoji_1 = require("../../models/emoji");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class AuthService {
@@ -82,13 +83,17 @@ class AuthService {
                 if (comparePassword) {
                     delete existingUser.password;
                     let token = yield tokenResponse.employeeTokenResponse(existingUser);
-                    existingUser.token = token.token;
+                    let reqdata = {
+                        uid: existingUser.id
+                    };
+                    let profileData = yield this.getMyProfile(reqdata);
+                    profileData.token = token.token;
                     if (params.device_token) {
                         yield employee_1.employeeModel.update({
                             device_token: params.device_token
                         }, { where: { id: existingUser.id } });
                     }
-                    return existingUser;
+                    return profileData;
                 }
                 else {
                     throw new Error(constants.MESSAGES.invalid_password);
@@ -179,6 +184,7 @@ class AuthService {
             employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             employers_1.employersModel.hasOne(admin_1.adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
             let existingUser = yield employee_1.employeeModel.findOne({
                 where: {
                     id: params.uid
@@ -186,6 +192,10 @@ class AuthService {
                 include: [
                     {
                         model: department_1.departmentModel,
+                        required: false,
+                    },
+                    {
+                        model: emoji_1.emojiModel,
                         required: false,
                     },
                     {
