@@ -262,23 +262,61 @@ export class EmployersController {
         }
     }
 
-     /**
-    * get coach list
-    * @param req :[query params]
-    * @param res : [coach list]
-    */
-   public async getCoachList(req: any, res: any) {
-    try {
-        req.query.admin_id = req.user.uid;
-        const coach = await employersService.getCoachList(req.query);
-        if (coach) {
-            return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
-        } else {
-            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+    /**
+   * get coach list
+   * @param req :[query params]
+   * @param res : [coach list]
+   */
+    public async getCoachList(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const coach = await employersService.getCoachList(req.query);
+            if (coach) {
+                return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-    } catch (error) {
-        appUtils.errorResponse(res, error, constants.code.error_code);
     }
-}
+
+    /**
+  * get coach details
+  * @param req :[query params]
+  * @param res : [coach list]
+  */
+    public async getCoachDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const coach = await employersService.getCoachDetails(req.query);
+            if (coach) {
+                return appUtils.successResponse(res, coach, constants.MESSAGES.coach_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+  * delete coach
+  * @param req :[query params]
+  * @param res : [coach list]
+  */
+    public async deleteCoach(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const coach = await employersService.deleteCoach(req.query);
+            if (coach) {
+                return appUtils.successResponse(res, {}, constants.MESSAGES.coach_deleted);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 
 }

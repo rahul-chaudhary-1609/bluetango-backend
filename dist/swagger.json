@@ -971,6 +971,62 @@
                 "responses": {}
             }
         },
+        "/admin/getCoachDetails": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to get coach details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "coachId",
+                        "in": "query",
+                        "description": "coach id",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/deleteCoach": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to delete coach",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "coachId",
+                        "in": "query",
+                        "description": "coach id",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/login": {
             "post": {
                 "tags": [

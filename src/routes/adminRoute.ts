@@ -76,11 +76,18 @@ adminRoute.get("/exportCsv", tokenValidator.validateAdminToken, employersControl
 /* view employer details */
 adminRoute.get("/employerDetails", tokenValidator.validateAdminToken, employersController.employerDetails);
 
-/* add coach */
+/* add/edit coach */
 adminRoute.post("/addEditCoach",joiSchemaValidation.validateBody(adminSchema.addEditCoach), tokenValidator.validateAdminToken, employersController.addEditCoach);
 
 /* get coach list */
 adminRoute.get("/getCoachList", tokenValidator.validateAdminToken, employersController.getCoachList);
+
+/* get coach details */
+adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersController.getCoachDetails);
+
+/* delete coach */
+adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
+
 
 
 export = adminRoute;
