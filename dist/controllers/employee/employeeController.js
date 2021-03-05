@@ -147,6 +147,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+   * view energy of the team members
+   * @param req :[]
+   * @param res
+   */
+    viewEnergyCheckTeamMembers(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.viewEnergyCheckTeamMembers(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

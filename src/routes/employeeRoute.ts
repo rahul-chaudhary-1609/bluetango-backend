@@ -89,6 +89,9 @@ employeeRoute.get("/getEmoji", tokenValidator.validateEmployeeToken, employeeCon
 /* update energy of the employee */
 employeeRoute.post("/updateEnergyCheck", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateEnergyCheck), employeeController.updateEnergyCheck);
 
+/* View energy check of the team member */
+employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEnergyCheckTeamMembers);
+
 
 
 

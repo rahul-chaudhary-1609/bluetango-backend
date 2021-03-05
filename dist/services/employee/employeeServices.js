@@ -27,8 +27,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployeeServices = void 0;
+const lodash_1 = __importDefault(require("lodash"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
@@ -49,7 +53,7 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-            return yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
+            let teamMembersData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
@@ -61,7 +65,28 @@ class EmployeeServices {
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
-            });
+            }));
+            let date = new Date();
+            date.setMonth(date.getMonth() - 3);
+            let dateCheck = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+            console.log(teamMembersData);
+            for (let i = 0; i < teamMembersData.rows.length; i++) {
+                let rateCheck = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
+                    where: {
+                        manager_id: user.uid,
+                        employee_id: teamMembersData.rows[i].team_member_id,
+                        updatedAt: { [Op.gte]: dateCheck }
+                    }
+                }));
+                if (lodash_1.default.isEmpty(rateCheck)) {
+                    teamMembersData.rows[i].rate_valid = 1;
+                }
+                else {
+                    teamMembersData.rows[i].rate_valid = 0;
+                }
+            }
+            console.log(teamMembersData);
+            return teamMembersData;
         });
     }
     /*
@@ -173,6 +198,32 @@ class EmployeeServices {
                 where: { id: user.uid }
             });
             return authService.getMyProfile(user);
+        });
+    }
+    /*
+    * function to view energy check
+    */
+    viewEnergyCheckTeamMembers(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+            return yield managerTeamMember_1.managerTeamMemberModel.findAll({
+                where: { manager_id: user.uid },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: false,
+                        attributes: ['id', 'name', 'energy_id'],
+                        include: [
+                            {
+                                model: emoji_1.emojiModel,
+                                required: false,
+                                attributes: ['image_url', 'caption'],
+                            }
+                        ]
+                    }
+                ]
+            });
         });
     }
 }
