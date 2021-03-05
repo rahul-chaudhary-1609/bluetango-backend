@@ -121,13 +121,20 @@ class EmployersService {
                     if (!params.password) {
                         throw new Error(constants.MESSAGES.password_not_provided);
                     }
-                    //const password = params.password
+                    const password = params.password;
                     params.password = yield appUtils.bcryptPassword(params.password);
                     const employer = yield models_1.employersModel.create(params);
-                    // let emailObj = {
-                    //     to: params.email,
-                    //     subject: "new employer",
-                    // }
+                    const mailParams = {};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
+                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                    mailParams.subject = "Employer Login Credentials";
+                    yield helperFunction.sendEmail(mailParams);
                     return employer;
                 }
             }
@@ -240,22 +247,22 @@ class EmployersService {
             var whereCond = {};
             var employer = {};
             var department = {};
-            let where = {
-                admin_id: params.admin_id
-            };
-            var employerId = [];
-            const employers = yield models_1.employersModel.findAndCountAll({ where: where, raw: true });
-            for (let i = 0; i < employers.rows.length; i++) {
-                employerId.push(employers.rows[i].id);
-            }
-            whereCond = {
-                current_employer_id: { [Op.in]: employerId },
-                status: 1
-            };
+            // let where = {
+            //     admin_id: params.admin_id
+            // }
+            //var employerId = []
+            //const employers = await employersModel.findAndCountAll({ where: where, raw: true })
+            // for (let i = 0; i < employers.rows.length; i++) {
+            //     employerId.push(employers.rows[i].id)
+            // }
+            // whereCond = {
+            //     current_employer_id: { [Op.in]: employerId },
+            //     status: 1
+            // }
             if (params.employerName) {
                 employer = {
                     name: { [Op.iLike]: `%${params.employerName}%` },
-                    status: 1
+                    status: { [Op.or]: [0, 1] }
                 };
             }
             if (params.departmentName) {
@@ -265,11 +272,11 @@ class EmployersService {
             }
             if (params.searchKey) {
                 whereCond = {
-                    current_employer_id: { [Op.in]: employerId },
+                    //current_employer_id: { [Op.in]: employerId },
                     name: { [Op.iLike]: `%${params.searchKey}%` },
-                    status: 1
                 };
             }
+            whereCond["status"] = { [Op.or]: [0, 1] };
             return yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,
                 include: [
@@ -579,8 +586,21 @@ class EmployersService {
                     if (!params.password) {
                         throw new Error(constants.MESSAGES.password_not_provided);
                     }
+                    const password = params.password;
                     params.password = yield appUtils.bcryptPassword(params.password);
-                    return yield coachManagement_1.coachManagementModel.create(params);
+                    const coach = yield coachManagement_1.coachManagementModel.create(params);
+                    const mailParams = {};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
+                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                    mailParams.subject = "Coach Login Credentials";
+                    yield helperFunction.sendEmail(mailParams);
+                    return coach;
                 }
             }
             else {
