@@ -89,14 +89,20 @@ export class EmployersService {
                 if (!params.password) {
                     throw new Error(constants.MESSAGES.password_not_provided)
                 }
-                //const password = params.password
+                const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
-                const employer =  await employersModel.create(params);
-                // let emailObj = {
-                //     to: params.email,
-                //     subject: "new employer",
-
-                // }
+                const employer = await employersModel.create(params);
+                const mailParams = <any>{};
+                mailParams.to = params.email;
+                mailParams.html = `Hi  ${params.name}
+                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                mailParams.subject = "Employer Login Credentials";
+                await helperFunction.sendEmail(mailParams);
                 return employer
             }
 
@@ -225,27 +231,27 @@ export class EmployersService {
         var whereCond: any = {};
         var employer: any = {};
         var department: any = {};
-        let where = {
-            admin_id: params.admin_id
-        }
-        var employerId = []
-        const employers = await employersModel.findAndCountAll({ where: where, raw: true })
+        // let where = {
+        //     admin_id: params.admin_id
+        // }
+        //var employerId = []
+        //const employers = await employersModel.findAndCountAll({ where: where, raw: true })
 
-        for (let i = 0; i < employers.rows.length; i++) {
-            employerId.push(employers.rows[i].id)
+        // for (let i = 0; i < employers.rows.length; i++) {
+        //     employerId.push(employers.rows[i].id)
 
-        }
+        // }
 
-        whereCond = {
+        // whereCond = {
 
-            current_employer_id: { [Op.in]: employerId },
-            status: 1
+        //     current_employer_id: { [Op.in]: employerId },
+        //     status: 1
 
-        }
+        // }
         if (params.employerName) {
             employer = {
                 name: { [Op.iLike]: `%${params.employerName}%` },
-                status: 1
+                status: { [Op.or]: [0,1] }
             }
         }
 
@@ -257,11 +263,11 @@ export class EmployersService {
 
         if (params.searchKey) {
             whereCond = {
-                current_employer_id: { [Op.in]: employerId },
+                //current_employer_id: { [Op.in]: employerId },
                 name: { [Op.iLike]: `%${params.searchKey}%` },
-                status: 1
             }
         }
+        whereCond["status"] = { [Op.or]: [0,1] }
 
         return await employeeModel.findAndCountAll({
             where: whereCond,
@@ -578,9 +584,21 @@ export class EmployersService {
                 if (!params.password) {
                     throw new Error(constants.MESSAGES.password_not_provided)
                 }
-
+                const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
-                return await coachManagementModel.create(params);
+                const coach = await coachManagementModel.create(params);
+                const mailParams = <any>{};
+                mailParams.to = params.email;
+                mailParams.html = `Hi  ${params.name}
+                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                mailParams.subject = "Coach Login Credentials";
+                await helperFunction.sendEmail(mailParams);
+                return coach
             }
 
         } else {
@@ -593,12 +611,12 @@ export class EmployersService {
    * @param {} params pass all parameters from request
    */
     public async getCoachList(params: any) {
-        
+
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
-        
+
         if (params.searchKey) {
-            where["name"]= { [Op.iLike]: `%${params.searchKey}%` }
+            where["name"] = { [Op.iLike]: `%${params.searchKey}%` }
         }
         where["status"] = 1
         return await coachManagementModel.findAndCountAll({
@@ -610,50 +628,50 @@ export class EmployersService {
 
     }
 
-     /**
-   * 
-   * @param {} params pass all parameters from request
-   */
-  public async getCoachDetails(params: any) {
-        
-    let where = {
-        id: params.coachId,
-        status: 1
-    }
-    const coach = await coachManagementModel.findOne({
-        where: where,
-        attributes: ["id", "name", "email", "phone_number"],
-    })
-    if(coach) {
-        return coach
-    }
-    else{
-        throw new Error(constants.MESSAGES.coach_not_found)
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async getCoachDetails(params: any) {
+
+        let where = {
+            id: params.coachId,
+            status: 1
+        }
+        const coach = await coachManagementModel.findOne({
+            where: where,
+            attributes: ["id", "name", "email", "phone_number"],
+        })
+        if (coach) {
+            return coach
+        }
+        else {
+            throw new Error(constants.MESSAGES.coach_not_found)
+        }
+
     }
 
-}
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async deleteCoach(params: any) {
+        let where = {
+            id: params.coachId
+        }
+        let update = {
+            status: 2
+        }
+        const coach = await coachManagementModel.update(update, { where: where, returning: true })
 
-     /**
-   * 
-   * @param {} params pass all parameters from request
-   */
-  public async deleteCoach(params: any) {
-    let where = {
-        id: params.coachId
-    }
-    let update = {
-        status: 2
-    }
-   const coach = await coachManagementModel.update(update, {where: where, returning: true})
-   
-   if(coach && coach[1][0]) {
-       return coach
-   }else {
-       throw new Error(constants.MESSAGES.coach_not_found);
-       
-   }
+        if (coach && coach[1][0]) {
+            return coach
+        } else {
+            throw new Error(constants.MESSAGES.coach_not_found);
 
-}
+        }
+
+    }
 
 
 }
