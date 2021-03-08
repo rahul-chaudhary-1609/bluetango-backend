@@ -129,8 +129,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
-                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
+                <br><br><b> Android URL</b>: test url
+                <br><b> IOS URL</b>: test url <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -594,8 +594,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
-                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
+                <br><br><b> Android URL</b>: test url
+                <br><b> IOS URL</b>: test url <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
