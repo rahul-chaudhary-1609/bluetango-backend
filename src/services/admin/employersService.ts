@@ -1,7 +1,8 @@
 import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
-import { coachManagementModel } from "../../models/coachManagement"
+import { coachManagementModel } from "../../models/coachManagement";
+import { contactUsModel } from "../../models/contactUs";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -95,7 +96,7 @@ export class EmployersService {
                 const mailParams = <any>{};
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
-                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 <br> username : ${params.email}
@@ -251,7 +252,7 @@ export class EmployersService {
         if (params.employerName) {
             employer = {
                 name: { [Op.iLike]: `%${params.employerName}%` },
-                status: { [Op.or]: [0,1] }
+                status: { [Op.or]: [0, 1] }
             }
         }
 
@@ -267,7 +268,7 @@ export class EmployersService {
                 name: { [Op.iLike]: `%${params.searchKey}%` },
             }
         }
-        whereCond["status"] = { [Op.or]: [0,1] }
+        whereCond["status"] = { [Op.or]: [0, 1] }
 
         return await employeeModel.findAndCountAll({
             where: whereCond,
@@ -590,7 +591,7 @@ export class EmployersService {
                 const mailParams = <any>{};
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
-                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
@@ -671,6 +672,35 @@ export class EmployersService {
 
         }
 
+    }
+
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async getCotactUsList(params: any) {
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        contactUsModel.belongsTo(employersModel, { foreignKey: "employer_id" })
+        contactUsModel.belongsTo(employeeModel, { foreignKey: "employee_id" })
+
+        const contact = await contactUsModel.findAndCountAll({
+            include: [
+                {
+                    model: employersModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: employeeModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                }
+            ]
+        })
+        console.log('contact - - - - ',contact)
+        return contact
     }
 
 

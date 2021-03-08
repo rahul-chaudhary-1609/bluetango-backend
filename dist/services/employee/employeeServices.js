@@ -69,7 +69,6 @@ class EmployeeServices {
             let date = new Date();
             date.setMonth(date.getMonth() - 3);
             let dateCheck = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
-            console.log(teamMembersData);
             for (let i = 0; i < teamMembersData.rows.length; i++) {
                 let rateCheck = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
                     where: {
@@ -85,7 +84,6 @@ class EmployeeServices {
                     teamMembersData.rows[i].rate_valid = 0;
                 }
             }
-            console.log(teamMembersData);
             return teamMembersData;
         });
     }

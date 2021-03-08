@@ -88,6 +88,9 @@ adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersC
 /* delete coach */
 adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
 
+/* view contact us list */
+adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+
 
 
 export = adminRoute;

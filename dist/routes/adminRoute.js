@@ -80,5 +80,7 @@ adminRoute.get("/getCoachList", tokenValidator.validateAdminToken, employersCont
 adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersController.getCoachDetails);
 /* delete coach */
 adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
+/* view contact us list */
+adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map
