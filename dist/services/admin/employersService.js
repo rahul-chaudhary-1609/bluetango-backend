@@ -36,6 +36,7 @@ const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
 const coachManagement_1 = require("../../models/coachManagement");
+const contactUs_1 = require("../../models/contactUs");
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
@@ -127,7 +128,7 @@ class EmployersService {
                     const mailParams = {};
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
-                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 <br> username : ${params.email}
@@ -592,7 +593,7 @@ class EmployersService {
                     const mailParams = {};
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
-                <br> Download the app by clicking on link below and use the given credentials for login into the app :
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
@@ -669,6 +670,33 @@ class EmployersService {
             else {
                 throw new Error(constants.MESSAGES.coach_not_found);
             }
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    getCotactUsList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            contactUs_1.contactUsModel.belongsTo(models_1.employeeModel, { foreignKey: "employee_id" });
+            const contact = yield contactUs_1.contactUsModel.findAndCountAll({
+                include: [
+                    {
+                        model: models_1.employersModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: models_1.employeeModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }
+                ]
+            });
+            console.log('contact - - - - ', contact);
+            return contact;
         });
     }
 }

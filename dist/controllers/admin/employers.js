@@ -385,6 +385,28 @@ class EmployersController {
             }
         });
     }
+    /**
+  * get contactus list
+  * @param req :[query params]
+  * @param res : [contactus list]
+  */
+    getCotactUsList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const contactUS = yield employersService.getCotactUsList(req.query);
+                if (contactUS) {
+                    return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_list_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

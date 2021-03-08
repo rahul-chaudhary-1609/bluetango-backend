@@ -319,4 +319,23 @@ export class EmployersController {
         }
     }
 
+    /**
+  * get contactus list
+  * @param req :[query params]
+  * @param res : [contactus list]
+  */
+    public async getCotactUsList(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const contactUS = await employersService.getCotactUsList(req.query);
+            if (contactUS) {
+                return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_list_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }

@@ -78,7 +78,8 @@ export const MESSAGES = {
   coach_list_fetched: "Coach list fetched successfully",
   coach_deleted: "Coach deleted",
   coach_not_found: "Coach not found",
-  coach_details_fetched: "Coach details fetched successfully"
+  coach_details_fetched: "Coach details fetched successfully",
+  contact_list_fetched: "Contact us list fetched successfully"
 }
 
 export const code = {
