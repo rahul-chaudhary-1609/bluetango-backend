@@ -681,7 +681,7 @@ class EmployersService {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
             contactUs_1.contactUsModel.belongsTo(models_1.employeeModel, { foreignKey: "employee_id" });
-            const contact = yield contactUs_1.contactUsModel.findAndCountAll({
+            return yield contactUs_1.contactUsModel.findAndCountAll({
                 include: [
                     {
                         model: models_1.employersModel,
@@ -695,8 +695,59 @@ class EmployersService {
                     }
                 ]
             });
-            console.log('contact - - - - ', contact);
-            return contact;
+        });
+    }
+    /**
+ *
+ * @param {} params pass all parameters from request
+ */
+    sendEmailAndNotification(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let receiver = {};
+            if (params.receiver == "employer") {
+                receiver = yield models_1.employersModel.findAll({});
+            }
+            else if (params.receiver == "employee") {
+                receiver = yield models_1.employeeModel.findAll({});
+            }
+            let toMails = [];
+            let tokens = [];
+            console.log('reciever - - - ', receiver);
+            receiver.forEach(rec => {
+                toMails.push(rec.email);
+                tokens.push(rec.device_token);
+            });
+            if (params.notification_type == 0) {
+                yield this.sendBulkEmail(toMails, params.message);
+            }
+            else if (params.notification_type == 1) {
+                yield this.sendBulkNotification(tokens, params.message);
+            }
+            else if (params.notification_type == 2) {
+                yield this.sendBulkEmail(toMails, params.message);
+                yield this.sendBulkNotification(tokens, params.message);
+            }
+        });
+    }
+    sendBulkEmail(toMails, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailParams = {};
+            mailParams.to = toMails;
+            mailParams.subject = "Email notification from admin";
+            mailParams.html = `${message}`;
+            return yield helperFunction.sendEmail(mailParams);
+        });
+    }
+    sendBulkNotification(tokens, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notificationData = {
+                title: 'In-App notification from admin',
+                body: `${message}`,
+                data: {}
+            };
+            const nots = yield helperFunction.sendFcmNotification(tokens, notificationData);
+            console.log('notes - - - ', nots);
+            return nots;
         });
     }
 }

@@ -1062,6 +1062,50 @@
                 "responses": {}
             }
         },
+        "/admin/sendEmailAndNotification": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to send email and notification",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "receiver",
+                        "in": "formData",
+                        "description": "employer/employee",
+                        "required": true,
+                        "type": "string",
+                        "enum": ["employer", "employee"]
+                    },
+                    {
+                        "name": "notification_type",
+                        "in": "formData",
+                        "description": "0->email/1->notification/2->both",
+                        "required": true,
+                        "type": "number",
+                        "enum": [0, 1, 2]
+                    },
+                    {
+                        "name": "message",
+                        "in": "formData",
+                        "description": "message",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/login": {
             "post": {
                 "tags": [

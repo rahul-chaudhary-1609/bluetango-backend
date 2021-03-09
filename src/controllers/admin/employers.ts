@@ -338,4 +338,23 @@ export class EmployersController {
         }
     }
 
+    /**
+ * send email and push notification
+ * @param req :[query params]
+ * @param res : [contactus list]
+ */
+    public async sendEmailAndNotification(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const email_notification = await employersService.sendEmailAndNotification(req.body);
+            //if (email_notification) {
+                return appUtils.successResponse(res, {}, constants.MESSAGES.email_notification_sent);
+            //} else {
+              //  appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+           // }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }

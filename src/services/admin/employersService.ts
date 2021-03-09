@@ -685,7 +685,7 @@ export class EmployersService {
         contactUsModel.belongsTo(employersModel, { foreignKey: "employer_id" })
         contactUsModel.belongsTo(employeeModel, { foreignKey: "employee_id" })
 
-        const contact = await contactUsModel.findAndCountAll({
+        return await contactUsModel.findAndCountAll({
             include: [
                 {
                     model: employersModel,
@@ -699,8 +699,62 @@ export class EmployersService {
                 }
             ]
         })
-        console.log('contact - - - - ',contact)
-        return contact
+    }
+
+    /**
+ * 
+ * @param {} params pass all parameters from request
+ */
+    public async sendEmailAndNotification(params: any) {
+
+        let receiver: any = {};
+        if (params.receiver == "employer") {
+            receiver = await employersModel.findAll({})
+        }
+        else if (params.receiver == "employee") {
+            receiver = await employeeModel.findAll({})
+        }
+
+        let toMails = []
+        let tokens = []
+console.log('reciever - - - ', receiver)
+        receiver.forEach(rec => {
+            toMails.push(rec.email)
+            tokens.push(rec.device_token)
+        });
+
+        if (params.notification_type == 0) {
+            await this.sendBulkEmail(toMails, params.message)
+        }
+        else if (params.notification_type == 1) {
+            await this.sendBulkNotification(tokens, params.message)
+        }
+        else if (params.notification_type == 2) {
+            await this.sendBulkEmail(toMails, params.message)
+            await this.sendBulkNotification(tokens, params.message)
+        }
+
+    }
+
+    public async sendBulkEmail(toMails, message) {
+        const mailParams = <any>{};
+
+        mailParams.to = toMails;
+        mailParams.subject = "Email notification from admin";
+        mailParams.html = `${message}`
+
+        return await helperFunction.sendEmail(mailParams);
+       
+    }
+
+    public async sendBulkNotification(tokens, message) {
+    
+        let notificationData = <any>{
+            title: 'In-App notification from admin',
+            body: `${message}`,
+            data: {}
+        }
+       return await helperFunction.sendFcmNotification(tokens, notificationData);
     }
 
 

@@ -58,7 +58,11 @@ export const employersModel: any = sequelize.define("employers", {
     thought_of_the_day: {
         type: DataTypes.TEXT,
         allowNull: true,
-    }
+    },
+    device_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 },
     {
         tableName: "employers"

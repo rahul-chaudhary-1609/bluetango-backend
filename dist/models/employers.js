@@ -59,7 +59,11 @@ exports.employersModel = connection_1.sequelize.define("employers", {
     thought_of_the_day: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
-    }
+    },
+    device_token: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     tableName: "employers"
 });
