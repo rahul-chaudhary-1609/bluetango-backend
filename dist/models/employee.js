@@ -118,6 +118,14 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
     },
+    job_emoji_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true,
+    },
+    job_comments: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
 }, {
     tableName: "employee"
 });
