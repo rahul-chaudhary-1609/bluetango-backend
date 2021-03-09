@@ -1776,6 +1776,27 @@
         "responses": {}
       }
     },
+    "/employee/getQuantitativeMeasurementCommentList": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "get quantitative measurement list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/addQualitativeMeasurement": {
       "post": {
         "tags": [
@@ -2127,6 +2148,41 @@
             "in": "header",
             "description": "Enter jwt token for authentication",
             "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/feelAboutJobToday": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "feel about job today",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "job_emoji_id",
+            "in": "formData",
+            "description": "job_emoji_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "job_comments",
+            "in": "formData",
+            "description": "job_comments",
+            "required": false,
             "type": "string"
           }
         ],

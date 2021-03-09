@@ -35,6 +35,7 @@ exports.QualitativeMeasuremetServices = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
+const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const employee_1 = require("../../models/employee");
 const notification_1 = require("../../models/notification");
@@ -110,6 +111,14 @@ class QualitativeMeasuremetServices {
                     }
                 ]
             });
+        });
+    }
+    /*
+    * get qualitative measurement comment list
+    */
+    getQuantitativeMeasurementCommentList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll();
         });
     }
 }

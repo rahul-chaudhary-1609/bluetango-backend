@@ -224,6 +224,16 @@ class EmployeeServices {
             });
         });
     }
+    /*
+   * feel about job today
+   */
+    feelAboutJobToday(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield employee_1.employeeModel.update(params, {
+                where: { id: user.uid }
+            });
+        });
+    }
 }
 exports.EmployeeServices = EmployeeServices;
 //# sourceMappingURL=employeeServices.js.map

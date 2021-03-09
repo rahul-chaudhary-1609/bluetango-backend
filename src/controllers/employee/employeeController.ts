@@ -126,4 +126,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * feel about job today
+    * @param req :[]
+    * @param res 
+    */
+    public async feelAboutJobToday(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.feelAboutJobToday(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

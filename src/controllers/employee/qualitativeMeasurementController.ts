@@ -37,4 +37,19 @@ export class QualitativeMeasurementController {
             next(e)
         }
     }
+
+    /**
+    * get qualitative measurement comment list
+    * @param req :[]
+    * @param res 
+    */
+    public async getQuantitativeMeasurementCommentList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await qualitativeMeasuremetServices.getQuantitativeMeasurementCommentList();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

@@ -92,7 +92,8 @@ employeeRoute.post("/updateEnergyCheck", validators.trimmer, tokenValidator.vali
 /* View energy check of the team member */
 employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEnergyCheckTeamMembers);
 
-
+/* feel about job today */
+employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feelAboutJobToday), employeeController.feelAboutJobToday);
 
 
 
@@ -104,6 +105,9 @@ employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValida
 
 /* get qualitative measurement for employee */
 employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
+
+/* get qualitative measurement comment for employee */
+employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
 
 
 export = employeeRoute;

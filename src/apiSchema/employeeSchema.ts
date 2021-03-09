@@ -109,6 +109,11 @@ export const updateEnergyCheck = Joi.object({
   energy_id: Joi.string().required()
 })
 
+export const feelAboutJobToday = Joi.object({
+  job_emoji_id: Joi.string().required(),
+  job_comments: Joi.string().optional()
+})
+
 export const getQualitativeMeasurement = Joi.object({
   employee_id: Joi.string().required()
 })
