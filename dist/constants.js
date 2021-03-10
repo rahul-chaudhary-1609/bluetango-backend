@@ -83,7 +83,9 @@ exports.MESSAGES = {
     coach_not_found: "Coach not found",
     coach_details_fetched: "Coach details fetched successfully",
     contact_list_fetched: "Contact us list fetched successfully",
-    email_notification_sent: "Email/Notification sent successfully"
+    email_notification_sent: "Email/Notification sent successfully",
+    employee_details_fetched: "Employee details fetched successfully",
+    employee_notFound: "Employee not found"
 };
 exports.code = {
     error_code: 400
