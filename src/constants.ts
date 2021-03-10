@@ -83,7 +83,8 @@ export const MESSAGES = {
   email_notification_sent: "Email/Notification sent successfully",
   employee_details_fetched: "Employee details fetched successfully",
   employee_notFound: "Employee not found",
-  department_list_fetched: "Department list fetched successfully"
+  department_list_fetched: "Department list fetched successfully",
+  json_format_csv: "Json format of csv fetched successfully"
 }
 
 export const code = {

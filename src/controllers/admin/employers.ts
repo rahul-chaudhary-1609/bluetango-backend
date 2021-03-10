@@ -220,7 +220,7 @@ export class EmployersController {
             // res.set('Content-Type', 'text/csv');
             // res.status(200).send(csvString);
             //return res.csv("paymenrList.csv",results)
-            return appUtils.successResponse(res, {}, constants.MESSAGES.employee_details_fetched);
+            return appUtils.successResponse(res, result, constants.MESSAGES.json_format_csv);
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
