@@ -263,13 +263,14 @@ class EmployersController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 req.query.admin_id = req.user.uid;
-                let result = yield employersService.exportCsv(req.query);
-                const csvString = json2csv(result);
-                res.setHeader('Content-disposition', 'attachment; filename=paymentList.csv');
-                res.set('Content-Type', 'text/csv');
-                res.status(200).send(csvString);
+                const result = yield employersService.exportCsv(req.query);
+                // let result = await employersService.exportCsv(req.query);
+                // const csvString = json2csv(result)
+                // res.setHeader('Content-disposition', 'attachment; filename=paymentList.csv');
+                // res.set('Content-Type', 'text/csv');
+                // res.status(200).send(csvString);
                 //return res.csv("paymenrList.csv",results)
-                //return appUtils.successResponse(res,{}, constants.MESSAGES.payment_list_fetch);
+                return appUtils.successResponse(res, {}, constants.MESSAGES.employee_details_fetched);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
@@ -440,6 +441,28 @@ class EmployersController {
                 const employer = yield employersService.employeeDetails(req.query);
                 if (employer) {
                     return appUtils.successResponse(res, employer, constants.MESSAGES.employee_details_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * department list
+    * @param req :[Body data]
+    * @param res : [department data object]
+    */
+    getDepartmentList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const department = yield employersService.getDepartmentList(req.query);
+                if (department) {
+                    return appUtils.successResponse(res, department, constants.MESSAGES.department_list_fetched);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
