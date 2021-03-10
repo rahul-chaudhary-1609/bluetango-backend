@@ -211,4 +211,15 @@ export class EmployeeServices {
        })
     }
 
+     /*
+    * feel about job today
+    */
+    public async feelAboutJobToday(params: any, user: any) {
+        
+        return await employeeModel.update(params, 
+            {
+                where: { id: user.uid }
+            });
+    }
+
 }

@@ -117,6 +117,14 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    job_emoji_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    job_comments: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 },
     {
         tableName: "employee"

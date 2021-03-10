@@ -149,7 +149,6 @@ export class AuthService {
         employeeModel.hasOne(managerTeamMemberModel,{ foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         employersModel.hasOne(adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" } )
-        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
         
         let existingUser = await employeeModel.findOne({
             where: {
@@ -159,10 +158,19 @@ export class AuthService {
                 {
                     model: departmentModel, 
                     required: false,
+                    attributes: ['id', 'name']
                 },
                 {
                     model: emojiModel, 
                     required: false,
+                    as: 'energy_emoji_data',
+                    attributes: ['id', 'image_url', 'caption']
+                },
+                {
+                    model: emojiModel, 
+                    required: false,
+                    as: 'job_emoji_data',
+                    attributes: ['id', 'image_url', 'caption']
                 },
                 {
                     model: employersModel, 

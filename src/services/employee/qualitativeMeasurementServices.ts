@@ -1,9 +1,7 @@
 import _ from "lodash";
 import * as constants from "../../constants";
-import * as appUtils from "../../utils/appUtils";
-import * as helperFunction from "../../utils/helperFunction";
-import * as tokenResponse from "../../utils/tokenResponse";
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
+import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMeasurementComment"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
 import { notificationModel } from "../../models/notification";
@@ -84,5 +82,12 @@ export class QualitativeMeasuremetServices {
            ]
        })
    }
+
+    /*
+    * get qualitative measurement comment list
+    */
+    public async getQuantitativeMeasurementCommentList() {
+        return await qualitativeMeasurementCommentModel.findAll();
+    }
 
 }
