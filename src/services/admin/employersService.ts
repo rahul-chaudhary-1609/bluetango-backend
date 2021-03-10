@@ -431,7 +431,7 @@ export class EmployersService {
             }
         }
         whereCond.status = 1
-        whereCond.admin_id = params.admin_id
+        //whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findAndCountAll({
             where: whereCond,
             include: [{
@@ -463,7 +463,7 @@ export class EmployersService {
         }
         whereCond.status = 1
         whereCond.employer_id = params.employerId
-        whereCond.admin_id = params.admin_id
+       // whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findOne({
             where: whereCond,
             include: [{
