@@ -338,4 +338,42 @@ export class EmployersController {
         }
     }
 
+    /**
+ * send email and push notification
+ * @param req :[query params]
+ * @param res : [contactus list]
+ */
+    public async sendEmailAndNotification(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const email_notification = await employersService.sendEmailAndNotification(req.body);
+            //if (email_notification) {
+            return appUtils.successResponse(res, {}, constants.MESSAGES.email_notification_sent);
+            //} else {
+            //  appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            // }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * employer detail employee
+    * @param req :[Body data]
+    * @param res : [employers data object]
+    */
+    public async employeeDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const employer = await employersService.employeeDetails(req.query);
+            if (employer) {
+                return appUtils.successResponse(res, employer, constants.MESSAGES.employee_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }

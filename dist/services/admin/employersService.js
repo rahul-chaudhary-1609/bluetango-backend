@@ -129,8 +129,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -401,6 +401,7 @@ class EmployersService {
      */
     viewSubscriptionPlan(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             if (params.status) {
                 where.status = params.status;
@@ -408,7 +409,12 @@ class EmployersService {
             else {
                 where.status = 1;
             }
-            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where });
+            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({
+                where: where,
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
+            });
         });
     }
     /**
@@ -427,7 +433,7 @@ class EmployersService {
                 };
             }
             whereCond.status = 1;
-            whereCond.admin_id = params.admin_id;
+            //whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findAndCountAll({
                 where: whereCond,
                 include: [{
@@ -459,7 +465,7 @@ class EmployersService {
             }
             whereCond.status = 1;
             whereCond.employer_id = params.employerId;
-            whereCond.admin_id = params.admin_id;
+            // whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findOne({
                 where: whereCond,
                 include: [{
@@ -594,8 +600,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -681,7 +687,7 @@ class EmployersService {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
             contactUs_1.contactUsModel.belongsTo(models_1.employeeModel, { foreignKey: "employee_id" });
-            const contact = yield contactUs_1.contactUsModel.findAndCountAll({
+            return yield contactUs_1.contactUsModel.findAndCountAll({
                 include: [
                     {
                         model: models_1.employersModel,
@@ -695,8 +701,88 @@ class EmployersService {
                     }
                 ]
             });
-            console.log('contact - - - - ', contact);
-            return contact;
+        });
+    }
+    /**
+ *
+ * @param {} params pass all parameters from request
+ */
+    sendEmailAndNotification(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let receiver = {};
+            if (params.receiver == "employer") {
+                receiver = yield models_1.employersModel.findAll({});
+            }
+            else if (params.receiver == "employee") {
+                receiver = yield models_1.employeeModel.findAll({});
+            }
+            let toMails = [];
+            let tokens = [];
+            receiver.forEach(rec => {
+                toMails.push(rec.email);
+                tokens.push(rec.device_token);
+            });
+            if (params.notification_type == 0) {
+                yield this.sendBulkEmail(toMails, params.message);
+            }
+            else if (params.notification_type == 1) {
+                yield this.sendBulkNotification(tokens, params.message);
+            }
+            else if (params.notification_type == 2) {
+                yield this.sendBulkEmail(toMails, params.message);
+                yield this.sendBulkNotification(tokens, params.message);
+            }
+        });
+    }
+    sendBulkEmail(toMails, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailParams = {};
+            mailParams.to = toMails;
+            mailParams.subject = "Email notification from admin";
+            mailParams.html = `${message}`;
+            return yield helperFunction.sendEmail(mailParams);
+        });
+    }
+    sendBulkNotification(tokens, message) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notificationData = {
+                title: 'In-App notification from admin',
+                body: `${message}`,
+                data: {}
+            };
+            return yield helperFunction.sendFcmNotification(tokens, notificationData);
+        });
+    }
+    /*
+    * @param {} params pass all parameters from request
+    */
+    employeeDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
+            models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            let where = {};
+            where.id = params.employeeId;
+            const employee = yield models_1.employeeModel.findOne({
+                where: where,
+                include: [
+                    {
+                        model: models_1.employersModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: models_1.departmentModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }
+                ]
+            });
+            if (employee) {
+                return employee;
+            }
+            else {
+                throw new Error(constants.MESSAGES.employee_notFound);
+            }
         });
     }
 }
