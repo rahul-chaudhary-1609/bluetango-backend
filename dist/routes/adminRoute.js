@@ -82,5 +82,9 @@ adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersC
 adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
 /* view contact us list */
 adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+/* view contact us list */
+adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+/* send email and push notification */
+adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

@@ -407,6 +407,27 @@ class EmployersController {
             }
         });
     }
+    /**
+ * send email and push notification
+ * @param req :[query params]
+ * @param res : [contactus list]
+ */
+    sendEmailAndNotification(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const email_notification = yield employersService.sendEmailAndNotification(req.body);
+                //if (email_notification) {
+                return appUtils.successResponse(res, {}, constants.MESSAGES.email_notification_sent);
+                //} else {
+                //  appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                // }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

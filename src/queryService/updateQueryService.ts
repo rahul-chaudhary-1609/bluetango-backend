@@ -8,6 +8,7 @@ import _ from "lodash";
 *
 */
 export const updateData = async (params: any, condition: any) => {
+    console.log('params - - ',params, 'cond - - ', condition)
     if (!_.isEmpty(params.model)) {
         if (!_.isEmpty(params) && !_.isEmpty(condition)) {
             let model = params.model;

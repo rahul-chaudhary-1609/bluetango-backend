@@ -40,6 +40,7 @@ const lodash_1 = __importDefault(require("lodash"));
 *
 */
 exports.updateData = (params, condition) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('params - - ', params, 'cond - - ', condition);
     if (!lodash_1.default.isEmpty(params.model)) {
         if (!lodash_1.default.isEmpty(params) && !lodash_1.default.isEmpty(condition)) {
             let model = params.model;
