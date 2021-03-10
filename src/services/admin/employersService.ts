@@ -97,8 +97,8 @@ export class EmployersService {
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -399,6 +399,7 @@ export class EmployersService {
      * @param {} params pass all parameters from request
      */
     public async viewSubscriptionPlan(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         if (params.status) {
             where.status = params.status
@@ -406,7 +407,11 @@ export class EmployersService {
         } else {
             where.status = 1
         }
-        return await subscriptionManagementModel.findAll({ where: where })
+        return await subscriptionManagementModel.findAll({ where: where,
+             limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
+         })
 
     }
 
@@ -592,8 +597,8 @@ export class EmployersService {
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -717,7 +722,6 @@ export class EmployersService {
 
         let toMails = []
         let tokens = []
-console.log('reciever - - - ', receiver)
         receiver.forEach(rec => {
             toMails.push(rec.email)
             tokens.push(rec.device_token)

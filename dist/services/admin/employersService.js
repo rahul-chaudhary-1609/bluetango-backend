@@ -129,8 +129,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -401,6 +401,7 @@ class EmployersService {
      */
     viewSubscriptionPlan(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             if (params.status) {
                 where.status = params.status;
@@ -408,7 +409,11 @@ class EmployersService {
             else {
                 where.status = 1;
             }
-            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where });
+            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where,
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
+            });
         });
     }
     /**
@@ -594,8 +599,8 @@ class EmployersService {
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
-                <br><br><b> Android URL</b>: test url
-                <br><b> IOS URL</b>: test url <br>
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
@@ -712,7 +717,6 @@ class EmployersService {
             }
             let toMails = [];
             let tokens = [];
-            console.log('reciever - - - ', receiver);
             receiver.forEach(rec => {
                 toMails.push(rec.email);
                 tokens.push(rec.device_token);
@@ -745,9 +749,7 @@ class EmployersService {
                 body: `${message}`,
                 data: {}
             };
-            const nots = yield helperFunction.sendFcmNotification(tokens, notificationData);
-            console.log('notes - - - ', nots);
-            return nots;
+            return yield helperFunction.sendFcmNotification(tokens, notificationData);
         });
     }
 }

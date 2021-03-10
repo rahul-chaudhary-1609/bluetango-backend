@@ -68,4 +68,4 @@ export const employersModel: any = sequelize.define("employers", {
         tableName: "employers"
     }
 );
-employersModel.sync({ alter: true });
+employersModel.sync({ alter: false });

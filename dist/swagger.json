@@ -742,6 +742,20 @@
                         "required": false,
                         "type": "number",
                         "enum": [0, 1]
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}
