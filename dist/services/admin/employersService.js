@@ -495,7 +495,7 @@ class EmployersService {
                 };
             }
             whereCond.status = 1;
-            whereCond.admin_id = params.admin_id;
+            //whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findAndCountAll({
                 where: whereCond,
                 include: [{
