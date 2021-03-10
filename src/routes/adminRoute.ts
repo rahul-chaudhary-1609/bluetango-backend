@@ -97,6 +97,7 @@ adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersC
 /* send email and push notification */
 adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
 
-
+/* view employee details */
+adminRoute.get("/employeeDetails", tokenValidator.validateAdminToken, employersController.employeeDetails);
 
 export = adminRoute;

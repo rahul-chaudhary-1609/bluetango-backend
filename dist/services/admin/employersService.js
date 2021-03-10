@@ -409,7 +409,8 @@ class EmployersService {
             else {
                 where.status = 1;
             }
-            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({ where: where,
+            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({
+                where: where,
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
@@ -750,6 +751,38 @@ class EmployersService {
                 data: {}
             };
             return yield helperFunction.sendFcmNotification(tokens, notificationData);
+        });
+    }
+    /*
+    * @param {} params pass all parameters from request
+    */
+    employeeDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
+            models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            let where = {};
+            where.id = params.employeeId;
+            const employee = yield models_1.employeeModel.findOne({
+                where: where,
+                include: [
+                    {
+                        model: models_1.employersModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: models_1.departmentModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }
+                ]
+            });
+            if (employee) {
+                return employee;
+            }
+            else {
+                throw new Error(constants.MESSAGES.employee_notFound);
+            }
         });
     }
 }

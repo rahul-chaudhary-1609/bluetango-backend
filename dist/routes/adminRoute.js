@@ -86,5 +86,7 @@ adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersC
 adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
 /* send email and push notification */
 adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
+/* view employee details */
+adminRoute.get("/employeeDetails", tokenValidator.validateAdminToken, employersController.employeeDetails);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

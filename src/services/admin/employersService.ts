@@ -407,11 +407,12 @@ export class EmployersService {
         } else {
             where.status = 1
         }
-        return await subscriptionManagementModel.findAll({ where: where,
-             limit: limit,
+        return await subscriptionManagementModel.findAll({
+            where: where,
+            limit: limit,
             offset: offset,
             order: [["createdAt", "DESC"]]
-         })
+        })
 
     }
 
@@ -748,18 +749,52 @@ export class EmployersService {
         mailParams.html = `${message}`
 
         return await helperFunction.sendEmail(mailParams);
-       
+
     }
 
     public async sendBulkNotification(tokens, message) {
-    
+
         let notificationData = <any>{
             title: 'In-App notification from admin',
             body: `${message}`,
             data: {}
         }
-       return await helperFunction.sendFcmNotification(tokens, notificationData);
+        return await helperFunction.sendFcmNotification(tokens, notificationData);
     }
 
+
+    /* 
+    * @param {} params pass all parameters from request
+    */
+    public async employeeDetails(params: any) {
+        employeeModel.belongsTo(employersModel, { foreignKey: "current_employer_id" })
+        employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
+        let where: any = {}
+        where.id = params.employeeId
+
+        const employee = await employeeModel.findOne({
+            where: where,
+            include: [
+                {
+                    model: employersModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: departmentModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                }
+            ]
+        })
+
+        if (employee) {
+            return employee
+        }
+        else {
+            throw new Error(constants.MESSAGES.employee_notFound);
+        }
+
+    }
 
 }
