@@ -12,6 +12,7 @@ import { AnyAaaaRecord } from "dns";
 import { employeeTokenResponse } from "../../utils/tokenResponse";
 import { sequelize } from "../../connection";
 import { now } from "sequelize/types/lib/utils";
+import { managerTeamMemberModel } from "../../models/managerTeamMember";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -438,7 +439,7 @@ export class EmployersService {
                 model: employersModel,
                 required: true,
                 where: where,
-                attributes: ["name"]
+                attributes: ["id", "name"]
             }],
             attributes: ["plan_type", "expiry_date"],
             limit: limit,
@@ -463,7 +464,7 @@ export class EmployersService {
         }
         whereCond.status = 1
         whereCond.employer_id = params.employerId
-       // whereCond.admin_id = params.admin_id
+        // whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findOne({
             where: whereCond,
             include: [{
@@ -769,6 +770,7 @@ export class EmployersService {
     public async employeeDetails(params: any) {
         employeeModel.belongsTo(employersModel, { foreignKey: "current_employer_id" })
         employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
+        employeeModel.hasMany(managerTeamMemberModel, { foreignKey: "manager_id" })
         let where: any = {}
         where.id = params.employeeId
 
@@ -784,6 +786,11 @@ export class EmployersService {
                     model: departmentModel,
                     required: false,
                     attributes: ["id", "name"]
+                },
+                {
+                    model: managerTeamMemberModel,
+                    required: false,
+                    //attributes: ["id","name"]
                 }
             ]
         })
@@ -795,6 +802,15 @@ export class EmployersService {
             throw new Error(constants.MESSAGES.employee_notFound);
         }
 
+    }
+
+    /**
+* 
+* @param {} params pass all parameters from request
+*/
+    public async getDepartmentList(params: any) {
+
+        return await departmentModel.findAll({})
     }
 
 }

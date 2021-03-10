@@ -42,6 +42,7 @@ const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const connection_1 = require("../../connection");
+const managerTeamMember_1 = require("../../models/managerTeamMember");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -440,7 +441,7 @@ class EmployersService {
                         model: models_1.employersModel,
                         required: true,
                         where: where,
-                        attributes: ["name"]
+                        attributes: ["id", "name"]
                     }],
                 attributes: ["plan_type", "expiry_date"],
                 limit: limit,
@@ -760,6 +761,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            models_1.employeeModel.hasMany(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "manager_id" });
             let where = {};
             where.id = params.employeeId;
             const employee = yield models_1.employeeModel.findOne({
@@ -774,6 +776,10 @@ class EmployersService {
                         model: models_1.departmentModel,
                         required: false,
                         attributes: ["id", "name"]
+                    },
+                    {
+                        model: managerTeamMember_1.managerTeamMemberModel,
+                        required: false,
                     }
                 ]
             });
@@ -783,6 +789,15 @@ class EmployersService {
             else {
                 throw new Error(constants.MESSAGES.employee_notFound);
             }
+        });
+    }
+    /**
+*
+* @param {} params pass all parameters from request
+*/
+    getDepartmentList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield models_1.departmentModel.findAll({});
         });
     }
 }

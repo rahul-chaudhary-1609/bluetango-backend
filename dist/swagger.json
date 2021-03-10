@@ -500,6 +500,27 @@
                 "responses": {}
             }
         },
+        "/admin/getDepartmentList": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get department list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/admin/employeeDetails": {
             "get": {
                 "tags": [
