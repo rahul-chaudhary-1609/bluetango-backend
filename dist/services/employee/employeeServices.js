@@ -53,13 +53,21 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
             let teamMembersData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
                         model: employee_1.employeeModel,
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        include: [
+                            {
+                                model: emoji_1.emojiModel,
+                                required: false,
+                                attributes: ['image_url', 'caption'],
+                            }
+                        ]
                     }
                 ],
                 limit: limit,
@@ -140,6 +148,7 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
             return yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
                 where: { manager_id: user.uid },
                 include: [
@@ -153,7 +162,14 @@ class EmployeeServices {
                                 { email: { [Op.iLike]: `%${params.search_string}%` } }
                             ]
                         },
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        include: [
+                            {
+                                model: emoji_1.emojiModel,
+                                required: false,
+                                attributes: ['image_url', 'caption'],
+                            }
+                        ]
                     }
                 ],
                 limit: limit,

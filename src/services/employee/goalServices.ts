@@ -261,16 +261,20 @@ export class GoalServices {
         teamGoalModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployeeModel,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
 
-        return await teamGoalAssignModel.findAndCountAll({
+        let count = await teamGoalAssignModel.count({
+            where: {employee_id: user.uid }
+        })
+
+        let rows =  await teamGoalAssignModel.findAll({
             where: {employee_id: user.uid },
             include: [
                 {
                     model: teamGoalModel,
-                    required: true,
+                    required: false,
                     include: [
                         {
                             model: employeeModel,
-                            required: true,
+                            required: false,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
@@ -284,6 +288,8 @@ export class GoalServices {
             offset: offset,
             order: [["createdAt", "DESC"]]
         })
+
+        return { count, rows}
     }
 
     /*

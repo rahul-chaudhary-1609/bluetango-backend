@@ -280,16 +280,19 @@ class GoalServices {
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             teamGoalAssign_1.teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
-            return yield teamGoalAssign_1.teamGoalAssignModel.findAndCountAll({
+            let count = yield teamGoalAssign_1.teamGoalAssignModel.count({
+                where: { employee_id: user.uid }
+            });
+            let rows = yield teamGoalAssign_1.teamGoalAssignModel.findAll({
                 where: { employee_id: user.uid },
                 include: [
                     {
                         model: teamGoal_1.teamGoalModel,
-                        required: true,
+                        required: false,
                         include: [
                             {
                                 model: employee_1.employeeModel,
-                                required: true,
+                                required: false,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
                         ]
@@ -303,6 +306,7 @@ class GoalServices {
                 offset: offset,
                 order: [["createdAt", "DESC"]]
             });
+            return { count, rows };
         });
     }
     /*
