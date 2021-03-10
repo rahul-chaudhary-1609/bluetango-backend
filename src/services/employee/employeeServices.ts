@@ -27,14 +27,22 @@ export class EmployeeServices {
     public async getListOfTeamMemberByManagerId(params:any, user: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-        
+        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+
         let teamMembersData = await helperFunction.convertPromiseToObject(  await managerTeamMemberModel.findAndCountAll({
                 where: { manager_id: user.uid},
                 include: [
                     {
                         model: employeeModel, 
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        include: [
+                            {
+                                model: emojiModel,
+                                required: false,
+                                attributes:['image_url', 'caption'],
+                            }
+                        ]
                     }
                 ],
                 limit: limit,
@@ -121,6 +129,7 @@ export class EmployeeServices {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
         return await managerTeamMemberModel.findAndCountAll({
             where: { manager_id: user.uid},
             include: [
@@ -134,7 +143,14 @@ export class EmployeeServices {
                             {email: { [Op.iLike]: `%${params.search_string}%`}}
                         ]
                     },
-                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                    include: [
+                        {
+                            model: emojiModel,
+                            required: false,
+                            attributes:['image_url', 'caption'],
+                        }
+                    ]
                 }
             ],
             limit: limit,
