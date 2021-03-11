@@ -329,6 +329,13 @@
             "type": "string"
           },
           {
+            "name": "isPagination",
+            "in": "query",
+            "description": "true/ false",
+            "required": false,
+            "type": "boolean"
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",

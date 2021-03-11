@@ -161,6 +161,9 @@ class EmployersService {
                 whereCond["industry_type"] = params.industry_type;
             }
             whereCond["status"] = { [Op.or]: [0, 1] };
+            if (params.isPagination === "false") {
+                return yield models_1.employersModel.findAndCountAll({ where: { status: 1 }, attributes: ["id", "name"] });
+            }
             const employer = yield models_1.employersModel.findAll({
                 include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }],
                 where: whereCond,
@@ -506,7 +509,8 @@ class EmployersService {
                     }],
                 attributes: ["plan_type", "expiry_date"],
                 limit: limit,
-                offset: offset
+                offset: offset,
+                raw: true
             });
         });
     }

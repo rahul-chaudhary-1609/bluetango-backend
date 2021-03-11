@@ -131,6 +131,10 @@ export class EmployersService {
 
         whereCond["status"] = { [Op.or]: [0, 1] }
 
+        if(params.isPagination === "false") {
+            return await employersModel.findAndCountAll({where: {status: 1}, attributes: ["id", "name"]})
+        }
+
         const employer = await employersModel.findAll({
             include: [{ model: employeeModel, required: false, attributes: ["id"] }],
             where: whereCond,
@@ -505,7 +509,8 @@ export class EmployersService {
             }],
             attributes: ["plan_type", "expiry_date"],
             limit: limit,
-            offset: offset
+            offset: offset,
+            raw: true
         })
 
     }

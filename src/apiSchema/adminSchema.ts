@@ -151,7 +151,8 @@ export const getEmployersList = Joi.object ({
   industry_type: Joi.string().optional(),
   limit: Joi.string().optional(),
   offset: Joi.string().optional(),
-  searchKey: Joi.string().optional()
+  searchKey: Joi.string().optional(),
+  isPagination: Joi.string().optional()
 })
 
 export const addEditCoach = Joi.object ({
