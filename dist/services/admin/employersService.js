@@ -413,7 +413,7 @@ class EmployersService {
             else {
                 where.status = 1;
             }
-            return yield subscriptionManagement_1.subscriptionManagementModel.findAll({
+            return yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
                 where: where,
                 limit: limit,
                 offset: offset,
@@ -459,6 +459,7 @@ class EmployersService {
     viewPaymentDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             let whereCond = {};
@@ -476,6 +477,11 @@ class EmployersService {
                         model: models_1.employersModel,
                         required: true,
                         where: where,
+                        include: [{
+                                model: models_1.employeeModel,
+                                required: true,
+                                attributes: ["id", "name"]
+                            }]
                     }],
                 limit: limit,
                 offset: offset
