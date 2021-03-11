@@ -412,7 +412,7 @@ export class EmployersService {
         } else {
             where.status = 1
         }
-        return await subscriptionManagementModel.findAll({
+        return await subscriptionManagementModel.findAndCountAll({
             where: where,
             limit: limit,
             offset: offset,
@@ -458,6 +458,7 @@ export class EmployersService {
      */
     public async viewPaymentDetails(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
+        employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id"})
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -475,6 +476,11 @@ export class EmployersService {
                 model: employersModel,
                 required: true,
                 where: where,
+                include: [{
+                    model: employeeModel,
+                    required: true,
+                    attributes: ["id", "name"]
+                }]
             }],
             limit: limit,
             offset: offset
