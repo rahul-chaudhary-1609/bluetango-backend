@@ -167,7 +167,8 @@ exports.getEmployersList = joi_1.default.object({
     industry_type: joi_1.default.string().optional(),
     limit: joi_1.default.string().optional(),
     offset: joi_1.default.string().optional(),
-    searchKey: joi_1.default.string().optional()
+    searchKey: joi_1.default.string().optional(),
+    isPagination: joi_1.default.string().optional()
 });
 exports.addEditCoach = joi_1.default.object({
     id: joi_1.default.string().optional(),
