@@ -772,7 +772,7 @@ class EmployersService {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
-            managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { as: "managerData", foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let where = {};
             where.id = params.employeeId;
             const employee = yield models_1.employeeModel.findOne({
@@ -794,8 +794,7 @@ class EmployersService {
                         include: [{
                                 model: models_1.employeeModel,
                                 required: false,
-                                attributes: ["id", "name"],
-                                as: "managerData"
+                                attributes: ["id", "name"]
                             }]
                         //attributes: ["id","name"]
                     }
