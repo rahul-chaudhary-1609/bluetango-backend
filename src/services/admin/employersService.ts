@@ -131,8 +131,8 @@ export class EmployersService {
 
         whereCond["status"] = { [Op.or]: [0, 1] }
 
-        if(params.isPagination === "false") {
-            return await employersModel.findAndCountAll({where: {status: 1}, attributes: ["id", "name"]})
+        if (params.isPagination === "false") {
+            return await employersModel.findAndCountAll({ where: { status: 1 }, attributes: ["id", "name"] })
         }
 
         const employer = await employersModel.findAll({
@@ -458,7 +458,7 @@ export class EmployersService {
      */
     public async viewPaymentDetails(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
-        employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id"})
+        employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -805,7 +805,7 @@ export class EmployersService {
                     include: [{
                         model: employeeModel,
                         required: false,
-                        attributes: ["id","name"]
+                        attributes: ["id", "name"]
                     }]
                     //attributes: ["id","name"]
                 }
@@ -822,12 +822,21 @@ export class EmployersService {
     }
 
     /**
-* 
-* @param {} params pass all parameters from request
-*/
+    * 
+    * @param {} params pass all parameters from request
+    */
     public async getDepartmentList(params: any) {
 
         return await departmentModel.findAll({})
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async subscriptionDetails(params: any) {
+
+        return await subscriptionManagementModel.findOne({where: {id: params.subscriptionId}})
     }
 
 }

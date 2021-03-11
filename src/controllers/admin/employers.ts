@@ -396,4 +396,23 @@ export class EmployersController {
         }
     }
 
+    /**
+    * subscription detail api
+    * @param req :[Body data]
+    * @param res : [subscription data object]
+    */
+   public async subscriptionDetails(req: any, res: any) {
+    try {
+        req.query.admin_id = req.user.uid;
+        const employer = await employersService.subscriptionDetails(req.query);
+        if (employer) {
+            return appUtils.successResponse(res, employer, constants.MESSAGES.employee_details_fetched);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
 }

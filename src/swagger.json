@@ -817,6 +817,34 @@
         "responses": {}
       }
     },
+    "/admin/subscriptionDetails": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get subscription plan details by id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subscriptionId",
+            "in": "query",
+            "description": "subscription plan id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/admin/viewPaymentList": {
       "get": {
         "tags": [

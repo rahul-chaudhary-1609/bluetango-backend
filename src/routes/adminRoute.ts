@@ -103,4 +103,7 @@ adminRoute.get("/employeeDetails", tokenValidator.validateAdminToken, employersC
 /* view Department list */
 adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employersController.getDepartmentList);
 
+/* view subscription details */
+adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
+
 export = adminRoute;
