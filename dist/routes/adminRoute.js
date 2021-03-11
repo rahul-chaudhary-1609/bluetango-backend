@@ -90,5 +90,7 @@ adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, 
 adminRoute.get("/employeeDetails", tokenValidator.validateAdminToken, employersController.employeeDetails);
 /* view Department list */
 adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employersController.getDepartmentList);
+/* view subscription details */
+adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

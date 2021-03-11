@@ -809,12 +809,21 @@ class EmployersService {
         });
     }
     /**
-*
-* @param {} params pass all parameters from request
-*/
+    *
+    * @param {} params pass all parameters from request
+    */
     getDepartmentList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield models_1.departmentModel.findAll({});
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    subscriptionDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield subscriptionManagement_1.subscriptionManagementModel.findOne({ where: { id: params.subscriptionId } });
         });
     }
 }
