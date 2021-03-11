@@ -781,7 +781,8 @@ export class EmployersService {
     public async employeeDetails(params: any) {
         employeeModel.belongsTo(employersModel, { foreignKey: "current_employer_id" })
         employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
-        employeeModel.hasMany(managerTeamMemberModel, { foreignKey: "manager_id" })
+        employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" })
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" })
         let where: any = {}
         where.id = params.employeeId
 
@@ -801,6 +802,11 @@ export class EmployersService {
                 {
                     model: managerTeamMemberModel,
                     required: false,
+                    include: [{
+                        model: employeeModel,
+                        required: false,
+                        attributes: ["id","name"]
+                    }]
                     //attributes: ["id","name"]
                 }
             ]
