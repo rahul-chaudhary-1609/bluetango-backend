@@ -132,7 +132,11 @@ export class EmployersService {
         whereCond["status"] = { [Op.or]: [0, 1] }
 
         if (params.isPagination === "false") {
-            return await employersModel.findAndCountAll({ where: { status: 1 }, attributes: ["id", "name"] })
+            return await employersModel.findAndCountAll({
+                where: { status: 1 },
+                attributes: ["id", "name"],
+                order: [["name", "ASC"]]
+            })
         }
 
         const employer = await employersModel.findAll({
@@ -836,7 +840,7 @@ export class EmployersService {
     */
     public async subscriptionDetails(params: any) {
 
-        return await subscriptionManagementModel.findOne({where: {id: params.subscriptionId}})
+        return await subscriptionManagementModel.findOne({ where: { id: params.subscriptionId } })
     }
 
 }
