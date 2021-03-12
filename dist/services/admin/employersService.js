@@ -479,11 +479,11 @@ class EmployersService {
                 where: whereCond,
                 include: [{
                         model: models_1.employersModel,
-                        required: true,
+                        required: false,
                         where: where,
                         include: [{
                                 model: models_1.employeeModel,
-                                required: true,
+                                required: false,
                                 attributes: ["id", "name"]
                             }]
                     }],
