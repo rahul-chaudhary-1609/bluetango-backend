@@ -905,9 +905,9 @@
             "type": "string"
           },
           {
-            "name": "employerId",
+            "name": "id",
             "in": "query",
-            "description": "employer id",
+            "description": "payment id",
             "required": true,
             "type": "number"
           }

@@ -449,7 +449,7 @@ export class EmployersService {
                 where: where,
                 attributes: ["id", "name"]
             }],
-            attributes: ["plan_type", "expiry_date"],
+            attributes: ["id", "plan_type", "expiry_date"],
             limit: limit,
             offset: offset
         })
@@ -471,8 +471,8 @@ export class EmployersService {
                 name: { [Op.iLike]: `%${params.searchKey}%` }
             }
         }
-        whereCond.status = 1
-        whereCond.employer_id = params.employerId
+        //whereCond.status = 1
+        whereCond.id = params.id
         // whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findOne({
             where: whereCond,
