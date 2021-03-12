@@ -162,7 +162,11 @@ class EmployersService {
             }
             whereCond["status"] = { [Op.or]: [0, 1] };
             if (params.isPagination === "false") {
-                return yield models_1.employersModel.findAndCountAll({ where: { status: 1 }, attributes: ["id", "name"] });
+                return yield models_1.employersModel.findAndCountAll({
+                    where: { status: 1 },
+                    attributes: ["id", "name"],
+                    order: [["name", "ASC"]]
+                });
             }
             const employer = yield models_1.employersModel.findAll({
                 include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }],
