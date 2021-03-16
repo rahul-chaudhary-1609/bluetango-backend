@@ -69,6 +69,38 @@ export class EmployeeManagement {
                     where: { id: params.id}
                 });
                 if (updateData) {
+                    let managerData = await helperFunction.convertPromiseToObject ( await managerTeamMemberModel.findOne({
+                        where: { team_member_id: params.id}
+                    }) );
+                    if (managerData) {
+                        if(managerData.manager_id != parseInt(params.manager_id)) {
+                            await managerTeamMemberModel.update( 
+                                 { 
+                                     manager_id: params.manager_id
+                                 }
+                                , {
+                                    where: { id: params.id}
+                            });
+                            
+                        }
+                    } else {
+                        let teamMemberObj = <any> {
+                            team_member_id: params.id,
+                            manager_id: params.manager_id
+                        }
+                        console.log(teamMemberObj);
+        
+                        await managerTeamMemberModel.create(teamMemberObj);
+                    }
+
+                    // update employee as manager
+                    let employeeUpdate = <any> {
+                        is_manager: 1
+                    }
+                    await employeeModel.update(employeeUpdate, {
+                        where: {id: params.manager_id}
+                    })
+
                     return await employeeModel.findOne({
                         where: {id: params.id}
                     })
