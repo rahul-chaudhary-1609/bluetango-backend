@@ -511,6 +511,7 @@ export class EmployersService {
     */
     public async exportCsv(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
+        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id"})
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -523,13 +524,21 @@ export class EmployersService {
         //whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findAndCountAll({
             where: whereCond,
-            include: [{
+            include: [
+                {
                 model: employersModel,
                 required: true,
                 where: where,
                 attributes: ["name"]
-            }],
-            attributes: ["plan_type", "expiry_date"],
+            },
+            {
+                model: subscriptionManagementModel,
+                required: true,
+                where: where,
+                attributes: ["id", "plan_name"]
+            }
+        ],
+            attributes: ["id", "expiry_date"],
             limit: limit,
             offset: offset,
             raw: true

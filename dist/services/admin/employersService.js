@@ -511,6 +511,7 @@ class EmployersService {
     exportCsv(params) {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            paymentManagement_1.paymentManagementModel.belongsTo(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "plan_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             let whereCond = {};
@@ -523,13 +524,21 @@ class EmployersService {
             //whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findAndCountAll({
                 where: whereCond,
-                include: [{
+                include: [
+                    {
                         model: models_1.employersModel,
                         required: true,
                         where: where,
                         attributes: ["name"]
-                    }],
-                attributes: ["plan_type", "expiry_date"],
+                    },
+                    {
+                        model: subscriptionManagement_1.subscriptionManagementModel,
+                        required: true,
+                        where: where,
+                        attributes: ["id", "plan_name"]
+                    }
+                ],
+                attributes: ["id", "expiry_date"],
                 limit: limit,
                 offset: offset,
                 raw: true
