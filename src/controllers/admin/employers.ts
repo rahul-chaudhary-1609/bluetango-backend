@@ -425,7 +425,7 @@ export class EmployersController {
         req.query.admin_id = req.user.uid;
         const subscription:any = await employersService.changeSubsPlanStatus(req.query);
         if (subscription) {
-            return appUtils.successResponse(res, {}, constants.MESSAGES.subscription_status_updated);
+            return appUtils.successResponse(res, subscription, constants.MESSAGES.subscription_status_updated);
         } else {
             appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
         }
