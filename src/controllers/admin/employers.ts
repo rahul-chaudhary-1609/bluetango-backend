@@ -401,12 +401,31 @@ export class EmployersController {
     * @param req :[Body data]
     * @param res : [subscription data object]
     */
-   public async subscriptionDetails(req: any, res: any) {
+    public async subscriptionDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const employer = await employersService.subscriptionDetails(req.query);
+            if (employer) {
+                return appUtils.successResponse(res, employer, constants.MESSAGES.employee_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+     /**
+    * change subscription status api
+    * @param req :[query data]
+    * @param res : [subscription data object]
+    */
+   public async changeSubsPlanStatus(req: any, res: any) {
     try {
         req.query.admin_id = req.user.uid;
-        const employer = await employersService.subscriptionDetails(req.query);
-        if (employer) {
-            return appUtils.successResponse(res, employer, constants.MESSAGES.employee_details_fetched);
+        const subscription:any = await employersService.changeSubsPlanStatus(req.query);
+        if (subscription) {
+            return appUtils.successResponse(res, {}, constants.MESSAGES.subscription_status_updated);
         } else {
             appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
         }

@@ -495,6 +495,28 @@ class EmployersController {
             }
         });
     }
+    /**
+   * change subscription status api
+   * @param req :[query data]
+   * @param res : [subscription data object]
+   */
+    changeSubsPlanStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const subscription = yield employersService.changeSubsPlanStatus(req.query);
+                if (subscription) {
+                    return appUtils.successResponse(res, {}, constants.MESSAGES.subscription_status_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

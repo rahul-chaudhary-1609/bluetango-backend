@@ -830,6 +830,42 @@ class EmployersService {
             return yield subscriptionManagement_1.subscriptionManagementModel.findOne({ where: { id: params.subscriptionId } });
         });
     }
+    /**
+    * change employee status: activate/deactivate/delete
+    @param {} params pass all parameters from request
+    */
+    changeSubsPlanStatus(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = { where: { id: params.subscriptionId } };
+            let accountExists = yield subscriptionManagement_1.subscriptionManagementModel.findOne(query);
+            //console.log('accExist - - - ', accountExists)
+            if (accountExists) {
+                let updates = {};
+                if (params.actionType == "activate") {
+                    if (accountExists && accountExists.status == 1)
+                        throw new Error(constants.MESSAGES.already_activated);
+                    updates.status = 1;
+                }
+                else if (params.actionType == "deactivate") {
+                    if (accountExists && accountExists.status == 0)
+                        throw new Error(constants.MESSAGES.already_deactivated);
+                    updates.status = 0;
+                }
+                else if (params.actionType == "delete") {
+                    if (accountExists && accountExists.status == 2)
+                        throw new Error(constants.MESSAGES.already_deleted);
+                    updates.status = 2;
+                }
+                else {
+                    throw new Error(constants.MESSAGES.invalid_action);
+                }
+                return yield subscriptionManagement_1.subscriptionManagementModel.update(updates, query);
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_plan);
+            }
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map

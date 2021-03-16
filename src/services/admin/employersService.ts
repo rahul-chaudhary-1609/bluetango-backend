@@ -843,4 +843,41 @@ export class EmployersService {
         return await subscriptionManagementModel.findOne({ where: { id: params.subscriptionId } })
     }
 
+    /**
+    * change employee status: activate/deactivate/delete
+    @param {} params pass all parameters from request
+    */
+   public async changeSubsPlanStatus(params: any) {
+    let query = { where: { id: params.subscriptionId } };
+
+    let accountExists = await subscriptionManagementModel.findOne(query);
+    //console.log('accExist - - - ', accountExists)
+    if (accountExists) {
+        let updates = <any>{};
+        if (params.actionType == "activate") {
+            if (accountExists && accountExists.status == 1)
+                throw new Error(constants.MESSAGES.already_activated);
+
+            updates.status = 1;
+        } else if (params.actionType == "deactivate") {
+            if (accountExists && accountExists.status == 0)
+                throw new Error(constants.MESSAGES.already_deactivated);
+
+            updates.status = 0;
+        } else if (params.actionType == "delete") {
+            if (accountExists && accountExists.status == 2)
+                throw new Error(constants.MESSAGES.already_deleted);
+
+            updates.status = 2;
+        } else {
+            throw new Error(constants.MESSAGES.invalid_action);
+        }
+
+        return await subscriptionManagementModel.update(updates, query);
+
+    } else {
+        throw new Error(constants.MESSAGES.invalid_plan);
+    }
+}
+
 }
