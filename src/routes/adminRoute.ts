@@ -106,4 +106,7 @@ adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employer
 /* view subscription details */
 adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
 
+/* change subscription plan status activate/deactivate/delete */
+adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, employersController.changeSubsPlanStatus);
+
 export = adminRoute;

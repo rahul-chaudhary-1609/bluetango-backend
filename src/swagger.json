@@ -845,6 +845,41 @@
         "responses": {}
       }
     },
+    "/admin/changeSubsPlanStatus": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to change subscription plan status",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subscriptionId",
+            "in": "query",
+            "description": "subscription id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "actionType",
+            "in": "query",
+            "description": "activate/deactivate/delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/admin/viewPaymentList": {
       "get": {
         "tags": [

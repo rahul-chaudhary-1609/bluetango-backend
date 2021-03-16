@@ -87,7 +87,9 @@ exports.MESSAGES = {
     employee_details_fetched: "Employee details fetched successfully",
     employee_notFound: "Employee not found",
     department_list_fetched: "Department list fetched successfully",
-    json_format_csv: "Json format of csv fetched successfully"
+    json_format_csv: "Json format of csv fetched successfully",
+    invalid_plan: "Invalid subscription plan",
+    subscription_status_updated: "Subscription plan status updated"
 };
 exports.code = {
     error_code: 400
