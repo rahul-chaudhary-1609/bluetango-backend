@@ -416,12 +416,15 @@ class EmployersService {
             }
             else {
                 where.status = 1;
+                where = {
+                    status: { [Op.or]: [0, 1] }
+                };
             }
             return yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
                 where: where,
                 limit: limit,
                 offset: offset,
-                order: [["createdAt", "DESC"]]
+                order: [["id", "ASC"]]
             });
         });
     }
@@ -836,8 +839,9 @@ class EmployersService {
     */
     changeSubsPlanStatus(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = { where: { id: params.subscriptionId } };
-            let accountExists = yield subscriptionManagement_1.subscriptionManagementModel.findOne(query);
+            let query = {};
+            query.id = params.subscriptionId;
+            let accountExists = yield subscriptionManagement_1.subscriptionManagementModel.findOne({ where: query });
             //console.log('accExist - - - ', accountExists)
             if (accountExists) {
                 let updates = {};
@@ -859,7 +863,9 @@ class EmployersService {
                 else {
                     throw new Error(constants.MESSAGES.invalid_action);
                 }
-                return yield subscriptionManagement_1.subscriptionManagementModel.update(updates, query);
+                const subscription = yield subscriptionManagement_1.subscriptionManagementModel.update(updates, { where: query, returning: true });
+                console.log('subscription - - ', subscription);
+                return subscription[1][0];
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_plan);

@@ -415,12 +415,15 @@ export class EmployersService {
 
         } else {
             where.status = 1
+            where = {
+                status: { [Op.or]: [0,1]}
+            }
         }
         return await subscriptionManagementModel.findAndCountAll({
             where: where,
             limit: limit,
             offset: offset,
-            order: [["createdAt", "DESC"]]
+            order: [["id", "ASC"]]
         })
 
     }
@@ -848,9 +851,10 @@ export class EmployersService {
     @param {} params pass all parameters from request
     */
    public async changeSubsPlanStatus(params: any) {
-    let query = { where: { id: params.subscriptionId } };
+       let query:any = {}
+     query.id =  params.subscriptionId ;
 
-    let accountExists = await subscriptionManagementModel.findOne(query);
+    let accountExists = await subscriptionManagementModel.findOne({where: query});
     //console.log('accExist - - - ', accountExists)
     if (accountExists) {
         let updates = <any>{};
@@ -873,7 +877,9 @@ export class EmployersService {
             throw new Error(constants.MESSAGES.invalid_action);
         }
 
-        return await subscriptionManagementModel.update(updates, query);
+        const subscription =  await subscriptionManagementModel.update(updates, { where: query, returning: true});
+        console.log('subscription - - ',subscription)
+        return subscription[1][0]
 
     } else {
         throw new Error(constants.MESSAGES.invalid_plan);
