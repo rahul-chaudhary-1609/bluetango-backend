@@ -144,7 +144,7 @@ export class EmployersService {
             where: whereCond,
             limit: limit,
             offset: offset,
-            order: [["createdAt", "DESC"]]
+            order: [["id", "DESC"]]
 
 
         })
@@ -297,7 +297,7 @@ export class EmployersService {
             ],
             limit: limit,
             offset: offset,
-            order: [["createdAt", "DESC"]]
+            order: [["id", "DESC"]]
         })
 
     }
