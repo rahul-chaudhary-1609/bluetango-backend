@@ -17,13 +17,9 @@ export const paymentManagementModel: any = sequelize.define("payment_management"
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    plan_type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    plan_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    plan_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     purchase_date: {
         type: DataTypes.DATE,
@@ -53,4 +49,4 @@ export const paymentManagementModel: any = sequelize.define("payment_management"
         tableName: "payment_management"
     }
 );
-paymentManagementModel.sync({ alter: false });
+paymentManagementModel.sync({ alter: true });
