@@ -173,7 +173,7 @@ class EmployersService {
                 where: whereCond,
                 limit: limit,
                 offset: offset,
-                order: [["createdAt", "DESC"]]
+                order: [["id", "DESC"]]
             });
             const countEmployer = yield models_1.employersModel.count({ where: whereCond });
             return { employer, count: countEmployer };
@@ -304,7 +304,7 @@ class EmployersService {
                 ],
                 limit: limit,
                 offset: offset,
-                order: [["createdAt", "DESC"]]
+                order: [["id", "DESC"]]
             });
         });
     }
