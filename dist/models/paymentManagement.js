@@ -18,13 +18,9 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    plan_type: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
-    plan_name: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+    plan_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false
     },
     purchase_date: {
         type: sequelize_1.DataTypes.DATE,
@@ -51,5 +47,5 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
 }, {
     tableName: "payment_management"
 });
-exports.paymentManagementModel.sync({ alter: false });
+exports.paymentManagementModel.sync({ alter: true });
 //# sourceMappingURL=paymentManagement.js.map
