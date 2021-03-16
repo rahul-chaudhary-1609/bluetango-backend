@@ -35,7 +35,7 @@ export class EmployeeServices {
                     {
                         model: employeeModel, 
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number','country_code', 'profile_pic_url'],
                         include: [
                             {
                                 model: emojiModel,
@@ -67,6 +67,7 @@ export class EmployeeServices {
             if (_.isEmpty(rateCheck)) {
                 teamMembersData.rows[i].rate_valid = 1;
             } else {
+                teamMembersData.rows[i].rate_valid_after_date =  rateCheck.createdAt;
                 teamMembersData.rows[i].rate_valid = 0;
             }
         }
@@ -95,7 +96,7 @@ export class EmployeeServices {
                         ]
                     }
                 ],
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                attributes: ['id', 'name', 'email', 'phone_number','country_code', 'profile_pic_url']
             }) );
 
         let qualitativeMeasurementDetails = await qualitativeMeasurementModel.findOne({
@@ -143,7 +144,7 @@ export class EmployeeServices {
                             {email: { [Op.iLike]: `%${params.search_string}%`}}
                         ]
                     },
-                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
                     include: [
                         {
                             model: emojiModel,
