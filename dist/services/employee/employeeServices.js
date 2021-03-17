@@ -60,7 +60,7 @@ class EmployeeServices {
                     {
                         model: employee_1.employeeModel,
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
                         include: [
                             {
                                 model: emoji_1.emojiModel,
@@ -89,6 +89,7 @@ class EmployeeServices {
                     teamMembersData.rows[i].rate_valid = 1;
                 }
                 else {
+                    teamMembersData.rows[i].rate_valid_after_date = rateCheck.createdAt;
                     teamMembersData.rows[i].rate_valid = 0;
                 }
             }
@@ -116,7 +117,7 @@ class EmployeeServices {
                         ]
                     }
                 ],
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url']
             }));
             let qualitativeMeasurementDetails = yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
                 where: { employee_id: params.id },
@@ -162,7 +163,7 @@ class EmployeeServices {
                                 { email: { [Op.iLike]: `%${params.search_string}%` } }
                             ]
                         },
-                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
                         include: [
                             {
                                 model: emoji_1.emojiModel,
