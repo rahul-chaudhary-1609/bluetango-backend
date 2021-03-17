@@ -94,5 +94,9 @@ adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employer
 adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
 /* change subscription plan status activate/deactivate/delete */
 adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, employersController.changeSubsPlanStatus);
+/* get subAdmin list */
+adminRoute.get("/subAdminList", tokenValidator.validateAdminToken, employersController.getSubAdminList);
+/* get subAdmin details */
+adminRoute.get("/subAdminDetails", tokenValidator.validateAdminToken, employersController.subAdminDetails);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

@@ -424,7 +424,7 @@ class EmployersService {
                 where: where,
                 limit: limit,
                 offset: offset,
-                order: [["id", "ASC"]]
+                order: [["id", "DESC"]]
             });
         });
     }
@@ -683,7 +683,7 @@ class EmployersService {
             };
             const coach = yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number"],
+                attributes: ["id", "name", "email", "phone_number", "country_code"],
             });
             if (coach) {
                 return coach;
@@ -887,6 +887,49 @@ class EmployersService {
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_plan);
+            }
+        });
+    }
+    /**
+   *
+   * @param {} params pass all parameters from request
+   */
+    getSubAdminList(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let where = {};
+            if (params.searchKey) {
+                where["name"] = { [Op.iLike]: `%${params.searchKey}%` };
+            }
+            where["status"] = 1;
+            where["admin_role"] = 2;
+            return yield models_1.adminModel.findAndCountAll({
+                where: where,
+                attributes: ["id", "name", "email", "phone_number", "country_code"],
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            });
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    subAdminDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where["status"] = 1;
+            where["admin_role"] = 2;
+            where["id"] = params.subAdminId;
+            const subAdmin = yield models_1.adminModel.findOne({
+                where: where,
+            });
+            if (subAdmin) {
+                return subAdmin;
+            }
+            else {
+                throw new Error(constants.MESSAGES.subAdmin_not_found);
             }
         });
     }

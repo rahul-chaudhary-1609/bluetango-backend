@@ -89,7 +89,10 @@ exports.MESSAGES = {
     department_list_fetched: "Department list fetched successfully",
     json_format_csv: "Json format of csv fetched successfully",
     invalid_plan: "Invalid subscription plan",
-    subscription_status_updated: "Subscription plan status updated"
+    subscription_status_updated: "Subscription plan status updated",
+    subAdmin_fetched: "SubAdmin fetched successfully",
+    subAdmin_details_fetched: "SubAdmin details fetched successfully",
+    subAdmin_not_found: "SubAdmin not found"
 };
 exports.code = {
     error_code: 400
