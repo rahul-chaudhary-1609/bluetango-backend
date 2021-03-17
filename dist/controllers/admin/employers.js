@@ -517,6 +517,50 @@ class EmployersController {
             }
         });
     }
+    /**
+   * get subscription list api
+   * @param req :[query data]
+   * @param res : [subAdmin data object]
+   */
+    getSubAdminList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const subAdmin = yield employersService.getSubAdminList(req.query);
+                if (subAdmin) {
+                    return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+   * get subscription details api
+   * @param req :[query data]
+   * @param res : [subAdmin data object]
+   */
+    subAdminDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const subAdmin = yield employersService.subAdminDetails(req.query);
+                if (subAdmin) {
+                    return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

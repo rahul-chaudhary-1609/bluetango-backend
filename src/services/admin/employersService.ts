@@ -1,4 +1,4 @@
-import { employersModel, industryTypeModel, employeeModel, departmentModel } from "../../models";
+import { employersModel, industryTypeModel, employeeModel, departmentModel, adminModel } from "../../models";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
 import { coachManagementModel } from "../../models/coachManagement";
@@ -416,14 +416,14 @@ export class EmployersService {
         } else {
             where.status = 1
             where = {
-                status: { [Op.or]: [0,1]}
+                status: { [Op.or]: [0, 1] }
             }
         }
         return await subscriptionManagementModel.findAndCountAll({
             where: where,
             limit: limit,
             offset: offset,
-            order: [["id", "ASC"]]
+            order: [["id", "DESC"]]
         })
 
     }
@@ -434,7 +434,7 @@ export class EmployersService {
     */
     public async viewPaymentList(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
-        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id"})
+        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -449,18 +449,18 @@ export class EmployersService {
             where: whereCond,
             include: [
                 {
-                model: employersModel,
-                required: true,
-                where: where,
-                attributes: ["id", "name"]
-            },
-            {
-                model: subscriptionManagementModel,
-                required: true,
-                where: where,
-                attributes: ["id", "plan_name"]
-            }
-        ],
+                    model: employersModel,
+                    required: true,
+                    where: where,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: subscriptionManagementModel,
+                    required: true,
+                    where: where,
+                    attributes: ["id", "plan_name"]
+                }
+            ],
             attributes: ["id", "expiry_date"],
             limit: limit,
             offset: offset
@@ -511,7 +511,7 @@ export class EmployersService {
     */
     public async exportCsv(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
-        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id"})
+        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -526,18 +526,18 @@ export class EmployersService {
             where: whereCond,
             include: [
                 {
-                model: employersModel,
-                required: true,
-                where: where,
-                attributes: ["name"]
-            },
-            {
-                model: subscriptionManagementModel,
-                required: true,
-                where: where,
-                attributes: ["id", "plan_name"]
-            }
-        ],
+                    model: employersModel,
+                    required: true,
+                    where: where,
+                    attributes: ["name"]
+                },
+                {
+                    model: subscriptionManagementModel,
+                    required: true,
+                    where: where,
+                    attributes: ["id", "plan_name"]
+                }
+            ],
             attributes: ["id", "expiry_date"],
             limit: limit,
             offset: offset,
@@ -684,7 +684,7 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number"],
+            attributes: ["id", "name", "email", "phone_number", "country_code"],
         })
         if (coach) {
             return coach
@@ -868,40 +868,86 @@ export class EmployersService {
     * change employee status: activate/deactivate/delete
     @param {} params pass all parameters from request
     */
-   public async changeSubsPlanStatus(params: any) {
-       let query:any = {}
-     query.id =  params.subscriptionId ;
+    public async changeSubsPlanStatus(params: any) {
+        let query: any = {}
+        query.id = params.subscriptionId;
 
-    let accountExists = await subscriptionManagementModel.findOne({where: query});
-    //console.log('accExist - - - ', accountExists)
-    if (accountExists) {
-        let updates = <any>{};
-        if (params.actionType == "activate") {
-            if (accountExists && accountExists.status == 1)
-                throw new Error(constants.MESSAGES.already_activated);
+        let accountExists = await subscriptionManagementModel.findOne({ where: query });
+        //console.log('accExist - - - ', accountExists)
+        if (accountExists) {
+            let updates = <any>{};
+            if (params.actionType == "activate") {
+                if (accountExists && accountExists.status == 1)
+                    throw new Error(constants.MESSAGES.already_activated);
 
-            updates.status = 1;
-        } else if (params.actionType == "deactivate") {
-            if (accountExists && accountExists.status == 0)
-                throw new Error(constants.MESSAGES.already_deactivated);
+                updates.status = 1;
+            } else if (params.actionType == "deactivate") {
+                if (accountExists && accountExists.status == 0)
+                    throw new Error(constants.MESSAGES.already_deactivated);
 
-            updates.status = 0;
-        } else if (params.actionType == "delete") {
-            if (accountExists && accountExists.status == 2)
-                throw new Error(constants.MESSAGES.already_deleted);
+                updates.status = 0;
+            } else if (params.actionType == "delete") {
+                if (accountExists && accountExists.status == 2)
+                    throw new Error(constants.MESSAGES.already_deleted);
 
-            updates.status = 2;
+                updates.status = 2;
+            } else {
+                throw new Error(constants.MESSAGES.invalid_action);
+            }
+
+            const subscription = await subscriptionManagementModel.update(updates, { where: query, returning: true });
+            console.log('subscription - - ', subscription)
+            return subscription[1][0]
+
         } else {
-            throw new Error(constants.MESSAGES.invalid_action);
+            throw new Error(constants.MESSAGES.invalid_plan);
         }
-
-        const subscription =  await subscriptionManagementModel.update(updates, { where: query, returning: true});
-        console.log('subscription - - ',subscription)
-        return subscription[1][0]
-
-    } else {
-        throw new Error(constants.MESSAGES.invalid_plan);
     }
+
+    /**
+   * 
+   * @param {} params pass all parameters from request
+   */
+    public async getSubAdminList(params: any) {
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let where: any = {}
+
+        if (params.searchKey) {
+            where["name"] = { [Op.iLike]: `%${params.searchKey}%` }
+        }
+        where["status"] = 1
+        where["admin_role"] = 2
+        return await adminModel.findAndCountAll({
+            where: where,
+            attributes: ["id", "name", "email", "phone_number", "country_code"],
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        })
+
+    }
+
+     /**
+   * 
+   * @param {} params pass all parameters from request
+   */
+  public async subAdminDetails(params: any) {
+
+    let where: any = {}
+
+    where["status"] = 1
+    where["admin_role"] = 2
+    where["id"] = params.subAdminId
+    const subAdmin =  await adminModel.findOne({
+        where: where,
+    })
+    if(subAdmin) {
+        return subAdmin
+    }else {
+        throw new Error(constants.MESSAGES.subAdmin_not_found)
+    }
+
 }
 
 }

@@ -415,17 +415,55 @@ export class EmployersController {
         }
     }
 
-     /**
-    * change subscription status api
-    * @param req :[query data]
-    * @param res : [subscription data object]
-    */
-   public async changeSubsPlanStatus(req: any, res: any) {
+    /**
+   * change subscription status api
+   * @param req :[query data]
+   * @param res : [subscription data object]
+   */
+    public async changeSubsPlanStatus(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const subscription: any = await employersService.changeSubsPlanStatus(req.query);
+            if (subscription) {
+                return appUtils.successResponse(res, subscription, constants.MESSAGES.subscription_status_updated);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+   * get subscription list api
+   * @param req :[query data]
+   * @param res : [subAdmin data object]
+   */
+    public async getSubAdminList(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const subAdmin: any = await employersService.getSubAdminList(req.query);
+            if (subAdmin) {
+                return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+   * get subscription details api
+   * @param req :[query data]
+   * @param res : [subAdmin data object]
+   */
+  public async subAdminDetails(req: any, res: any) {
     try {
         req.query.admin_id = req.user.uid;
-        const subscription:any = await employersService.changeSubsPlanStatus(req.query);
-        if (subscription) {
-            return appUtils.successResponse(res, subscription, constants.MESSAGES.subscription_status_updated);
+        const subAdmin: any = await employersService.subAdminDetails(req.query);
+        if (subAdmin) {
+            return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
         } else {
             appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
         }
@@ -433,5 +471,7 @@ export class EmployersController {
         appUtils.errorResponse(res, error, constants.code.error_code);
     }
 }
+
+
 
 }

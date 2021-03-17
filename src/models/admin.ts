@@ -27,6 +27,14 @@ export const adminModel: any = sequelize.define("admins", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    country_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    phone_number: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     thought_of_the_day: {
         type: DataTypes.STRING,
         allowNull: true,
