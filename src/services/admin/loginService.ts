@@ -57,7 +57,8 @@ export class LoginService {
     @param {} params pass all parameters from request
     */
     public async addNewAdmin(params: any) {
-        if(params.passkey === process.env.ADMIN_PASSKEY) {
+        //if(params.passkey === process.env.ADMIN_PASSKEY) {
+            console.log('params - - -',params)
             const qry = <any>{ where: {} };
             qry.where = { 
                 email: params.email,
@@ -65,6 +66,7 @@ export class LoginService {
             };
             qry.raw = true;
             let existingUser = await adminModel.findOne(qry);
+            console.log('existingUser - - - ',existingUser)
             if (_.isEmpty(existingUser)) {
                 let comparePassword = params.password === params.confirmPassword;
                 if (comparePassword) {
@@ -72,9 +74,11 @@ export class LoginService {
                     params.email = params.email.toLowerCase();
                     params.password = await appUtils.bcryptPassword(params.password);
                     params.id = await this.getSerailId();
-                    params.admin_role = (params.id == 1)?1:2;
+                    //params.admin_role = (params.id == 1)?1:2;
+                    params.admin_role = constants.USER_ROLE.sub_admin
                     let newAdmin = await adminModel.create(params);
                     let adminData = newAdmin.get({plain:true});
+                    console.log('adminData - - -', adminData)
                     delete adminData.password;
                     let token = await tokenResponse.adminTokenResponse(newAdmin);
                     adminData.token = token.token;
@@ -95,9 +99,9 @@ export class LoginService {
             } else {
                 throw new Error(constants.MESSAGES.acc_already_exists);
             }
-        } else {
-            throw new Error(constants.MESSAGES.invalid_passkey);
-        }
+        // } else {
+        //     throw new Error(constants.MESSAGES.invalid_passkey);
+        // }
     }
 
     public async getSerailId() {

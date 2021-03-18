@@ -31,7 +31,7 @@ const adminRoute = express_1.default.Router();
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
 /* add new admin route for admin */
-adminRoute.post("/addNewAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
+adminRoute.post("/addSubAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), tokenValidator.validateAdminToken, loginController.addNewAdmin);
 /* login route for admin login */
 adminRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
 /* forget pass route for admin */

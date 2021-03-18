@@ -43,8 +43,11 @@ export const addNewAdmin = Joi.object({
     "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
     "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
   }),
-  passkey: Joi.string().required(),
+  //passkey: Joi.string().required(),
   name: Joi.string().required(),
+  phone_number: Joi.string().required(),
+  country_code: Joi.string().required(),
+  permissions: Joi.string().optional()
 });
 
 export const forgetPassword = Joi.object({

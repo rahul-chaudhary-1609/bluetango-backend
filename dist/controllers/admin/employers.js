@@ -328,6 +328,8 @@ class EmployersController {
     getCoachList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // console.log('req - - - ', req.permissions)
+                // if (req.permissions.includes('coach') || req.user.user_role == constants.USER_ROLE.super_admin) {
                 req.query.admin_id = req.user.uid;
                 const coach = yield employersService.getCoachList(req.query);
                 if (coach) {
@@ -336,6 +338,9 @@ class EmployersController {
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
                 }
+                // } else {
+                //     throw new Error("You don't have permission to access this module")
+                // }
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

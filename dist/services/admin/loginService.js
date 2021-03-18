@@ -92,50 +92,53 @@ class LoginService {
     */
     addNewAdmin(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (params.passkey === process.env.ADMIN_PASSKEY) {
-                const qry = { where: {} };
-                qry.where = {
-                    email: params.email,
-                    status: { [Op.in]: [0, 1] }
-                };
-                qry.raw = true;
-                let existingUser = yield admin_1.adminModel.findOne(qry);
-                if (lodash_1.default.isEmpty(existingUser)) {
-                    let comparePassword = params.password === params.confirmPassword;
-                    if (comparePassword) {
-                        delete params.confirmPassword;
-                        params.email = params.email.toLowerCase();
-                        params.password = yield appUtils.bcryptPassword(params.password);
-                        params.id = yield this.getSerailId();
-                        params.admin_role = (params.id == 1) ? 1 : 2;
-                        let newAdmin = yield admin_1.adminModel.create(params);
-                        let adminData = newAdmin.get({ plain: true });
-                        delete adminData.password;
-                        let token = yield tokenResponse.adminTokenResponse(newAdmin);
-                        adminData.token = token.token;
-                        let update = {
-                            'token': token.token,
-                            'model': admin_1.adminModel
-                        };
-                        let condition = {
-                            id: adminData.id
-                        };
-                        yield updateQueryService.updateData(update, condition);
-                        delete adminData.reset_pass_otp;
-                        delete adminData.reset_pass_expiry;
-                        return adminData;
-                    }
-                    else {
-                        throw new Error(constants.MESSAGES.password_miss_match);
-                    }
+            //if(params.passkey === process.env.ADMIN_PASSKEY) {
+            console.log('params - - -', params);
+            const qry = { where: {} };
+            qry.where = {
+                email: params.email,
+                status: { [Op.in]: [0, 1] }
+            };
+            qry.raw = true;
+            let existingUser = yield admin_1.adminModel.findOne(qry);
+            console.log('existingUser - - - ', existingUser);
+            if (lodash_1.default.isEmpty(existingUser)) {
+                let comparePassword = params.password === params.confirmPassword;
+                if (comparePassword) {
+                    delete params.confirmPassword;
+                    params.email = params.email.toLowerCase();
+                    params.password = yield appUtils.bcryptPassword(params.password);
+                    params.id = yield this.getSerailId();
+                    //params.admin_role = (params.id == 1)?1:2;
+                    params.admin_role = constants.USER_ROLE.sub_admin;
+                    let newAdmin = yield admin_1.adminModel.create(params);
+                    let adminData = newAdmin.get({ plain: true });
+                    console.log('adminData - - -', adminData);
+                    delete adminData.password;
+                    let token = yield tokenResponse.adminTokenResponse(newAdmin);
+                    adminData.token = token.token;
+                    let update = {
+                        'token': token.token,
+                        'model': admin_1.adminModel
+                    };
+                    let condition = {
+                        id: adminData.id
+                    };
+                    yield updateQueryService.updateData(update, condition);
+                    delete adminData.reset_pass_otp;
+                    delete adminData.reset_pass_expiry;
+                    return adminData;
                 }
                 else {
-                    throw new Error(constants.MESSAGES.acc_already_exists);
+                    throw new Error(constants.MESSAGES.password_miss_match);
                 }
             }
             else {
-                throw new Error(constants.MESSAGES.invalid_passkey);
+                throw new Error(constants.MESSAGES.acc_already_exists);
             }
+            // } else {
+            //     throw new Error(constants.MESSAGES.invalid_passkey);
+            // }
         });
     }
     getSerailId() {

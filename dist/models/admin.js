@@ -57,6 +57,10 @@ exports.adminModel = connection_1.sequelize.define("admins", {
     token: {
         type: sequelize_1.DataTypes.STRING(600),
         allowNull: true,
+    },
+    permissions: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true
     }
 }, {
     tableName: "admins"

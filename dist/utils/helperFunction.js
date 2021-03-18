@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -39,6 +39,9 @@ const AWS = __importStar(require("aws-sdk"));
 const fs_1 = __importDefault(require("fs"));
 const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
+const employersService_1 = require("../services/admin/employersService");
+//Instantiates a Home services  
+const employersService = new employersService_1.EmployersService();
 const s3Client = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -151,6 +154,27 @@ exports.sendFcmNotification = (tokens, notification) => __awaiter(void 0, void 0
     }
     else {
         console.log("No FCM Device token registered yet.");
+    }
+});
+exports.checkPermission = (req, re, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('req - - -  -', req.user.user_role);
+        if (req.user.user_role == constants.USER_ROLE.sub_admin) {
+            let params = {};
+            params.subAdminId = req.user.uid;
+            const subAdmin = yield employersService.subAdminDetails(params);
+            if (subAdmin) {
+                console.log('subAdmin - - -', subAdmin);
+                req.permissions = subAdmin.permissions;
+                return next();
+            }
+        }
+        else {
+            return next();
+        }
+    }
+    catch (error) {
+        throw new Error(error);
     }
 });
 //# sourceMappingURL=helperFunction.js.map

@@ -62,6 +62,9 @@ class LoginController {
     addNewAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (req.user.user_role != constants.USER_ROLE.super_admin) {
+                    throw new Error(constants.MESSAGES.invalid_admin);
+                }
                 const responseFromService = yield loginService.addNewAdmin(req.body);
                 const msg = constants.MESSAGES.login_success;
                 appUtils.successResponse(res, responseFromService, msg);
