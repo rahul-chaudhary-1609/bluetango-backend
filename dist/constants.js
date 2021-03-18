@@ -92,7 +92,8 @@ exports.MESSAGES = {
     subscription_status_updated: "Subscription plan status updated",
     subAdmin_fetched: "SubAdmin fetched successfully",
     subAdmin_details_fetched: "SubAdmin details fetched successfully",
-    subAdmin_not_found: "SubAdmin not found"
+    subAdmin_not_found: "SubAdmin not found",
+    invalid_admin: "Only super admin can add subAdmin"
 };
 exports.code = {
     error_code: 400

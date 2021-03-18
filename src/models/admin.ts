@@ -56,6 +56,10 @@ export const adminModel: any = sequelize.define("admins", {
     token: {
         type: DataTypes.STRING(600),
         allowNull: true,
+    },
+    permissions: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
     }
 },
     {

@@ -270,13 +270,19 @@ export class EmployersController {
    */
     public async getCoachList(req: any, res: any) {
         try {
-            req.query.admin_id = req.user.uid;
-            const coach = await employersService.getCoachList(req.query);
-            if (coach) {
-                return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
-            } else {
-                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
-            }
+            // console.log('req - - - ', req.permissions)
+            // if (req.permissions.includes('coach') || req.user.user_role == constants.USER_ROLE.super_admin) {
+
+                req.query.admin_id = req.user.uid;
+                const coach = await employersService.getCoachList(req.query);
+                if (coach) {
+                    return appUtils.successResponse(res, coach, constants.MESSAGES.coach_list_fetched);
+                } else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            // } else {
+            //     throw new Error("You don't have permission to access this module")
+            // }
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
@@ -458,19 +464,19 @@ export class EmployersController {
    * @param req :[query data]
    * @param res : [subAdmin data object]
    */
-  public async subAdminDetails(req: any, res: any) {
-    try {
-        req.query.admin_id = req.user.uid;
-        const subAdmin: any = await employersService.subAdminDetails(req.query);
-        if (subAdmin) {
-            return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
-        } else {
-            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+    public async subAdminDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const subAdmin: any = await employersService.subAdminDetails(req.query);
+            if (subAdmin) {
+                return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
         }
-    } catch (error) {
-        appUtils.errorResponse(res, error, constants.code.error_code);
     }
-}
 
 
 

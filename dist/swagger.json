@@ -59,7 +59,7 @@
                 "responses": {}
             }
         },
-        "/admin/addNewAdmin": {
+        "/admin/addSubAdmin": {
             "post": {
                 "tags": [
                     "Admin"
@@ -70,9 +70,9 @@
                 ],
                 "parameters": [
                     {
-                        "name": "passkey",
-                        "in": "formData",
-                        "description": "admin passkey",
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
                     },
@@ -102,6 +102,34 @@
                         "in": "formData",
                         "description": "confirmPassword",
                         "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "formData",
+                        "description": "phone number",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country code",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "permissions",
+                        "in": "formData",
+                        "description": "ex- {employee, coach}",
+                        "required": false,
                         "type": "string"
                     }
                 ],

@@ -49,4 +49,4 @@ export const paymentManagementModel: any = sequelize.define("payment_management"
         tableName: "payment_management"
     }
 );
-paymentManagementModel.sync({ alter: true });
+paymentManagementModel.sync({ alter: false });

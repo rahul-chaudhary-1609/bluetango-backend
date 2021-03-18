@@ -47,5 +47,5 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
 }, {
     tableName: "payment_management"
 });
-exports.paymentManagementModel.sync({ alter: true });
+exports.paymentManagementModel.sync({ alter: false });
 //# sourceMappingURL=paymentManagement.js.map

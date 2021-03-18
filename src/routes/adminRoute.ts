@@ -6,6 +6,7 @@ import * as tokenValidator from "../middleware/tokenValidator";
 import * as AdminController from "../controllers/admin/index";
 import * as multer from '../middleware/multerParser';
 import * as validators from "../middleware/validators";
+import * as helperFunction from "../utils/helperFunction";
 
 const adminRoute = express.Router();
 
@@ -14,7 +15,7 @@ const employersController = new AdminController.EmployersController();
 
 
 /* add new admin route for admin */
-adminRoute.post("/addNewAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), loginController.addNewAdmin);
+adminRoute.post("/addSubAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), tokenValidator.validateAdminToken, loginController.addNewAdmin);
 
 /* login route for admin login */
 adminRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
@@ -80,7 +81,7 @@ adminRoute.get("/employerDetails", tokenValidator.validateAdminToken, employersC
 adminRoute.post("/addEditCoach",joiSchemaValidation.validateBody(adminSchema.addEditCoach), tokenValidator.validateAdminToken, employersController.addEditCoach);
 
 /* get coach list */
-adminRoute.get("/getCoachList", tokenValidator.validateAdminToken, employersController.getCoachList);
+adminRoute.get("/getCoachList", tokenValidator.validateAdminToken,  employersController.getCoachList);
 
 /* get coach details */
 adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersController.getCoachDetails);

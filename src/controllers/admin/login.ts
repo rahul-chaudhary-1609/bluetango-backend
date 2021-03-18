@@ -33,6 +33,9 @@ export class LoginController {
     */
     public async addNewAdmin(req: any, res: any) {
         try {
+            if(req.user.user_role != constants.USER_ROLE.super_admin) {
+                throw new Error(constants.MESSAGES.invalid_admin)
+            }
             const responseFromService = await loginService.addNewAdmin(req.body);
             const msg = constants.MESSAGES.login_success;
             appUtils.successResponse(res, responseFromService, msg);

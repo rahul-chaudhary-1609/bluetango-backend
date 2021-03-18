@@ -5,16 +5,20 @@ import * as AWS from 'aws-sdk';
 import fs from 'fs';
 const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
+import { EmployersService } from '../services/admin/employersService'
+
+//Instantiates a Home services  
+const employersService = new EmployersService();
 
 const s3Client = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region : process.env.AWS_REGION
+    region: process.env.AWS_REGION
 });
 
 const uploadParams = {
     ACL: 'public-read',
-    Bucket: process.env.AWS_BUCKET_NAME, 
+    Bucket: process.env.AWS_BUCKET_NAME,
     Key: '', // pass key
     Body: null, // pass file body
     ContentType: null
@@ -23,25 +27,25 @@ const uploadParams = {
 /*
 * Upload A file
 */
-export const uploadFile = async (params:any, folderName: any) => {
-    
+export const uploadFile = async (params: any, folderName: any) => {
+
     return new Promise((resolve, reject) => {
         const buffer = fs.createReadStream(params.path);
         //assigining parameters to send the value in s3 bucket
-       
-        uploadParams.Key = folderName+ '/'+ `${Date.now()}_ ${params.originalname}`;
+
+        uploadParams.Key = folderName + '/' + `${Date.now()}_ ${params.originalname}`;
         uploadParams.Body = buffer;
         uploadParams.ContentType = params.mimetype;
 
         var s3upload = s3Client.upload(uploadParams).promise();
-        s3upload.then(function(data) {
-                resolve(data.Location);
+        s3upload.then(function (data) {
+            resolve(data.Location);
         })
-        .catch(function(err) {
-            reject(err);
-        });
-    });     
-   // return true;   
+            .catch(function (err) {
+                reject(err);
+            });
+    });
+    // return true;   
 }
 
 
@@ -96,7 +100,7 @@ export const convertPromiseToObject = async (promise) => {
     return JSON.parse(JSON.stringify(promise));
 }
 
-export const getCurrentDate = async ()=> {
+export const getCurrentDate = async () => {
     return new Date().toISOString().split('T')[0];
 }
 
@@ -107,9 +111,9 @@ export const getCurrentDate = async ()=> {
  * @param payload 
  */
 export const sendFcmNotification = async (tokens: any, notification: any) => {
-    
 
-    var message = { 
+
+    var message = {
         registration_ids: tokens,
         notification: {
             title: notification.title,
@@ -117,7 +121,7 @@ export const sendFcmNotification = async (tokens: any, notification: any) => {
         },
         data: notification.data
     };
-    if(tokens.length) {
+    if (tokens.length) {
         fcm.send(message, function (err, response) {
             if (err) {
                 console.log("Something has gone wrong!", notification, JSON.stringify(err));
@@ -128,5 +132,25 @@ export const sendFcmNotification = async (tokens: any, notification: any) => {
         });
     } else {
         console.log("No FCM Device token registered yet.");
+    }
+}
+
+export const checkPermission = async (req, re, next) => {
+    try {
+        console.log('req - - -  -', req.user.user_role)
+        if(req.user.user_role == constants.USER_ROLE.sub_admin) {
+            let params:any = {}
+            params.subAdminId = req.user.uid
+            const subAdmin = await employersService.subAdminDetails(params)
+            if(subAdmin) {
+                console.log('subAdmin - - -',subAdmin)
+                req.permissions = subAdmin.permissions
+                return next()
+            }
+        }else {
+           return next()
+        }
+    } catch (error) {
+        throw new Error(error)
     }
 }
