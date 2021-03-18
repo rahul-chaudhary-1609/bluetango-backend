@@ -13,6 +13,10 @@ export const qualitativeMeasurementCommentModel: any = sequelize.define("qualita
         type: DataTypes.STRING,
         allowNull: true
     },
+    label: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     comment: {
         type: DataTypes.TEXT,
         allowNull: true,

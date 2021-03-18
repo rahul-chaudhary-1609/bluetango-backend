@@ -14,6 +14,10 @@ exports.qualitativeMeasurementCommentModel = connection_1.sequelize.define("qual
         type: sequelize_1.DataTypes.STRING,
         allowNull: true
     },
+    label: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
     comment: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
