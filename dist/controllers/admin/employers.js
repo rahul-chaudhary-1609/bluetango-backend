@@ -414,6 +414,28 @@ class EmployersController {
         });
     }
     /**
+  * get contactus details
+  * @param req :[query params]
+  * @param res : [contactus list]
+  */
+    getCotactUsDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const contactUS = yield employersService.getCotactUsDetails(req.query);
+                if (contactUS) {
+                    return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_details_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
  * send email and push notification
  * @param req :[query params]
  * @param res : [contactus list]

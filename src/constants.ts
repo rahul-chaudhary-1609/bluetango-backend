@@ -90,7 +90,8 @@ export const MESSAGES = {
   subAdmin_fetched: "SubAdmin fetched successfully",
   subAdmin_details_fetched: "SubAdmin details fetched successfully",
   subAdmin_not_found: "SubAdmin not found",
-  invalid_admin: "Only super admin can add subAdmin"
+  invalid_admin: "Only super admin can add subAdmin",
+  contact_details_fetched: "Contact Us details fetched"
 }
 
 export const code = {

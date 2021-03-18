@@ -745,6 +745,36 @@ export class EmployersService {
     }
 
     /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async getCotactUsDetails(params: any) {
+
+        let where = {
+            id: params.constactId
+        }
+
+        contactUsModel.belongsTo(employersModel, { foreignKey: "employer_id" })
+        contactUsModel.belongsTo(employeeModel, { foreignKey: "employee_id" })
+
+        return await contactUsModel.findOne({
+            where: where,
+            include: [
+                {
+                    model: employersModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: employeeModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                }
+            ]
+        })
+    }
+
+    /**
  * 
  * @param {} params pass all parameters from request
  */
@@ -928,26 +958,26 @@ export class EmployersService {
 
     }
 
-     /**
-   * 
-   * @param {} params pass all parameters from request
-   */
-  public async subAdminDetails(params: any) {
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async subAdminDetails(params: any) {
 
-    let where: any = {}
+        let where: any = {}
 
-    where["status"] = 1
-    where["admin_role"] = 2
-    where["id"] = params.subAdminId
-    const subAdmin =  await adminModel.findOne({
-        where: where,
-    })
-    if(subAdmin) {
-        return subAdmin
-    }else {
-        throw new Error(constants.MESSAGES.subAdmin_not_found)
+        where["status"] = 1
+        where["admin_role"] = 2
+        where["id"] = params.subAdminId
+        const subAdmin = await adminModel.findOne({
+            where: where,
+        })
+        if (subAdmin) {
+            return subAdmin
+        } else {
+            throw new Error(constants.MESSAGES.subAdmin_not_found)
+        }
+
     }
-
-}
 
 }
