@@ -1223,6 +1223,34 @@
                 "responses": {}
             }
         },
+        "/admin/getCotactUsDetails": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "api to get contactUs list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "constactId",
+                        "in": "query",
+                        "description": "contact id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/admin/sendEmailAndNotification": {
             "post": {
                 "tags": [

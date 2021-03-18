@@ -740,6 +740,34 @@ class EmployersService {
         });
     }
     /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    getCotactUsDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                id: params.constactId
+            };
+            contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
+            contactUs_1.contactUsModel.belongsTo(models_1.employeeModel, { foreignKey: "employee_id" });
+            return yield contactUs_1.contactUsModel.findOne({
+                where: where,
+                include: [
+                    {
+                        model: models_1.employersModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: models_1.employeeModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }
+                ]
+            });
+        });
+    }
+    /**
  *
  * @param {} params pass all parameters from request
  */

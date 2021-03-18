@@ -93,7 +93,7 @@ adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersContr
 adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
 
 /* view contact us list */
-adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+adminRoute.get("/getCotactUsDetails", tokenValidator.validateAdminToken, employersController.getCotactUsDetails);
 
 /* send email and push notification */
 adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
