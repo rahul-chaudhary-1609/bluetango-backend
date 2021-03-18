@@ -684,7 +684,7 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description"],
         })
         if (coach) {
             return coach
