@@ -7,6 +7,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import * as selectQueryService from '../../queryService/selectQueryService';
 import * as updateQueryService from '../../queryService/updateQueryService';
 import bcrypt from 'bcrypt';
+import { AnyAaaaRecord } from "dns";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -53,7 +54,7 @@ export class LoginService {
     }
 
     /**
-    * login function
+    * add sub admin function
     @param {} params pass all parameters from request
     */
     public async addNewAdmin(params: any) {
@@ -102,6 +103,29 @@ export class LoginService {
         // } else {
         //     throw new Error(constants.MESSAGES.invalid_passkey);
         // }
+    }
+
+    /**
+     * edit sub admin function
+     * @param {*} params pass all parameters from request 
+     */
+    public async editSubAdmin(params: any) {
+        let where = {
+            id: params.subAdminId
+        }
+        let update = {
+            name: params.name,
+            permissions: params.permissions,
+            country_code: params.country_code,
+            phone_number: params.phone_number,
+            status: params.status
+        }
+        const subAdmin = await adminModel.update(update, {where: where, raw: true, returning: true})
+        if(subAdmin && subAdmin[1][0]) {
+            return subAdmin[1][0]
+        }else {
+            throw new Error(constants.MESSAGES.invalid_subAdmin)
+        }
     }
 
     public async getSerailId() {

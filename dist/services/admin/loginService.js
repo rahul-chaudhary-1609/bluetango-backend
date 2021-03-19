@@ -87,7 +87,7 @@ class LoginService {
         });
     }
     /**
-    * login function
+    * add sub admin function
     @param {} params pass all parameters from request
     */
     addNewAdmin(params) {
@@ -139,6 +139,31 @@ class LoginService {
             // } else {
             //     throw new Error(constants.MESSAGES.invalid_passkey);
             // }
+        });
+    }
+    /**
+     * edit sub admin function
+     * @param {*} params pass all parameters from request
+     */
+    editSubAdmin(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                id: params.subAdminId
+            };
+            let update = {
+                name: params.name,
+                permissions: params.permissions,
+                country_code: params.country_code,
+                phone_number: params.phone_number,
+                status: params.status
+            };
+            const subAdmin = yield admin_1.adminModel.update(update, { where: where, raw: true, returning: true });
+            if (subAdmin && subAdmin[1][0]) {
+                return subAdmin[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_subAdmin);
+            }
         });
     }
     getSerailId() {

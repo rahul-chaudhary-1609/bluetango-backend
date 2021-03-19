@@ -94,7 +94,10 @@ exports.MESSAGES = {
     subAdmin_details_fetched: "SubAdmin details fetched successfully",
     subAdmin_not_found: "SubAdmin not found",
     invalid_admin: "Only super admin can add subAdmin",
-    contact_details_fetched: "Contact Us details fetched"
+    contact_details_fetched: "Contact Us details fetched",
+    subAdmin_added: "Sub admin added successfully",
+    subAdmin_updated: "Sub admin updated successfully",
+    invalid_subAdmin: "Invalid sub admin"
 };
 exports.code = {
     error_code: 400
