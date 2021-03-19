@@ -8,6 +8,7 @@ import { upload } from "../middleware/multerParser";
 import { AuthController } from "../controllers/employee/authController";
 import { EmployeeController } from "../controllers/employee/employeeController";
 import { GoalController } from "../controllers/employee/goalController";
+import { ChatController } from "../controllers/employee/chatController";
 import { QualitativeMeasurementController } from "../controllers/employee/qualitativeMeasurementController";
 
 const employeeRoute = express.Router();
@@ -15,6 +16,7 @@ const employeeRoute = express.Router();
 const authController = new AuthController();
 const employeeController = new EmployeeController();
 const goalController = new GoalController();
+const chatController = new ChatController();
 const qualitativeMeasurementController  = new QualitativeMeasurementController();
 
 // auth API
@@ -109,5 +111,9 @@ employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidat
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
 
+
+// Chat routes
+/* get chat for employee */
+employeeRoute.get("/getChatPopListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopListAsEmployee);
 
 export = employeeRoute;

@@ -26,6 +26,10 @@
       "description": "Employee related api's"
     },
     {
+      "name": "EmployeeChat",
+      "description": "Employee Chat related api's"
+    },
+    {
       "name": "Employer",
       "description": "Employer related api's"
     }
@@ -2430,6 +2434,27 @@
             "in": "formData",
             "description": "job_comments",
             "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getChatPopListAsEmployee": {
+      "get": {
+        "tags": [
+          "EmployeeChat"
+        ],
+        "description": "get chat popup list as employee",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
             "type": "string"
           }
         ],
