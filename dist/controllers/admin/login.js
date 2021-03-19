@@ -55,7 +55,7 @@ class LoginController {
         });
     }
     /**
-    * addNewAdmin
+    * add sub admin
     * @param req :[name, email, password, confirmPassword]
     * @param res
     */
@@ -66,7 +66,28 @@ class LoginController {
                     throw new Error(constants.MESSAGES.invalid_admin);
                 }
                 const responseFromService = yield loginService.addNewAdmin(req.body);
-                const msg = constants.MESSAGES.login_success;
+                const msg = constants.MESSAGES.subAdmin_added;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * edit subadmin
+    * @param req :[req body]
+    * @param res
+    */
+    editSubAdmin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (req.user.user_role != constants.USER_ROLE.super_admin) {
+                    throw new Error(constants.MESSAGES.invalid_admin);
+                }
+                const responseFromService = yield loginService.editSubAdmin(req.body);
+                const msg = constants.MESSAGES.subAdmin_updated;
                 appUtils.successResponse(res, responseFromService, msg);
             }
             catch (error) {

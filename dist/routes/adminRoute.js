@@ -30,8 +30,14 @@ const validators = __importStar(require("../middleware/validators"));
 const adminRoute = express_1.default.Router();
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
-/* add new admin route for admin */
+/* add subAdmin */
 adminRoute.post("/addSubAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), tokenValidator.validateAdminToken, loginController.addNewAdmin);
+/* update subAdmin */
+adminRoute.put("/editSubAdmin", validators.trimmer, tokenValidator.validateAdminToken, loginController.editSubAdmin);
+/* get subAdmin list */
+adminRoute.get("/subAdminList", tokenValidator.validateAdminToken, employersController.getSubAdminList);
+/* get subAdmin details */
+adminRoute.get("/subAdminDetails", tokenValidator.validateAdminToken, employersController.subAdminDetails);
 /* login route for admin login */
 adminRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.login), loginController.login);
 /* forget pass route for admin */
@@ -94,9 +100,5 @@ adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employer
 adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
 /* change subscription plan status activate/deactivate/delete */
 adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, employersController.changeSubsPlanStatus);
-/* get subAdmin list */
-adminRoute.get("/subAdminList", tokenValidator.validateAdminToken, employersController.getSubAdminList);
-/* get subAdmin details */
-adminRoute.get("/subAdminDetails", tokenValidator.validateAdminToken, employersController.subAdminDetails);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

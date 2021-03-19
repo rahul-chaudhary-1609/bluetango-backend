@@ -136,6 +136,70 @@
                 "responses": {}
             }
         },
+        "/admin/editSubAdmin": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "edit subAdmin",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "subAdminId",
+                        "in": "formData",
+                        "description": "subAdmin id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "name",
+                        "in": "formData",
+                        "description": "admin name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country_code",
+                        "in": "formData",
+                        "description": "country code",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "formData",
+                        "description": "phone number",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "permissions",
+                        "in": "formData",
+                        "description": "ex- {employee, coach}",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "status",
+                        "in": "formData",
+                        "description": "1--> active/ 2--> delete",
+                        "required": false,
+                        "type": "number",
+                        "enum": [1, 2]
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/admin/forgotPassword": {
             "post": {
                 "tags": [
