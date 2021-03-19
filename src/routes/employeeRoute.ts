@@ -106,7 +106,7 @@ employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.vali
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
 
 /* get qualitative measurement for employee */
-employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
+employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
 
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
@@ -114,6 +114,9 @@ employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, 
 
 // Chat routes
 /* get chat for employee */
-employeeRoute.get("/getChatPopListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopListAsEmployee);
+employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopUpListAsEmployee);
+
+/* get chat room id */
+employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getChatRoomId), chatController.getChatRoomId);
 
 export = employeeRoute;

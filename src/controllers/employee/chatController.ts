@@ -11,13 +11,27 @@ export class ChatController {
     constructor() { }
 
     /**
-    * view goal as manager
+    * get chat pop up list
     * @param req :[]
     * @param res 
     */
-    public async getChatPopListAsEmployee(req: any, res: any, next: any) {
+    public async getChatPopUpListAsEmployee(req: any, res: any, next: any) {
         try {
-            const responseFromService = await chatServices.getChatPopListAsEmployee(req.user);
+            const responseFromService = await chatServices.getChatPopUpListAsEmployee(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * get chat room id
+    * @param req :[]
+    * @param res 
+    */
+    public async getChatRoomId(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getChatRoomId(req.query, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

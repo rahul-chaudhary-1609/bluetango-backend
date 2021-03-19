@@ -2556,7 +2556,7 @@
                 "responses": {}
             }
         },
-        "/employee/getChatPopListAsEmployee": {
+        "/employee/getChatPopUpListAsEmployee": {
             "get": {
                 "tags": [
                     "EmployeeChat"
@@ -2572,6 +2572,34 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getChatRoomId": {
+            "get": {
+                "tags": [
+                    "EmployeeChat"
+                ],
+                "description": "get chat popup list as employee",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "other_user_id",
+                        "in": "query",
+                        "description": "other_user_id",
+                        "required": true,
+                        "type": "number"
                     }
                 ],
                 "responses": {}
