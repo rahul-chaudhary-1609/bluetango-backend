@@ -3,6 +3,7 @@ sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 import * as constants from '../constants';
 import * as AWS from 'aws-sdk';
 import fs from 'fs';
+import * as randomstring from 'randomstring';
 const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 import { EmployersService } from '../services/admin/employersService'
@@ -154,3 +155,19 @@ export const checkPermission = async (req, re, next) => {
         throw new Error(error)
     }
 }
+
+/*
+* function to generate the random key
+*/
+export const randomStringEightDigit = () => {
+    // Generate Random Number
+    const otp = randomstring.generate({
+        charset: 'numeric',
+        length: 8,
+        numeric: true,
+        letters: false,
+        special: false,
+        exclude: ["0"],
+    });
+    return otp;
+};

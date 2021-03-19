@@ -37,14 +37,30 @@ const chatServices = new chatServices_1.ChatServices();
 class ChatController {
     constructor() { }
     /**
-    * view goal as manager
+    * get chat pop up list
     * @param req :[]
     * @param res
     */
-    getChatPopListAsEmployee(req, res, next) {
+    getChatPopUpListAsEmployee(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield chatServices.getChatPopListAsEmployee(req.user);
+                const responseFromService = yield chatServices.getChatPopUpListAsEmployee(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * get chat room id
+    * @param req :[]
+    * @param res
+    */
+    getChatRoomId(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getChatRoomId(req.query, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {
