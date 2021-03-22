@@ -998,4 +998,51 @@ export class EmployersService {
 
     }
 
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async editVideo(params: any) {
+
+        const library = await libraryManagementModel.update(params, { where: { id: params.id }, returning: true })
+        if (library && library[1][0]) {
+            return library[1][0]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_library)
+        }
+
+    }
+
+    /**
+ * 
+ * @param {} params pass all parameters from request
+ */
+    public async listVideo(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        return await libraryManagementModel.findAndCountAll({
+            where: { status: 1 },
+            attributes: ["id", "video"],
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        })
+
+    }
+
+    /**
+ * 
+ * @param {} params pass all parameters from request
+ */
+    public async detailsVideo(params: any) {
+
+        let where:any = {}
+        where.id = params.id
+        where.status = 1
+        return await libraryManagementModel.findOne({
+            where: where
+        })
+
+    }
+
 }

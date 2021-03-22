@@ -25,6 +25,12 @@ exports.libraryManagementModel = connection_1.sequelize.define("library_manageme
     video: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false
+    },
+    status: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
     }
 }, {
     tableName: "library_management"

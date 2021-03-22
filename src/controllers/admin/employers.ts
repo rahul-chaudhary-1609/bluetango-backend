@@ -533,6 +533,62 @@ export class EmployersController {
         }
     }
 
+    /**
+  * edit video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    public async editVideo(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const libraryVideo: any = await employersService.editVideo(req.body);
+            if (libraryVideo) {
+                return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_updated);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+  * list library video
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    public async listVideo(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const libraryVideo: any = await employersService.listVideo(req.query);
+            if (libraryVideo) {
+                return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+  * list library video
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    public async detailsVideo(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const libraryVideo: any = await employersService.detailsVideo(req.query);
+            if (libraryVideo) {
+                return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 
 
 }
