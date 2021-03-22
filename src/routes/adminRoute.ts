@@ -126,4 +126,13 @@ adminRoute.post("/uploadFile", tokenValidator.validateAdminToken, upload.single(
 /* add new video into library */
 adminRoute.post("/addVideo", tokenValidator.validateAdminToken, employersController.addVideo);
 
+/* edit library management */
+adminRoute.put("/editVideo", tokenValidator.validateAdminToken, employersController.editVideo);
+
+/* list library management */
+adminRoute.get("/listVideo", tokenValidator.validateAdminToken, employersController.listVideo);
+
+/* library management details */
+adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersController.detailsVideo);
+
 export = adminRoute;

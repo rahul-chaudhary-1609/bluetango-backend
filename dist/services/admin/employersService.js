@@ -979,6 +979,51 @@ class EmployersService {
             return yield libraryManagement_1.libraryManagementModel.create(params);
         });
     }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    editVideo(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const library = yield libraryManagement_1.libraryManagementModel.update(params, { where: { id: params.id }, returning: true });
+            if (library && library[1][0]) {
+                return library[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_library);
+            }
+        });
+    }
+    /**
+ *
+ * @param {} params pass all parameters from request
+ */
+    listVideo(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            return yield libraryManagement_1.libraryManagementModel.findAndCountAll({
+                where: { status: 1 },
+                attributes: ["id", "video"],
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            });
+        });
+    }
+    /**
+ *
+ * @param {} params pass all parameters from request
+ */
+    detailsVideo(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            where.status = 1;
+            return yield libraryManagement_1.libraryManagementModel.findOne({
+                where: where
+            });
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map

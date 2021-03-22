@@ -105,5 +105,11 @@ adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, emplo
 adminRoute.post("/uploadFile", tokenValidator.validateAdminToken, multerParser_1.upload.single('file'), employersController.uploadFile);
 /* add new video into library */
 adminRoute.post("/addVideo", tokenValidator.validateAdminToken, employersController.addVideo);
+/* edit library management */
+adminRoute.put("/editVideo", tokenValidator.validateAdminToken, employersController.editVideo);
+/* list library management */
+adminRoute.get("/listVideo", tokenValidator.validateAdminToken, employersController.listVideo);
+/* library management details */
+adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersController.detailsVideo);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

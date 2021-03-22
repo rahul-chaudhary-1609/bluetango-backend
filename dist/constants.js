@@ -98,7 +98,10 @@ exports.MESSAGES = {
     subAdmin_added: "Sub admin added successfully",
     subAdmin_updated: "Sub admin updated successfully",
     invalid_subAdmin: "Invalid sub admin",
-    library_video_added: "Library video added"
+    library_video_added: "Library video added",
+    invalid_library: "invalid library",
+    library_video_updated: "Library video updated",
+    library_video_fetched: "Library video fetched"
 };
 exports.code = {
     error_code: 400
