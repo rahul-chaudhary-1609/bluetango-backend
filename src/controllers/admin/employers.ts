@@ -1,6 +1,7 @@
 import { EmployersService } from "../../services/admin/employersService";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
+import { deleteFile } from "../../middleware/multerParser";
 const json2csv = require('json2csv').parse;
 
 
@@ -489,6 +490,41 @@ export class EmployersController {
             const subAdmin: any = await employersService.subAdminDetails(req.query);
             if (subAdmin) {
                 return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * update profile
+    * @param req :[]
+    * @param res 
+    */
+    public async uploadFile(req: any, res: any, next: any) {
+        try {
+            let folderName = "admin_video_files"
+            const responseFromService = await employersService.uploadFile(req.file, folderName);
+            await deleteFile(req.file.filename);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+  * add new video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    public async addVideo(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const libraryVideo: any = await employersService.addVideo(req.body);
+            if (libraryVideo) {
+                return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_added);
             } else {
                 appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
             }
