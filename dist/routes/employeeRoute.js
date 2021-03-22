@@ -30,11 +30,13 @@ const multerParser_1 = require("../middleware/multerParser");
 const authController_1 = require("../controllers/employee/authController");
 const employeeController_1 = require("../controllers/employee/employeeController");
 const goalController_1 = require("../controllers/employee/goalController");
+const chatController_1 = require("../controllers/employee/chatController");
 const qualitativeMeasurementController_1 = require("../controllers/employee/qualitativeMeasurementController");
 const employeeRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 const employeeController = new employeeController_1.EmployeeController();
 const goalController = new goalController_1.GoalController();
+const chatController = new chatController_1.ChatController();
 const qualitativeMeasurementController = new qualitativeMeasurementController_1.QualitativeMeasurementController();
 // auth API
 /* login route for employee login */
@@ -95,5 +97,10 @@ employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValida
 employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
+// Chat routes
+/* get chat for employee */
+employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopUpListAsEmployee);
+/* get chat room id */
+employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getChatRoomId), chatController.getChatRoomId);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map
