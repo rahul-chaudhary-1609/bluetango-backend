@@ -43,6 +43,7 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const connection_1 = require("../../connection");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const libraryManagement_1 = require("../../models/libraryManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -959,6 +960,23 @@ class EmployersService {
             else {
                 throw new Error(constants.MESSAGES.subAdmin_not_found);
             }
+        });
+    }
+    /*
+   * function to upload file
+   */
+    uploadFile(params, folderName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.uploadFile(params, folderName);
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    addVideo(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield libraryManagement_1.libraryManagementModel.create(params);
         });
     }
 }

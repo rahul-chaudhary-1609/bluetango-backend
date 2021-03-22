@@ -7,6 +7,7 @@ import * as AdminController from "../controllers/admin/index";
 import * as multer from '../middleware/multerParser';
 import * as validators from "../middleware/validators";
 import * as helperFunction from "../utils/helperFunction";
+import { upload } from "../middleware/multerParser"
 
 const adminRoute = express.Router();
 
@@ -118,5 +119,11 @@ adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employ
 
 /* change subscription plan status activate/deactivate/delete */
 adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, employersController.changeSubsPlanStatus);
+
+/* upload media files */
+adminRoute.post("/uploadFile", tokenValidator.validateAdminToken, upload.single('file'), employersController.uploadFile);
+
+/* add new video into library */
+adminRoute.post("/addVideo", tokenValidator.validateAdminToken, employersController.addVideo);
 
 export = adminRoute;

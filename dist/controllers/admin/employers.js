@@ -32,6 +32,7 @@ exports.EmployersController = void 0;
 const employersService_1 = require("../../services/admin/employersService");
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
+const multerParser_1 = require("../../middleware/multerParser");
 const json2csv = require('json2csv').parse;
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
@@ -578,6 +579,46 @@ class EmployersController {
                 const subAdmin = yield employersService.subAdminDetails(req.query);
                 if (subAdmin) {
                     return appUtils.successResponse(res, subAdmin, constants.MESSAGES.subAdmin_details_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * update profile
+    * @param req :[]
+    * @param res
+    */
+    uploadFile(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let folderName = "admin_video_files";
+                const responseFromService = yield employersService.uploadFile(req.file, folderName);
+                yield multerParser_1.deleteFile(req.file.filename);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+  * add new video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    addVideo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const libraryVideo = yield employersService.addVideo(req.body);
+                if (libraryVideo) {
+                    return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_added);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);

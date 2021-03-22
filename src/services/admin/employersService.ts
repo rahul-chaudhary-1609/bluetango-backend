@@ -13,6 +13,7 @@ import { employeeTokenResponse } from "../../utils/tokenResponse";
 import { sequelize } from "../../connection";
 import { now } from "sequelize/types/lib/utils";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { libraryManagementModel } from "../../models/libraryManagement"
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -977,6 +978,23 @@ export class EmployersService {
         } else {
             throw new Error(constants.MESSAGES.subAdmin_not_found)
         }
+
+    }
+
+    /*
+   * function to upload file 
+   */
+    public async uploadFile(params: any, folderName) {
+        return await helperFunction.uploadFile(params, folderName);
+    }
+
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async addVideo(params: any) {
+
+        return await libraryManagementModel.create(params)
 
     }
 

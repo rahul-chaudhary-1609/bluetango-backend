@@ -27,6 +27,7 @@ const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidat
 const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const AdminController = __importStar(require("../controllers/admin/index"));
 const validators = __importStar(require("../middleware/validators"));
+const multerParser_1 = require("../middleware/multerParser");
 const adminRoute = express_1.default.Router();
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
@@ -100,5 +101,9 @@ adminRoute.get("/getDepartmentList", tokenValidator.validateAdminToken, employer
 adminRoute.get("/subscriptionDetails", tokenValidator.validateAdminToken, employersController.subscriptionDetails);
 /* change subscription plan status activate/deactivate/delete */
 adminRoute.put("/changeSubsPlanStatus", tokenValidator.validateAdminToken, employersController.changeSubsPlanStatus);
+/* upload media files */
+adminRoute.post("/uploadFile", tokenValidator.validateAdminToken, multerParser_1.upload.single('file'), employersController.uploadFile);
+/* add new video into library */
+adminRoute.post("/addVideo", tokenValidator.validateAdminToken, employersController.addVideo);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map
