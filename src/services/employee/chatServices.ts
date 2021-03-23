@@ -6,6 +6,7 @@ import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { chatRealtionMappingInRoomModel } from  "../../models/chatRelationMappingInRoom";
 import { qualitativeMeasurementCommentModel } from "../../models/qualitativeMeasurementComment";
+import { employeeModel } from "../../models/employee";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -58,17 +59,46 @@ export class ChatServices {
             }
         });
 
-        if (chatRoomData) {
-            return chatRoomData;
-        } else {
-            let chatRoomObj = <any> {
+        // if (chatRoomData) {
+        //     return chatRoomData;
+        // } else {
+        //     let chatRoomObj = <any> {
+        //         user_id: user.uid,
+        //         other_user_id: params.other_user_id,
+        //         room_id: await helperFunction.randomStringEightDigit()
+        //     }
+
+        //     return await chatRealtionMappingInRoomModel.create(chatRoomObj);
+        // }
+
+        if (!chatRoomData) {
+            let chatRoomObj = <any>{
                 user_id: user.uid,
                 other_user_id: params.other_user_id,
                 room_id: await helperFunction.randomStringEightDigit()
             }
-
-            return await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
         }
+
+        let users = await employeeModel.findAll({
+            attributes: ['id','profile_pic_url'],
+            where: {
+                id: [user.uid, params.other_user_id]
+            }
+        });
+
+        chatRoomData = <any>{
+            id: chatRoomData.id,
+            user: users.find((val: any) => val.id == user.uid),
+            other_user: users.find((val: any) => val.id == params.other_user_id),
+            room_id: chatRoomData.room_id,
+            status: chatRoomData.status,
+            createdAt: chatRoomData.createdAt,
+            updatedAt: chatRoomData.updatedAt
+            
+        }
+
+        return chatRoomData;
         
     }
 

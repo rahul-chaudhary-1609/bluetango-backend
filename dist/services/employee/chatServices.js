@@ -34,6 +34,7 @@ const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
+const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class ChatServices {
@@ -80,17 +81,40 @@ class ChatServices {
                     ]
                 }
             });
-            if (chatRoomData) {
-                return chatRoomData;
-            }
-            else {
+            // if (chatRoomData) {
+            //     return chatRoomData;
+            // } else {
+            //     let chatRoomObj = <any> {
+            //         user_id: user.uid,
+            //         other_user_id: params.other_user_id,
+            //         room_id: await helperFunction.randomStringEightDigit()
+            //     }
+            //     return await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            // }
+            if (!chatRoomData) {
                 let chatRoomObj = {
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
                     room_id: yield helperFunction.randomStringEightDigit()
                 };
-                return yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
+                chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
+            let users = yield employee_1.employeeModel.findAll({
+                attributes: ['id', 'profile_pic_url'],
+                where: {
+                    id: [user.uid, params.other_user_id]
+                }
+            });
+            chatRoomData = {
+                id: chatRoomData.id,
+                user: users.find((val) => val.id == user.uid),
+                other_user: users.find((val) => val.id == params.other_user_id),
+                room_id: chatRoomData.room_id,
+                status: chatRoomData.status,
+                createdAt: chatRoomData.createdAt,
+                updatedAt: chatRoomData.updatedAt
+            };
+            return chatRoomData;
         });
     }
 }
