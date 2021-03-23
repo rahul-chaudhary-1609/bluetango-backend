@@ -111,5 +111,13 @@ adminRoute.put("/editVideo", tokenValidator.validateAdminToken, employersControl
 adminRoute.get("/listVideo", tokenValidator.validateAdminToken, employersController.listVideo);
 /* library management details */
 adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersController.detailsVideo);
+/* add new video into library */
+adminRoute.post("/addArticle", tokenValidator.validateAdminToken, employersController.addArticle);
+/* edit library management */
+adminRoute.put("/editArticle", tokenValidator.validateAdminToken, employersController.editArticle);
+/* list library management */
+adminRoute.get("/listArticle", tokenValidator.validateAdminToken, employersController.listArticle);
+/* library management details */
+adminRoute.get("/detailsArticle", tokenValidator.validateAdminToken, employersController.detailsArticle);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

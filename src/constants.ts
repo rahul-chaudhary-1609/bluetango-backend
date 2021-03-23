@@ -98,7 +98,12 @@ export const MESSAGES = {
   library_video_added: "Library video added",
   invalid_library: "invalid library",
   library_video_updated: "Library video updated",
-  library_video_fetched: "Library video fetched"
+  library_video_fetched: "Library video fetched",
+  article_added: "Aricle added",
+  article_updated: "Article updated",
+  article_fetched: "Article fetched",
+  article_details_fetched: "Article details fetched",
+  invalid_article: "Invalid article"
 }
 
 export const code = {
