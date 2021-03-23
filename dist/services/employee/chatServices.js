@@ -34,6 +34,7 @@ const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
+const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class ChatServices {
@@ -61,7 +62,7 @@ class ChatServices {
             let formatEmployeeGoalData = employeeGoalData.map((val) => {
                 return {
                     id: val.id,
-                    title: val.team_goal.title,
+                    name: val.team_goal.title,
                 };
             });
             return formatEmployeeGoalData.concat(getQuantitativeData);
@@ -80,17 +81,76 @@ class ChatServices {
                     ]
                 }
             });
-            if (chatRoomData) {
-                return chatRoomData;
-            }
-            else {
+            // if (chatRoomData) {
+            //     return chatRoomData;
+            // } else {
+            //     let chatRoomObj = <any> {
+            //         user_id: user.uid,
+            //         other_user_id: params.other_user_id,
+            //         room_id: await helperFunction.randomStringEightDigit()
+            //     }
+            //     return await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            // }
+            if (!chatRoomData) {
                 let chatRoomObj = {
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
                     room_id: yield helperFunction.randomStringEightDigit()
                 };
-                return yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
+                chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
+            let users = yield employee_1.employeeModel.findAll({
+                attributes: ['id', 'profile_pic_url'],
+                where: {
+                    id: [user.uid, params.other_user_id]
+                }
+            });
+            chatRoomData = {
+                id: chatRoomData.id,
+                user: users.find((val) => val.id == user.uid),
+                other_user: users.find((val) => val.id == params.other_user_id),
+                room_id: chatRoomData.room_id,
+                status: chatRoomData.status,
+                createdAt: chatRoomData.createdAt,
+                updatedAt: chatRoomData.updatedAt
+            };
+            return chatRoomData;
+        });
+    }
+    /*
+    * function to get chat  list
+    */
+    getChatList(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
+                where: {
+                    [Op.or]: [
+                        { user_id: user.uid },
+                        { other_user_id: user.uid }
+                    ]
+                }
+            });
+            let chats = [];
+            for (let chat of chatRoomData) {
+                let id = chat.other_user_id;
+                if (chat.other_user_id == user.uid)
+                    id = chat.user_id;
+                let employee = yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url'],
+                    where: {
+                        id
+                    }
+                });
+                chats.push({
+                    id: chat.id,
+                    room_id: chat.room_id,
+                    user: employee,
+                    status: chat.status,
+                    createdAt: chat.createdAt,
+                    updatedAt: chat.updatedAt
+                });
+            }
+            return chats;
         });
     }
 }

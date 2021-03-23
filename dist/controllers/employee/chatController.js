@@ -68,6 +68,22 @@ class ChatController {
             }
         });
     }
+    /**
+    * get chat list
+    * @param req :[]
+    * @param res
+    */
+    getChatList(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getChatList(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.ChatController = ChatController;
 //# sourceMappingURL=chatController.js.map

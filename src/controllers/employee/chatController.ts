@@ -37,5 +37,19 @@ export class ChatController {
             next(e)
         }
     }
+
+    /**
+    * get chat list
+    * @param req :[]
+    * @param res 
+    */
+    public async getChatList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getChatList(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }
