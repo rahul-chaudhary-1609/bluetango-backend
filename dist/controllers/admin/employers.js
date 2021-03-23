@@ -629,6 +629,72 @@ class EmployersController {
             }
         });
     }
+    /**
+  * edit video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    editVideo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const libraryVideo = yield employersService.editVideo(req.body);
+                if (libraryVideo) {
+                    return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * list library video
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    listVideo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const libraryVideo = yield employersService.listVideo(req.query);
+                if (libraryVideo) {
+                    return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * list library video
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    detailsVideo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const libraryVideo = yield employersService.detailsVideo(req.query);
+                if (libraryVideo) {
+                    return appUtils.successResponse(res, libraryVideo, constants.MESSAGES.library_video_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map
