@@ -34,7 +34,14 @@ export class ChatServices {
 
         let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll();
 
-         return employeeGoalData.concat(getQuantitativeData);
+        let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
+            return {
+                id: val.id,
+                title:val.team_goal.title,
+            }
+        })
+
+        return formatEmployeeGoalData.concat(getQuantitativeData);
     }
 
     /*
