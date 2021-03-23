@@ -38,7 +38,7 @@ export class ChatServices {
         let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
             return {
                 id: val.id,
-                title:val.team_goal.title,
+                name:val.team_goal.title,
             }
         })
 
@@ -102,6 +102,45 @@ export class ChatServices {
         
     }
 
+    /*
+    * function to get chat  list
+    */
+    public async getChatList(user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.findAll({
+            where: {
+                [Op.or]: [
+                    {  user_id: user.uid },
+                    { other_user_id: user.uid }
+                ]
+            }
+        });
+
+        let chats = [];
+
+        for (let chat of chatRoomData) {
+            let id = chat.other_user_id;
+            if (chat.other_user_id == user.uid) id = chat.user_id;
+            let employee = await employeeModel.findOne({
+                attributes: ['id','name','profile_pic_url'],
+                where: {
+                    id
+                }
+            });
+
+            chats.push({
+                id:chat.id,
+                room_id: chat.room_id,
+                user: employee,
+                status: chat.status,
+                createdAt: chat.createdAt,
+                updatedAt: chat.updatedAt
+            })
+
+        }
+
+        return chats;
+    }
 
 
 }

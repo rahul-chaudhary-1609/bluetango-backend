@@ -62,7 +62,7 @@ class ChatServices {
             let formatEmployeeGoalData = employeeGoalData.map((val) => {
                 return {
                     id: val.id,
-                    title: val.team_goal.title,
+                    name: val.team_goal.title,
                 };
             });
             return formatEmployeeGoalData.concat(getQuantitativeData);
@@ -115,6 +115,42 @@ class ChatServices {
                 updatedAt: chatRoomData.updatedAt
             };
             return chatRoomData;
+        });
+    }
+    /*
+    * function to get chat  list
+    */
+    getChatList(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
+                where: {
+                    [Op.or]: [
+                        { user_id: user.uid },
+                        { other_user_id: user.uid }
+                    ]
+                }
+            });
+            let chats = [];
+            for (let chat of chatRoomData) {
+                let id = chat.other_user_id;
+                if (chat.other_user_id == user.uid)
+                    id = chat.user_id;
+                let employee = yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url'],
+                    where: {
+                        id
+                    }
+                });
+                chats.push({
+                    id: chat.id,
+                    room_id: chat.room_id,
+                    user: employee,
+                    status: chat.status,
+                    createdAt: chat.createdAt,
+                    updatedAt: chat.updatedAt
+                });
+            }
+            return chats;
         });
     }
 }
