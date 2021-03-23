@@ -58,7 +58,13 @@ class ChatServices {
                 ]
             });
             let getQuantitativeData = yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll();
-            return employeeGoalData.concat(getQuantitativeData);
+            let formatEmployeeGoalData = employeeGoalData.map((val) => {
+                return {
+                    id: val.id,
+                    title: val.team_goal.title,
+                };
+            });
+            return formatEmployeeGoalData.concat(getQuantitativeData);
         });
     }
     /*
