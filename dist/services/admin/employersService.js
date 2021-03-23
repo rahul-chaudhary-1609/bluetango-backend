@@ -44,6 +44,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const connection_1 = require("../../connection");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
+const articleManagement_1 = require("../../models/articleManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -1003,7 +1004,6 @@ class EmployersService {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             return yield libraryManagement_1.libraryManagementModel.findAndCountAll({
                 where: { status: 1 },
-                attributes: ["id", "video"],
                 limit: limit,
                 offset: offset,
                 order: [["id", "DESC"]]
@@ -1019,9 +1019,74 @@ class EmployersService {
             let where = {};
             where.id = params.id;
             where.status = 1;
-            return yield libraryManagement_1.libraryManagementModel.findOne({
+            const library = yield libraryManagement_1.libraryManagementModel.findOne({
                 where: where
             });
+            if (library) {
+                return library;
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_library);
+            }
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    addArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield articleManagement_1.articleManagementModel.create(params);
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    editArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const article = yield articleManagement_1.articleManagementModel.update(params, { where: { id: params.id }, returning: true });
+            if (article && article[1][0]) {
+                return article[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_article);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    listArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            return yield articleManagement_1.articleManagementModel.findAndCountAll({
+                where: { status: 1 },
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    detailsArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            where.status = 1;
+            const article = yield articleManagement_1.articleManagementModel.findOne({
+                where: where
+            });
+            if (article) {
+                return article;
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_article);
+            }
         });
     }
 }
