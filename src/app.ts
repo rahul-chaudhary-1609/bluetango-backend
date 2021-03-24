@@ -8,7 +8,7 @@ import swaggerUi from "swagger-ui-express";   // import swagger package for docu
 import swaggerDocument from "./swagger.json";
 import cors from 'cors';
 //import json2csv from 'json2csv';
-const json2csv = require('json2csv');
+//const json2csv = require('json2csv');
 
 app.use(bodyParser.urlencoded(
     {
@@ -56,16 +56,16 @@ app.use(cors());
 // app.options('*', cors(options));
 
 // //create custom headers to solve cors isssue 
-// const customHeaders = (req, res, next) => {
-//     // OR set your own header here
-//     res.header("Accept", "application/json, text/plain,*/*");
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Contenttype Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
+const customHeaders = (req, res, next) => {
+    // OR set your own header here
+    res.header("Accept", "application/json, text/plain,*/*");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Contenttype Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
 
-//     next();
-// }
-// app.use(customHeaders);
+    next();
+}
+app.use(customHeaders);
 
 /**
  * [req] :type of request
