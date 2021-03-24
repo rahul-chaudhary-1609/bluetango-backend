@@ -590,5 +590,81 @@ export class EmployersController {
         }
     }
 
+     /**
+  * add new video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+ public async addArticle(req: any, res: any) {
+    try {
+        req.body.admin_id = req.user.uid;
+        const article: any = await employersService.addArticle(req.body);
+        if (article) {
+            return appUtils.successResponse(res, article, constants.MESSAGES.article_added);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
+/**
+* edit video into library
+* @param req :[body data]
+* @param res : [library data object]
+*/
+public async editArticle(req: any, res: any) {
+    try {
+        req.body.admin_id = req.user.uid;
+        const article: any = await employersService.editArticle(req.body);
+        if (article) {
+            return appUtils.successResponse(res, article, constants.MESSAGES.article_updated);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
+/**
+* list library video
+* @param req :[body data]
+* @param res : [library data object]
+*/
+public async listArticle(req: any, res: any) {
+    try {
+        req.query.admin_id = req.user.uid;
+        const article: any = await employersService.listArticle(req.query);
+        if (article) {
+            return appUtils.successResponse(res, article, constants.MESSAGES.article_fetched);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
+/**
+* list library video
+* @param req :[body data]
+* @param res : [library data object]
+*/
+public async detailsArticle(req: any, res: any) {
+    try {
+        req.query.admin_id = req.user.uid;
+        const article: any = await employersService.detailsArticle(req.query);
+        if (article) {
+            return appUtils.successResponse(res, article, constants.MESSAGES.article_details_fetched);
+        } else {
+            appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+        }
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
+
 
 }

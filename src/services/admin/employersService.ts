@@ -13,7 +13,8 @@ import { employeeTokenResponse } from "../../utils/tokenResponse";
 import { sequelize } from "../../connection";
 import { now } from "sequelize/types/lib/utils";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
-import { libraryManagementModel } from "../../models/libraryManagement"
+import { libraryManagementModel } from "../../models/libraryManagement";
+import { articleManagementModel } from "../../models/articleManagement";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -1022,7 +1023,6 @@ export class EmployersService {
 
         return await libraryManagementModel.findAndCountAll({
             where: { status: 1 },
-            attributes: ["id", "video"],
             limit: limit,
             offset: offset,
             order: [["id", "DESC"]]
@@ -1039,10 +1039,76 @@ export class EmployersService {
         let where:any = {}
         where.id = params.id
         where.status = 1
-        return await libraryManagementModel.findOne({
+        const library = await libraryManagementModel.findOne({
             where: where
         })
+        if(library) {
+            return library
+        }else {
+            throw new Error(constants.MESSAGES.invalid_library)
+        }
 
     }
+
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+ public async addArticle(params: any) {
+
+    return await articleManagementModel.create(params)
+
+}
+
+/**
+* 
+* @param {} params pass all parameters from request
+*/
+public async editArticle(params: any) {
+
+    const article = await articleManagementModel.update(params, { where: { id: params.id }, returning: true })
+    if (article && article[1][0]) {
+        return article[1][0]
+    } else {
+        throw new Error(constants.MESSAGES.invalid_article)
+    }
+
+}
+
+/**
+* 
+* @param {} params pass all parameters from request
+*/
+public async listArticle(params: any) {
+    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+    return await articleManagementModel.findAndCountAll({
+        where: { status: 1 },
+        limit: limit,
+        offset: offset,
+        order: [["id", "DESC"]]
+    })
+
+}
+
+/**
+* 
+* @param {} params pass all parameters from request
+*/
+public async detailsArticle(params: any) {
+
+    let where:any = {}
+    where.id = params.id
+    where.status = 1
+    const article = await articleManagementModel.findOne({
+        where: where
+    })
+    if(article) {
+        return article
+    }else {
+        throw new Error(constants.MESSAGES.invalid_article)
+    }
+
+}
 
 }
