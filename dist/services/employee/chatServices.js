@@ -29,6 +29,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatServices = void 0;
+const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
@@ -74,6 +75,9 @@ class ChatServices {
     */
     getChatRoomId(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (user.uid == params.other_user_id) {
+                throw new Error(constants.MESSAGES.self_chat);
+            }
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
                 where: {
                     [Op.or]: [

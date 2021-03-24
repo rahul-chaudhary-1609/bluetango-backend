@@ -49,7 +49,11 @@ export class ChatServices {
     /*
     * function to get chat room id
     */
-    public async getChatRoomId( params: any, user: any) {
+    public async getChatRoomId(params: any, user: any) {
+        
+        if (user.uid == params.other_user_id) {
+            throw new Error(constants.MESSAGES.self_chat);
+        }
 
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
