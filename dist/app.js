@@ -32,7 +32,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express")); // 
 const swagger_json_1 = __importDefault(require("./swagger.json"));
 const cors_1 = __importDefault(require("cors"));
 //import json2csv from 'json2csv';
-const json2csv = require('json2csv');
+//const json2csv = require('json2csv');
 app.use(body_parser_1.default.urlencoded({
     extended: false,
     limit: "50mb",
@@ -69,15 +69,15 @@ app.use(cors_1.default());
 // //enable pre-flight
 // app.options('*', cors(options));
 // //create custom headers to solve cors isssue 
-// const customHeaders = (req, res, next) => {
-//     // OR set your own header here
-//     res.header("Accept", "application/json, text/plain,*/*");
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Contenttype Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
-//     next();
-// }
-// app.use(customHeaders);
+const customHeaders = (req, res, next) => {
+    // OR set your own header here
+    res.header("Accept", "application/json, text/plain,*/*");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Contenttype Accept,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,accesstoken,lang,authorization");
+    next();
+};
+app.use(customHeaders);
 /**
  * [req] :type of request
  * [res] :type of response
