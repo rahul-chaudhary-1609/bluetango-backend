@@ -56,18 +56,19 @@ class ChatServices {
                     {
                         model: teamGoal_1.teamGoalModel,
                         required: false,
-                        attributes: ['title']
+                        attributes: ['id', 'title']
                     }
                 ]
             });
             let getQuantitativeData = yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll();
-            let formatEmployeeGoalData = employeeGoalData.map((val) => {
-                return {
-                    id: val.id,
-                    label: val.team_goal.title,
-                };
-            });
-            return formatEmployeeGoalData.concat(getQuantitativeData);
+            // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
+            //     console.log("val",val)
+            //     return {
+            //         id: val.id,
+            //         label:val.team_goal,
+            //     }
+            // })
+            return employeeGoalData.concat(getQuantitativeData);
         });
     }
     /*

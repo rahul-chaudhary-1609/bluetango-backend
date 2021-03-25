@@ -29,21 +29,22 @@ export class ChatServices {
                 {
                     model: teamGoalModel,
                     required: false,
-                    attributes: ['title']
+                    attributes: ['id','title']
                 }
             ]
         });
 
         let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll();
 
-        let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
-            return {
-                id: val.id,
-                label:val.team_goal.title,
-            }
-        })
+        // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
+        //     console.log("val",val)
+        //     return {
+        //         id: val.id,
+        //         label:val.team_goal,
+        //     }
+        // })
 
-        return formatEmployeeGoalData.concat(getQuantitativeData);
+        return employeeGoalData.concat(getQuantitativeData);
     }
 
     /*
