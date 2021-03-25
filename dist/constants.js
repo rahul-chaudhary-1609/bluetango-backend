@@ -108,9 +108,11 @@ exports.MESSAGES = {
     article_details_fetched: "Article details fetched",
     invalid_article: "Invalid article",
     self_chat: "You can not chat with yourself",
-    only_manager_chat: "You can initiate chat with your manager only",
-    chat_room_notFound: "chat room not found",
-    video_chat_session_create_error: "Error in video chat session creation"
+    advisor_added: "Advisor added",
+    advisor_fetched: "Advisor list fetched",
+    advisor_updated: "Advisor updated",
+    invalid_advisor: "Invalid advisor",
+    only_manager_chat: "You can chat with your manager only"
 };
 exports.code = {
     error_code: 400
