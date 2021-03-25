@@ -65,7 +65,7 @@ const options = {
     origin: "*",
 };
 //use cors middleware
-app.use(cors_1.default());
+app.use(cors_1.default(options));
 // //enable pre-flight
 // app.options('*', cors(options));
 // //create custom headers to solve cors isssue 
