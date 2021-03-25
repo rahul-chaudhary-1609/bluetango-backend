@@ -7,6 +7,7 @@ import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { chatRealtionMappingInRoomModel } from  "../../models/chatRelationMappingInRoom";
 import { qualitativeMeasurementCommentModel } from "../../models/qualitativeMeasurementComment";
 import { employeeModel } from "../../models/employee";
+import { managerTeamMemberModel } from "../../models/managerTeamMember";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -28,27 +29,32 @@ export class ChatServices {
                 {
                     model: teamGoalModel,
                     required: false,
-                    attributes: ['title']
+                    attributes: ['id','title']
                 }
             ]
         });
 
         let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll();
 
-        let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
-            return {
-                id: val.id,
-                name:val.team_goal.title,
-            }
-        })
+        // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
+        //     console.log("val",val)
+        //     return {
+        //         id: val.id,
+        //         label:val.team_goal,
+        //     }
+        // })
 
-        return formatEmployeeGoalData.concat(getQuantitativeData);
+        return employeeGoalData.concat(getQuantitativeData);
     }
 
     /*
     * function to get chat room id
     */
-    public async getChatRoomId( params: any, user: any) {
+    public async getChatRoomId(params: any, user: any) {
+        
+        if (user.uid == params.other_user_id) {
+            throw new Error(constants.MESSAGES.self_chat);
+        }
 
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
@@ -119,23 +125,75 @@ export class ChatServices {
         let chats = [];
 
         for (let chat of chatRoomData) {
+            let is_disabled = false;
             let id = chat.other_user_id;
             if (chat.other_user_id == user.uid) id = chat.user_id;
             let employee = await employeeModel.findOne({
-                attributes: ['id','name','profile_pic_url'],
+                attributes: ['id','name','profile_pic_url','is_manager'],
                 where: {
                     id
                 }
             });
 
-            chats.push({
-                id:chat.id,
-                room_id: chat.room_id,
-                user: employee,
-                status: chat.status,
-                createdAt: chat.createdAt,
-                updatedAt: chat.updatedAt
-            })
+            let currentUser = await employeeModel.findOne({
+                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                where: {
+                    id:user.uid
+                }
+            });
+
+            if (currentUser.is_manager) {
+
+                let managerTeamMember_manager = await managerTeamMemberModel.findOne({
+                    where: {
+                        team_member_id: user.uid
+                    }
+                });
+
+                let managerTeamMember_employee = await managerTeamMemberModel.findAll({
+                    where: {
+                        manager_id: user.uid
+                    }
+                });
+
+                let employee_ids = managerTeamMember_employee.map((val: any) => {
+                    return val.team_member_id
+                })
+
+                if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
+
+                chats.push({
+                    id: chat.id,
+                    room_id: chat.room_id,
+                    user: employee,
+                    status: chat.status,
+                    is_disabled,
+                    createdAt: chat.createdAt,
+                    updatedAt: chat.updatedAt
+                })
+            }
+            else {
+
+                let managerTeamMember = await managerTeamMemberModel.findOne({
+                    where: {
+                        team_member_id:user.uid
+                    }
+                });
+
+                
+
+                if (employee.id!==managerTeamMember.manager_id) is_disabled=true;
+
+                chats.push({
+                    id: chat.id,
+                    room_id: chat.room_id,
+                    user: employee,
+                    status: chat.status,
+                    is_disabled,
+                    createdAt: chat.createdAt,
+                    updatedAt: chat.updatedAt
+                })
+            }
 
         }
 

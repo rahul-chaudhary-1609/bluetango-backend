@@ -106,7 +106,8 @@ exports.MESSAGES = {
     article_updated: "Article updated",
     article_fetched: "Article fetched",
     article_details_fetched: "Article details fetched",
-    invalid_article: "Invalid article"
+    invalid_article: "Invalid article",
+    self_chat: "You can not chat with yourself"
 };
 exports.code = {
     error_code: 400
