@@ -38,3 +38,14 @@ export const validateQueryParams = (schema) => {
     return next();
   }
 }
+
+/* function for validating the request params */
+export const validateParams = (schema) => {
+  return (req, res, next) => {
+    const error = validateObjectSchema(req.params, schema);
+    if (error) {
+      return errorResponse(res, error, constants.code.error_code, error[0].message.split('"').join(""))
+    }
+    return next();
+  }
+}

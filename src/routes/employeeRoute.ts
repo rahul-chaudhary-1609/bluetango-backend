@@ -122,4 +122,7 @@ employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateE
 /* get chat list */
 employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
 
+/* get video chat session id and token list */
+employeeRoute.get("/getVideoChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getVideoChatSessionIdandToken),chatController.getVideoChatSessionIdandToken);
+
 export = employeeRoute;

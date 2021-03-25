@@ -84,6 +84,22 @@ class ChatController {
             }
         });
     }
+    /**
+    * get video chat session id and token list
+    * @param req :[]
+    * @param res
+    */
+    getVideoChatSessionIdandToken(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getVideoChatSessionIdandToken(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.ChatController = ChatController;
 //# sourceMappingURL=chatController.js.map

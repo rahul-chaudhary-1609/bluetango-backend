@@ -51,5 +51,19 @@ export class ChatController {
             next(e)
         }
     }
+
+    /**
+    * get video chat session id and token list
+    * @param req :[]
+    * @param res 
+    */
+    public async getVideoChatSessionIdandToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getVideoChatSessionIdandToken(req.params,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }

@@ -38,6 +38,7 @@ const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasure
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const Sequelize = require('sequelize');
+const OpenTok = require("opentok");
 var Op = Sequelize.Op;
 class ChatServices {
     constructor() { }
@@ -207,6 +208,46 @@ class ChatServices {
                 }
             }
             return chats;
+        });
+    }
+    /*
+   * function to get video chat session id and token
+   */
+    getVideoChatSessionIdandToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+            opentok.createSession((err, session) => __awaiter(this, void 0, void 0, function* () {
+                if (err)
+                    throw new Error(constants.MESSAGES.video_chat_session_create_error);
+                // save the sessionId
+                yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                    video_chat_session_id: session.sessionId
+                }, {
+                    where: {
+                        room_id: params.chat_room_id,
+                    },
+                    returning: true,
+                });
+            }));
+            chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
+                role: "moderator",
+                expireTime: new Date().getTime() / 1000 + 60 * 60,
+                data: `userId=${user.uid}`,
+                initialLayoutClassList: ["focus"],
+            });
+            return { sessionId: chatRoomData.video_chat_session_id, token };
         });
     }
 }
