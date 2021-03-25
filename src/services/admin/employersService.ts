@@ -8,13 +8,14 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import { where, Model } from "sequelize/types";
-import { AnyAaaaRecord } from "dns";
+import { AnyAaaaRecord, AnyPtrRecord } from "dns";
 import { employeeTokenResponse } from "../../utils/tokenResponse";
 import { sequelize } from "../../connection";
 import { now } from "sequelize/types/lib/utils";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { articleManagementModel } from "../../models/articleManagement";
+import { advisorManagementModel } from "../../models/advisorManagement"
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -1036,15 +1037,15 @@ export class EmployersService {
  */
     public async detailsVideo(params: any) {
 
-        let where:any = {}
+        let where: any = {}
         where.id = params.id
         where.status = 1
         const library = await libraryManagementModel.findOne({
             where: where
         })
-        if(library) {
+        if (library) {
             return library
-        }else {
+        } else {
             throw new Error(constants.MESSAGES.invalid_library)
         }
 
@@ -1054,59 +1055,109 @@ export class EmployersService {
   * 
   * @param {} params pass all parameters from request
   */
- public async addArticle(params: any) {
+    public async addArticle(params: any) {
 
-    return await articleManagementModel.create(params)
+        return await articleManagementModel.create(params)
 
-}
+    }
 
-/**
-* 
-* @param {} params pass all parameters from request
-*/
-public async editArticle(params: any) {
-
-    const article = await articleManagementModel.update(params, { where: { id: params.id }, returning: true })
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async editArticle(params: any) {
+        
+    let ids = JSON.parse(params.id)
+    let update:any = {}
+    update.status = 2
+    let where:any = {}
+    where.id = params.id
+    const article = await articleManagementModel.update({ status : 2 },{ where : { id : ids }, returning: true}); 
     if (article && article[1][0]) {
-        return article[1][0]
+        return article[1]
     } else {
         throw new Error(constants.MESSAGES.invalid_article)
     }
 
-}
+    }
 
-/**
-* 
-* @param {} params pass all parameters from request
-*/
-public async listArticle(params: any) {
-    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async listArticle(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
-    return await articleManagementModel.findAndCountAll({
-        where: { status: 1 },
-        limit: limit,
-        offset: offset,
-        order: [["id", "DESC"]]
-    })
+        return await articleManagementModel.findAndCountAll({
+            where: { status: 1 },
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        })
 
-}
+    }
 
-/**
-* 
-* @param {} params pass all parameters from request
-*/
-public async detailsArticle(params: any) {
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async detailsArticle(params: any) {
 
+        let where: any = {}
+        where.id = params.id
+        where.status = 1
+        const article = await articleManagementModel.findOne({
+            where: where
+        })
+        if (article) {
+            return article
+        } else {
+            throw new Error(constants.MESSAGES.invalid_article)
+        }
+
+    }
+
+    /**
+  * 
+  * @param {} params pass all parameters from request
+  */
+    public async addAdvisor(params: any) {
+
+        return await advisorManagementModel.create(params)
+
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async listAdvisor(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        return await advisorManagementModel.findAndCountAll({
+            where: { status: 1 },
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        })
+
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+   public async deleteAdvisor(params: any) {
+    let ids = JSON.parse(params.id)
+    let update:any = {}
+    update.status = 2
     let where:any = {}
-    where.id = params.id
-    where.status = 1
-    const article = await articleManagementModel.findOne({
-        where: where
-    })
-    if(article) {
-        return article
-    }else {
-        throw new Error(constants.MESSAGES.invalid_article)
+    where.id = {[Op.in]: params.id}
+    const advisor = await advisorManagementModel.update({ status : 2 },{ where : { id : ids }, returning: true});
+    if (advisor && advisor[1][0]) {
+        return advisor[1]
+    } else {
+        throw new Error(constants.MESSAGES.invalid_advisor)
     }
 
 }

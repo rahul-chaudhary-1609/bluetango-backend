@@ -783,6 +783,72 @@ class EmployersController {
             }
         });
     }
+    /**
+  * add new video into library
+  * @param req :[body data]
+  * @param res : [library data object]
+  */
+    addAdvisor(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const advisor = yield employersService.addAdvisor(req.body);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_added);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * list library video
+    * @param req :[body data]
+    * @param res : [library data object]
+    */
+    listAdvisor(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const advisor = yield employersService.listAdvisor(req.query);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_fetched);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+   * edit video into library
+   * @param req :[body data]
+   * @param res : [library data object]
+   */
+    deleteAdvisor(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const article = yield employersService.deleteAdvisor(req.body);
+                if (article) {
+                    return appUtils.successResponse(res, article, constants.MESSAGES.advisor_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map
