@@ -33,21 +33,6 @@ const swagger_json_1 = __importDefault(require("./swagger.json"));
 const cors_1 = __importDefault(require("cors"));
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
-app.use(body_parser_1.default.urlencoded({
-    extended: false,
-    limit: "50mb",
-}));
-app.use(body_parser_1.default.json({ limit: "50mb" }));
-//app.use(json2csv.middleware)
-// //options for cors midddleware
-// const options: cors.CorsOptions = {
-//     "origin": "*",
-//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     "preflightContinue": false,
-//     "optionsSuccessStatus": 204
-//   };
-// //use cors middleware
-// app.use(cors(options));
 //options for cors midddleware
 const options = {
     allowedHeaders: [
@@ -66,6 +51,21 @@ const options = {
 };
 //use cors middleware
 app.use(cors_1.default(options));
+app.use(body_parser_1.default.urlencoded({
+    extended: false,
+    limit: "50mb",
+}));
+app.use(body_parser_1.default.json({ limit: "50mb" }));
+//app.use(json2csv.middleware)
+// //options for cors midddleware
+// const options: cors.CorsOptions = {
+//     "origin": "*",
+//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     "preflightContinue": false,
+//     "optionsSuccessStatus": 204
+//   };
+// //use cors middleware
+// app.use(cors(options));
 // //enable pre-flight
 // app.options('*', cors(options));
 // //create custom headers to solve cors isssue 
