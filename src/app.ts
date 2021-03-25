@@ -10,6 +10,27 @@ import cors from 'cors';
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
 
+//options for cors midddleware
+const options: cors.CorsOptions = {
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'contenttype',
+      'Accept',
+      'X-Access-Token',
+      'Authorization',
+      'authorization'
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: "*",
+    // preflightContinue: true,
+  };
+  
+//use cors middleware
+app.use(cors(options));
+
 app.use(bodyParser.urlencoded(
     {
         extended: false,
@@ -31,26 +52,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 // //use cors middleware
 // app.use(cors(options));
 
-//options for cors midddleware
-const options: cors.CorsOptions = {
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'contenttype',
-      'Accept',
-      'X-Access-Token',
-      'Authorization',
-      'authorization'
-    ],
-    credentials: true,
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    origin: "*",
-    // preflightContinue: true,
-  };
-  
-//use cors middleware
-app.use(cors(options));
+
 
 // //enable pre-flight
 // app.options('*', cors(options));
