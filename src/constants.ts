@@ -108,7 +108,8 @@ export const MESSAGES = {
   advisor_added: "Advisor added",
   advisor_fetched: "Advisor list fetched",
   advisor_updated: "Advisor updated",
-  invalid_advisor: "Invalid advisor"
+  invalid_advisor: "Invalid advisor",
+  only_manager_chat: "You can chat with your manager only"
 }
 
 export const code = {
