@@ -108,14 +108,11 @@ exports.MESSAGES = {
     article_details_fetched: "Article details fetched",
     invalid_article: "Invalid article",
     self_chat: "You can not chat with yourself",
-<<<<<<< HEAD
     advisor_added: "Advisor added",
     advisor_fetched: "Advisor list fetched",
     advisor_updated: "Advisor updated",
-    invalid_advisor: "Invalid advisor"
-=======
+    invalid_advisor: "Invalid advisor",
     only_manager_chat: "You can chat with your manager only"
->>>>>>> 26a858c23982b56a62fb5d1bf585f03e60b0bd00
 };
 exports.code = {
     error_code: 400
