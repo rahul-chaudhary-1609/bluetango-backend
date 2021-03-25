@@ -98,6 +98,13 @@ class ChatServices {
             //     return await chatRealtionMappingInRoomModel.create(chatRoomObj);
             // }
             if (!chatRoomData) {
+                let managerTeamMember = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                    where: {
+                        team_member_id: user.uid
+                    }
+                });
+                if (params.other_user_id != managerTeamMember.manager_id)
+                    throw new Error(constants.MESSAGES.only_manager_chat);
                 let chatRoomObj = {
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
@@ -106,7 +113,7 @@ class ChatServices {
                 chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
             let users = yield employee_1.employeeModel.findAll({
-                attributes: ['id', 'profile_pic_url'],
+                attributes: ['id', 'name', 'profile_pic_url'],
                 where: {
                     id: [user.uid, params.other_user_id]
                 }

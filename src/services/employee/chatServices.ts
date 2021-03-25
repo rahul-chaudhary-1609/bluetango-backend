@@ -56,6 +56,8 @@ export class ChatServices {
             throw new Error(constants.MESSAGES.self_chat);
         }
 
+        
+
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
                 [Op.or]:[
@@ -78,6 +80,14 @@ export class ChatServices {
         // }
 
         if (!chatRoomData) {
+            let managerTeamMember = await managerTeamMemberModel.findOne({
+                where: {
+                    team_member_id: user.uid
+                }
+            });
+
+            if (params.other_user_id != managerTeamMember.manager_id) throw new Error(constants.MESSAGES.only_manager_chat);
+            
             let chatRoomObj = <any>{
                 user_id: user.uid,
                 other_user_id: params.other_user_id,
@@ -87,7 +97,7 @@ export class ChatServices {
         }
 
         let users = await employeeModel.findAll({
-            attributes: ['id','profile_pic_url'],
+            attributes: ['id','name','profile_pic_url'],
             where: {
                 id: [user.uid, params.other_user_id]
             }
