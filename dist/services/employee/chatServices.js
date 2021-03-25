@@ -79,6 +79,13 @@ class ChatServices {
             if (user.uid == params.other_user_id) {
                 throw new Error(constants.MESSAGES.self_chat);
             }
+            let managerTeamMember = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                where: {
+                    team_member_id: user.uid
+                }
+            });
+            if (params.other_user_id != managerTeamMember.manager_id)
+                throw new Error(constants.MESSAGES.only_manager_chat);
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
                 where: {
                     [Op.or]: [
@@ -126,7 +133,7 @@ class ChatServices {
     /*
     * function to get chat  list
     */
-    getChatList(user) {
+    getChatList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
@@ -148,18 +155,21 @@ class ChatServices {
                         id
                     }
                 });
-                let currentUser = yield employee_1.employeeModel.findOne({
-                    attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-                    where: {
-                        id: user.uid
-                    }
-                });
-                if (currentUser.is_manager) {
-                    let managerTeamMember_manager = yield managerTeamMember_1.managerTeamMemberModel.findOne({
-                        where: {
-                            team_member_id: user.uid
-                        }
-                    });
+                console.log("employee", employee.id);
+                // let currentUser = await employeeModel.findOne({
+                //     attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                //     where: {
+                //         id:user.uid
+                //     }
+                // });
+                if (params.userRole == "manager") {
+                    // let managerTeamMember_manager = await managerTeamMemberModel.findOne({
+                    //     where: {
+                    //         team_member_id: user.uid
+                    //     }
+                    // });
+                    if (employee.is_manager)
+                        continue;
                     let managerTeamMember_employee = yield managerTeamMember_1.managerTeamMemberModel.findAll({
                         where: {
                             manager_id: user.uid
@@ -168,7 +178,8 @@ class ChatServices {
                     let employee_ids = managerTeamMember_employee.map((val) => {
                         return val.team_member_id;
                     });
-                    if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id)))
+                    //if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
+                    if (!(employee_ids.includes(employee.id)))
                         is_disabled = true;
                     chats.push({
                         id: chat.id,
@@ -181,6 +192,8 @@ class ChatServices {
                     });
                 }
                 else {
+                    if (!employee.is_manager)
+                        continue;
                     let managerTeamMember = yield managerTeamMember_1.managerTeamMemberModel.findOne({
                         where: {
                             team_member_id: user.uid
