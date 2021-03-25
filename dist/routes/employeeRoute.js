@@ -103,6 +103,6 @@ employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValida
 /* get chat room id */
 employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getChatRoomId), chatController.getChatRoomId);
 /* get chat list */
-employeeRoute.get("/getChatList/:userRole", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
+employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

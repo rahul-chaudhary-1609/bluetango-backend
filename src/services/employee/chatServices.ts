@@ -95,7 +95,7 @@ export class ChatServices {
         }
 
         let users = await employeeModel.findAll({
-            attributes: ['id','profile_pic_url'],
+            attributes: ['id','name','profile_pic_url'],
             where: {
                 id: [user.uid, params.other_user_id]
             }
@@ -119,7 +119,7 @@ export class ChatServices {
     /*
     * function to get chat  list
     */
-    public async getChatList(params:any,user: any) {
+    public async getChatList(user: any) {
 
         let chatRoomData = await chatRealtionMappingInRoomModel.findAll({
             where: {
@@ -142,21 +142,21 @@ export class ChatServices {
                     id
                 }
             });
-            // let currentUser = await employeeModel.findOne({
-            //     attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-            //     where: {
-            //         id:user.uid
-            //     }
-            // });
 
-            if (params.userRole == "manager") {
-                // let managerTeamMember_manager = await managerTeamMemberModel.findOne({
-                //     where: {
-                //         team_member_id: user.uid
-                //     }
-                // });
+            let currentUser = await employeeModel.findOne({
+                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                where: {
+                    id:user.uid
+                }
+            });
 
-                if (employee.is_manager) continue;
+            if (currentUser.is_manager) {
+
+                let managerTeamMember_manager = await managerTeamMemberModel.findOne({
+                    where: {
+                        team_member_id: user.uid
+                    }
+                });
 
                 let managerTeamMember_employee = await managerTeamMemberModel.findAll({
                     where: {
@@ -168,9 +168,7 @@ export class ChatServices {
                     return val.team_member_id
                 })
 
-                //if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
-                if (!(employee_ids.includes(employee.id))) is_disabled = true;
-
+                if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
 
                 chats.push({
                     id: chat.id,
@@ -183,8 +181,6 @@ export class ChatServices {
                 })
             }
             else {
-
-                if (!employee.is_manager) continue;
 
                 let managerTeamMember = await managerTeamMemberModel.findOne({
                     where: {

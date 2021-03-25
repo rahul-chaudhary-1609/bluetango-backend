@@ -113,7 +113,7 @@ class ChatServices {
                 chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
             let users = yield employee_1.employeeModel.findAll({
-                attributes: ['id', 'profile_pic_url'],
+                attributes: ['id', 'name', 'profile_pic_url'],
                 where: {
                     id: [user.uid, params.other_user_id]
                 }
@@ -133,7 +133,7 @@ class ChatServices {
     /*
     * function to get chat  list
     */
-    getChatList(params, user) {
+    getChatList(user) {
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
@@ -155,21 +155,18 @@ class ChatServices {
                         id
                     }
                 });
-                console.log("employee", employee.id);
-                // let currentUser = await employeeModel.findOne({
-                //     attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-                //     where: {
-                //         id:user.uid
-                //     }
-                // });
-                if (params.userRole == "manager") {
-                    // let managerTeamMember_manager = await managerTeamMemberModel.findOne({
-                    //     where: {
-                    //         team_member_id: user.uid
-                    //     }
-                    // });
-                    if (employee.is_manager)
-                        continue;
+                let currentUser = yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                    where: {
+                        id: user.uid
+                    }
+                });
+                if (currentUser.is_manager) {
+                    let managerTeamMember_manager = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                        where: {
+                            team_member_id: user.uid
+                        }
+                    });
                     let managerTeamMember_employee = yield managerTeamMember_1.managerTeamMemberModel.findAll({
                         where: {
                             manager_id: user.uid
@@ -178,8 +175,7 @@ class ChatServices {
                     let employee_ids = managerTeamMember_employee.map((val) => {
                         return val.team_member_id;
                     });
-                    //if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
-                    if (!(employee_ids.includes(employee.id)))
+                    if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id)))
                         is_disabled = true;
                     chats.push({
                         id: chat.id,
@@ -192,8 +188,6 @@ class ChatServices {
                     });
                 }
                 else {
-                    if (!employee.is_manager)
-                        continue;
                     let managerTeamMember = yield managerTeamMember_1.managerTeamMemberModel.findOne({
                         where: {
                             team_member_id: user.uid

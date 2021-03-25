@@ -76,7 +76,7 @@ class ChatController {
     getChatList(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield chatServices.getChatList(req.params, req.user);
+                const responseFromService = yield chatServices.getChatList(req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

@@ -2961,7 +2961,7 @@
         "responses": {}
       }
     },
-    "/employee/getChatList/{userRole}": {
+    "/employee/getChatList": {
       "get": {
         "tags": [
           "EmployeeChat"
@@ -2975,13 +2975,6 @@
             "name": "Authorization",
             "in": "header",
             "description": "Enter jwt token for authentication",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "userRole",
-            "in": "path",
-            "description": "employee | manager",
             "required": true,
             "type": "string"
           }

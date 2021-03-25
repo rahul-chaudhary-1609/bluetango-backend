@@ -45,7 +45,7 @@ export class ChatController {
     */
     public async getChatList(req: any, res: any, next: any) {
         try {
-            const responseFromService = await chatServices.getChatList(req.params,req.user);
+            const responseFromService = await chatServices.getChatList(req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
