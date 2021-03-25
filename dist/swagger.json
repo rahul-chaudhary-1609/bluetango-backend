@@ -1665,12 +1665,12 @@
                 "responses": {}
             }
         },
-        "/admin/editArticle": {
+        "/admin/deleteArticle": {
             "put": {
                 "tags": [
                     "Admin"
                 ],
-                "description": "Api to edit article/news",
+                "description": "Api to delete article/news",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -1685,38 +1685,9 @@
                     {
                         "name": "id",
                         "in": "formData",
-                        "description": "article id",
+                        "description": "article id in array ex- [1,2]",
                         "required": true,
-                        "type": "number"
-                    },
-                    {
-                        "name": "title",
-                        "in": "formData",
-                        "description": "title",
-                        "required": false,
                         "type": "string"
-                    },
-                    {
-                        "name": "description",
-                        "in": "formData",
-                        "description": "description",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "image",
-                        "in": "formData",
-                        "description": "image url",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "status",
-                        "in": "formData",
-                        "description": "1--> active/ 2--> delete",
-                        "required": false,
-                        "type": "number",
-                        "enum": [1, 2]
                     }
                 ],
                 "responses": {}
@@ -1757,12 +1728,54 @@
                 "responses": {}
             }
         },
-        "/admin/detailsArticle": {
-            "get": {
+        "/admin/addAdvisor": {
+            "post": {
                 "tags": [
                     "Admin"
                 ],
-                "description": "Api to get detail article",
+                "description": "Api to add video article/news",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "title",
+                        "in": "formData",
+                        "description": "title",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "image",
+                        "in": "formData",
+                        "description": "image url",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/deleteAdvisor": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to edit article/news",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -1776,9 +1789,44 @@
                     },
                     {
                         "name": "id",
-                        "in": "query",
-                        "description": "article id",
+                        "in": "formData",
+                        "description": "article id in array ex- []",
                         "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/listAdvisor": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to list article/news",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
                         "type": "number"
                     }
                 ],

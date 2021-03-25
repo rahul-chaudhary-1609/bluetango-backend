@@ -139,12 +139,23 @@ adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersCont
 adminRoute.post("/addArticle", tokenValidator.validateAdminToken, employersController.addArticle);
 
 /* edit library management */
-adminRoute.put("/editArticle", tokenValidator.validateAdminToken, employersController.editArticle);
+adminRoute.put("/deleteArticle", tokenValidator.validateAdminToken, employersController.editArticle);
 
 /* list library management */
 adminRoute.get("/listArticle", tokenValidator.validateAdminToken, employersController.listArticle);
 
 /* library management details */
 adminRoute.get("/detailsArticle", tokenValidator.validateAdminToken, employersController.detailsArticle);
+
+/* add new advisor */
+adminRoute.post("/addAdvisor", tokenValidator.validateAdminToken, employersController.addAdvisor);
+
+/* list advisor */
+adminRoute.get("/listAdvisor", tokenValidator.validateAdminToken, employersController.listAdvisor);
+
+/* delete advisor */
+adminRoute.put("/deleteAdvisor", tokenValidator.validateAdminToken, employersController.deleteAdvisor);
+
+
 
 export = adminRoute;

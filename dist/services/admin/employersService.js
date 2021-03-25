@@ -45,6 +45,7 @@ const connection_1 = require("../../connection");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const articleManagement_1 = require("../../models/articleManagement");
+const advisorManagement_1 = require("../../models/advisorManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -1045,9 +1046,14 @@ class EmployersService {
     */
     editArticle(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const article = yield articleManagement_1.articleManagementModel.update(params, { where: { id: params.id }, returning: true });
+            let ids = JSON.parse(params.id);
+            let update = {};
+            update.status = 2;
+            let where = {};
+            where.id = params.id;
+            const article = yield articleManagement_1.articleManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
             if (article && article[1][0]) {
-                return article[1][0];
+                return article[1];
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_article);
@@ -1086,6 +1092,50 @@ class EmployersService {
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_article);
+            }
+        });
+    }
+    /**
+  *
+  * @param {} params pass all parameters from request
+  */
+    addAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield advisorManagement_1.advisorManagementModel.create(params);
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    listAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            return yield advisorManagement_1.advisorManagementModel.findAndCountAll({
+                where: { status: 1 },
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    deleteAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ids = JSON.parse(params.id);
+            let update = {};
+            update.status = 2;
+            let where = {};
+            where.id = { [Op.in]: params.id };
+            const advisor = yield advisorManagement_1.advisorManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
+            if (advisor && advisor[1][0]) {
+                return advisor[1];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_advisor);
             }
         });
     }

@@ -104,7 +104,11 @@ export const MESSAGES = {
   article_fetched: "Article fetched",
   article_details_fetched: "Article details fetched",
   invalid_article: "Invalid article",
-  self_chat:"You can not chat with yourself"
+  self_chat:"You can not chat with yourself",
+  advisor_added: "Advisor added",
+  advisor_fetched: "Advisor list fetched",
+  advisor_updated: "Advisor updated",
+  invalid_advisor: "Invalid advisor"
 }
 
 export const code = {
