@@ -3058,6 +3058,34 @@
         "responses": {}
       }
     },
+    "/employee/updateEmployeeDeviceToken": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get employee list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "device_token",
+            "in": "formData",
+            "description": "enter device token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [

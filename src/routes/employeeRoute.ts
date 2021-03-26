@@ -97,6 +97,8 @@ employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValida
 /* feel about job today */
 employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feelAboutJobToday), employeeController.feelAboutJobToday);
 
+/* update device token */
+employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 
 
 

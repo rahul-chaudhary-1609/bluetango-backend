@@ -251,6 +251,19 @@ class EmployeeServices {
             });
         });
     }
+    /*
+   * function to update device token
+   */
+    updateEmployeeDeviceToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield employee_1.employeeModel.update({
+                device_token: params.device_token
+            }, {
+                where: { id: user.uid }
+            });
+            return authService.getMyProfile(user);
+        });
+    }
 }
 exports.EmployeeServices = EmployeeServices;
 //# sourceMappingURL=employeeServices.js.map

@@ -141,4 +141,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * update device token
+    * @param req :[]
+    * @param res 
+    */
+    public async updateEmployeeDeviceToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.updateEmployeeDeviceToken(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

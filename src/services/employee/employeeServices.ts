@@ -239,4 +239,19 @@ export class EmployeeServices {
             });
     }
 
+    /*
+   * function to update device token
+   */
+    public async updateEmployeeDeviceToken(params: any, user: any) {
+        await employeeModel.update(
+            {
+                device_token: params.device_token
+            },
+            {
+                where: { id: user.uid }
+            }
+        )
+        return authService.getMyProfile(user);
+    }
+
 }
