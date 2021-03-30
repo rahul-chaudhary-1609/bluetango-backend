@@ -169,8 +169,8 @@ export const NOTIFICATION_TYPE = {
   goal_complete_request: 2,
   rating: 3,
   message: 4,
-  goal_accept: 5,
-  goal_reject: 6,
-  video_chat: 7,
-  audio_chat:8,
+  audio_chat: 5,
+  video_chat: 6,
+  goal_accept: 7,
+  goal_reject: 8,    
 }

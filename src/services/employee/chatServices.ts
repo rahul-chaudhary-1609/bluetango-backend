@@ -251,7 +251,7 @@ export class ChatServices {
     /*
   * function to get video chat session id and token
   */
-    public async getVideoChatSessionIdandToken(params: any, user: any) {
+    public async getChatSessionIdandToken(params: any, user: any) {
 
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
@@ -279,7 +279,7 @@ export class ChatServices {
     /*
 * function to send video chat notification
 */
-    public async sendVideoChatNotification(params: any, user: any) {
+    public async sendChatNotification(params: any, user: any) {
 
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
@@ -299,25 +299,70 @@ export class ChatServices {
             where: { id: user.uid, }
         })
 
-        //add notification 
-        let notificationObj = <any>{
-            type_id: params.chat_room_id,
-            sender_id: user.uid,
-            reciever_id: recieverId,
-            type: constants.NOTIFICATION_TYPE.video_chat
-        }
-        let newNotification=await notificationModel.create(notificationObj);
+        let newNotification = null;
 
-        //send push notification
-        let notificationData = <any> {
-            title: 'Video Chat',
-            body: `Video chat from ${senderEmployeeData.name}`,
-            data: {
-                sessionId: params.session_id,
-                token:params.token,
-            },                        
+        if (params.chat_type == 'text') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.message
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Message',
+                body: `Message from ${senderEmployeeData.name}`,
+                data: {},
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
         }
-        await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        else if (params.chat_type == 'audio') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.audio_chat
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Audio Chat',
+                body: `Audio chat from ${senderEmployeeData.name}`,
+                data: {
+                    sessionId: params.session_id,
+                    token: params.token,
+                },
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        }
+        else if (params.chat_type == 'video') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.video_chat
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Video Chat',
+                body: `Video chat from ${senderEmployeeData.name}`,
+                data: {
+                    sessionId: params.session_id,
+                    token: params.token,
+                },
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        }
+
+        
 
 
         return newNotification

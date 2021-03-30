@@ -3082,7 +3082,7 @@
                 "responses": {}
             }
         },
-        "/employee/getVideoChatSessionIdandToken/{chat_room_id}": {
+        "/employee/getChatSessionIdandToken/{chat_room_id}": {
             "get": {
                 "tags": [
                     "EmployeeChat"
@@ -3110,12 +3110,12 @@
                 "responses": {}
             }
         },
-        "/employee/sendVideoChatNotification": {
+        "/employee/sendChatNotification": {
             "post": {
                 "tags": [
                     "EmployeeChat"
                 ],
-                "description": "send video chat notification",
+                "description": "send chat notification",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -3128,6 +3128,14 @@
                         "type": "string"
                     },
                     {
+                        "name": "chat_type",
+                        "in": "formData",
+                        "description": "text | audio | video",
+                        "required": true,
+                        "type": "string",
+                        "enum": ["text", "audio", "video"]
+                    },
+                    {
                         "name": "chat_room_id",
                         "in": "formData",
                         "description": "Enter chat room id",
@@ -3138,14 +3146,14 @@
                         "name": "session_id",
                         "in": "formData",
                         "description": "Enter chat session id",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "token",
                         "in": "formData",
                         "description": "Enter chat token",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     }
                 ],

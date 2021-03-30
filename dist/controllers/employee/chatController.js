@@ -105,10 +105,10 @@ class ChatController {
     * @param req :[]
     * @param res
     */
-    getVideoChatSessionIdandToken(req, res, next) {
+    getChatSessionIdandToken(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield chatServices.getVideoChatSessionIdandToken(req.params, req.user);
+                const responseFromService = yield chatServices.getChatSessionIdandToken(req.params, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {
@@ -121,10 +121,10 @@ class ChatController {
     * @param req :[]
     * @param res
     */
-    sendVideoChatNotification(req, res, next) {
+    sendChatNotification(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield chatServices.sendVideoChatNotification(req.body, req.user);
+                const responseFromService = yield chatServices.sendChatNotification(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

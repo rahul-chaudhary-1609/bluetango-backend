@@ -71,9 +71,9 @@ export class ChatController {
     * @param req :[]
     * @param res 
     */
-    public async getVideoChatSessionIdandToken(req: any, res: any, next: any) {
+    public async getChatSessionIdandToken(req: any, res: any, next: any) {
         try {
-            const responseFromService = await chatServices.getVideoChatSessionIdandToken(req.params,req.user);
+            const responseFromService = await chatServices.getChatSessionIdandToken(req.params,req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
@@ -85,9 +85,9 @@ export class ChatController {
     * @param req :[]
     * @param res 
     */
-    public async sendVideoChatNotification(req: any, res: any, next: any) {
+    public async sendChatNotification(req: any, res: any, next: any) {
         try {
-            const responseFromService = await chatServices.sendVideoChatNotification(req.body, req.user);
+            const responseFromService = await chatServices.sendChatNotification(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

@@ -142,14 +142,15 @@ export const createChatSession = Joi.object({
   chat_room_id: Joi.string().required()
 })
 
-export const getVideoChatSessionIdandToken = Joi.object({
+export const getChatSessionIdandToken = Joi.object({
   chat_room_id: Joi.string().required()
 })
 
-export const sendVideoChatNotification = Joi.object({
+export const sendChatNotification = Joi.object({
   chat_room_id: Joi.string().required(),
-  session_id: Joi.string().required(),
-  token: Joi.string().required()
+  chat_type: Joi.string().trim().valid('text', 'audio', 'video').required(),
+  session_id: Joi.string(),
+  token: Joi.string(),
 })
 
 export const editGoal = Joi.object({
