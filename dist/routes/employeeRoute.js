@@ -106,7 +106,9 @@ employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValida
 employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getChatRoomId), chatController.getChatRoomId);
 /* get chat list */
 employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
-/* get video chat session id and token list */
+/* create video chat session*/
+employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
+/* get video chat session id and token */
 employeeRoute.get("/getVideoChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getVideoChatSessionIdandToken), chatController.getVideoChatSessionIdandToken);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

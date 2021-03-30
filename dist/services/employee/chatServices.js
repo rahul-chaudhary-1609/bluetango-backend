@@ -211,9 +211,9 @@ class ChatServices {
         });
     }
     /*
-   * function to get video chat session id and token
+   * function to create video chat session
    */
-    getVideoChatSessionIdandToken(params, user) {
+    createChatSession(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
                 where: {
@@ -236,11 +236,22 @@ class ChatServices {
                     returning: true,
                 });
             }));
-            chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+            return constants.MESSAGES.video_chat_session_created;
+        });
+    }
+    /*
+  * function to get video chat session id and token
+  */
+    getVideoChatSessionIdandToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
                 where: {
                     room_id: params.chat_room_id,
                 }
             });
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
             let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
                 role: "moderator",
                 expireTime: new Date().getTime() / 1000 + 60 * 60,

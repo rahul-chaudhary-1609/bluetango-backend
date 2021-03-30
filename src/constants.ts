@@ -111,7 +111,8 @@ export const MESSAGES = {
   invalid_advisor: "Invalid advisor",
   only_manager_chat: "You can initiate chat with your manager only",
   chat_room_notFound: "chat room not found",
-  video_chat_session_create_error: "Error in video chat session creation"
+  video_chat_session_create_error: "Error in video chat session creation",
+  video_chat_session_created: "Session created",
 }
 
 export const code = {

@@ -138,6 +138,10 @@ export const getChatRoomId = Joi.object({
   other_user_id: Joi.string().required()
 })
 
+export const createChatSession = Joi.object({
+  chat_room_id: Joi.string().required()
+})
+
 export const getVideoChatSessionIdandToken = Joi.object({
   chat_room_id: Joi.string().required()
 })

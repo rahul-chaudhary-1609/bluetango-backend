@@ -3030,6 +3030,34 @@
         "responses": {}
       }
     },
+    "/employee/createChatSession": {
+      "post": {
+        "tags": [
+          "EmployeeChat"
+        ],
+        "description": "get chat popup list as employee",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getVideoChatSessionIdandToken/{chat_room_id}": {
       "get": {
         "tags": [

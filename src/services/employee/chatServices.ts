@@ -212,9 +212,9 @@ export class ChatServices {
     }
 
     /*
-   * function to get video chat session id and token
+   * function to create video chat session
    */
-    public async getVideoChatSessionIdandToken(params: any, user: any) {
+    public async createChatSession(params: any, user: any) {
         
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
@@ -243,21 +243,34 @@ export class ChatServices {
             )
         });
 
-        chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+        return constants.MESSAGES.video_chat_session_created
+
+    }
+    
+    /*
+  * function to get video chat session id and token
+  */
+    public async getVideoChatSessionIdandToken(params: any, user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
                 room_id: params.chat_room_id,
             }
         });
 
-        let token = opentok.generateToken(chatRoomData.video_chat_session_id,{
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+
+        let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
             role: "moderator",
-            expireTime: new Date().getTime() / 1000 +  60 * 60, // in one hour
+            expireTime: new Date().getTime() / 1000 + 60 * 60, // in one hour
             data: `userId=${user.uid}`,
             initialLayoutClassList: ["focus"],
         });
 
 
-        return { sessionId: chatRoomData.video_chat_session_id,token}
+        return { sessionId: chatRoomData.video_chat_session_id, token }
 
     }
 

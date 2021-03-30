@@ -85,6 +85,22 @@ class ChatController {
         });
     }
     /**
+    * get create chat session
+    * @param req :[]
+    * @param res
+    */
+    createChatSession(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.createChatSession(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * get video chat session id and token list
     * @param req :[]
     * @param res
