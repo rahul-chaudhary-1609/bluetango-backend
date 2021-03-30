@@ -8,6 +8,7 @@ import { chatRealtionMappingInRoomModel } from  "../../models/chatRelationMappin
 import { qualitativeMeasurementCommentModel } from "../../models/qualitativeMeasurementComment";
 import { employeeModel } from "../../models/employee";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 var Op = Sequelize.Op;
@@ -271,6 +272,55 @@ export class ChatServices {
 
 
         return { sessionId: chatRoomData.video_chat_session_id, token }
+
+    }
+
+
+    /*
+* function to send video chat notification
+*/
+    public async sendVideoChatNotification(params: any, user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id: params.chat_room_id,
+            }
+        });
+
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+
+        let recieverEmployeeData = await employeeModel.findOne({
+            where: { id: recieverId, }
+        })
+
+        let senderEmployeeData = await employeeModel.findOne({
+            where: { id: user.uid, }
+        })
+
+        //add notification 
+        let notificationObj = <any>{
+            type_id: params.chat_room_id,
+            sender_id: user.uid,
+            reciever_id: recieverId,
+            type: constants.NOTIFICATION_TYPE.video_chat
+        }
+        let newNotification=await notificationModel.create(notificationObj);
+
+        //send push notification
+        let notificationData = <any> {
+            title: 'Video Chat',
+            body: `Video chat from ${senderEmployeeData.name}`,
+            data: {
+                sessionId: params.session_id,
+                token:params.token,
+            },                        
+        }
+        await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+
+
+        return newNotification
 
     }
 

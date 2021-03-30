@@ -166,6 +166,8 @@ exports.NOTIFICATION_TYPE = {
     rating: 3,
     message: 4,
     goal_accept: 5,
-    goal_reject: 6
+    goal_reject: 6,
+    video_chat: 7,
+    audio_chat: 8,
 };
 //# sourceMappingURL=constants.js.map

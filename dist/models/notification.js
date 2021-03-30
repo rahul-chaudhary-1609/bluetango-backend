@@ -37,7 +37,7 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "0=> other, 1=> assign new goal, 2=>goal complete, 3=> rating, 4=>message"
+        comment: "0=> other, 1=> assign new goal, 2=>goal complete, 3=> rating, 4=>message, 7=>video chat, 8=>audio chat"
     },
     status: {
         type: sequelize_1.DataTypes.INTEGER,

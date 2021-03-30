@@ -37,6 +37,7 @@ const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInR
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 var Op = Sequelize.Op;
@@ -259,6 +260,46 @@ class ChatServices {
                 initialLayoutClassList: ["focus"],
             });
             return { sessionId: chatRoomData.video_chat_session_id, token };
+        });
+    }
+    /*
+* function to send video chat notification
+*/
+    sendVideoChatNotification(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+            let recieverEmployeeData = yield employee_1.employeeModel.findOne({
+                where: { id: recieverId, }
+            });
+            let senderEmployeeData = yield employee_1.employeeModel.findOne({
+                where: { id: user.uid, }
+            });
+            //add notification 
+            let notificationObj = {
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.video_chat
+            };
+            let newNotification = yield notification_1.notificationModel.create(notificationObj);
+            //send push notification
+            let notificationData = {
+                title: 'Video Chat',
+                body: `Video chat from ${senderEmployeeData.name}`,
+                data: {
+                    sessionId: params.session_id,
+                    token: params.token,
+                },
+            };
+            yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+            return newNotification;
         });
     }
 }

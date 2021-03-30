@@ -101,7 +101,7 @@ class ChatController {
         });
     }
     /**
-    * get video chat session id and token list
+    * get video chat session id and token
     * @param req :[]
     * @param res
     */
@@ -109,6 +109,22 @@ class ChatController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield chatServices.getVideoChatSessionIdandToken(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * send video chat notification
+    * @param req :[]
+    * @param res
+    */
+    sendVideoChatNotification(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.sendVideoChatNotification(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

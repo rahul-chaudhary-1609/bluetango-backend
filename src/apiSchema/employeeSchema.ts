@@ -146,6 +146,12 @@ export const getVideoChatSessionIdandToken = Joi.object({
   chat_room_id: Joi.string().required()
 })
 
+export const sendVideoChatNotification = Joi.object({
+  chat_room_id: Joi.string().required(),
+  session_id: Joi.string().required(),
+  token: Joi.string().required()
+})
+
 export const editGoal = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),

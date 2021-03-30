@@ -110,5 +110,7 @@ employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmp
 employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
 /* get video chat session id and token */
 employeeRoute.get("/getVideoChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getVideoChatSessionIdandToken), chatController.getVideoChatSessionIdandToken);
+/* send video chat notification*/
+employeeRoute.post("/sendVideoChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendVideoChatNotification), chatController.sendVideoChatNotification);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

@@ -130,4 +130,8 @@ employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.vali
 /* get video chat session id and token */
 employeeRoute.get("/getVideoChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getVideoChatSessionIdandToken),chatController.getVideoChatSessionIdandToken);
 
+/* send video chat notification*/
+employeeRoute.post("/sendVideoChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendVideoChatNotification), chatController.sendVideoChatNotification);
+
+
 export = employeeRoute;
