@@ -76,7 +76,8 @@ class EmployeeServices {
             }));
             let date = new Date();
             date.setMonth(date.getMonth() - 3);
-            let dateCheck = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+            //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
+            let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             for (let i = 0; i < teamMembersData.rows.length; i++) {
                 let rateCheck = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
                     where: {
