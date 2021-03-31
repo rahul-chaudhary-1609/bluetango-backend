@@ -145,6 +145,12 @@ class ChatServices {
                     ]
                 }
             });
+            let currentUser = yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                where: {
+                    id: user.uid
+                }
+            });
             let chats = [];
             for (let chat of chatRoomData) {
                 let is_disabled = false;
@@ -155,12 +161,6 @@ class ChatServices {
                     attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
                     where: {
                         id
-                    }
-                });
-                let currentUser = yield employee_1.employeeModel.findOne({
-                    attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-                    where: {
-                        id: user.uid
                     }
                 });
                 if (currentUser.is_manager) {
@@ -177,7 +177,7 @@ class ChatServices {
                     let employee_ids = managerTeamMember_employee.map((val) => {
                         return val.team_member_id;
                     });
-                    if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id)))
+                    if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id)))
                         is_disabled = true;
                     chats.push({
                         id: chat.id,
@@ -195,7 +195,7 @@ class ChatServices {
                             team_member_id: user.uid
                         }
                     });
-                    if (employee.id !== managerTeamMember.manager_id)
+                    if (managerTeamMember && employee.id !== managerTeamMember.manager_id)
                         is_disabled = true;
                     chats.push({
                         id: chat.id,

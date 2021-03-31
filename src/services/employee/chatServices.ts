@@ -134,6 +134,13 @@ export class ChatServices {
             }
         });
 
+        let currentUser = await employeeModel.findOne({
+            attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+            where: {
+                id: user.uid
+            }
+        });
+
         let chats = [];
 
         for (let chat of chatRoomData) {
@@ -144,13 +151,6 @@ export class ChatServices {
                 attributes: ['id','name','profile_pic_url','is_manager'],
                 where: {
                     id
-                }
-            });
-
-            let currentUser = await employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-                where: {
-                    id:user.uid
                 }
             });
 
@@ -172,7 +172,7 @@ export class ChatServices {
                     return val.team_member_id
                 })
 
-                if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
+                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
 
                 chats.push({
                     id: chat.id,
@@ -194,7 +194,7 @@ export class ChatServices {
 
                 
 
-                if (employee.id!==managerTeamMember.manager_id) is_disabled=true;
+                if (managerTeamMember && employee.id!==managerTeamMember.manager_id) is_disabled=true;
 
                 chats.push({
                     id: chat.id,
