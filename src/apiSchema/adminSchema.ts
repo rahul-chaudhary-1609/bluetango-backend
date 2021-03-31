@@ -176,5 +176,6 @@ export const addEditCoach = Joi.object ({
   }),
   country_code: Joi.string().required(),
   phone_number: Joi.string().required(),
-  description: Joi.string().required()
+  description: Joi.string().required(),
+  image: Joi.string().optional()
 })

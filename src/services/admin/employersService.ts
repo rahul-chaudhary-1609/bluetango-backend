@@ -478,6 +478,7 @@ export class EmployersService {
     public async viewPaymentDetails(params: any) {
         paymentManagementModel.belongsTo(employersModel, { foreignKey: "employer_id" })
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
+        paymentManagementModel.belongsTo(subscriptionManagementModel, { foreignKey: "plan_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
         let whereCond: any = {}
@@ -491,16 +492,24 @@ export class EmployersService {
         // whereCond.admin_id = params.admin_id
         return await paymentManagementModel.findOne({
             where: whereCond,
-            include: [{
-                model: employersModel,
-                required: false,
-                where: where,
-                include: [{
-                    model: employeeModel,
+            include: [
+                {
+                    model: employersModel,
                     required: false,
-                    attributes: ["id", "name"]
-                }]
-            }],
+                    where: where,
+                    include: [{
+                        model: employeeModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }]
+                },
+                {
+                    model: subscriptionManagementModel,
+                    required: false,
+                    where: where,
+                    attributes: ["id", "plan_name"]
+                }
+            ],
             limit: limit,
             offset: offset
         })
@@ -554,12 +563,25 @@ export class EmployersService {
     */
     public async employerDetails(params: any) {
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
+        employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type"})
         let where: any = {}
         where.id = params.employerId
 
         const employer = await employersModel.findOne({
             where: where,
-            include: [{ model: employeeModel, required: false, attributes: ["id"] }]
+            include: [
+                {
+                    model: employeeModel,
+                    required: false,
+                    attributes: ["id"]
+                },
+                {
+                    model: industryTypeModel,
+                    required: false,
+                    as: "Industry_type",
+                    attributes: ["id", "name"]
+                }
+            ]
         })
 
         if (employer) {
@@ -783,22 +805,22 @@ export class EmployersService {
  * @param {} params pass all parameters from request
  */
     public async sendEmailAndNotification(params: any) {
-        let where:any = {}
+        let where: any = {}
         where.status = 1
         let receiver: any = {};
         if (params.receiver == "employer") {
-            receiver = await employersModel.findAll({where: where})
+            receiver = await employersModel.findAll({ where: where })
         }
         else if (params.receiver == "employee") {
-            receiver = await employeeModel.findAll({where: where})
+            receiver = await employeeModel.findAll({ where: where })
         }
 
         let toMails = []
         let tokens = []
         receiver.forEach(rec => {
             toMails.push(rec.email)
-            if(rec.device_token !== null) {
-            tokens.push(rec.device_token)                
+            if (rec.device_token !== null) {
+                tokens.push(rec.device_token)
             }
         });
 
@@ -1070,18 +1092,18 @@ export class EmployersService {
     * @param {} params pass all parameters from request
     */
     public async editArticle(params: any) {
-        
-    let ids = JSON.parse(params.id)
-    let update:any = {}
-    update.status = 2
-    let where:any = {}
-    where.id = params.id
-    const article = await articleManagementModel.update({ status : 2 },{ where : { id : ids }, returning: true}); 
-    if (article && article[1][0]) {
-        return article[1]
-    } else {
-        throw new Error(constants.MESSAGES.invalid_article)
-    }
+
+        let ids = JSON.parse(params.id)
+        let update: any = {}
+        update.status = 2
+        let where: any = {}
+        where.id = params.id
+        const article = await articleManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
+        if (article && article[1][0]) {
+            return article[1]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_article)
+        }
 
     }
 
@@ -1151,19 +1173,19 @@ export class EmployersService {
     * 
     * @param {} params pass all parameters from request
     */
-   public async deleteAdvisor(params: any) {
-    let ids = JSON.parse(params.id)
-    let update:any = {}
-    update.status = 2
-    let where:any = {}
-    where.id = {[Op.in]: params.id}
-    const advisor = await advisorManagementModel.update({ status : 2 },{ where : { id : ids }, returning: true});
-    if (advisor && advisor[1][0]) {
-        return advisor[1]
-    } else {
-        throw new Error(constants.MESSAGES.invalid_advisor)
-    }
+    public async deleteAdvisor(params: any) {
+        let ids = JSON.parse(params.id)
+        let update: any = {}
+        update.status = 2
+        let where: any = {}
+        where.id = { [Op.in]: params.id }
+        const advisor = await advisorManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
+        if (advisor && advisor[1][0]) {
+            return advisor[1]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_advisor)
+        }
 
-}
+    }
 
 }

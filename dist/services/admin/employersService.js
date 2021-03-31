@@ -479,6 +479,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
+            paymentManagement_1.paymentManagementModel.belongsTo(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "plan_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             let whereCond = {};
@@ -492,7 +493,8 @@ class EmployersService {
             // whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findOne({
                 where: whereCond,
-                include: [{
+                include: [
+                    {
                         model: models_1.employersModel,
                         required: false,
                         where: where,
@@ -501,7 +503,14 @@ class EmployersService {
                                 required: false,
                                 attributes: ["id", "name"]
                             }]
-                    }],
+                    },
+                    {
+                        model: subscriptionManagement_1.subscriptionManagementModel,
+                        required: false,
+                        where: where,
+                        attributes: ["id", "plan_name"]
+                    }
+                ],
                 limit: limit,
                 offset: offset
             });
@@ -554,11 +563,24 @@ class EmployersService {
     employerDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
+            models_1.employersModel.belongsTo(models_1.industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" });
             let where = {};
             where.id = params.employerId;
             const employer = yield models_1.employersModel.findOne({
                 where: where,
-                include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }]
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        required: false,
+                        attributes: ["id"]
+                    },
+                    {
+                        model: models_1.industryTypeModel,
+                        required: false,
+                        as: "Industry_type",
+                        attributes: ["id", "name"]
+                    }
+                ]
             });
             if (employer) {
                 return employer;
