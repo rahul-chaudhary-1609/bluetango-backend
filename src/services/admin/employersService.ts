@@ -670,7 +670,8 @@ export class EmployersService {
             where: where,
             attributes: ["id", "name", "email", "phone_number"],
             limit: limit,
-            offset: offset
+            offset: offset,
+            order: [["id", "DESC"]]
         })
 
     }
@@ -782,20 +783,23 @@ export class EmployersService {
  * @param {} params pass all parameters from request
  */
     public async sendEmailAndNotification(params: any) {
-
+        let where:any = {}
+        where.status = 1
         let receiver: any = {};
         if (params.receiver == "employer") {
-            receiver = await employersModel.findAll({})
+            receiver = await employersModel.findAll({where: where})
         }
         else if (params.receiver == "employee") {
-            receiver = await employeeModel.findAll({})
+            receiver = await employeeModel.findAll({where: where})
         }
 
         let toMails = []
         let tokens = []
         receiver.forEach(rec => {
             toMails.push(rec.email)
-            tokens.push(rec.device_token)
+            if(rec.device_token !== null) {
+            tokens.push(rec.device_token)                
+            }
         });
 
         if (params.notification_type == 0) {
