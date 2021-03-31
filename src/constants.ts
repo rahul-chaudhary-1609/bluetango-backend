@@ -109,7 +109,10 @@ export const MESSAGES = {
   advisor_fetched: "Advisor list fetched",
   advisor_updated: "Advisor updated",
   invalid_advisor: "Invalid advisor",
-  only_manager_chat: "You can chat with your manager only"
+  only_manager_chat: "You can initiate chat with your manager only",
+  chat_room_notFound: "chat room not found",
+  video_chat_session_create_error: "Error in video chat session creation",
+  video_chat_session_created: "Session created",
 }
 
 export const code = {
@@ -166,6 +169,8 @@ export const NOTIFICATION_TYPE = {
   goal_complete_request: 2,
   rating: 3,
   message: 4,
-  goal_accept: 5,
-  goal_reject: 6
+  audio_chat: 5,
+  video_chat: 6,
+  goal_accept: 7,
+  goal_reject: 8,    
 }

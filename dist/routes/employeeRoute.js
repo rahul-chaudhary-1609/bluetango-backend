@@ -90,6 +90,8 @@ employeeRoute.post("/updateEnergyCheck", validators.trimmer, tokenValidator.vali
 employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEnergyCheckTeamMembers);
 /* feel about job today */
 employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feelAboutJobToday), employeeController.feelAboutJobToday);
+/* update device token */
+employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
@@ -104,5 +106,11 @@ employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValida
 employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getChatRoomId), chatController.getChatRoomId);
 /* get chat list */
 employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
+/* create video chat session*/
+employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
+/* get video chat session id and token */
+employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken), chatController.getChatSessionIdandToken);
+/* send video chat notification*/
+employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

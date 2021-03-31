@@ -51,5 +51,47 @@ export class ChatController {
             next(e)
         }
     }
+
+    /**
+    * get create chat session
+    * @param req :[]
+    * @param res 
+    */
+    public async createChatSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.createChatSession(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * get video chat session id and token 
+    * @param req :[]
+    * @param res 
+    */
+    public async getChatSessionIdandToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getChatSessionIdandToken(req.params,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * send video chat notification
+    * @param req :[]
+    * @param res 
+    */
+    public async sendChatNotification(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.sendChatNotification(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }

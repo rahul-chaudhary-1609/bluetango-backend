@@ -97,6 +97,8 @@ employeeRoute.get("/viewEnergyCheckTeamMembers", validators.trimmer, tokenValida
 /* feel about job today */
 employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feelAboutJobToday), employeeController.feelAboutJobToday);
 
+/* update device token */
+employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 
 
 
@@ -121,5 +123,15 @@ employeeRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateE
 
 /* get chat list */
 employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatList);
+
+/* create video chat session*/
+employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
+
+/* get video chat session id and token */
+employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken),chatController.getChatSessionIdandToken);
+
+/* send video chat notification*/
+employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
+
 
 export = employeeRoute;

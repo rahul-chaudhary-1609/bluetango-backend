@@ -8,7 +8,9 @@ import { chatRealtionMappingInRoomModel } from  "../../models/chatRelationMappin
 import { qualitativeMeasurementCommentModel } from "../../models/qualitativeMeasurementComment";
 import { employeeModel } from "../../models/employee";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
+const OpenTok = require("opentok");
 var Op = Sequelize.Op;
 
 export class ChatServices {
@@ -132,6 +134,13 @@ export class ChatServices {
             }
         });
 
+        let currentUser = await employeeModel.findOne({
+            attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+            where: {
+                id: user.uid
+            }
+        });
+
         let chats = [];
 
         for (let chat of chatRoomData) {
@@ -142,13 +151,6 @@ export class ChatServices {
                 attributes: ['id','name','profile_pic_url','is_manager'],
                 where: {
                     id
-                }
-            });
-
-            let currentUser = await employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
-                where: {
-                    id:user.uid
                 }
             });
 
@@ -170,7 +172,7 @@ export class ChatServices {
                     return val.team_member_id
                 })
 
-                if (employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
+                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
 
                 chats.push({
                     id: chat.id,
@@ -192,7 +194,7 @@ export class ChatServices {
 
                 
 
-                if (employee.id!==managerTeamMember.manager_id) is_disabled=true;
+                if (managerTeamMember && employee.id!==managerTeamMember.manager_id) is_disabled=true;
 
                 chats.push({
                     id: chat.id,
@@ -208,6 +210,163 @@ export class ChatServices {
         }
 
         return chats;
+    }
+
+    /*
+   * function to create video chat session
+   */
+    public async createChatSession(params: any, user: any) {
+        
+        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id:params.chat_room_id,
+            }
+        });
+
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+
+        opentok.createSession(async (err:any, session:any)=> {
+            if (err) throw new Error(constants.MESSAGES.video_chat_session_create_error);
+
+            // save the sessionId
+            await chatRealtionMappingInRoomModel.update(
+                {
+                    video_chat_session_id:session.sessionId
+                },
+                {
+                    where: {
+                        room_id: params.chat_room_id,
+                    },
+                    returning:true,
+                }
+            )
+        });
+
+        return constants.MESSAGES.video_chat_session_created
+
+    }
+    
+    /*
+  * function to get video chat session id and token
+  */
+    public async getChatSessionIdandToken(params: any, user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id: params.chat_room_id,
+            }
+        });
+
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+
+        let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
+            role: "moderator",
+            expireTime: new Date().getTime() / 1000 + 60 * 60, // in one hour
+            data: `userId=${user.uid}`,
+            initialLayoutClassList: ["focus"],
+        });
+
+
+        return { sessionId: chatRoomData.video_chat_session_id, token }
+
+    }
+
+
+    /*
+* function to send video chat notification
+*/
+    public async sendChatNotification(params: any, user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id: params.chat_room_id,
+            }
+        });
+
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+
+        let recieverEmployeeData = await employeeModel.findOne({
+            where: { id: recieverId, }
+        })
+
+        let senderEmployeeData = await employeeModel.findOne({
+            where: { id: user.uid, }
+        })
+
+        let newNotification = null;
+
+        if (params.chat_type == 'text') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.message
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Message',
+                body: `Message from ${senderEmployeeData.name}`,
+                data: {},
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        }
+        else if (params.chat_type == 'audio') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.audio_chat
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Audio Chat',
+                body: `Audio chat from ${senderEmployeeData.name}`,
+                data: {
+                    sessionId: params.session_id,
+                    token: params.token,
+                },
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        }
+        else if (params.chat_type == 'video') {
+            //add notification 
+            let notificationObj = <any>{
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                type: constants.NOTIFICATION_TYPE.video_chat
+            }
+            newNotification = await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Video Chat',
+                body: `Video chat from ${senderEmployeeData.name}`,
+                data: {
+                    sessionId: params.session_id,
+                    token: params.token,
+                },
+            }
+            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+        }
+
+        
+
+
+        return newNotification
+
     }
 
 

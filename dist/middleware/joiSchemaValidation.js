@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateQueryParams = exports.validateBody = void 0;
+exports.validateParams = exports.validateQueryParams = exports.validateBody = void 0;
 const constants = __importStar(require("../constants"));
 const appUtils_1 = require("../utils/appUtils");
 /* function for validating the schema */
@@ -50,6 +50,16 @@ exports.validateBody = (schema) => {
 exports.validateQueryParams = (schema) => {
     return (req, res, next) => {
         const error = validateObjectSchema(req.query, schema);
+        if (error) {
+            return appUtils_1.errorResponse(res, error, constants.code.error_code, error[0].message.split('"').join(""));
+        }
+        return next();
+    };
+};
+/* function for validating the request params */
+exports.validateParams = (schema) => {
+    return (req, res, next) => {
+        const error = validateObjectSchema(req.params, schema);
         if (error) {
             return appUtils_1.errorResponse(res, error, constants.code.error_code, error[0].message.split('"').join(""));
         }

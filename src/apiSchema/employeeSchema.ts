@@ -138,6 +138,21 @@ export const getChatRoomId = Joi.object({
   other_user_id: Joi.string().required()
 })
 
+export const createChatSession = Joi.object({
+  chat_room_id: Joi.string().required()
+})
+
+export const getChatSessionIdandToken = Joi.object({
+  chat_room_id: Joi.string().required()
+})
+
+export const sendChatNotification = Joi.object({
+  chat_room_id: Joi.string().required(),
+  chat_type: Joi.string().trim().valid('text', 'audio', 'video').required(),
+  session_id: Joi.string(),
+  token: Joi.string(),
+})
+
 export const editGoal = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),

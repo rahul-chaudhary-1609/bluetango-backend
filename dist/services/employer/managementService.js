@@ -107,7 +107,7 @@ class EmployeeManagement {
                                 yield managerTeamMember_1.managerTeamMemberModel.update({
                                     manager_id: params.manager_id
                                 }, {
-                                    where: { id: params.id }
+                                    where: { team_member_id: params.id }
                                 });
                             }
                         }

@@ -58,8 +58,8 @@ export class EmployeeManagement {
                     }
                 }
             });
-        }       
-
+        }      
+        
         params.current_employer_id = user.uid;
         if (_.isEmpty(existingUser)) {
 
@@ -79,7 +79,7 @@ export class EmployeeManagement {
                                      manager_id: params.manager_id
                                  }
                                 , {
-                                    where: { id: params.id}
+                                    where: { team_member_id: params.id}
                             });
                             
                         }

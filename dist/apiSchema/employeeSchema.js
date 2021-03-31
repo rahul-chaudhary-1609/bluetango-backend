@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getChatRoomId = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -140,6 +140,18 @@ exports.viewGoalDetailsAsManager = joi_1.default.object({
 });
 exports.getChatRoomId = joi_1.default.object({
     other_user_id: joi_1.default.string().required()
+});
+exports.createChatSession = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.getChatSessionIdandToken = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.sendChatNotification = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required(),
+    chat_type: joi_1.default.string().trim().valid('text', 'audio', 'video').required(),
+    session_id: joi_1.default.string(),
+    token: joi_1.default.string(),
 });
 exports.editGoal = joi_1.default.object({
     id: joi_1.default.string().required(),

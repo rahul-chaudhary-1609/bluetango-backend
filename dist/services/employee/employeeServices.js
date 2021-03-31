@@ -76,7 +76,8 @@ class EmployeeServices {
             }));
             let date = new Date();
             date.setMonth(date.getMonth() - 3);
-            let dateCheck = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+            //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
+            let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             for (let i = 0; i < teamMembersData.rows.length; i++) {
                 let rateCheck = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
                     where: {
@@ -249,6 +250,19 @@ class EmployeeServices {
             return yield employee_1.employeeModel.update(params, {
                 where: { id: user.uid }
             });
+        });
+    }
+    /*
+   * function to update device token
+   */
+    updateEmployeeDeviceToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield employee_1.employeeModel.update({
+                device_token: params.device_token
+            }, {
+                where: { id: user.uid }
+            });
+            return authService.getMyProfile(user);
         });
     }
 }

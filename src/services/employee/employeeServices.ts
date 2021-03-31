@@ -54,7 +54,8 @@ export class EmployeeServices {
 
         let date = new Date();
         date.setMonth(date.getMonth()-3);
-        let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
+        let dateCheck = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
         for (let i=0; i< teamMembersData.rows.length; i++ ) {
             let rateCheck = await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findOne({
                     where: {
@@ -237,6 +238,21 @@ export class EmployeeServices {
             {
                 where: { id: user.uid }
             });
+    }
+
+    /*
+   * function to update device token
+   */
+    public async updateEmployeeDeviceToken(params: any, user: any) {
+        await employeeModel.update(
+            {
+                device_token: params.device_token
+            },
+            {
+                where: { id: user.uid }
+            }
+        )
+        return authService.getMyProfile(user);
     }
 
 }
