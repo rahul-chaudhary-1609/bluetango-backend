@@ -670,7 +670,8 @@ class EmployersService {
                 where: where,
                 attributes: ["id", "name", "email", "phone_number"],
                 limit: limit,
-                offset: offset
+                offset: offset,
+                order: [["id", "DESC"]]
             });
         });
     }
@@ -776,18 +777,22 @@ class EmployersService {
  */
     sendEmailAndNotification(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.status = 1;
             let receiver = {};
             if (params.receiver == "employer") {
-                receiver = yield models_1.employersModel.findAll({});
+                receiver = yield models_1.employersModel.findAll({ where: where });
             }
             else if (params.receiver == "employee") {
-                receiver = yield models_1.employeeModel.findAll({});
+                receiver = yield models_1.employeeModel.findAll({ where: where });
             }
             let toMails = [];
             let tokens = [];
             receiver.forEach(rec => {
                 toMails.push(rec.email);
-                tokens.push(rec.device_token);
+                if (rec.device_token !== null) {
+                    tokens.push(rec.device_token);
+                }
             });
             if (params.notification_type == 0) {
                 yield this.sendBulkEmail(toMails, params.message);
