@@ -1153,6 +1153,13 @@
             "description": "description",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image url",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
