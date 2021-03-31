@@ -1,6 +1,7 @@
 import _ from "lodash";
 import * as constants from "../../constants";
-import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
+import * as helperFunction from "../../utils/helperFunction";
+import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
 import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMeasurementComment"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
@@ -17,7 +18,8 @@ export class QualitativeMeasuremetServices {
     public async addQualitativeMeasurement(params: any, user: any) {
         let date = new Date();
         date.setMonth(date.getMonth()-3);
-        let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         let checkManagerEmployee = await managerTeamMemberModel.findOne({
             where: {
                 manager_id: user.uid,
@@ -37,6 +39,10 @@ export class QualitativeMeasuremetServices {
         })
         params.manager_id = user.uid;
 
+        let employeeData = await employeeModel.findOne({
+            where: { id: params.employee_id}
+        })
+
         if (_.isEmpty(qualitativeMeasurementData)) {
             let resData =  await  qualitativeMeasurementModel.create(params);
 
@@ -49,15 +55,15 @@ export class QualitativeMeasuremetServices {
             }
             await notificationModel.create(notificationObj);
             // send push notification
-            // let notificationData = <any> {
-            //     title: 'Rating',
-            //     body: `Your manager giv rating you`,
-            //     data: {
-            //         id: resData.id,
-                    // type: rating
-            //     },                        
-            // }
-            // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+            let notificationData = <any> {
+                title: 'Rating',
+                body: `Your manager giv rating you`,
+                data: {
+                    id: resData.id,
+                    type: constants.NOTIFICATION_TYPE.rating
+                },                        
+            }
+            await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
 
             return resData;
         } else {

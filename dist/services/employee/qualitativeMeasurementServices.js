@@ -34,6 +34,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QualitativeMeasuremetServices = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
+const helperFunction = __importStar(require("../../utils/helperFunction"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
@@ -50,7 +51,8 @@ class QualitativeMeasuremetServices {
         return __awaiter(this, void 0, void 0, function* () {
             let date = new Date();
             date.setMonth(date.getMonth() - 3);
-            let dateCheck = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+            //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+            let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             let checkManagerEmployee = yield managerTeamMember_1.managerTeamMemberModel.findOne({
                 where: {
                     manager_id: user.uid,
@@ -68,6 +70,9 @@ class QualitativeMeasuremetServices {
                 }
             });
             params.manager_id = user.uid;
+            let employeeData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
             if (lodash_1.default.isEmpty(qualitativeMeasurementData)) {
                 let resData = yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
                 // add notification for employee
@@ -79,15 +84,15 @@ class QualitativeMeasuremetServices {
                 };
                 yield notification_1.notificationModel.create(notificationObj);
                 // send push notification
-                // let notificationData = <any> {
-                //     title: 'Rating',
-                //     body: `Your manager giv rating you`,
-                //     data: {
-                //         id: resData.id,
-                // type: rating
-                //     },                        
-                // }
-                // await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                let notificationData = {
+                    title: 'Rating',
+                    body: `Your manager giv rating you`,
+                    data: {
+                        id: resData.id,
+                        type: constants.NOTIFICATION_TYPE.rating
+                    },
+                };
+                yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
                 return resData;
             }
             else {
