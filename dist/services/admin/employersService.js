@@ -563,7 +563,8 @@ class EmployersService {
     employerDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
-            models_1.employersModel.belongsTo(models_1.industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" });
+            //employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" })
+            // employersModel.hasOne(industryTypeModel, { foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
             let where = {};
             where.id = params.employerId;
             const employer = yield models_1.employersModel.findOne({
@@ -573,16 +574,17 @@ class EmployersService {
                         model: models_1.employeeModel,
                         required: false,
                         attributes: ["id"]
-                    },
-                    {
-                        model: models_1.industryTypeModel,
-                        required: false,
-                        as: "Industry_type",
-                        attributes: ["id", "name"]
                     }
+                    // {
+                    //     model: industryTypeModel,
+                    //     required: false,
+                    //     attributes: ["id", "name"]
+                    // }
                 ]
             });
             if (employer) {
+                const industry = yield models_1.industryTypeModel.findOne({ where: { id: employer.industry_type } });
+                employer.industry_type = industry.name;
                 return employer;
             }
             else {
