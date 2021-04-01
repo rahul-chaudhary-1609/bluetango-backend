@@ -23,7 +23,12 @@ export class AuthService {
         }
     });
 
-    if (!_.isEmpty(existingUser)) {
+
+       if (!_.isEmpty(existingUser) && existingUser.status == 0) {
+           throw new Error(constants.MESSAGES.deactivate_account);
+       } else if (!_.isEmpty(existingUser) && existingUser.status == 2) {
+           throw new Error(constants.MESSAGES.delete_account);
+       }else if (!_.isEmpty(existingUser)) {
         existingUser = await helperFunction.convertPromiseToObject(existingUser);
         let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
         if (comparePassword) {

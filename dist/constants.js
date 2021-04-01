@@ -9,6 +9,8 @@ exports.MESSAGES = {
     invalid_email: "Incorrect Email",
     deactivate_account: 'Your account has been de-activated by Admin. Please contact to admin',
     delete_account: 'Your account has been deleted by Admin. Please contact to admin',
+    deactivate_employer_account: 'Your employer account has been de-activated by Admin. Please contact to your employer',
+    delete_employer_account: 'Your employer account has been deleted by Admin. Please contact to your employer',
     not_same_password: "New Password should not be same as the Current Password",
     current_password_not_match: "Current Password Not matches with the existing one",
     signup_success: 'Signup Success',

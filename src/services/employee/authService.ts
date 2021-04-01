@@ -35,7 +35,7 @@ export class AuthService {
                 {
                     model: employersModel, 
                     required: false,
-                    attributes: ['id', 'name', 'email']
+                    attributes: ['id', 'name', 'email','status']
                 }
             ],
             
@@ -44,6 +44,10 @@ export class AuthService {
             throw new Error(constants.MESSAGES.deactivate_account);
         } else if (!_.isEmpty(existingUser) && existingUser.status == 2){
             throw new Error(constants.MESSAGES.delete_account);
+        } if (!_.isEmpty(existingUser) && existingUser.employer.status == 0) {
+            throw new Error(constants.MESSAGES.deactivate_employer_account);
+        } else if (!_.isEmpty(existingUser) && existingUser.employer.status == 2) {
+            throw new Error(constants.MESSAGES.delete_employer_account);
         }else if (!_.isEmpty(existingUser)) {
             existingUser = await helperFunction.convertPromiseToObject(existingUser);
             let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
