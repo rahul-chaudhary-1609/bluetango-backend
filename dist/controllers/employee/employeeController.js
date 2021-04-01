@@ -195,6 +195,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * get current manager
+    * @param req :[]
+    * @param res
+    */
+    getCurrentManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getCurrentManager(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

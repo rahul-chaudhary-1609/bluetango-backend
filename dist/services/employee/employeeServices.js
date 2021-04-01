@@ -265,6 +265,17 @@ class EmployeeServices {
             return authService.getMyProfile(user);
         });
     }
+    /*
+ * function to get current manager
+ */
+    getCurrentManager(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let currentManager = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                where: { team_member_id: user.uid },
+            }));
+            return currentManager;
+        });
+    }
 }
 exports.EmployeeServices = EmployeeServices;
 //# sourceMappingURL=employeeServices.js.map

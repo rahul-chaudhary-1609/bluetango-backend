@@ -156,4 +156,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * get current manager
+    * @param req :[]
+    * @param res 
+    */
+    public async getCurrentManager(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getCurrentManager(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
