@@ -42,7 +42,11 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
-    }
+    },
+    image: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
 },
     {
         tableName: "coach_management"

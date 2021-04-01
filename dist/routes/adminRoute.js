@@ -111,8 +111,10 @@ adminRoute.put("/editVideo", tokenValidator.validateAdminToken, employersControl
 adminRoute.get("/listVideo", tokenValidator.validateAdminToken, employersController.listVideo);
 /* library management details */
 adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersController.detailsVideo);
-/* add new video into library */
+/* add new news/article */
 adminRoute.post("/addArticle", tokenValidator.validateAdminToken, employersController.addArticle);
+/* update news/article */
+adminRoute.put("/updateArticle", tokenValidator.validateAdminToken, employersController.updateArticle);
 /* edit library management */
 adminRoute.put("/deleteArticle", tokenValidator.validateAdminToken, employersController.editArticle);
 /* list library management */
@@ -121,9 +123,13 @@ adminRoute.get("/listArticle", tokenValidator.validateAdminToken, employersContr
 adminRoute.get("/detailsArticle", tokenValidator.validateAdminToken, employersController.detailsArticle);
 /* add new advisor */
 adminRoute.post("/addAdvisor", tokenValidator.validateAdminToken, employersController.addAdvisor);
+/* update advisor */
+adminRoute.put("/updateAdvisor", tokenValidator.validateAdminToken, employersController.updateAdvisor);
 /* list advisor */
 adminRoute.get("/listAdvisor", tokenValidator.validateAdminToken, employersController.listAdvisor);
 /* delete advisor */
 adminRoute.put("/deleteAdvisor", tokenValidator.validateAdminToken, employersController.deleteAdvisor);
+/* advisor details */
+adminRoute.get("/detailsAdvisor", tokenValidator.validateAdminToken, employersController.detailsAdvisor);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

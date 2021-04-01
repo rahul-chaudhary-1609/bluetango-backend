@@ -479,6 +479,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
+            paymentManagement_1.paymentManagementModel.belongsTo(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "plan_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             let whereCond = {};
@@ -492,7 +493,8 @@ class EmployersService {
             // whereCond.admin_id = params.admin_id
             return yield paymentManagement_1.paymentManagementModel.findOne({
                 where: whereCond,
-                include: [{
+                include: [
+                    {
                         model: models_1.employersModel,
                         required: false,
                         where: where,
@@ -501,7 +503,14 @@ class EmployersService {
                                 required: false,
                                 attributes: ["id", "name"]
                             }]
-                    }],
+                    },
+                    {
+                        model: subscriptionManagement_1.subscriptionManagementModel,
+                        required: false,
+                        where: where,
+                        attributes: ["id", "plan_name"]
+                    }
+                ],
                 limit: limit,
                 offset: offset
             });
@@ -554,11 +563,24 @@ class EmployersService {
     employerDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
+            models_1.employersModel.belongsTo(models_1.industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" });
             let where = {};
             where.id = params.employerId;
             const employer = yield models_1.employersModel.findOne({
                 where: where,
-                include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }]
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        required: false,
+                        attributes: ["id"]
+                    },
+                    {
+                        model: models_1.industryTypeModel,
+                        required: false,
+                        as: "Industry_type",
+                        attributes: ["id", "name"]
+                    }
+                ]
             });
             if (employer) {
                 return employer;
@@ -687,7 +709,7 @@ class EmployersService {
             };
             const coach = yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
             });
             if (coach) {
                 return coach;
@@ -1049,6 +1071,23 @@ class EmployersService {
     *
     * @param {} params pass all parameters from request
     */
+    updateArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            const article = yield articleManagement_1.articleManagementModel.update(params, { where: where, returning: true });
+            if (article && article[1][0]) {
+                return article[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_article);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
     editArticle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let ids = JSON.parse(params.id);
@@ -1113,6 +1152,23 @@ class EmployersService {
     *
     * @param {} params pass all parameters from request
     */
+    updateAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            const advisor = yield advisorManagement_1.advisorManagementModel.update(params, { where: where, returning: true });
+            if (advisor && advisor[1][0]) {
+                return advisor[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_advisor);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
     listAdvisor(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
@@ -1138,6 +1194,26 @@ class EmployersService {
             const advisor = yield advisorManagement_1.advisorManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
             if (advisor && advisor[1][0]) {
                 return advisor[1];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_advisor);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    detailsAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            where.status = 1;
+            const article = yield advisorManagement_1.advisorManagementModel.findOne({
+                where: where
+            });
+            if (article) {
+                return article;
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_advisor);

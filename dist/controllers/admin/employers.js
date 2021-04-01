@@ -718,6 +718,28 @@ class EmployersController {
         });
     }
     /**
+ * update news/article
+ * @param req :[body data]
+ * @param res : [library data object]
+ */
+    updateArticle(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const article = yield employersService.updateArticle(req.body);
+                if (article) {
+                    return appUtils.successResponse(res, article, constants.MESSAGES.article_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
     * edit video into library
     * @param req :[body data]
     * @param res : [library data object]
@@ -806,6 +828,28 @@ class EmployersController {
         });
     }
     /**
+ * update news/article
+ * @param req :[body data]
+ * @param res : [library data object]
+ */
+    updateAdvisor(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const advisor = yield employersService.updateAdvisor(req.body);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
     * list library video
     * @param req :[body data]
     * @param res : [library data object]
@@ -839,6 +883,28 @@ class EmployersController {
                 const article = yield employersService.deleteAdvisor(req.body);
                 if (article) {
                     return appUtils.successResponse(res, article, constants.MESSAGES.advisor_updated);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * details advisor video
+    * @param req :[body data]
+    * @param res : [library data object]
+    */
+    detailsAdvisor(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const advisor = yield employersService.detailsAdvisor(req.query);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_details_fetched);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);

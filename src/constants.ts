@@ -115,6 +115,7 @@ export const MESSAGES = {
   chat_room_notFound: "chat room not found",
   video_chat_session_create_error: "Error in video chat session creation",
   video_chat_session_created: "Session created",
+  advisor_details_fetched: "Advisor details fetched"
 }
 
 export const code = {

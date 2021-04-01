@@ -1153,6 +1153,13 @@
             "description": "description",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image url",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1665,6 +1672,55 @@
         "responses": {}
       }
     },
+    "/admin/updateArticle": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to update article/news",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "article id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "title",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image url",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/admin/deleteArticle": {
       "put": {
         "tags": [
@@ -1728,6 +1784,34 @@
         "responses": {}
       }
     },
+    "/admin/detailsArticle": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list article/news",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "article id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/admin/addAdvisor": {
       "post": {
         "tags": [
@@ -1764,6 +1848,55 @@
             "in": "formData",
             "description": "image url",
             "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/updateAdvisor": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to update advisor",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "advisor id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "title",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image url",
+            "required": false,
             "type": "string"
           }
         ],
@@ -1828,6 +1961,34 @@
               "description": "page size",
               "required": false,
               "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/detailsAdvisor": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get details of advisor",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "advisor id",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}
