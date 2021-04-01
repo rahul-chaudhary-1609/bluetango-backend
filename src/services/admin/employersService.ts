@@ -563,7 +563,9 @@ export class EmployersService {
     */
     public async employerDetails(params: any) {
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
-        employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" })
+        //employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" })
+       // employersModel.hasOne(industryTypeModel, { foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
+        
         let where: any = {}
         where.id = params.employerId
 
@@ -574,17 +576,18 @@ export class EmployersService {
                     model: employeeModel,
                     required: false,
                     attributes: ["id"]
-                },
-                {
-                    model: industryTypeModel,
-                    required: false,
-                    as: "Industry_type",
-                    attributes: ["id", "name"]
                 }
+                // {
+                //     model: industryTypeModel,
+                //     required: false,
+                //     attributes: ["id", "name"]
+                // }
             ]
         })
-
+        
         if (employer) {
+        const industry = await industryTypeModel.findOne({where: {id: employer.industry_type}})
+        employer.industry_type = industry.name            
             return employer
         }
         else {
