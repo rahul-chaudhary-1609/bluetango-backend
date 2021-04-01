@@ -135,8 +135,11 @@ adminRoute.get("/listVideo", tokenValidator.validateAdminToken, employersControl
 /* library management details */
 adminRoute.get("/detailsVideo", tokenValidator.validateAdminToken, employersController.detailsVideo);
 
-/* add new video into library */
+/* add new news/article */
 adminRoute.post("/addArticle", tokenValidator.validateAdminToken, employersController.addArticle);
+
+/* update news/article */
+adminRoute.put("/updateArticle", tokenValidator.validateAdminToken, employersController.updateArticle);
 
 /* edit library management */
 adminRoute.put("/deleteArticle", tokenValidator.validateAdminToken, employersController.editArticle);

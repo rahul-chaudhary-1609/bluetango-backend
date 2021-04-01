@@ -709,7 +709,7 @@ class EmployersService {
             };
             const coach = yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
             });
             if (coach) {
                 return coach;
@@ -1065,6 +1065,23 @@ class EmployersService {
     addArticle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield articleManagement_1.articleManagementModel.create(params);
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    updateArticle(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            const article = yield articleManagement_1.articleManagementModel.update(params, { where: where, returning: true });
+            if (article && article[1][0]) {
+                return article[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_article);
+            }
         });
     }
     /**

@@ -710,7 +710,7 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
         })
         if (coach) {
             return coach
@@ -1086,6 +1086,23 @@ export class EmployersService {
         return await articleManagementModel.create(params)
 
     }
+
+    
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+   public async updateArticle(params: any) {
+    let where:any = {}
+    where.id = params.id
+    const article = await articleManagementModel.update(params, { where: where, returning: true });
+    if (article && article[1][0]) {
+        return article[1][0]
+    } else {
+        throw new Error(constants.MESSAGES.invalid_article)
+    }
+
+}
 
     /**
     * 
