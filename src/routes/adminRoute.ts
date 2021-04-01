@@ -153,11 +153,17 @@ adminRoute.get("/detailsArticle", tokenValidator.validateAdminToken, employersCo
 /* add new advisor */
 adminRoute.post("/addAdvisor", tokenValidator.validateAdminToken, employersController.addAdvisor);
 
+/* update advisor */
+adminRoute.put("/updateAdvisor", tokenValidator.validateAdminToken, employersController.updateAdvisor);
+
 /* list advisor */
 adminRoute.get("/listAdvisor", tokenValidator.validateAdminToken, employersController.listAdvisor);
 
 /* delete advisor */
 adminRoute.put("/deleteAdvisor", tokenValidator.validateAdminToken, employersController.deleteAdvisor);
+
+/* advisor details */
+adminRoute.get("/detailsAdvisor", tokenValidator.validateAdminToken, employersController.detailsAdvisor);
 
 
 

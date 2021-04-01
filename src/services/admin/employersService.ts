@@ -563,7 +563,7 @@ export class EmployersService {
     */
     public async employerDetails(params: any) {
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
-        employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type"})
+        employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" })
         let where: any = {}
         where.id = params.employerId
 
@@ -1087,22 +1087,22 @@ export class EmployersService {
 
     }
 
-    
+
     /**
     * 
     * @param {} params pass all parameters from request
     */
-   public async updateArticle(params: any) {
-    let where:any = {}
-    where.id = params.id
-    const article = await articleManagementModel.update(params, { where: where, returning: true });
-    if (article && article[1][0]) {
-        return article[1][0]
-    } else {
-        throw new Error(constants.MESSAGES.invalid_article)
-    }
+    public async updateArticle(params: any) {
+        let where: any = {}
+        where.id = params.id
+        const article = await articleManagementModel.update(params, { where: where, returning: true });
+        if (article && article[1][0]) {
+            return article[1][0]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_article)
+        }
 
-}
+    }
 
     /**
     * 
@@ -1170,6 +1170,23 @@ export class EmployersService {
 
     }
 
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async updateAdvisor(params: any) {
+        let where: any = {}
+        where.id = params.id
+        const advisor = await advisorManagementModel.update(params, { where: where, returning: true });
+        if (advisor && advisor[1][0]) {
+            return advisor[1][0]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_advisor)
+        }
+
+    }
+
     /**
     * 
     * @param {} params pass all parameters from request
@@ -1199,6 +1216,26 @@ export class EmployersService {
         const advisor = await advisorManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
         if (advisor && advisor[1][0]) {
             return advisor[1]
+        } else {
+            throw new Error(constants.MESSAGES.invalid_advisor)
+        }
+
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+    public async detailsAdvisor(params: any) {
+
+        let where: any = {}
+        where.id = params.id
+        where.status = 1
+        const article = await advisorManagementModel.findOne({
+            where: where
+        })
+        if (article) {
+            return article
         } else {
             throw new Error(constants.MESSAGES.invalid_advisor)
         }
