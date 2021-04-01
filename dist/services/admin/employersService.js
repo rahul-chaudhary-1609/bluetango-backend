@@ -1152,6 +1152,23 @@ class EmployersService {
     *
     * @param {} params pass all parameters from request
     */
+    updateAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            const advisor = yield advisorManagement_1.advisorManagementModel.update(params, { where: where, returning: true });
+            if (advisor && advisor[1][0]) {
+                return advisor[1][0];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_advisor);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
     listAdvisor(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
@@ -1177,6 +1194,26 @@ class EmployersService {
             const advisor = yield advisorManagement_1.advisorManagementModel.update({ status: 2 }, { where: { id: ids }, returning: true });
             if (advisor && advisor[1][0]) {
                 return advisor[1];
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_advisor);
+            }
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    detailsAdvisor(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.id;
+            where.status = 1;
+            const article = yield advisorManagement_1.advisorManagementModel.findOne({
+                where: where
+            });
+            if (article) {
+                return article;
             }
             else {
                 throw new Error(constants.MESSAGES.invalid_advisor);

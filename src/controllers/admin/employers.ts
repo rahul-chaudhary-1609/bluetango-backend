@@ -705,6 +705,25 @@ export class EmployersController {
     }
 
     /**
+ * update news/article
+ * @param req :[body data]
+ * @param res : [library data object]
+ */
+    public async updateAdvisor(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const advisor: any = await employersService.updateAdvisor(req.body);
+            if (advisor) {
+                return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_updated);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
     * list library video
     * @param req :[body data]
     * @param res : [library data object]
@@ -734,6 +753,25 @@ export class EmployersController {
             const article: any = await employersService.deleteAdvisor(req.body);
             if (article) {
                 return appUtils.successResponse(res, article, constants.MESSAGES.advisor_updated);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * details advisor video
+    * @param req :[body data]
+    * @param res : [library data object]
+    */
+    public async detailsAdvisor(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const advisor: any = await employersService.detailsAdvisor(req.query);
+            if (advisor) {
+                return appUtils.successResponse(res, advisor, constants.MESSAGES.advisor_details_fetched);
             } else {
                 appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
             }

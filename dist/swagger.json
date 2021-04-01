@@ -1854,6 +1854,55 @@
                 "responses": {}
             }
         },
+        "/admin/updateAdvisor": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to update advisor",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "advisor id",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "title",
+                        "in": "formData",
+                        "description": "title",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "in": "formData",
+                        "description": "description",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "image",
+                        "in": "formData",
+                        "description": "image url",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/admin/deleteAdvisor": {
             "put": {
                 "tags": [
@@ -1911,6 +1960,34 @@
                         "in": "query",
                         "description": "page size",
                         "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/admin/detailsAdvisor": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "description": "Api to get details of advisor",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "advisor id",
+                        "required": true,
                         "type": "number"
                     }
                 ],
