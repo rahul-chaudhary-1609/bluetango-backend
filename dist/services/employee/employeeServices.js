@@ -35,6 +35,7 @@ exports.EmployeeServices = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
+const department_1 = require("../../models/department");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
@@ -274,6 +275,42 @@ class EmployeeServices {
                 where: { team_member_id: user.uid },
             }));
             return currentManager;
+        });
+    }
+    /*
+    * function to get  get employee details to show employee detail on dashbord as team menber view
+    */
+    getEmployeeDetails(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasOne(department_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+            managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            let employee = yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'name', 'employee_code', 'profile_pic_url'],
+                where: {
+                    id: user.uid
+                },
+                include: [
+                    {
+                        model: department_1.departmentModel,
+                        required: false,
+                        attributes: ['name']
+                    },
+                    {
+                        model: managerTeamMember_1.managerTeamMemberModel,
+                        required: false,
+                        attributes: ['manager_id'],
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: false,
+                                attributes: ['name'],
+                            }
+                        ]
+                    }
+                ],
+            });
+            return yield helperFunction.convertPromiseToObject(employee);
         });
     }
 }

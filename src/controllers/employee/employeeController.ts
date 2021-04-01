@@ -171,4 +171,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * get employee details to show employee detail on dashbord as team menber view 
+    * @param req :[]
+    * @param res 
+    */
+    public async getEmployeeDetails(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getEmployeeDetails(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

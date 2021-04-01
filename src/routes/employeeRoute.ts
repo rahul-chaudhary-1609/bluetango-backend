@@ -103,6 +103,9 @@ employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidat
 /* get current manager */
 employeeRoute.get("/getCurrentManager", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCurrentManager);
 
+/* get employee details to show employee detail on dashbord as team menber view */
+employeeRoute.get("/getEmployeeDetails", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeDetails);
+
 
 
 // QualitativeMeasurement routes

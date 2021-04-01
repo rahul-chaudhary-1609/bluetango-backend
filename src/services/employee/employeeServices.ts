@@ -267,4 +267,42 @@ export class EmployeeServices {
         return currentManager;
     }
 
+    /*
+    * function to get  get employee details to show employee detail on dashbord as team menber view
+    */
+    public async getEmployeeDetails(user: any) {
+
+        employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+        let employee = await employeeModel.findOne({
+            attributes: ['id', 'name','employee_code','profile_pic_url'],
+            where: {
+                id:user.uid
+            },
+            include: [
+                {
+                    model: departmentModel,
+                    required: false,
+                    attributes:['name']
+                },
+                {
+                    model: managerTeamMemberModel,
+                    required: false,
+                    attributes: ['manager_id'],
+                    include: [
+                        {
+                            model: employeeModel,
+                            required: false,
+                            attributes: ['name'],
+                        }
+                    ]
+                }
+            ],
+
+        });
+
+        return await helperFunction.convertPromiseToObject(employee);
+    }
+
 }
