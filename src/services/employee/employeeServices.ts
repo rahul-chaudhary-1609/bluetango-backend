@@ -255,4 +255,16 @@ export class EmployeeServices {
         return authService.getMyProfile(user);
     }
 
+    /*
+ * function to get current manager
+ */
+    public async getCurrentManager(user: any) {
+        let currentManager = await helperFunction.convertPromiseToObject(await managerTeamMemberModel.findOne({
+            where: { team_member_id: user.uid },
+            })
+        );
+
+        return currentManager;
+    }
+
 }

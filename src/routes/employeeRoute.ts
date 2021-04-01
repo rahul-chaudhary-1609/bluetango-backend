@@ -100,6 +100,9 @@ employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.vali
 /* update device token */
 employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 
+/* get current manager */
+employeeRoute.get("/getCurrentManager", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCurrentManager);
+
 
 
 // QualitativeMeasurement routes

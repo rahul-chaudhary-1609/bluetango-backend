@@ -3122,7 +3122,7 @@
                 "tags": [
                     "Employee"
                 ],
-                "description": "Api to get employee list",
+                "description": "Api to update employee device token",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -3138,6 +3138,27 @@
                         "name": "device_token",
                         "in": "formData",
                         "description": "enter device token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getCurrentManager": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Api to get current manager",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
                     }

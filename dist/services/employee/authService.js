@@ -67,7 +67,7 @@ class AuthService {
                     {
                         model: employers_1.employersModel,
                         required: false,
-                        attributes: ['id', 'name', 'email']
+                        attributes: ['id', 'name', 'email', 'status']
                     }
                 ],
             });
@@ -76,6 +76,12 @@ class AuthService {
             }
             else if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 2) {
                 throw new Error(constants.MESSAGES.delete_account);
+            }
+            if (!lodash_1.default.isEmpty(existingUser) && existingUser.employer.status == 0) {
+                throw new Error(constants.MESSAGES.deactivate_employer_account);
+            }
+            else if (!lodash_1.default.isEmpty(existingUser) && existingUser.employer.status == 2) {
+                throw new Error(constants.MESSAGES.delete_employer_account);
             }
             else if (!lodash_1.default.isEmpty(existingUser)) {
                 existingUser = yield helperFunction.convertPromiseToObject(existingUser);

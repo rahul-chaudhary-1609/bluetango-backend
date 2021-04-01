@@ -54,7 +54,13 @@ class AuthService {
                     status: { [Op.in]: [0, 1] }
                 }
             });
-            if (!lodash_1.default.isEmpty(existingUser)) {
+            if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
+                throw new Error(constants.MESSAGES.deactivate_account);
+            }
+            else if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 2) {
+                throw new Error(constants.MESSAGES.delete_account);
+            }
+            else if (!lodash_1.default.isEmpty(existingUser)) {
                 existingUser = yield helperFunction.convertPromiseToObject(existingUser);
                 let comparePassword = yield appUtils.comparePassword(params.password, existingUser.password);
                 if (comparePassword) {
