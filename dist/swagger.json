@@ -3171,7 +3171,28 @@
                 "tags": [
                     "Employee"
                 ],
-                "description": "Api to get current manager",
+                "description": "Api to get employee details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/viewEmployeeEnergy": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Api to get employee energy",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],

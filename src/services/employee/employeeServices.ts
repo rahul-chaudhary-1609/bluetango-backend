@@ -268,7 +268,7 @@ export class EmployeeServices {
     }
 
     /*
-    * function to get  get employee details to show employee detail on dashbord as team menber view
+    * function to get employee details to show employee detail on dashbord as team member view
     */
     public async getEmployeeDetails(user: any) {
 
@@ -303,6 +303,30 @@ export class EmployeeServices {
         });
 
         return await helperFunction.convertPromiseToObject(employee);
+    }
+
+    /*
+    * function to view employee energy of employee on dashbord as team member view
+    */
+    public async viewEmployeeEnergy(user: any) {
+
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+        let employeeEnergy = await employeeModel.findOne({
+            attributes: ['id', 'name'],
+            where: {
+                id: user.uid
+            },
+            include: [
+                {
+                    model: emojiModel,
+                    required: false,
+                    attributes: ['id','image_url','caption']
+                },
+            ],
+
+        });
+
+        return await helperFunction.convertPromiseToObject(employeeEnergy);
     }
 
 }

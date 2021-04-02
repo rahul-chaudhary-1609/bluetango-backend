@@ -94,8 +94,10 @@ employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.vali
 employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 /* get current manager */
 employeeRoute.get("/getCurrentManager", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCurrentManager);
-/* get employee details to show employee detail on dashbord as team menber view */
+/* get employee details to show employee detail on dashbord as team member view */
 employeeRoute.get("/getEmployeeDetails", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeDetails);
+/* view employee energy of employee on dashbord as team member view */
+employeeRoute.get("/viewEmployeeEnergy", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEmployeeEnergy);
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);

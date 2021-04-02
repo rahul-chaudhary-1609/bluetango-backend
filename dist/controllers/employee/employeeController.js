@@ -212,7 +212,7 @@ class EmployeeController {
         });
     }
     /**
-    * get employee details to show employee detail on dashbord as team menber view
+    * get employee details to show employee detail on dashbord as team member view
     * @param req :[]
     * @param res
     */
@@ -220,6 +220,22 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeServices.getEmployeeDetails(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * view employee energy of employee on dashbord as team member view
+    * @param req :[]
+    * @param res
+    */
+    viewEmployeeEnergy(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.viewEmployeeEnergy(req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

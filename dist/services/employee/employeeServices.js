@@ -278,7 +278,7 @@ class EmployeeServices {
         });
     }
     /*
-    * function to get  get employee details to show employee detail on dashbord as team menber view
+    * function to get employee details to show employee detail on dashbord as team member view
     */
     getEmployeeDetails(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -311,6 +311,28 @@ class EmployeeServices {
                 ],
             });
             return yield helperFunction.convertPromiseToObject(employee);
+        });
+    }
+    /*
+    * function to view employee energy of employee on dashbord as team member view
+    */
+    viewEmployeeEnergy(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+            let employeeEnergy = yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'name'],
+                where: {
+                    id: user.uid
+                },
+                include: [
+                    {
+                        model: emoji_1.emojiModel,
+                        required: false,
+                        attributes: ['id', 'image_url', 'caption']
+                    },
+                ],
+            });
+            return yield helperFunction.convertPromiseToObject(employeeEnergy);
         });
     }
 }
