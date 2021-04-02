@@ -349,6 +349,20 @@ class EmployeeServices {
             return yield helperFunction.convertPromiseToObject(employeeThoughtOfTheDay);
         });
     }
+    /*
+    * to view feel About Job Today on dashbord as team member view
+    */
+    viewFeelAboutJobToday(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employeeFeelAboutJobToday = yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'job_emoji_id', 'job_comments'],
+                where: {
+                    id: user.uid
+                },
+            });
+            return yield helperFunction.convertPromiseToObject(employeeFeelAboutJobToday);
+        });
+    }
 }
 exports.EmployeeServices = EmployeeServices;
 //# sourceMappingURL=employeeServices.js.map

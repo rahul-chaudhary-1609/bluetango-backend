@@ -216,4 +216,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * to view feel About Job Today on dashbord as team member view
+    * @param req :[]
+    * @param res 
+    */
+    public async viewFeelAboutJobToday(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.viewFeelAboutJobToday(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

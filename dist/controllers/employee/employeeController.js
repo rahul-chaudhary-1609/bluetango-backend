@@ -259,6 +259,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * to view feel About Job Today on dashbord as team member view
+    * @param req :[]
+    * @param res
+    */
+    viewFeelAboutJobToday(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.viewFeelAboutJobToday(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

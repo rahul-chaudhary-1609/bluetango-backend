@@ -344,4 +344,19 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(employeeThoughtOfTheDay);
     }
 
+    /*
+    * to view feel About Job Today on dashbord as team member view
+    */
+    public async viewFeelAboutJobToday(user: any) {
+
+        let employeeFeelAboutJobToday = await employeeModel.findOne({
+            attributes: ['id', 'job_emoji_id','job_comments'],
+            where: {
+                id: user.uid
+            },
+        });
+
+        return await helperFunction.convertPromiseToObject(employeeFeelAboutJobToday);
+    }
+
 }
