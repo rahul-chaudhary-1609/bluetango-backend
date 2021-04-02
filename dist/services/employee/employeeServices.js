@@ -314,7 +314,7 @@ class EmployeeServices {
         });
     }
     /*
-    * function to view employee energy of employee on dashbord as team member view
+    * function to view energy of employee on dashbord as team member view
     */
     viewEmployeeEnergy(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -333,6 +333,20 @@ class EmployeeServices {
                 ],
             });
             return yield helperFunction.convertPromiseToObject(employeeEnergy);
+        });
+    }
+    /*
+    * function to view thought of the day employee on dashbord as team member view
+    */
+    viewThoughtOfTheDay(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employeeThoughtOfTheDay = yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'thought_of_the_day'],
+                where: {
+                    id: user.uid
+                },
+            });
+            return yield helperFunction.convertPromiseToObject(employeeThoughtOfTheDay);
         });
     }
 }

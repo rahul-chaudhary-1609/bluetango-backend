@@ -96,8 +96,10 @@ employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidat
 employeeRoute.get("/getCurrentManager", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCurrentManager);
 /* get employee details to show employee detail on dashbord as team member view */
 employeeRoute.get("/getEmployeeDetails", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeDetails);
-/* view employee energy of employee on dashbord as team member view */
+/* view energy of employee on dashbord as team member view */
 employeeRoute.get("/viewEmployeeEnergy", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewEmployeeEnergy);
+/* to view thought of the day employee on dashbord as team member view */
+employeeRoute.get("/viewThoughtOfTheDay", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewThoughtOfTheDay);
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);

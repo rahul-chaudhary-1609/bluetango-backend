@@ -228,7 +228,7 @@ class EmployeeController {
         });
     }
     /**
-    * view employee energy of employee on dashbord as team member view
+    * view energy of employee on dashbord as team member view
     * @param req :[]
     * @param res
     */
@@ -236,6 +236,22 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeServices.viewEmployeeEnergy(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * to view thought of the day employee on dashbord as team member view
+    * @param req :[]
+    * @param res
+    */
+    viewThoughtOfTheDay(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.viewThoughtOfTheDay(req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

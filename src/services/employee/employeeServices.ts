@@ -306,7 +306,7 @@ export class EmployeeServices {
     }
 
     /*
-    * function to view employee energy of employee on dashbord as team member view
+    * function to view energy of employee on dashbord as team member view
     */
     public async viewEmployeeEnergy(user: any) {
 
@@ -327,6 +327,21 @@ export class EmployeeServices {
         });
 
         return await helperFunction.convertPromiseToObject(employeeEnergy);
+    }
+
+    /*
+    * function to view thought of the day employee on dashbord as team member view
+    */
+    public async viewThoughtOfTheDay(user: any) {
+
+        let employeeThoughtOfTheDay = await employeeModel.findOne({
+            attributes: ['id', 'thought_of_the_day'],
+            where: {
+                id: user.uid
+            },
+        });
+
+        return await helperFunction.convertPromiseToObject(employeeThoughtOfTheDay);
     }
 
 }

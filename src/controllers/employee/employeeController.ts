@@ -187,13 +187,28 @@ export class EmployeeController {
     }
 
     /**
-    * view employee energy of employee on dashbord as team member view
+    * view energy of employee on dashbord as team member view
     * @param req :[]
     * @param res 
     */
     public async viewEmployeeEnergy(req: any, res: any, next: any) {
         try {
             const responseFromService = await employeeServices.viewEmployeeEnergy(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * to view thought of the day employee on dashbord as team member view
+    * @param req :[]
+    * @param res 
+    */
+    public async viewThoughtOfTheDay(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.viewThoughtOfTheDay(req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {
