@@ -231,4 +231,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+   * to view thought of the day from admin on dashbord as team member view
+   * @param req :[]
+   * @param res 
+   */
+    public async viewThoughtOfTheDayFromAdmin(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.viewThoughtOfTheDayFromAdmin(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

@@ -35,6 +35,8 @@ exports.EmployeeServices = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
+const admin_1 = require("../../models/admin");
+const employers_1 = require("../../models/employers");
 const department_1 = require("../../models/department");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
@@ -350,7 +352,7 @@ class EmployeeServices {
         });
     }
     /*
-    * to view feel About Job Today on dashbord as team member view
+    * function to view feel About Job Today on dashbord as team member view
     */
     viewFeelAboutJobToday(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -361,6 +363,36 @@ class EmployeeServices {
                 },
             });
             return yield helperFunction.convertPromiseToObject(employeeFeelAboutJobToday);
+        });
+    }
+    /*
+    * function to view thought of the day from admin on dashbord as team member view
+    */
+    viewThoughtOfTheDayFromAdmin(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasOne(employers_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+            employers_1.employersModel.hasOne(admin_1.adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" });
+            let employeeFeelAboutJobTodayFromAdmin = yield employee_1.employeeModel.findOne({
+                attributes: ['id'],
+                where: {
+                    id: user.uid
+                },
+                include: [
+                    {
+                        model: employers_1.employersModel,
+                        required: false,
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: admin_1.adminModel,
+                                required: false,
+                                attributes: ['id', 'thought_of_the_day']
+                            },
+                        ],
+                    },
+                ],
+            });
+            return yield helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
         });
     }
 }

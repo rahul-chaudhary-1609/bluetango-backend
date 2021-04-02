@@ -345,7 +345,7 @@ export class EmployeeServices {
     }
 
     /*
-    * to view feel About Job Today on dashbord as team member view
+    * function to view feel About Job Today on dashbord as team member view
     */
     public async viewFeelAboutJobToday(user: any) {
 
@@ -357,6 +357,38 @@ export class EmployeeServices {
         });
 
         return await helperFunction.convertPromiseToObject(employeeFeelAboutJobToday);
+    }
+
+    /*
+    * function to view thought of the day from admin on dashbord as team member view
+    */
+    public async viewThoughtOfTheDayFromAdmin(user: any) {
+
+        employeeModel.hasOne(employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        employersModel.hasOne(adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" });
+
+        let employeeFeelAboutJobTodayFromAdmin = await employeeModel.findOne({
+            attributes: ['id'],
+            where: {
+                id: user.uid
+            },
+            include: [
+                {
+                    model: employersModel,
+                    required: false,
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: adminModel,
+                            required: false,
+                            attributes: ['id', 'thought_of_the_day']
+                        },
+                    ],
+                },
+            ],
+        });
+
+        return await helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
     }
 
 }

@@ -115,6 +115,9 @@ employeeRoute.get("/viewThoughtOfTheDay", validators.trimmer, tokenValidator.val
 /* to view feel About Job Today on dashbord as team member view */
 employeeRoute.get("/viewFeelAboutJobToday", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewFeelAboutJobToday);
 
+/* to view thought of the day from admin on dashbord as team member view */
+employeeRoute.get("/viewThoughtOfTheDayFromAdmin", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewThoughtOfTheDayFromAdmin);
+
 
 
 // QualitativeMeasurement routes

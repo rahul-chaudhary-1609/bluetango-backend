@@ -275,6 +275,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+   * to view thought of the day from admin on dashbord as team member view
+   * @param req :[]
+   * @param res
+   */
+    viewThoughtOfTheDayFromAdmin(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.viewThoughtOfTheDayFromAdmin(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map
