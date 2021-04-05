@@ -584,8 +584,8 @@ class EmployersService {
             });
             if (employer) {
                 const industry = yield models_1.industryTypeModel.findOne({ where: { id: employer.industry_type } });
-                employer.industry_type = industry.name;
-                return employer;
+                //employer.industry_name = industry.name            
+                return { employer, industry };
             }
             else {
                 throw new Error(constants.MESSAGES.employer_notFound);
