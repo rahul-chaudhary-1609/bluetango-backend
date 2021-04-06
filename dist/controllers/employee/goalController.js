@@ -182,6 +182,22 @@ class GoalController {
             }
         });
     }
+    /**
+    * get Quantitative Stats of goals
+    * @param req :[]
+    * @param res
+    */
+    getQuantitativeStatsOfGoals(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.getQuantitativeStatsOfGoals(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.GoalController = GoalController;
 //# sourceMappingURL=goalController.js.map

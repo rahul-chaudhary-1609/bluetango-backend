@@ -137,5 +137,19 @@ export class GoalController {
             next(e)
         }
     }
+
+    /**
+    * get Quantitative Stats of goals
+    * @param req :[]
+    * @param res 
+    */
+    public async getQuantitativeStatsOfGoals(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.getQuantitativeStatsOfGoals(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }

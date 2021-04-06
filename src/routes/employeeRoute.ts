@@ -120,6 +120,13 @@ employeeRoute.get("/viewThoughtOfTheDayFromAdmin", validators.trimmer, tokenVali
 
 
 
+/* to get Quantitative Stats of goals on dashbord as team member view*/
+employeeRoute.get("/getQuantitativeStatsOfGoals", validators.trimmer, tokenValidator.validateEmployeeToken, goalController.getQuantitativeStatsOfGoals);
+
+
+
+
+
 // QualitativeMeasurement routes
 
 /* add qualitative measurement for employee */
