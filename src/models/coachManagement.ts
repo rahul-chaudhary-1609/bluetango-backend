@@ -47,6 +47,10 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    fileName: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    }
 },
     {
         tableName: "coach_management"

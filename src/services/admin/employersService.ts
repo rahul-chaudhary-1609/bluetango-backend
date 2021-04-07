@@ -713,7 +713,7 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
         })
         if (coach) {
             return coach
@@ -1244,5 +1244,12 @@ export class EmployersService {
         }
 
     }
+
+    // public async findAdminById(params: any) {
+    //     let where: any = {}
+    //     where.id = params.uid
+    //     where.status = 1
+    //     return await adminModel.findOne({where: where})
+    // }
 
 }
