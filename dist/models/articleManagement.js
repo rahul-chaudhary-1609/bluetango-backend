@@ -31,6 +31,10 @@ exports.articleManagementModel = connection_1.sequelize.define("article_manageme
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    fileName: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
     }
 }, {
     tableName: "article_management"

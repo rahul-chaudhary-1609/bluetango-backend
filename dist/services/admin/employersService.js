@@ -711,7 +711,7 @@ class EmployersService {
             };
             const coach = yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
             });
             if (coach) {
                 return coach;

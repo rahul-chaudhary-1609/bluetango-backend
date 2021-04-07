@@ -30,6 +30,10 @@ export const articleManagementModel: any = sequelize.define("article_management"
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    fileName: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 },
     {
