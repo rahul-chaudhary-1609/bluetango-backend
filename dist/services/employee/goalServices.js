@@ -496,11 +496,9 @@ class GoalServices {
     getQuantitativeStatsOfGoals(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
-            // teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
-            //teamGoalAssignModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             let quantitativeStatsOfGoals = yield teamGoalAssign_1.teamGoalAssignModel.findAll({
                 where: { employee_id: user.uid },
-                attributes: ['id', 'goal_id', 'employee_id', 'complete_measure', 'status'],
+                attributes: ['id', 'goal_id', 'employee_id', 'complete_measure'],
                 include: [
                     {
                         model: teamGoal_1.teamGoalModel,

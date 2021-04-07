@@ -192,6 +192,7 @@ exports.addEditCoach = joi_1.default.object({
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
-    image: joi_1.default.string().optional()
+    image: joi_1.default.string().optional(),
+    fileName: joi_1.default.string().optional()
 });
 //# sourceMappingURL=adminSchema.js.map
