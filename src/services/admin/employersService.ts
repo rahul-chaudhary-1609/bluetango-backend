@@ -713,7 +713,7 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
         })
         if (coach) {
             return coach
@@ -1243,6 +1243,13 @@ export class EmployersService {
             throw new Error(constants.MESSAGES.invalid_advisor)
         }
 
+    }
+
+    public async findAdminById(params: any) {
+        let where: any = {}
+        where.id = params.uid
+        where.status = 2
+        return await adminModel.findOne({where: where})
     }
 
 }

@@ -1160,6 +1160,13 @@
             "description": "image url",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1505,6 +1512,13 @@
             "description": "video url",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1552,6 +1566,13 @@
             "name": "video",
             "in": "formData",
             "description": "video url",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
             "required": false,
             "type": "string"
           },
@@ -1667,6 +1688,13 @@
             "description": "image url",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1714,6 +1742,13 @@
             "name": "image",
             "in": "formData",
             "description": "image url",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
             "required": false,
             "type": "string"
           }
@@ -1849,6 +1884,13 @@
             "description": "image url",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1896,6 +1938,13 @@
             "name": "image",
             "in": "formData",
             "description": "image url",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
             "required": false,
             "type": "string"
           }

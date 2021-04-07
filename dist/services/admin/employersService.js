@@ -711,7 +711,7 @@ class EmployersService {
             };
             const coach = yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
             });
             if (coach) {
                 return coach;
@@ -1220,6 +1220,14 @@ class EmployersService {
             else {
                 throw new Error(constants.MESSAGES.invalid_advisor);
             }
+        });
+    }
+    findAdminById(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.uid;
+            where.status = 2;
+            return yield models_1.adminModel.findOne({ where: where });
         });
     }
 }

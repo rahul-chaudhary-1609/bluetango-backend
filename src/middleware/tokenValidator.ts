@@ -1,5 +1,9 @@
 import * as constants from '../constants'
 import jwt from 'jsonwebtoken';
+import { EmployersService } from '../services/admin/employersService'
+
+//Instantiates a Home services  
+const employersService = new EmployersService();
 
 export const validateAdminToken = async (req, res, next) => {
     let response = { ...constants.defaultServerResponse };
@@ -14,6 +18,14 @@ export const validateAdminToken = async (req, res, next) => {
             user_role: decoded.user_role
         }
         req.user = payload;
+
+        let isUserExist = await employersService.findAdminById(req.user)
+        console.log(isUserExist)
+        if(isUserExist) {
+            response.status = 401;
+            response.message = "User has been deleted please contact admin"
+            return res.status(response.status).send(response);
+        }
         return next();
     } catch (error) {
         response.message = error.message;
