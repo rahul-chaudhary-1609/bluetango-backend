@@ -1245,11 +1245,11 @@ export class EmployersService {
 
     }
 
-    // public async findAdminById(params: any) {
-    //     let where: any = {}
-    //     where.id = params.uid
-    //     where.status = 1
-    //     return await adminModel.findOne({where: where})
-    // }
+    public async findAdminById(params: any) {
+        let where: any = {}
+        where.id = params.uid
+        where.status = 2
+        return await adminModel.findOne({where: where})
+    }
 
 }
