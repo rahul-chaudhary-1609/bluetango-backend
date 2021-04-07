@@ -1222,6 +1222,14 @@ class EmployersService {
             }
         });
     }
+    findAdminById(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            where.id = params.uid;
+            where.status = 2;
+            return yield models_1.adminModel.findOne({ where: where });
+        });
+    }
 }
 exports.EmployersService = EmployersService;
 //# sourceMappingURL=employersService.js.map

@@ -34,6 +34,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateEmployerToken = exports.validateEmployeeToken = exports.validateForgotPasswordToken = exports.validateAdminToken = void 0;
 const constants = __importStar(require("../constants"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const employersService_1 = require("../services/admin/employersService");
+//Instantiates a Home services  
+const employersService = new employersService_1.EmployersService();
 exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let response = Object.assign({}, constants.defaultServerResponse);
     try {
@@ -47,6 +50,12 @@ exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 
             user_role: decoded.user_role
         };
         req.user = payload;
+        let isUserExist = employersService.findAdminById(req.user);
+        if (isUserExist) {
+            response.status = 401;
+            response.message = "User has been deleted please contact admin";
+            return res.status(response.status).send(response);
+        }
         return next();
     }
     catch (error) {
