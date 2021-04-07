@@ -490,6 +490,38 @@ class GoalServices {
             }
         });
     }
+    /*
+ * function to get Quantitative Stats of goals
+ */
+    getQuantitativeStatsOfGoals(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+            // teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+            //teamGoalAssignModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let quantitativeStatsOfGoals = yield teamGoalAssign_1.teamGoalAssignModel.findAll({
+                where: { employee_id: user.uid },
+                attributes: ['id', 'goal_id', 'employee_id', 'complete_measure', 'status'],
+                include: [
+                    {
+                        model: teamGoal_1.teamGoalModel,
+                        required: true,
+                        attributes: ['id', 'title', 'enter_measure']
+                    }
+                ]
+            });
+            quantitativeStatsOfGoals = quantitativeStatsOfGoals.map((goal) => {
+                return {
+                    id: goal.id,
+                    goal_id: goal.goal_id,
+                    employee_id: goal.employee_id,
+                    title: goal.team_goal.title,
+                    quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
+                    quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) / 100,
+                };
+            });
+            return quantitativeStatsOfGoals;
+        });
+    }
 }
 exports.GoalServices = GoalServices;
 //# sourceMappingURL=goalServices.js.map

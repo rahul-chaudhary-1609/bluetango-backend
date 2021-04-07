@@ -7,6 +7,7 @@ import { teamGoalModel } from  "../../models/teamGoal"
 import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { teamGoalAssignCompletionByEmployeeModel } from  "../../models/teamGoalAssignCompletionByEmployee"
 import { notificationModel } from "../../models/notification";
+import { parse } from "path";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -402,7 +403,7 @@ export class GoalServices {
     */
     public async goalAcceptRejectAsManager(params: any, user: any) {
 
-        let teamGoalAssignCompletionByEmployeeObj = <any> {
+        let teamGoalAssignCompletionByEmployeeObj = <any>{
             status: parseInt(params.status)
         };
         let teamGoalAssignCompletionByEmployeeCheck = await teamGoalAssignCompletionByEmployeeModel.findOne({
@@ -415,22 +416,22 @@ export class GoalServices {
         });
 
         if (teamGoalAssignCompletionByEmployeeCheck) {
-            await teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj,{
-                where: {id: params.team_goal_assign_completion_by_employee_id }
+            await teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
+                where: { id: params.team_goal_assign_completion_by_employee_id }
             });
     
             var getEmployeeId = await teamGoalAssignModel.findOne({
-                where: {id: params.team_goal_assign_id}
+                where: { id: params.team_goal_assign_id }
             })
 
             let employeeData = await employeeModel.findOne({
                 where: { id: getEmployeeId.employee_id }
             })
     
-            if ( parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
+            if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
                
                 // add goal approve notification
-                let notificationObj = <any> {
+                let notificationObj = <any>{
                     type_id: params.goal_id,
                     sender_id: user.uid,
                     reciever_id: getEmployeeId.employee_id,
@@ -439,29 +440,29 @@ export class GoalServices {
                 await notificationModel.create(notificationObj);
     
                 // send push notification
-                let notificationData = <any> {
+                let notificationData = <any>{
                     title: 'Accept your goal',
                     body: `Your manager accept your goal`,
                     data: {
                         goal_id: params.goal_id,
                         type: constants.NOTIFICATION_TYPE.goal_accept
-                    },                        
+                    },
                 }
-                await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                await helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
     
                 let getGoalCompleteData = await teamGoalAssignCompletionByEmployeeModel.findOne({
-                    where: {id: params.team_goal_assign_completion_by_employee_id }
+                    where: { id: params.team_goal_assign_completion_by_employee_id }
                 });
-                let teamGoalAssignObj = <any> {
+                let teamGoalAssignObj = <any>{
                     status: 1, // 
                     complete_measure: getGoalCompleteData.complete_measure
                 }
-                return teamGoalAssignModel.update(teamGoalAssignObj,{
-                    where: { id: params.team_goal_assign_id}
+                return teamGoalAssignModel.update(teamGoalAssignObj, {
+                    where: { id: params.team_goal_assign_id }
                 })
             } else {
                 // add goal reject notification
-                let notificationObj = <any> {
+                let notificationObj = <any>{
                     type_id: params.goal_id,
                     sender_id: user.uid,
                     reciever_id: getEmployeeId.employee_id,
@@ -470,22 +471,53 @@ export class GoalServices {
                 await notificationModel.create(notificationObj);
     
                 // send push notification
-                let notificationData = <any> {
+                let notificationData = <any>{
                     title: 'Reject your goal',
                     body: `Your manager accept your goal`,
                     data: {
                         goal_id: params.goal_id,
                         type: constants.NOTIFICATION_TYPE.goal_reject
-                    },                        
+                    },
                 }
-                await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                await helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
                 return true;
             }
         } else {
             throw new Error(constants.MESSAGES.bad_request);
         }
 
-        
+    }
+       /*
+    * function to get Quantitative Stats of goals
+    */
+    public async getQuantitativeStatsOfGoals(params: any, user: any) {
+
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        let quantitativeStatsOfGoals= await teamGoalAssignModel.findAll({
+            where: { employee_id: user.uid },
+            attributes: ['id', 'goal_id', 'employee_id', 'complete_measure'],
+            include: [
+                {
+                    model: teamGoalModel,
+                    required: true,
+                    attributes: ['id', 'title', 'enter_measure']
+                }
+            ]
+        })
+
+        quantitativeStatsOfGoals = quantitativeStatsOfGoals.map((goal: any) => {
+            return <any>{
+                id: goal.id,
+                goal_id: goal.goal_id,
+                employee_id: goal.employee_id,
+                title: goal.team_goal.title,
+                quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
+                quantitative_stats_percent: (parseFloat(goal.complete_measure)/parseFloat(goal.team_goal.enter_measure))/100,
+            }
+        })
+
+        return quantitativeStatsOfGoals;
 
     }
+
 }
