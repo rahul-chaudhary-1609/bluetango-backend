@@ -50,7 +50,8 @@ exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 
             user_role: decoded.user_role
         };
         req.user = payload;
-        let isUserExist = employersService.findAdminById(req.user);
+        let isUserExist = yield employersService.findAdminById(req.user);
+        console.log(isUserExist);
         if (isUserExist) {
             response.status = 401;
             response.message = "User has been deleted please contact admin";
