@@ -60,7 +60,23 @@ class QualitativeMeasurementController {
     getQualitativeMeasurement(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield qualitativeMeasuremetServices.getQualitativeMeasurement(req.query);
+                const responseFromService = yield qualitativeMeasuremetServices.getQualitativeMeasurement(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+   * get qualitative measurement details
+   * @param req :[]
+   * @param res
+   */
+    getQualitativeMeasurementDetails(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield qualitativeMeasuremetServices.getQualitativeMeasurementDetails(req.query, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

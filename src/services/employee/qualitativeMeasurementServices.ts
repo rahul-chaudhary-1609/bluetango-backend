@@ -75,10 +75,10 @@ export class QualitativeMeasuremetServices {
     /*
     * get to add qualitative measurement
     */
-   public async getQualitativeMeasurement(params: any) {
+   public async getQualitativeMeasurement(params: any,user:any) {
     qualitativeMeasurementModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
-       return await qualitativeMeasurementModel.findAll({
-           where:{employee_id: params.employee_id},
+       let qualitativeMeasurement =await qualitativeMeasurementModel.findAll({
+           where: { employee_id: params.employee_id ? params.employee_id :user.uid},
            include: [
                 {
                     model: employeeModel,
@@ -87,7 +87,24 @@ export class QualitativeMeasuremetServices {
                 }
            ]
        })
+
+       if (qualitativeMeasurement.length===0) throw new Error(constants.MESSAGES.no_qualitative_measure);
+
+       return qualitativeMeasurement;
    }
+
+    
+    /*
+    * get to add qualitative measurement details
+    */
+    public async getQualitativeMeasurementDetails(params: any, user: any) {
+        
+        return await qualitativeMeasurementCommentModel.findAll({
+            where: { name: params.name },
+        })
+    }
+
+
 
     /*
     * get qualitative measurement comment list

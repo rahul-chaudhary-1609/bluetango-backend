@@ -2921,34 +2921,6 @@
                 "responses": {}
             }
         },
-        "/employee/getQualitativeMeasurement": {
-            "get": {
-                "tags": [
-                    "Employee"
-                ],
-                "description": "view goal as employee",
-                "consumes": [
-                    "application/x-www-form-urlencoded"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "description": "Enter jwt token for authentication",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "employee_id",
-                        "in": "query",
-                        "description": "employee_id",
-                        "required": false,
-                        "type": "number"
-                    }
-                ],
-                "responses": {}
-            }
-        },
         "/employee/changePassword": {
             "post": {
                 "tags": [
@@ -3287,6 +3259,76 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getQualitativeMeasurement": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "view goal as employee",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "query",
+                        "description": "employee_id",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/getQualitativeMeasurementDetails": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "to get qualitative measurement details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "name",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "initiative",
+                            "ability_to_delegate",
+                            "clear_Communication",
+                            "self_awareness_of_strengths_and_weaknesses",
+                            "agile_thinking",
+                            "influence",
+                            "empathy",
+                            "leadership_courage",
+                            "customer_client_patient_satisfaction",
+                            "team_contributions",
+                            "time_management",
+                            "work_product"
+                        ]
                     }
                 ],
                 "responses": {}

@@ -115,7 +115,11 @@ export const feelAboutJobToday = Joi.object({
 })
 
 export const getQualitativeMeasurement = Joi.object({
-  employee_id: Joi.string().required()
+  employee_id: Joi.string()
+})
+
+export const getQualitativeMeasurementDetails = Joi.object({
+  name: Joi.string().required()
 })
 
 export const searchTeamMember = Joi.object({

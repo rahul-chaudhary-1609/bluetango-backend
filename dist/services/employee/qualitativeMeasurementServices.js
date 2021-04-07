@@ -103,11 +103,11 @@ class QualitativeMeasuremetServices {
     /*
     * get to add qualitative measurement
     */
-    getQualitativeMeasurement(params) {
+    getQualitativeMeasurement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             qualitativeMeasurement_1.qualitativeMeasurementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            return yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
-                where: { employee_id: params.employee_id },
+            let qualitativeMeasurement = yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
+                where: { employee_id: params.employee_id ? params.employee_id : user.uid },
                 include: [
                     {
                         model: employee_1.employeeModel,
@@ -115,6 +115,19 @@ class QualitativeMeasuremetServices {
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     }
                 ]
+            });
+            if (qualitativeMeasurement.length === 0)
+                throw new Error(constants.MESSAGES.no_qualitative_measure);
+            return qualitativeMeasurement;
+        });
+    }
+    /*
+    * get to add qualitative measurement details
+    */
+    getQualitativeMeasurementDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
+                where: { name: params.name },
             });
         });
     }
