@@ -78,6 +78,9 @@ class GoalServices {
                             type: constants.NOTIFICATION_TYPE.assign_new_goal
                         };
                         yield notification_1.notificationModel.create(notificationObj);
+                        let employeeNotify = yield employee_1.employeeModel.findOne({
+                            where: { id: params[i].employee_ids[j], }
+                        });
                         //send push notification
                         let notificationData = {
                             title: 'Assign new goal',
@@ -88,7 +91,7 @@ class GoalServices {
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal
                             },
                         };
-                        yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
+                        yield helperFunction.sendFcmNotification([employeeNotify.device_token], notificationData);
                     }
                 }
                 return true;
@@ -343,7 +346,8 @@ class GoalServices {
                     team_goal_assign_id: params.team_goal_assign_id,
                     goal_id: params.goal_id,
                     description: params.description,
-                    complete_measure: params.complete_measure
+                    complete_measure: params.complete_measure,
+                    status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
                 };
                 let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
                 // notification add
@@ -356,19 +360,22 @@ class GoalServices {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request
                 };
                 yield notification_1.notificationModel.create(notificationReq);
+                let managerData = yield employee_1.employeeModel.findOne({
+                    where: { id: getGoalData.manager_id }
+                });
                 let employeeData = yield employee_1.employeeModel.findOne({
                     where: { id: getGoalData.manager_id }
                 });
                 // send push notification
                 let notificationData = {
-                    title: 'Accept your goal',
-                    body: `Your manager accept your goal`,
+                    title: 'Goal Submit',
+                    body: `Goal submitted by ${employeeData.name}`,
                     data: {
                         goal_id: params.goal_id,
                         type: constants.NOTIFICATION_TYPE.goal_complete_request
                     },
                 };
-                yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
+                yield helperFunction.sendFcmNotification([managerData.device_token], notificationData);
                 return teamGoalAssignRequestRes;
             }
             else {
@@ -381,25 +388,27 @@ class GoalServices {
     */
     getGoalCompletedRequestAsManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
-            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.hasOne(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "id", sourceKey: "team_goal_assign_id", targetKey: "id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             return yield teamGoal_1.teamGoalModel.findAndCountAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
-                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                        where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                         required: true,
                         include: [
                             {
-                                model: employee_1.employeeModel,
+                                model: teamGoalAssign_1.teamGoalAssignModel,
                                 required: true,
-                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
-                            },
-                            {
-                                model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
-                                where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
-                                required: true
+                                include: [
+                                    {
+                                        model: employee_1.employeeModel,
+                                        required: true,
+                                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                                    },
+                                ]
                             }
                         ]
                     }
@@ -445,7 +454,7 @@ class GoalServices {
                     // send push notification
                     let notificationData = {
                         title: 'Accept your goal',
-                        body: `Your manager accept your goal`,
+                        body: `Your manager accepted your goal`,
                         data: {
                             goal_id: params.goal_id,
                             type: constants.NOTIFICATION_TYPE.goal_accept
@@ -475,7 +484,7 @@ class GoalServices {
                     // send push notification
                     let notificationData = {
                         title: 'Reject your goal',
-                        body: `Your manager accept your goal`,
+                        body: `Your manager rejected your goal`,
                         data: {
                             goal_id: params.goal_id,
                             type: constants.NOTIFICATION_TYPE.goal_reject
