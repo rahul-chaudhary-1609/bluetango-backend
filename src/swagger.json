@@ -3387,6 +3387,27 @@
         "responses": {}
       }
     },
+    "/employee/getCoachList": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to get coach list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatPopUpListAsEmployee": {
       "get": {
         "tags": [

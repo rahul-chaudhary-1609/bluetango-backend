@@ -143,6 +143,10 @@ employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, token
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
 
 
+/* get coach list */
+employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCoachList);
+
+
 // Chat routes
 /* get chat for employee */
 employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopUpListAsEmployee);

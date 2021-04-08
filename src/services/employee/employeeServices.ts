@@ -12,6 +12,7 @@ import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
 import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
 import { teamGoalModel } from "../../models/teamGoal";
 import { emojiModel } from "../../models/emoji";
+import { coachManagementModel } from "../../models/coachManagement";
 import { AuthService } from "./authService";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -391,4 +392,15 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
     }
 
+    /*
+   * function to get coach list
+   */
+    public async getCoachList(user: any) {
+
+        let coachList = await coachManagementModel.findAndCountAll({
+            attributes: ['id', 'name','description']            
+        });
+
+        return await helperFunction.convertPromiseToObject(coachList);
+    }
 }

@@ -246,4 +246,19 @@ export class EmployeeController {
         }
     }
 
+    /**
+   * to to get coach list
+   * @param req :[]
+   * @param res 
+   */
+    public async getCoachList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getCoachList(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

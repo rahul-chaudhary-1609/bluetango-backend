@@ -43,6 +43,7 @@ const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoal_1 = require("../../models/teamGoal");
 const emoji_1 = require("../../models/emoji");
+const coachManagement_1 = require("../../models/coachManagement");
 const authService_1 = require("./authService");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -393,6 +394,17 @@ class EmployeeServices {
                 ],
             });
             return yield helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
+        });
+    }
+    /*
+   * function to get coach list
+   */
+    getCoachList(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let coachList = yield coachManagement_1.coachManagementModel.findAndCountAll({
+                attributes: ['id', 'name', 'description']
+            });
+            return yield helperFunction.convertPromiseToObject(coachList);
         });
     }
 }
