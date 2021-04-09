@@ -381,32 +381,35 @@ export class GoalServices {
     */
     public async getGoalCompletedRequestAsManager(params: any, user: any) {
 
-        teamGoalModel.hasMany(teamGoalAssignCompletionByEmployeeModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
-        teamGoalAssignCompletionByEmployeeModel.hasOne(teamGoalAssignModel, { foreignKey: "id", sourceKey: "team_goal_assign_id", targetKey: "id" });
-        teamGoalAssignModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+        // teamGoalModel.hasMany(teamGoalAssignCompletionByEmployeeModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        // teamGoalAssignCompletionByEmployeeModel.hasOne(teamGoalAssignModel, { foreignKey: "id", sourceKey: "team_goal_assign_id", targetKey: "id" });
+        teamGoalModel.hasMany(teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployeeModel, { foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+        teamGoalAssignModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+
         return await teamGoalModel.findAndCountAll({
             where: {manager_id: user.uid},
             include: [
                 {
-                    model: teamGoalAssignCompletionByEmployeeModel,
-                    where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
-                    required: true,
+                    model: teamGoalAssignModel,
+                    required: true,                   
                     include: [
                         {
-                            model: teamGoalAssignModel,
+                            model: teamGoalAssignCompletionByEmployeeModel,
+                            where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                             required: true,
-                            include: [
-                                {
-                                    model: employeeModel,
-                                    required: true,
-                                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
-                                },
-                            ]
+                        },
+                        {
+                            model: employeeModel,
+                            required: true,
+                            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
                 }                        
             ]
         })
+
+
     }
 
      /*
@@ -523,12 +526,46 @@ export class GoalServices {
                 employee_id: goal.employee_id,
                 title: goal.team_goal.title,
                 quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
-                quantitative_stats_percent: (parseFloat(goal.complete_measure)/parseFloat(goal.team_goal.enter_measure))/100,
+                quantitative_stats_percent: (parseFloat(goal.complete_measure)/parseFloat(goal.team_goal.enter_measure))*100,
             }
         })
 
         return quantitativeStatsOfGoals;
 
     }
+
+    /*
+    * function to view goal details as employee
+    */
+    public async viewGoalDetailsAsEmployee(params: any, user: any) {
+
+        teamGoalModel.hasMany(teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalAssignModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+
+        let GoalDetailsAsEmployee= await helperFunction.convertPromiseToObject( await teamGoalModel.findOne({
+                where: { id: params.goal_id },
+                include: [
+                    {
+                        model: teamGoalAssignModel,
+                        where: { employee_id: user.uid },
+                        include: [
+                            {
+                                model: employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            }
+                        ]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+        )
+        
+        GoalDetailsAsEmployee.team_goal_assigns[0].complete_measure_percent = (parseFloat(GoalDetailsAsEmployee.team_goal_assigns[0].complete_measure) / parseFloat(GoalDetailsAsEmployee.enter_measure)) * 100;
+            
+        return GoalDetailsAsEmployee;
+    
+    }
+
 
 }

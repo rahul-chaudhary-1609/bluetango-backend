@@ -198,6 +198,22 @@ class GoalController {
             }
         });
     }
+    /**
+    * view goal details as employee
+    * @param req :[]
+    * @param res
+    */
+    viewGoalDetailsAsEmployee(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.viewGoalDetailsAsEmployee(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.GoalController = GoalController;
 //# sourceMappingURL=goalController.js.map

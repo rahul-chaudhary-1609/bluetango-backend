@@ -138,6 +138,10 @@ export const viewGoalDetailsAsManager = Joi.object({
   goal_id: Joi.string().required()
 })
 
+export const viewGoalDetailsAsEmployee = Joi.object({
+  goal_id: Joi.string().required()
+})
+
 export const getChatRoomId = Joi.object({
   other_user_id: Joi.string().required()
 })

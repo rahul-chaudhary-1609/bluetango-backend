@@ -151,5 +151,20 @@ export class GoalController {
             next(e)
         }
     }
+
+    /**
+    * view goal details as employee
+    * @param req :[]
+    * @param res 
+    */
+    public async viewGoalDetailsAsEmployee(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.viewGoalDetailsAsEmployee(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
 }
