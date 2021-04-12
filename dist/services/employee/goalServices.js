@@ -466,7 +466,7 @@ class GoalServices {
                     });
                     let teamGoalAssignObj = {
                         status: 1,
-                        complete_measure: getGoalCompleteData.complete_measure
+                        complete_measure: parseInt(getEmployeeId.complete_measure) + parseInt(getGoalCompleteData.complete_measure)
                     };
                     return teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
                         where: { id: params.team_goal_assign_id }
