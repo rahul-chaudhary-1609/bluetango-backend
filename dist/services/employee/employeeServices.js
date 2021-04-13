@@ -33,6 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployeeServices = void 0;
 const lodash_1 = __importDefault(require("lodash"));
+const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const employee_1 = require("../../models/employee");
 const admin_1 = require("../../models/admin");
@@ -44,6 +45,7 @@ const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoal_1 = require("../../models/teamGoal");
 const emoji_1 = require("../../models/emoji");
 const coachManagement_1 = require("../../models/coachManagement");
+const contactUs_1 = require("../../models/contactUs");
 const authService_1 = require("./authService");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -405,6 +407,25 @@ class EmployeeServices {
                 attributes: ['id', 'name', 'description']
             });
             return yield helperFunction.convertPromiseToObject(coachList);
+        });
+    }
+    /*
+  * function to contact admin
+  */
+    contactUs(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                }
+            }));
+            let contactObj = {
+                employer_id: employee.current_employer_id,
+                employee_id: user.uid,
+                message: params.message,
+                status: constants.STATUS.active,
+            };
+            return yield contactUs_1.contactUsModel.create(contactObj);
         });
     }
 }

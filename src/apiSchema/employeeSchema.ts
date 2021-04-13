@@ -161,6 +161,10 @@ export const sendChatNotification = Joi.object({
   token: Joi.string(),
 })
 
+export const contactUs = Joi.object({
+  message: Joi.string().required(),
+})
+
 export const editGoal = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),

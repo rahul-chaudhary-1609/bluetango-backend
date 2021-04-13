@@ -178,3 +178,9 @@ export const NOTIFICATION_TYPE = {
   goal_accept: 7,
   goal_reject: 8,    
 }
+
+export const STATUS = {
+  inactive: 0,
+  active: 1,
+  deleted: 2,
+}

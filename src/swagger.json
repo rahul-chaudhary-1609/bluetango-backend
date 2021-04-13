@@ -3436,6 +3436,34 @@
         "responses": {}
       }
     },
+    "/employee/contactUs": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to contact with admin",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "enter your message",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatPopUpListAsEmployee": {
       "get": {
         "tags": [

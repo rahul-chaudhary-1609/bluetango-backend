@@ -247,7 +247,7 @@ export class EmployeeController {
     }
 
     /**
-   * to to get coach list
+   * to get coach list
    * @param req :[]
    * @param res 
    */
@@ -261,4 +261,18 @@ export class EmployeeController {
         }
     }
 
+    /**
+   * to contact admin
+   * @param req :[]
+   * @param res 
+   */
+    public async contactUs(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.contactUs(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

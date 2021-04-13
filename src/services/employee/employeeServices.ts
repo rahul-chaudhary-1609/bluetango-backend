@@ -13,6 +13,7 @@ import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasuremen
 import { teamGoalModel } from "../../models/teamGoal";
 import { emojiModel } from "../../models/emoji";
 import { coachManagementModel } from "../../models/coachManagement";
+import { contactUsModel } from "../../models/contactUs";
 import { AuthService } from "./authService";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -402,5 +403,26 @@ export class EmployeeServices {
         });
 
         return await helperFunction.convertPromiseToObject(coachList);
+    }
+
+    /*
+  * function to contact admin
+  */
+    public async contactUs(params:any,user: any) {
+
+        let employee = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
+            where: {
+                id: user.uid,
+            }
+        }));
+
+        let contactObj = <any>{
+            employer_id: employee.current_employer_id,
+            employee_id: user.uid,
+            message: params.message,
+            status:constants.STATUS.active,
+        }
+
+        return await contactUsModel.create(contactObj);
     }
 }
