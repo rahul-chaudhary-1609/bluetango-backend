@@ -3464,6 +3464,27 @@
         "responses": {}
       }
     },
+    "/employee/getAchievement": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "get achievements of the employees",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatPopUpListAsEmployee": {
       "get": {
         "tags": [

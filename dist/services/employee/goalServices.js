@@ -84,7 +84,7 @@ class GoalServices {
                         //send push notification
                         let notificationData = {
                             title: 'Assign new goal',
-                            body: `Your manager assign a new goal- ${(params[i].title ? params[i].title : '')}`,
+                            body: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
                             data: {
                                 goal_id: teamGoaRes.id,
                                 title: (params[i].title ? params[i].title : ''),
@@ -454,7 +454,7 @@ class GoalServices {
                     // send push notification
                     let notificationData = {
                         title: 'Accept your goal',
-                        body: `Your manager accepted your goal`,
+                        body: `Your manager has accepted your goal`,
                         data: {
                             goal_id: params.goal_id,
                             type: constants.NOTIFICATION_TYPE.goal_accept

@@ -10,6 +10,7 @@ import { EmployeeController } from "../controllers/employee/employeeController";
 import { GoalController } from "../controllers/employee/goalController";
 import { ChatController } from "../controllers/employee/chatController";
 import { QualitativeMeasurementController } from "../controllers/employee/qualitativeMeasurementController";
+import { AchievementController } from "../controllers/employee/achievementController";
 
 const employeeRoute = express.Router();
 
@@ -17,7 +18,8 @@ const authController = new AuthController();
 const employeeController = new EmployeeController();
 const goalController = new GoalController();
 const chatController = new ChatController();
-const qualitativeMeasurementController  = new QualitativeMeasurementController();
+const qualitativeMeasurementController = new QualitativeMeasurementController();
+const achievementController = new AchievementController();
 
 // auth API
 /* login route for employee login */
@@ -171,6 +173,11 @@ employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer,
 
 /* send video chat notification*/
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
+
+
+//achievement API's
+/* get achievements */
+employeeRoute.get("/getAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievement);
 
 
 export = employeeRoute;

@@ -32,12 +32,14 @@ const employeeController_1 = require("../controllers/employee/employeeController
 const goalController_1 = require("../controllers/employee/goalController");
 const chatController_1 = require("../controllers/employee/chatController");
 const qualitativeMeasurementController_1 = require("../controllers/employee/qualitativeMeasurementController");
+const achievementController_1 = require("../controllers/employee/achievementController");
 const employeeRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 const employeeController = new employeeController_1.EmployeeController();
 const goalController = new goalController_1.GoalController();
 const chatController = new chatController_1.ChatController();
 const qualitativeMeasurementController = new qualitativeMeasurementController_1.QualitativeMeasurementController();
+const achievementController = new achievementController_1.AchievementController();
 // auth API
 /* login route for employee login */
 employeeRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
@@ -134,5 +136,8 @@ employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.vali
 employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken), chatController.getChatSessionIdandToken);
 /* send video chat notification*/
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
+//achievement API's
+/* get chat for employee */
+employeeRoute.get("/getAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map
