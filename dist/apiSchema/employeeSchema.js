@@ -156,6 +156,7 @@ exports.getChatSessionIdandToken = joi_1.default.object({
 exports.sendChatNotification = joi_1.default.object({
     chat_room_id: joi_1.default.string().required(),
     chat_type: joi_1.default.string().trim().valid('text', 'audio', 'video').required(),
+    message: joi_1.default.string(),
     session_id: joi_1.default.string(),
     token: joi_1.default.string(),
 });

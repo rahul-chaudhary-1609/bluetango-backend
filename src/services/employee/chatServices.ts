@@ -295,9 +295,9 @@ export class ChatServices {
             where: { id: recieverId, }
         })
 
-        let senderEmployeeData = await employeeModel.findOne({
+        let senderEmployeeData = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
             where: { id: user.uid, }
-        })
+        }))
 
         let newNotification = null;
 
@@ -311,11 +311,17 @@ export class ChatServices {
             }
             newNotification = await notificationModel.create(notificationObj);
 
+            delete senderEmployeeData.password
             //send push notification
             let notificationData = <any>{
                 title: 'Message',
                 body: `Message from ${senderEmployeeData.name}`,
-                data: {},
+                data: {
+                    title: 'Message',
+                    message: params.message || `Message from ${senderEmployeeData.name}`,
+                    chat_room_id:params.chat_room_id,
+                    senderEmployeeData
+                },
             }
             await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
         }

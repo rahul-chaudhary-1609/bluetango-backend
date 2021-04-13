@@ -3631,6 +3631,13 @@
                         "description": "Enter chat token",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "message",
+                        "in": "formData",
+                        "description": "Enter message in case of text chat",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}

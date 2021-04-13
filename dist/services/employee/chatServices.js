@@ -278,9 +278,9 @@ class ChatServices {
             let recieverEmployeeData = yield employee_1.employeeModel.findOne({
                 where: { id: recieverId, }
             });
-            let senderEmployeeData = yield employee_1.employeeModel.findOne({
+            let senderEmployeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: { id: user.uid, }
-            });
+            }));
             let newNotification = null;
             if (params.chat_type == 'text') {
                 //add notification 
@@ -291,11 +291,17 @@ class ChatServices {
                     type: constants.NOTIFICATION_TYPE.message
                 };
                 newNotification = yield notification_1.notificationModel.create(notificationObj);
+                delete senderEmployeeData.password;
                 //send push notification
                 let notificationData = {
                     title: 'Message',
                     body: `Message from ${senderEmployeeData.name}`,
-                    data: {},
+                    data: {
+                        title: 'Message',
+                        message: params.message || `Message from ${senderEmployeeData.name}`,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
                 };
                 yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
             }

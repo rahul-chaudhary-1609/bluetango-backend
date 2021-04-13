@@ -57,7 +57,7 @@ export class QualitativeMeasuremetServices {
             // send push notification
             let notificationData = <any> {
                 title: 'Rating',
-                body: `Your manager given rating you`,
+                body: `your manager has given rating to you`,
                 data: {
                     id: resData.id,
                     type: constants.NOTIFICATION_TYPE.rating

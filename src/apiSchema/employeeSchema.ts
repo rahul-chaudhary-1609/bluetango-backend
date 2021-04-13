@@ -157,6 +157,7 @@ export const getChatSessionIdandToken = Joi.object({
 export const sendChatNotification = Joi.object({
   chat_room_id: Joi.string().required(),
   chat_type: Joi.string().trim().valid('text', 'audio', 'video').required(),
+  message: Joi.string(),
   session_id: Joi.string(),
   token: Joi.string(),
 })
