@@ -10,16 +10,16 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
         primaryKey: true,
         autoIncrement: true
     },
-    commented_by_employee_id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-    },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     comment: {
         type: sequelize_1.DataTypes.TEXT,
+        allowNull: false,
+    },
+    commented_by: {
+        type: sequelize_1.DataTypes.JSON,
         allowNull: false,
     },
     status: {

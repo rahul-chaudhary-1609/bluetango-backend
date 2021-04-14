@@ -41,10 +41,10 @@ class AchievementController {
     * @param req :[]
     * @param res
     */
-    getAchievement(req, res, next) {
+    getAchievements(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield achievementServices.getAchievement(req.user);
+                const responseFromService = yield achievementServices.getAchievements(req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

@@ -9,13 +9,12 @@ export const achievementLikeModel: any = sequelize.define("achievement_likes", {
         primaryKey: true,
         autoIncrement: true
     },
-    liked_by_employee_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
     achievement_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+    },
+    liked_by: {
+        type: DataTypes.JSON,
     },
     status: {
         type: DataTypes.INTEGER,

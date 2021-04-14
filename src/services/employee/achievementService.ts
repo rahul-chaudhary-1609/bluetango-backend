@@ -5,6 +5,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import { achievementModel } from "../../models/achievement";
 import { achievementLikeModel } from "../../models/achievementLike";
 import { achievementCommentModel } from "../../models/achievementComment";
+import { employeeModel } from "../../models/employee";
 
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -15,13 +16,42 @@ export class AchievementServices {
     /*
     * function to get chat popup list as employee
     */
-    public async getAchievement(user: any) {
+    public async getAchievements(user: any) {
 
-        let achievement = await helperFunction.convertPromiseToObject(await achievementModel.findAll());
-        let achievementLike = await helperFunction.convertPromiseToObject(await achievementLikeModel.findAll());
-        let achievementComment = await helperFunction.convertPromiseToObject(await achievementCommentModel.findAll());
+        achievementModel.hasMany(achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+        achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+        achievementModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        // achievementLikeModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
+        // achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
 
-        return {achievement,achievementLike,achievementComment}
+        let achievements = await helperFunction.convertPromiseToObject(
+            await achievementModel.findAll({
+                include: [
+                    {
+                        model: employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        required:true
+                    },
+                    {
+                        model: achievementLikeModel,
+                        attributes: ['id', 'liked_by',],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: true,
+                    },
+                    {
+                        model: achievementCommentModel,
+                        attributes: ['id', 'commented_by','comment'],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: true,
+                    },
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+        )
+        
+        return {achievements}
        
     }
 

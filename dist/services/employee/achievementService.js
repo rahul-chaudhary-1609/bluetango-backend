@@ -33,6 +33,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const achievement_1 = require("../../models/achievement");
 const achievementLike_1 = require("../../models/achievementLike");
 const achievementComment_1 = require("../../models/achievementComment");
+const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class AchievementServices {
@@ -40,12 +41,38 @@ class AchievementServices {
     /*
     * function to get chat popup list as employee
     */
-    getAchievement(user) {
+    getAchievements(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll());
-            let achievementLike = yield helperFunction.convertPromiseToObject(yield achievementLike_1.achievementLikeModel.findAll());
-            let achievementComment = yield helperFunction.convertPromiseToObject(yield achievementComment_1.achievementCommentModel.findAll());
-            return { achievement, achievementLike, achievementComment };
+            achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            // achievementLikeModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
+            // achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
+            let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        required: true
+                    },
+                    {
+                        model: achievementLike_1.achievementLikeModel,
+                        attributes: ['id', 'liked_by',],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: true,
+                    },
+                    {
+                        model: achievementComment_1.achievementCommentModel,
+                        attributes: ['id', 'commented_by', 'comment'],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: true,
+                    },
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            return { achievements };
         });
     }
 }

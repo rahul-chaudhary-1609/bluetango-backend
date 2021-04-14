@@ -10,13 +10,12 @@ exports.achievementLikeModel = connection_1.sequelize.define("achievement_likes"
         primaryKey: true,
         autoIncrement: true
     },
-    liked_by_employee_id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-    },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
+    },
+    liked_by: {
+        type: sequelize_1.DataTypes.JSON,
     },
     status: {
         type: sequelize_1.DataTypes.INTEGER,

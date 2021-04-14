@@ -3460,7 +3460,7 @@
                 "responses": {}
             }
         },
-        "/employee/getAchievement": {
+        "/employee/getAchievements": {
             "get": {
                 "tags": [
                     "Employee"
