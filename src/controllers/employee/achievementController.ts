@@ -11,7 +11,7 @@ export class AchievementController {
     constructor() { }
 
     /**
-    * get chat pop up list
+    * get achievements
     * @param req :[]
     * @param res 
     */
@@ -25,13 +25,27 @@ export class AchievementController {
     }
 
     /**
-    * get chat pop up list
+    * create achievement
     * @param req :[]
     * @param res 
     */
     public async createAchievement(req: any, res: any, next: any) {
         try {
             const responseFromService = await achievementServices.createAchievement(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * like achievement
+    * @param req :[]
+    * @param res 
+    */
+    public async likeAchievement(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.likeAchievement(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

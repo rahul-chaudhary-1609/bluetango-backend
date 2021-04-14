@@ -96,6 +96,24 @@ class AchievementServices {
             return yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
         });
     }
+    /*
+    * function to like an achievement
+    */
+    likeAchievement(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'name', 'profile_pic_url', 'email'],
+                where: {
+                    id: user.uid,
+                }
+            }));
+            let achievementLikeObj = {
+                achievement_id: params.achievement_id,
+                liked_by: employeeData
+            };
+            return yield helperFunction.convertPromiseToObject(yield achievementLike_1.achievementLikeModel.create(achievementLikeObj));
+        });
+    }
 }
 exports.AchievementServices = AchievementServices;
 //# sourceMappingURL=achievementService.js.map

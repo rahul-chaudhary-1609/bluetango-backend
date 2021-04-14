@@ -37,7 +37,7 @@ const achievementServices = new achievementService_1.AchievementServices();
 class AchievementController {
     constructor() { }
     /**
-    * get chat pop up list
+    * get achievements
     * @param req :[]
     * @param res
     */
@@ -53,7 +53,7 @@ class AchievementController {
         });
     }
     /**
-    * get chat pop up list
+    * create achievement
     * @param req :[]
     * @param res
     */
@@ -61,6 +61,22 @@ class AchievementController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield achievementServices.createAchievement(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * like achievement
+    * @param req :[]
+    * @param res
+    */
+    likeAchievement(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.likeAchievement(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

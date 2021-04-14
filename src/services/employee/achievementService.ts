@@ -80,4 +80,29 @@ export class AchievementServices {
 
     }
 
+    /*
+    * function to like an achievement
+    */
+    public async likeAchievement(params: any, user: any) {
+
+        let employeeData = await helperFunction.convertPromiseToObject(
+            await employeeModel.findOne({
+                attributes: ['id', 'name', 'profile_pic_url', 'email'],
+                where: {
+                    id:user.uid,
+                }
+            })
+        );
+
+        let achievementLikeObj = <any>{
+            achievement_id: params.achievement_id,
+            liked_by: employeeData
+        }
+
+        return await helperFunction.convertPromiseToObject(
+            await achievementLikeModel.create(achievementLikeObj)
+        )
+
+    }
+
 }

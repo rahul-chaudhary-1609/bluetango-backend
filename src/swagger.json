@@ -3513,6 +3513,34 @@
         "responses": {}
       }
     },
+    "/employee/likeAchievement": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to like achivement",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "achievement_id",
+            "in": "formData",
+            "description": "Enter achievement id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatPopUpListAsEmployee": {
       "get": {
         "tags": [
