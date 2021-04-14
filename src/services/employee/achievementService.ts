@@ -5,6 +5,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import { achievementModel } from "../../models/achievement";
 import { achievementLikeModel } from "../../models/achievementLike";
 import { achievementCommentModel } from "../../models/achievementComment";
+import { achievementHighFiveModel } from "../../models/achievementHighFive";
 import { employeeModel } from "../../models/employee";
 
 const Sequelize = require('sequelize');
@@ -20,6 +21,7 @@ export class AchievementServices {
 
         achievementModel.hasMany(achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+        achievementModel.hasMany(achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         // achievementLikeModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
         // achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
@@ -42,6 +44,13 @@ export class AchievementServices {
                     {
                         model: achievementCommentModel,
                         attributes: ['id', 'commented_by','comment'],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: false,
+                    },
+                    {
+                        model: achievementHighFiveModel,
+                        attributes: ['id', 'high_fived_by',],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
                         required: false,

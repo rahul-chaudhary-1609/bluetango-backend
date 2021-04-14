@@ -33,6 +33,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const achievement_1 = require("../../models/achievement");
 const achievementLike_1 = require("../../models/achievementLike");
 const achievementComment_1 = require("../../models/achievementComment");
+const achievementHighFive_1 = require("../../models/achievementHighFive");
 const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -45,6 +46,7 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasMany(achievementHighFive_1.achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             // achievementLikeModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
             // achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
@@ -65,6 +67,13 @@ class AchievementServices {
                     {
                         model: achievementComment_1.achievementCommentModel,
                         attributes: ['id', 'commented_by', 'comment'],
+                        where: { status: 1 },
+                        order: [["createdAt", "DESC"]],
+                        required: false,
+                    },
+                    {
+                        model: achievementHighFive_1.achievementHighFiveModel,
+                        attributes: ['id', 'high_fived_by',],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
                         required: false,
