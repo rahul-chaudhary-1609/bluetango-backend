@@ -11,6 +11,7 @@ import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
+const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 var Op = Sequelize.Op;
 
 export class ChatServices {
@@ -212,6 +213,29 @@ export class ChatServices {
         return chats;
     }
 
+    public createSession(params) {
+        return new Promise((resolve) => {
+            opentok.createSession(async (err: any, session: any) => {
+                if (err) throw new Error(constants.MESSAGES.video_chat_session_create_error);
+
+                // save the sessionId
+                await chatRealtionMappingInRoomModel.update(
+                    {
+                        chat_session_id: session.sessionId
+                    },
+                    {
+                        where: {
+                            room_id: params.chat_room_id,
+                        },
+                        returning: true,
+                    }
+                )
+
+                resolve(true);
+            });
+            
+        });
+    }
     /*
    * function to create video chat session
    */
@@ -225,26 +249,44 @@ export class ChatServices {
 
         if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
 
-        const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+        //const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 
-        opentok.createSession(async (err:any, session:any)=> {
-            if (err) throw new Error(constants.MESSAGES.video_chat_session_create_error);
+        // opentok.createSession(async (err:any, session:any)=> {
+        //     if (err) throw new Error(constants.MESSAGES.video_chat_session_create_error);
 
-            // save the sessionId
-            await chatRealtionMappingInRoomModel.update(
-                {
-                    chat_session_id:session.sessionId
-                },
-                {
-                    where: {
-                        room_id: params.chat_room_id,
-                    },
-                    returning:true,
-                }
-            )
+        //     // save the sessionId
+        //     await chatRealtionMappingInRoomModel.update(
+        //         {
+        //             chat_session_id:session.sessionId
+        //         },
+        //         {
+        //             where: {
+        //                 room_id: params.chat_room_id,
+        //             },
+        //             returning:true,
+        //         }
+        //     )
+        // });
+
+        await this.createSession(params);
+        
+
+        chatRoomData= await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id: params.chat_room_id,
+            }
+         });
+        
+        let token = opentok.generateToken(chatRoomData.chat_session_id, {
+            role: "moderator",
+            expireTime: Math.floor(new Date().getTime() / 1000) + 60 * 60, // in one hour
+            data: `userId=${user.uid}`,
+            initialLayoutClassList: ["focus"],
         });
 
-        return constants.MESSAGES.video_chat_session_created
+
+        return { sessionId: chatRoomData.chat_session_id, token }
+        //return constants.MESSAGES.video_chat_session_created
 
     }
     
@@ -261,7 +303,7 @@ export class ChatServices {
 
         if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
 
-        const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+        //const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 
         let token = opentok.generateToken(chatRoomData.chat_session_id, {
             role: "moderator",

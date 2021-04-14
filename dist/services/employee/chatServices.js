@@ -40,6 +40,7 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
+const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 var Op = Sequelize.Op;
 class ChatServices {
     constructor() { }
@@ -211,19 +212,8 @@ class ChatServices {
             return chats;
         });
     }
-    /*
-   * function to create video chat session
-   */
-    createChatSession(params, user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
-                where: {
-                    room_id: params.chat_room_id,
-                }
-            });
-            if (!chatRoomData)
-                throw new Error(constants.MESSAGES.chat_room_notFound);
-            const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+    createSession(params) {
+        return new Promise((resolve) => {
             opentok.createSession((err, session) => __awaiter(this, void 0, void 0, function* () {
                 if (err)
                     throw new Error(constants.MESSAGES.video_chat_session_create_error);
@@ -236,8 +226,52 @@ class ChatServices {
                     },
                     returning: true,
                 });
+                resolve(true);
             }));
-            return constants.MESSAGES.video_chat_session_created;
+        });
+    }
+    /*
+   * function to create video chat session
+   */
+    createChatSession(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            //const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+            // opentok.createSession(async (err:any, session:any)=> {
+            //     if (err) throw new Error(constants.MESSAGES.video_chat_session_create_error);
+            //     // save the sessionId
+            //     await chatRealtionMappingInRoomModel.update(
+            //         {
+            //             chat_session_id:session.sessionId
+            //         },
+            //         {
+            //             where: {
+            //                 room_id: params.chat_room_id,
+            //             },
+            //             returning:true,
+            //         }
+            //     )
+            // });
+            yield this.createSession(params);
+            chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            let token = opentok.generateToken(chatRoomData.chat_session_id, {
+                role: "moderator",
+                expireTime: Math.floor(new Date().getTime() / 1000) + 60 * 60,
+                data: `userId=${user.uid}`,
+                initialLayoutClassList: ["focus"],
+            });
+            return { sessionId: chatRoomData.chat_session_id, token };
+            //return constants.MESSAGES.video_chat_session_created
         });
     }
     /*
@@ -252,7 +286,7 @@ class ChatServices {
             });
             if (!chatRoomData)
                 throw new Error(constants.MESSAGES.chat_room_notFound);
-            const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
+            //const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
             let token = opentok.generateToken(chatRoomData.chat_session_id, {
                 role: "moderator",
                 expireTime: Math.floor(new Date().getTime() / 1000) + 60 * 60,
