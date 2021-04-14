@@ -134,10 +134,12 @@ employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmp
 employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
 /* get video chat session id and token */
 employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken), chatController.getChatSessionIdandToken);
-/* send video chat notification*/
+/* send video/audio chat notification*/
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
+/* send disconnect video/audio chat notification*/
+employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 //achievement API's
-/* get chat for employee */
+/* get achievements */
 employeeRoute.get("/getAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

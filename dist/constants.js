@@ -173,6 +173,7 @@ exports.NOTIFICATION_TYPE = {
     video_chat: 6,
     goal_accept: 7,
     goal_reject: 8,
+    chat_disconnect: 9,
 };
 exports.STATUS = {
     inactive: 0,

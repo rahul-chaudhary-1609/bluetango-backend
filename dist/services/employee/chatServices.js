@@ -281,6 +281,7 @@ class ChatServices {
             let senderEmployeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: { id: user.uid, }
             }));
+            delete senderEmployeeData.password;
             let newNotification = null;
             if (params.chat_type == 'text') {
                 //add notification 
@@ -291,12 +292,12 @@ class ChatServices {
                     type: constants.NOTIFICATION_TYPE.message
                 };
                 newNotification = yield notification_1.notificationModel.create(notificationObj);
-                delete senderEmployeeData.password;
                 //send push notification
                 let notificationData = {
                     title: 'Message',
                     body: `Message from ${senderEmployeeData.name}`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.message,
                         title: 'Message',
                         message: params.message || `Message from ${senderEmployeeData.name}`,
                         chat_room_id: params.chat_room_id,
@@ -319,8 +320,13 @@ class ChatServices {
                     title: 'Audio Chat',
                     body: `Audio chat from ${senderEmployeeData.name}`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.audio_chat,
+                        title: 'Audio Chat',
+                        message: `Audio chat from ${senderEmployeeData.name}`,
                         sessionId: params.session_id,
                         token: params.token,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
                     },
                 };
                 yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
@@ -339,13 +345,112 @@ class ChatServices {
                     title: 'Video Chat',
                     body: `Video chat from ${senderEmployeeData.name}`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.video_chat,
+                        title: 'Video Chat',
+                        message: `Video chat from ${senderEmployeeData.name}`,
                         sessionId: params.session_id,
                         token: params.token,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
                     },
                 };
                 yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
             }
             return newNotification;
+        });
+    }
+    /*
+* function to send disconnect video chat notification
+*/
+    sendChatDisconnectNotification(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            });
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+            let recieverEmployeeData = yield employee_1.employeeModel.findOne({
+                where: { id: recieverId, }
+            });
+            let senderEmployeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: { id: user.uid, }
+            }));
+            delete senderEmployeeData.password;
+            let notificationData = null;
+            if (!params.chat_type) {
+                //send push notification
+                notificationData = {
+                    title: 'Disconnected',
+                    body: `Chat disconnected by ${senderEmployeeData.name}`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                        title: 'Disconneted',
+                        message: `Chat disconnected by ${senderEmployeeData.name}`,
+                        sessionId: params.session_id || null,
+                        token: params.token || null,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
+                };
+                yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+            }
+            else {
+                if (params.chat_type == 'audio') {
+                    //send push notification
+                    notificationData = {
+                        title: 'Disconnected',
+                        body: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconnected',
+                            message: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+                else if (params.chat_type == 'video') {
+                    //send push notification
+                    notificationData = {
+                        title: 'Disconnected',
+                        body: `Video chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconnected',
+                            message: `Video chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+                else {
+                    //send push notification
+                    notificationData = {
+                        title: 'Disconnected',
+                        body: `Chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconneted',
+                            message: `Chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+            }
+            return notificationData;
         });
     }
 }

@@ -171,8 +171,11 @@ employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.vali
 /* get video chat session id and token */
 employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken),chatController.getChatSessionIdandToken);
 
-/* send video chat notification*/
+/* send video/audio chat notification*/
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
+
+/* send disconnect video/audio chat notification*/
+employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
 
 //achievement API's

@@ -176,7 +176,8 @@ export const NOTIFICATION_TYPE = {
   audio_chat: 5,
   video_chat: 6,
   goal_accept: 7,
-  goal_reject: 8,    
+  goal_reject: 8,
+  chat_disconnect:9,
 }
 
 export const STATUS = {

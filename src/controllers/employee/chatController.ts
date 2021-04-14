@@ -93,5 +93,19 @@ export class ChatController {
             next(e)
         }
     }
+
+    /**
+   * send disconnect video/audio chat notification
+   * @param req :[]
+   * @param res 
+   */
+    public async sendChatDisconnectNotification(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.sendChatDisconnectNotification(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }

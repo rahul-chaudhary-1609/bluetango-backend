@@ -132,6 +132,22 @@ class ChatController {
             }
         });
     }
+    /**
+   * send disconnect video/audio chat notification
+   * @param req :[]
+   * @param res
+   */
+    sendChatDisconnectNotification(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.sendChatDisconnectNotification(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.ChatController = ChatController;
 //# sourceMappingURL=chatController.js.map
