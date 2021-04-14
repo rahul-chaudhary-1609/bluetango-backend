@@ -265,7 +265,7 @@ export class ChatServices {
 
         let token = opentok.generateToken(chatRoomData.chat_session_id, {
             role: "moderator",
-            expireTime: new Date().getTime() / 1000 + 60 * 60, // in one hour
+            expireTime: Math.floor(new Date().getTime() / 1000) + 60 * 60, // in one hour
             data: `userId=${user.uid}`,
             initialLayoutClassList: ["focus"],
         });

@@ -255,7 +255,7 @@ class ChatServices {
             const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
             let token = opentok.generateToken(chatRoomData.chat_session_id, {
                 role: "moderator",
-                expireTime: new Date().getTime() / 1000 + 60 * 60,
+                expireTime: Math.floor(new Date().getTime() / 1000) + 60 * 60,
                 data: `userId=${user.uid}`,
                 initialLayoutClassList: ["focus"],
             });
