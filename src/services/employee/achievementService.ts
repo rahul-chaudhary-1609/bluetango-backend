@@ -14,7 +14,7 @@ export class AchievementServices {
     constructor() { }
 
     /*
-    * function to get chat popup list as employee
+    * function to get achievemnets
     */
     public async getAchievements(user: any) {
 
@@ -37,14 +37,14 @@ export class AchievementServices {
                         attributes: ['id', 'liked_by',],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
-                        required: true,
+                        required: false,
                     },
                     {
                         model: achievementCommentModel,
                         attributes: ['id', 'commented_by','comment'],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
-                        required: true,
+                        required: false,
                     },
                 ],
                 order: [["createdAt", "DESC"]]
@@ -53,6 +53,22 @@ export class AchievementServices {
         
         return {achievements}
        
+    }
+
+    /*
+    * function to create achievement
+    */
+    public async createAchievement(params:any,user: any) {
+
+        let achievementObj = <any>{
+            employee_id: user.uid,
+            description: params.description,
+        }
+
+        return await helperFunction.convertPromiseToObject(
+            await achievementModel.create(achievementObj)
+        )
+
     }
 
 }

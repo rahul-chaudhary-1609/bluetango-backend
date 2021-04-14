@@ -23,4 +23,18 @@ export class AchievementController {
             next(e)
         }
     }
+
+    /**
+    * get chat pop up list
+    * @param req :[]
+    * @param res 
+    */
+    public async createAchievement(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.createAchievement(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

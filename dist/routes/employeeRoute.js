@@ -145,5 +145,7 @@ employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenV
 //achievement API's
 /* get achievements */
 employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);
+/* create achievement */
+employeeRoute.post("/createAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createAchievement), achievementController.createAchievement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

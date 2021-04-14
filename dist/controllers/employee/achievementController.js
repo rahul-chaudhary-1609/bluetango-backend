@@ -52,6 +52,22 @@ class AchievementController {
             }
         });
     }
+    /**
+    * get chat pop up list
+    * @param req :[]
+    * @param res
+    */
+    createAchievement(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.createAchievement(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.AchievementController = AchievementController;
 //# sourceMappingURL=achievementController.js.map

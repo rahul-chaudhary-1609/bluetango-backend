@@ -39,7 +39,7 @@ var Op = Sequelize.Op;
 class AchievementServices {
     constructor() { }
     /*
-    * function to get chat popup list as employee
+    * function to get achievemnets
     */
     getAchievements(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -60,19 +60,31 @@ class AchievementServices {
                         attributes: ['id', 'liked_by',],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
-                        required: true,
+                        required: false,
                     },
                     {
                         model: achievementComment_1.achievementCommentModel,
                         attributes: ['id', 'commented_by', 'comment'],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
-                        required: true,
+                        required: false,
                     },
                 ],
                 order: [["createdAt", "DESC"]]
             }));
             return { achievements };
+        });
+    }
+    /*
+    * function to create achievement
+    */
+    createAchievement(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let achievementObj = {
+                employee_id: user.uid,
+                description: params.description,
+            };
+            return yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
         });
     }
 }
