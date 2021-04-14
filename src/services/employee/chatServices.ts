@@ -233,7 +233,7 @@ export class ChatServices {
             // save the sessionId
             await chatRealtionMappingInRoomModel.update(
                 {
-                    video_chat_session_id:session.sessionId
+                    chat_session_id:session.sessionId
                 },
                 {
                     where: {
@@ -263,7 +263,7 @@ export class ChatServices {
 
         const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 
-        let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
+        let token = opentok.generateToken(chatRoomData.chat_session_id, {
             role: "moderator",
             expireTime: new Date().getTime() / 1000 + 60 * 60, // in one hour
             data: `userId=${user.uid}`,
@@ -271,7 +271,46 @@ export class ChatServices {
         });
 
 
-        return { sessionId: chatRoomData.video_chat_session_id, token }
+        return { sessionId: chatRoomData.chat_session_id, token }
+
+    }
+
+    /*
+  * function to create video chat session
+  */
+    public async dropChatSession(params: any, user: any) {
+
+        let chatRoomData = await chatRealtionMappingInRoomModel.update({
+            chat_session_id:null,
+        },{
+            where: {
+                room_id: params.chat_room_id,
+            },
+            returning:true,
+        });
+
+
+        return chatRoomData
+
+    }
+
+    /*
+  * function to create video chat session
+  */
+    public async checkChatSession(params: any, user: any) {
+
+        let chatRoomData = await helperFunction.convertPromiseToObject( await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id: params.chat_room_id,
+            }
+        }));
+
+        let isSessionExist = false;
+
+        if (chatRoomData.chat_session_id) isSessionExist=true
+
+
+        return { isSessionExist };
 
     }
 

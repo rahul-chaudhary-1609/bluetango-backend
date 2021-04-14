@@ -134,6 +134,10 @@ employeeRoute.get("/getChatList", validators.trimmer, tokenValidator.validateEmp
 employeeRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createChatSession), chatController.createChatSession);
 /* get video chat session id and token */
 employeeRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getChatSessionIdandToken), chatController.getChatSessionIdandToken);
+/* create video chat session*/
+employeeRoute.delete("/dropChatSession", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.dropChatSession), chatController.dropChatSession);
+/* create video chat session*/
+employeeRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.checkChatSession), chatController.checkChatSession);
 /* send video/audio chat notification*/
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/

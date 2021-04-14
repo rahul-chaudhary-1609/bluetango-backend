@@ -81,6 +81,34 @@ export class ChatController {
     }
 
     /**
+    * get create chat session
+    * @param req :[]
+    * @param res 
+    */
+    public async dropChatSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.dropChatSession(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * get create chat session
+    * @param req :[]
+    * @param res 
+    */
+    public async checkChatSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.checkChatSession(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * send video chat notification
     * @param req :[]
     * @param res 
@@ -107,5 +135,6 @@ export class ChatController {
             next(e)
         }
     }
+    
     
 }

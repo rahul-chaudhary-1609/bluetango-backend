@@ -229,7 +229,7 @@ class ChatServices {
                     throw new Error(constants.MESSAGES.video_chat_session_create_error);
                 // save the sessionId
                 yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
-                    video_chat_session_id: session.sessionId
+                    chat_session_id: session.sessionId
                 }, {
                     where: {
                         room_id: params.chat_room_id,
@@ -253,13 +253,45 @@ class ChatServices {
             if (!chatRoomData)
                 throw new Error(constants.MESSAGES.chat_room_notFound);
             const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
-            let token = opentok.generateToken(chatRoomData.video_chat_session_id, {
+            let token = opentok.generateToken(chatRoomData.chat_session_id, {
                 role: "moderator",
                 expireTime: new Date().getTime() / 1000 + 60 * 60,
                 data: `userId=${user.uid}`,
                 initialLayoutClassList: ["focus"],
             });
-            return { sessionId: chatRoomData.video_chat_session_id, token };
+            return { sessionId: chatRoomData.chat_session_id, token };
+        });
+    }
+    /*
+  * function to create video chat session
+  */
+    dropChatSession(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                chat_session_id: null,
+            }, {
+                where: {
+                    room_id: params.chat_room_id,
+                },
+                returning: true,
+            });
+            return chatRoomData;
+        });
+    }
+    /*
+  * function to create video chat session
+  */
+    checkChatSession(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield helperFunction.convertPromiseToObject(yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            }));
+            let isSessionExist = false;
+            if (chatRoomData.chat_session_id)
+                isSessionExist = true;
+            return { isSessionExist };
         });
     }
     /*

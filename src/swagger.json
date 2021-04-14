@@ -3583,6 +3583,62 @@
         "responses": {}
       }
     },
+    "/employee/dropChatSession": {
+      "delete": {
+        "tags": [
+          "EmployeeChat"
+        ],
+        "description": "drop chat session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/checkChatSession/{chat_room_id}": {
+      "get": {
+        "tags": [
+          "EmployeeChat"
+        ],
+        "description": "check chat session exist or not",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "path",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatSessionIdandToken/{chat_room_id}": {
       "get": {
         "tags": [

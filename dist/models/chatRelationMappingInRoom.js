@@ -22,7 +22,7 @@ exports.chatRealtionMappingInRoomModel = connection_1.sequelize.define("chat_rel
         type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,
     },
-    video_chat_session_id: {
+    chat_session_id: {
         type: sequelize_1.DataTypes.STRING,
     },
     status: {

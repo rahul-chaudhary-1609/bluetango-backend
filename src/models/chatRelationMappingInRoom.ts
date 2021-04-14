@@ -21,7 +21,7 @@ export const chatRealtionMappingInRoomModel: any = sequelize.define("chat_relati
         type: DataTypes.BIGINT,
         allowNull: false,
     },
-    video_chat_session_id: {
+    chat_session_id: {
         type:DataTypes.STRING,
     },
     status: {

@@ -150,6 +150,14 @@ export const createChatSession = Joi.object({
   chat_room_id: Joi.string().required()
 })
 
+export const dropChatSession = Joi.object({
+  chat_room_id: Joi.string().required()
+})
+
+export const checkChatSession = Joi.object({
+  chat_room_id: Joi.string().required()
+})
+
 export const getChatSessionIdandToken = Joi.object({
   chat_room_id: Joi.string().required()
 })

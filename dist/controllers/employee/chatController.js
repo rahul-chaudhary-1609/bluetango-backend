@@ -117,6 +117,38 @@ class ChatController {
         });
     }
     /**
+    * get create chat session
+    * @param req :[]
+    * @param res
+    */
+    dropChatSession(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.dropChatSession(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * get create chat session
+    * @param req :[]
+    * @param res
+    */
+    checkChatSession(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.checkChatSession(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * send video chat notification
     * @param req :[]
     * @param res
