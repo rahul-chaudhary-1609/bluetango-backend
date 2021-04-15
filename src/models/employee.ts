@@ -117,6 +117,10 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    energy_last_updated: {
+        type: DataTypes.DATE,
+        defaultValue: "2021-04-13"
+    },
     job_emoji_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -130,4 +134,4 @@ export const employeeModel: any = sequelize.define("employee", {
         tableName: "employee"
     }
 );
-employeeModel.sync({ alter: false });
+employeeModel.sync({ alter: true });

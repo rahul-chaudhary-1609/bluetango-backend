@@ -196,7 +196,8 @@ export class EmployeeServices {
     public async updateEnergyCheck(params:any, user: any) {
         await employeeModel.update(
             {
-                energy_id: params.energy_id
+                energy_id: params.energy_id,
+                energy_last_updated:new Date(),
             },
             {
                 where: { id: user.uid }
@@ -314,8 +315,8 @@ export class EmployeeServices {
     public async viewEmployeeEnergy(user: any) {
 
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-        let employeeEnergy = await employeeModel.findOne({
-            attributes: ['id', 'name'],
+        let employeeEnergy = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
+            attributes: ['id', 'name','energy_last_updated'],
             where: {
                 id: user.uid
             },
@@ -327,9 +328,17 @@ export class EmployeeServices {
                 },
             ],
 
-        });
+        })
+        );
 
-        return await helperFunction.convertPromiseToObject(employeeEnergy);
+        employeeEnergy.isUpdateAvailable = false;
+
+        const timeDiff = Math.floor(((new Date()).getTime() - (new Date(employeeEnergy.energy_last_updated)).getTime()) / 1000)
+
+        if (timeDiff > 86400) employeeEnergy.isUpdateAvailable = true;
+        
+
+        return employeeEnergy;
     }
 
     /*

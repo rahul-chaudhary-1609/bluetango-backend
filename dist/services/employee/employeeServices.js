@@ -216,7 +216,8 @@ class EmployeeServices {
     updateEnergyCheck(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             yield employee_1.employeeModel.update({
-                energy_id: params.energy_id
+                energy_id: params.energy_id,
+                energy_last_updated: new Date(),
             }, {
                 where: { id: user.uid }
             });
@@ -325,8 +326,8 @@ class EmployeeServices {
     viewEmployeeEnergy(user) {
         return __awaiter(this, void 0, void 0, function* () {
             employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-            let employeeEnergy = yield employee_1.employeeModel.findOne({
-                attributes: ['id', 'name'],
+            let employeeEnergy = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                attributes: ['id', 'name', 'energy_last_updated'],
                 where: {
                     id: user.uid
                 },
@@ -337,8 +338,12 @@ class EmployeeServices {
                         attributes: ['id', 'image_url', 'caption']
                     },
                 ],
-            });
-            return yield helperFunction.convertPromiseToObject(employeeEnergy);
+            }));
+            employeeEnergy.isUpdateAvailable = false;
+            const timeDiff = Math.floor(((new Date()).getTime() - (new Date(employeeEnergy.energy_last_updated)).getTime()) / 1000);
+            if (timeDiff > 86400)
+                employeeEnergy.isUpdateAvailable = true;
+            return employeeEnergy;
         });
     }
     /*

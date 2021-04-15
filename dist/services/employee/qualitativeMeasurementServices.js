@@ -73,6 +73,10 @@ class QualitativeMeasuremetServices {
             let employeeData = yield employee_1.employeeModel.findOne({
                 where: { id: params.employee_id }
             });
+            let managerData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
+            delete managerData.password;
             if (lodash_1.default.isEmpty(qualitativeMeasurementData)) {
                 let resData = yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
                 // add notification for employee
@@ -82,8 +86,11 @@ class QualitativeMeasuremetServices {
                     reciever_id: params.employee_id,
                     type: constants.NOTIFICATION_TYPE.rating,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'Rating',
+                        message: `your manager has given rating to you`,
                         id: resData.id,
-                        type: constants.NOTIFICATION_TYPE.rating
+                        senderEmplyeeData: managerData,
                     },
                 };
                 yield notification_1.notificationModel.create(notificationObj);
@@ -92,8 +99,11 @@ class QualitativeMeasuremetServices {
                     title: 'Rating',
                     body: `your manager has given rating to you`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'Rating',
+                        message: `your manager has given rating to you`,
                         id: resData.id,
-                        type: constants.NOTIFICATION_TYPE.rating
+                        senderEmplyeeData: managerData,
                     },
                 };
                 yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);

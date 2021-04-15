@@ -70,6 +70,7 @@ class GoalServices {
                             employee_id: params[i].employee_ids[j]
                         };
                         yield teamGoalAssign_1.teamGoalAssignModel.create(teamGoalAssignObj);
+                        delete employeeData.password;
                         // add notification for employee
                         let notificationObj = {
                             type_id: teamGoaRes.id,
@@ -77,9 +78,11 @@ class GoalServices {
                             reciever_id: params[i].employee_ids[j],
                             type: constants.NOTIFICATION_TYPE.assign_new_goal,
                             data: {
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                title: 'Assign new goal',
+                                message: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
                                 goal_id: teamGoaRes.id,
-                                title: (params[i].title ? params[i].title : ''),
-                                type: constants.NOTIFICATION_TYPE.assign_new_goal
+                                senderEmplyeeData: employeeData,
                             },
                         };
                         yield notification_1.notificationModel.create(notificationObj);
@@ -91,9 +94,11 @@ class GoalServices {
                             title: 'Assign new goal',
                             body: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
                             data: {
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                title: 'Assign new goal',
+                                message: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
                                 goal_id: teamGoaRes.id,
-                                title: (params[i].title ? params[i].title : ''),
-                                type: constants.NOTIFICATION_TYPE.assign_new_goal
+                                senderEmplyeeData: employeeData,
                             },
                         };
                         yield helperFunction.sendFcmNotification([employeeNotify.device_token], notificationData);

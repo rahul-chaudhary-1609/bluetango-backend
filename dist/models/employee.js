@@ -118,6 +118,10 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
     },
+    energy_last_updated: {
+        type: sequelize_1.DataTypes.DATE,
+        defaultValue: "2021-04-13"
+    },
     job_emoji_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
@@ -129,5 +133,5 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
 }, {
     tableName: "employee"
 });
-exports.employeeModel.sync({ alter: false });
+exports.employeeModel.sync({ alter: true });
 //# sourceMappingURL=employee.js.map
