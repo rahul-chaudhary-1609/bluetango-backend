@@ -137,21 +137,36 @@ export class GoalServices {
                             type_id: params.id,
                             sender_id: user.uid,
                             reciever_id: params.employee_ids[j],
-                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                            data: {
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                title: 'Assign new goal',
+                                message: `Your manager assign a new goal- ${(params.title ? params.title : '')}`,
+                                goal_id: teamGoalRes.id,
+                                senderEmplyeeData: employeeData,
+                                //title: (params[i].title?params[i].title: ''),                            
+                            },
                         }
                         await notificationModel.create(notificationObj);
+
+                        let employeeNotify = await employeeModel.findOne({
+                            where: { id: params.employee_ids[j], }
+                        })
 
                         // send push notification
                         let notificationData = <any> {
                             title: 'Assign new goal',
                             body: `Your manager assign a new goal- ${(params.title?params.title: '')}`,
                             data: {
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                title: 'Assign new goal',
+                                message: `Your manager assign a new goal- ${(params.title ? params.title : '')}`,
                                 goal_id: teamGoalRes.id,
-                                title: (params.title?params.title: ''),
-                                type: constants.NOTIFICATION_TYPE.assign_new_goal
-                            },          
+                                senderEmplyeeData: employeeData,
+                                //title: (params[i].title?params[i].title: ''),                            
+                            },
                         }
-                        await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+                        await helperFunction.sendFcmNotification([employeeNotify.device_token], notificationData);
                     } 
                    
                 }
@@ -338,7 +353,13 @@ export class GoalServices {
 
         let compeleteData = await helperFunction.convertPromiseToObject( await teamGoalAssignModel.findOne({
                 where: { id: params.team_goal_assign_id }
-            }) );
+        }));
+        
+        let employeeData = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
+            where: { id: user.uid }
+        }));
+
+        delete employeeData.password
 
         if (getGoalData.enter_measure >= ( parseInt(compeleteData.complete_measure)+ parseInt(params.complete_measure) ) ) {
             let createObj = <any> {
@@ -360,8 +381,12 @@ export class GoalServices {
                 reciever_id: getGoalData.manager_id,
                 type: constants.NOTIFICATION_TYPE.goal_complete_request,
                 data: {
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                    title: 'Goal Submit',
+                    message: `Goal submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
-                    type: constants.NOTIFICATION_TYPE.goal_complete_request
+                    senderEmplyeeData: employeeData,
+                    //title: (params[i].title?params[i].title: ''),                            
                 },
             }
             await notificationModel.create(notificationReq);
@@ -371,18 +396,22 @@ export class GoalServices {
                 where: { id: getGoalData.manager_id }
             })
 
-            let employeeData = await employeeModel.findOne({
-                where: { id: getGoalData.manager_id }
-            })
+            // let employeeData = await employeeModel.findOne({
+            //     where: { id: getGoalData.manager_id }
+            // })
 
             // send push notification
             let notificationData = <any> {
                 title: 'Goal Submit',
                 body: `Goal submitted by ${employeeData.name}`,
                 data: {
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                    title: 'Goal Submit',
+                    message: `Goal submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
-                    type: constants.NOTIFICATION_TYPE.goal_complete_request
-                },                                      
+                    senderEmplyeeData: employeeData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
             }
             await helperFunction.sendFcmNotification([managerData.device_token], notificationData);
 
@@ -446,6 +475,8 @@ export class GoalServices {
             }
         });
 
+        
+
         if (teamGoalAssignCompletionByEmployeeCheck) {
             await teamGoalAssignCompletionByEmployeeModel.update(teamGoalAssignCompletionByEmployeeObj, {
                 where: { id: params.team_goal_assign_completion_by_employee_id }
@@ -458,6 +489,13 @@ export class GoalServices {
             let employeeData = await employeeModel.findOne({
                 where: { id: getEmployeeId.employee_id }
             })
+
+            let managerData = await employeeModel.findOne({
+                where: { id: user.uid }
+            })
+
+            delete managerData.password
+
     
             if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
                
@@ -468,8 +506,12 @@ export class GoalServices {
                     reciever_id: getEmployeeId.employee_id,
                     type: constants.NOTIFICATION_TYPE.goal_accept,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_accept,
+                        title: 'Accept your goal',
+                        message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_accept
+                        senderEmplyeeData: managerData,
+                        //title: (params[i].title?params[i].title: ''),                            
                     },
                 }
                 await notificationModel.create(notificationObj);
@@ -479,8 +521,12 @@ export class GoalServices {
                     title: 'Accept your goal',
                     body: `Your manager has accepted your goal`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_accept,
+                        title: 'Accept your goal',
+                        message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_accept
+                        senderEmplyeeData: managerData,
+                        //title: (params[i].title?params[i].title: ''),                            
                     },
                 }
                 await helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
@@ -503,8 +549,12 @@ export class GoalServices {
                     reciever_id: getEmployeeId.employee_id,
                     type: constants.NOTIFICATION_TYPE.goal_reject,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_reject,
+                        title: 'Reject your goal',
+                        message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_reject
+                        senderEmplyeeData: managerData,
+                        //title: (params[i].title?params[i].title: ''),                            
                     },
                 }
                 await notificationModel.create(notificationObj);
@@ -514,8 +564,12 @@ export class GoalServices {
                     title: 'Reject your goal',
                     body: `Your manager rejected your goal`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_reject,
+                        title: 'Reject your goal',
+                        message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_reject
+                        senderEmplyeeData: managerData,
+                        //title: (params[i].title?params[i].title: ''),                            
                     },
                 }
                 await helperFunction.sendFcmNotification([employeeData.device_token], notificationData);

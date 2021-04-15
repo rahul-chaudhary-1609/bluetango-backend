@@ -159,20 +159,32 @@ class GoalServices {
                                 type_id: params.id,
                                 sender_id: user.uid,
                                 reciever_id: params.employee_ids[j],
-                                type: constants.NOTIFICATION_TYPE.assign_new_goal
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                    title: 'Assign new goal',
+                                    message: `Your manager assign a new goal- ${(params.title ? params.title : '')}`,
+                                    goal_id: teamGoalRes.id,
+                                    senderEmplyeeData: employeeData,
+                                },
                             };
                             yield notification_1.notificationModel.create(notificationObj);
+                            let employeeNotify = yield employee_1.employeeModel.findOne({
+                                where: { id: params.employee_ids[j], }
+                            });
                             // send push notification
                             let notificationData = {
                                 title: 'Assign new goal',
                                 body: `Your manager assign a new goal- ${(params.title ? params.title : '')}`,
                                 data: {
+                                    type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                                    title: 'Assign new goal',
+                                    message: `Your manager assign a new goal- ${(params.title ? params.title : '')}`,
                                     goal_id: teamGoalRes.id,
-                                    title: (params.title ? params.title : ''),
-                                    type: constants.NOTIFICATION_TYPE.assign_new_goal
+                                    senderEmplyeeData: employeeData,
                                 },
                             };
-                            yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
+                            yield helperFunction.sendFcmNotification([employeeNotify.device_token], notificationData);
                         }
                     }
                     return true;
@@ -351,6 +363,10 @@ class GoalServices {
             let compeleteData = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findOne({
                 where: { id: params.team_goal_assign_id }
             }));
+            let employeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: { id: user.uid }
+            }));
+            delete employeeData.password;
             if (getGoalData.enter_measure >= (parseInt(compeleteData.complete_measure) + parseInt(params.complete_measure))) {
                 let createObj = {
                     team_goal_assign_id: params.team_goal_assign_id,
@@ -369,24 +385,30 @@ class GoalServices {
                     reciever_id: getGoalData.manager_id,
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                        title: 'Goal Submit',
+                        message: `Goal submitted by ${employeeData.name}`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_complete_request
+                        senderEmplyeeData: employeeData,
                     },
                 };
                 yield notification_1.notificationModel.create(notificationReq);
                 let managerData = yield employee_1.employeeModel.findOne({
                     where: { id: getGoalData.manager_id }
                 });
-                let employeeData = yield employee_1.employeeModel.findOne({
-                    where: { id: getGoalData.manager_id }
-                });
+                // let employeeData = await employeeModel.findOne({
+                //     where: { id: getGoalData.manager_id }
+                // })
                 // send push notification
                 let notificationData = {
                     title: 'Goal Submit',
                     body: `Goal submitted by ${employeeData.name}`,
                     data: {
+                        type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                        title: 'Goal Submit',
+                        message: `Goal submitted by ${employeeData.name}`,
                         goal_id: params.goal_id,
-                        type: constants.NOTIFICATION_TYPE.goal_complete_request
+                        senderEmplyeeData: employeeData,
                     },
                 };
                 yield helperFunction.sendFcmNotification([managerData.device_token], notificationData);
@@ -456,6 +478,10 @@ class GoalServices {
                 let employeeData = yield employee_1.employeeModel.findOne({
                     where: { id: getEmployeeId.employee_id }
                 });
+                let managerData = yield employee_1.employeeModel.findOne({
+                    where: { id: user.uid }
+                });
+                delete managerData.password;
                 if (parseInt(params.status) == constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approve) {
                     // add goal approve notification
                     let notificationObj = {
@@ -464,8 +490,11 @@ class GoalServices {
                         reciever_id: getEmployeeId.employee_id,
                         type: constants.NOTIFICATION_TYPE.goal_accept,
                         data: {
+                            type: constants.NOTIFICATION_TYPE.goal_accept,
+                            title: 'Accept your goal',
+                            message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
-                            type: constants.NOTIFICATION_TYPE.goal_accept
+                            senderEmplyeeData: managerData,
                         },
                     };
                     yield notification_1.notificationModel.create(notificationObj);
@@ -474,8 +503,11 @@ class GoalServices {
                         title: 'Accept your goal',
                         body: `Your manager has accepted your goal`,
                         data: {
+                            type: constants.NOTIFICATION_TYPE.goal_accept,
+                            title: 'Accept your goal',
+                            message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
-                            type: constants.NOTIFICATION_TYPE.goal_accept
+                            senderEmplyeeData: managerData,
                         },
                     };
                     yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
@@ -498,8 +530,11 @@ class GoalServices {
                         reciever_id: getEmployeeId.employee_id,
                         type: constants.NOTIFICATION_TYPE.goal_reject,
                         data: {
+                            type: constants.NOTIFICATION_TYPE.goal_reject,
+                            title: 'Reject your goal',
+                            message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
-                            type: constants.NOTIFICATION_TYPE.goal_reject
+                            senderEmplyeeData: managerData,
                         },
                     };
                     yield notification_1.notificationModel.create(notificationObj);
@@ -508,8 +543,11 @@ class GoalServices {
                         title: 'Reject your goal',
                         body: `Your manager rejected your goal`,
                         data: {
+                            type: constants.NOTIFICATION_TYPE.goal_reject,
+                            title: 'Reject your goal',
+                            message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
-                            type: constants.NOTIFICATION_TYPE.goal_reject
+                            senderEmplyeeData: managerData,
                         },
                     };
                     yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
