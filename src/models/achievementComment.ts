@@ -11,7 +11,6 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
     },
     commented_by_employee_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
     },
     achievement_id: {
         type: DataTypes.INTEGER,
@@ -20,9 +19,6 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
     comment: {
         type: DataTypes.TEXT,
         allowNull: false,
-    },
-    commented_by_employee_details: {
-        type: DataTypes.JSON,
     },
     status: {
         type: DataTypes.INTEGER,
@@ -35,4 +31,4 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
         tableName: "achievement_comments"
     }
 );
-achievementCommentModel.sync({ alter: true });
+achievementCommentModel.sync({ alter: false });

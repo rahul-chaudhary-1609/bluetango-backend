@@ -12,7 +12,6 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
     },
     commented_by_employee_id: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
     },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -21,9 +20,6 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
     comment: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false,
-    },
-    commented_by_employee_details: {
-        type: sequelize_1.DataTypes.JSON,
     },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -34,5 +30,5 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
 }, {
     tableName: "achievement_comments"
 });
-exports.achievementCommentModel.sync({ alter: true });
+exports.achievementCommentModel.sync({ alter: false });
 //# sourceMappingURL=achievementComment.js.map

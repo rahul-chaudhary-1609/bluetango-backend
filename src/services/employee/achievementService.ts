@@ -29,43 +29,62 @@ export class AchievementServices {
 
         let achievements = await helperFunction.convertPromiseToObject(
             await achievementModel.findAll({
-                attributes: {
-                    include: [
-                        [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id'),"likeCount")],
-                        [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id'),"highFiveCount")]
-                    ],                    
-                },
+                attributes: [
+                    'id', 'employee_id', 'description','status' ,'createdAt','updatedAt',
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')),'likeCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount']
+                ],
                 include: [
-                    // {
-                    //     model: employeeModel,
-                    //     attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
-                    //     required:true
-                    // },
+                    {
+                        model: employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        required:true
+                    },
                     {
                         model: achievementLikeModel,
-                        attributes: ['id', 'liked_by_employee_id', ],
+                        attributes:[],
                         where: { status: 1 },
-                        order: [["createdAt", "DESC"]],
                         required: false,
                     },
                     {
                         model: achievementHighFiveModel,
-                        attributes: ['id', 'high_fived_by_employee_id',],
+                        attributes: [],
                         where: { status: 1 },
-                        order: [["createdAt", "DESC"]],
                         required: false,
                     },
                 ],
                 group: [
-                    '"achievements.id"',
-                ],
-                // having: [
-                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), '>=', 0),
-                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), '>=', 0)
-                // ],
+                    '"achievements.id"', '"employee.id"'
+                ],                
                 order: [["createdAt", "DESC"]]
             })
         )
+
+        for (let achievement of achievements) {
+
+            achievement.isLiked = false;
+            achievement.isHighFived = false;
+
+            let achievementLike = await achievementLikeModel.findOne({
+                where: {
+                    liked_by_employee_id: user.uid,
+                    achievement_id: achievement.id,
+                }
+            })
+
+            let achievementHighFive = await achievementHighFiveModel.findOne({
+                where: {
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: achievement.id,
+                }
+            })
+
+            if (achievementLike) achievement.isLiked = true;
+            if (achievementHighFive) achievement.isHighFived = true;
+
+        }
+
+        
         
         return {achievements}
        
@@ -90,26 +109,29 @@ export class AchievementServices {
     /*
     * function to like an achievement
     */
-    public async likeAchievement(params: any, user: any) {
+    public async likeDislikeAchievement(params: any, user: any) {
 
-        let employeeData = await helperFunction.convertPromiseToObject(
-            await employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url', 'email'],
-                where: {
-                    id:user.uid,
-                }
-            })
-        );
+        let achievementLike = await achievementLikeModel.findOne({
+            where: {
+                liked_by_employee_id: user.uid,
+                achievement_id: params.achievement_id,
+            }
+        })
 
-        let achievementLikeObj = <any>{
-            liked_by_employee_id:user.uid,
-            achievement_id: params.achievement_id,
-            liked_by_employee_details: employeeData
+        if (achievementLike) {
+            await achievementLike.destroy()
+        }
+        else {
+
+            let achievementLikeObj = <any>{
+                liked_by_employee_id: user.uid,
+                achievement_id: params.achievement_id,
+            }
+
+            await achievementLikeModel.create(achievementLikeObj)
         }
 
-        return await helperFunction.convertPromiseToObject(
-            await achievementLikeModel.create(achievementLikeObj)
-        )
+        return true;        
 
     }
 

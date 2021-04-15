@@ -43,9 +43,9 @@ export class AchievementController {
     * @param req :[]
     * @param res 
     */
-    public async likeAchievement(req: any, res: any, next: any) {
+    public async likeDislikeAchievement(req: any, res: any, next: any) {
         try {
-            const responseFromService = await achievementServices.likeAchievement(req.body, req.user);
+            const responseFromService = await achievementServices.likeDislikeAchievement(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

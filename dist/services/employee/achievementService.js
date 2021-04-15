@@ -51,42 +51,55 @@ class AchievementServices {
             //achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
             achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
             let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
-                attributes: {
-                    include: [
-                        [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id'), "likeCount")],
-                        [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id'), "highFiveCount")]
-                    ],
-                },
+                attributes: [
+                    'id', 'employee_id', 'description', 'status', 'createdAt', 'updatedAt',
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount']
+                ],
                 include: [
-                    // {
-                    //     model: employeeModel,
-                    //     attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
-                    //     required:true
-                    // },
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        required: true
+                    },
                     {
                         model: achievementLike_1.achievementLikeModel,
-                        attributes: ['id', 'liked_by_employee_id',],
+                        attributes: [],
                         where: { status: 1 },
-                        order: [["createdAt", "DESC"]],
                         required: false,
                     },
                     {
                         model: achievementHighFive_1.achievementHighFiveModel,
-                        attributes: ['id', 'high_fived_by_employee_id',],
+                        attributes: [],
                         where: { status: 1 },
-                        order: [["createdAt", "DESC"]],
                         required: false,
                     },
                 ],
                 group: [
-                    '"achievements.id"',
+                    '"achievements.id"', '"employee.id"'
                 ],
-                // having: [
-                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), '>=', 0),
-                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), '>=', 0)
-                // ],
                 order: [["createdAt", "DESC"]]
             }));
+            for (let achievement of achievements) {
+                achievement.isLiked = false;
+                achievement.isHighFived = false;
+                let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
+                    where: {
+                        liked_by_employee_id: user.uid,
+                        achievement_id: achievement.id,
+                    }
+                });
+                let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                    where: {
+                        high_fived_by_employee_id: user.uid,
+                        achievement_id: achievement.id,
+                    }
+                });
+                if (achievementLike)
+                    achievement.isLiked = true;
+                if (achievementHighFive)
+                    achievement.isHighFived = true;
+            }
             return { achievements };
         });
     }
@@ -105,20 +118,25 @@ class AchievementServices {
     /*
     * function to like an achievement
     */
-    likeAchievement(params, user) {
+    likeDislikeAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let employeeData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url', 'email'],
+            let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                 where: {
-                    id: user.uid,
+                    liked_by_employee_id: user.uid,
+                    achievement_id: params.achievement_id,
                 }
-            }));
-            let achievementLikeObj = {
-                liked_by_employee_id: user.uid,
-                achievement_id: params.achievement_id,
-                liked_by_employee_details: employeeData
-            };
-            return yield helperFunction.convertPromiseToObject(yield achievementLike_1.achievementLikeModel.create(achievementLikeObj));
+            });
+            if (achievementLike) {
+                yield achievementLike.destroy();
+            }
+            else {
+                let achievementLikeObj = {
+                    liked_by_employee_id: user.uid,
+                    achievement_id: params.achievement_id,
+                };
+                yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
+            }
+            return true;
         });
     }
 }

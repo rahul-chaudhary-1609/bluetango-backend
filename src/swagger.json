@@ -3562,7 +3562,7 @@
         "responses": {}
       }
     },
-    "/employee/likeAchievement": {
+    "/employee/likeDislikeAchievement": {
       "put": {
         "tags": [
           "Employee"

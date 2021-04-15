@@ -11,14 +11,10 @@ export const achievementLikeModel: any = sequelize.define("achievement_likes", {
     },
     liked_by_employee_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
     },
     achievement_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    },
-    liked_by_employee_details: {
-        type: DataTypes.JSON,
     },
     status: {
         type: DataTypes.INTEGER,
@@ -31,4 +27,4 @@ export const achievementLikeModel: any = sequelize.define("achievement_likes", {
         tableName: "achievement_likes"
     }
 );
-achievementLikeModel.sync({ alter: true });
+achievementLikeModel.sync({ alter: false });

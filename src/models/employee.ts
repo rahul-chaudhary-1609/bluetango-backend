@@ -134,4 +134,4 @@ export const employeeModel: any = sequelize.define("employee", {
         tableName: "employee"
     }
 );
-employeeModel.sync({ alter: true });
+employeeModel.sync({ alter: false });

@@ -185,7 +185,7 @@ export const createAchievement = Joi.object({
   description: Joi.string().required(),
 })
 
-export const likeAchievement = Joi.object({
+export const likeDislikeAchievement = Joi.object({
   achievement_id: Joi.number().required(),
 })
 

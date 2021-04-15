@@ -133,5 +133,5 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
 }, {
     tableName: "employee"
 });
-exports.employeeModel.sync({ alter: true });
+exports.employeeModel.sync({ alter: false });
 //# sourceMappingURL=employee.js.map
