@@ -38,10 +38,14 @@ export const notificationModel: any = sequelize.define("notification", {
         defaultValue: 0,
         comment: "0=> other, 1=> assign new goal, 2=>goal complete, 3=> rating, 4=>message, 5=>audio chat, 6=>video chat"
     },
+    data: {
+        type: DataTypes.JSON,
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
     }
 },
     {

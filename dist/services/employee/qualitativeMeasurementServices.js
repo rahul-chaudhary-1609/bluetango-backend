@@ -80,7 +80,11 @@ class QualitativeMeasuremetServices {
                     type_id: resData.id,
                     sender_id: user.uid,
                     reciever_id: params.employee_id,
-                    type: constants.NOTIFICATION_TYPE.rating
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    data: {
+                        id: resData.id,
+                        type: constants.NOTIFICATION_TYPE.rating
+                    },
                 };
                 yield notification_1.notificationModel.create(notificationObj);
                 // send push notification

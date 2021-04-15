@@ -355,7 +355,14 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    type: constants.NOTIFICATION_TYPE.message
+                    type: constants.NOTIFICATION_TYPE.message,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.message,
+                        title: 'Message',
+                        message: params.message || `Message from ${senderEmployeeData.name}`,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
                 };
                 newNotification = yield notification_1.notificationModel.create(notificationObj);
                 //send push notification
@@ -378,7 +385,16 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    type: constants.NOTIFICATION_TYPE.audio_chat
+                    type: constants.NOTIFICATION_TYPE.audio_chat,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.audio_chat,
+                        title: 'Audio Chat',
+                        message: `Audio chat from ${senderEmployeeData.name}`,
+                        sessionId: params.session_id,
+                        token: params.token,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
                 };
                 newNotification = yield notification_1.notificationModel.create(notificationObj);
                 //send push notification
@@ -403,7 +419,16 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    type: constants.NOTIFICATION_TYPE.video_chat
+                    type: constants.NOTIFICATION_TYPE.video_chat,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.video_chat,
+                        title: 'Video Chat',
+                        message: `Video chat from ${senderEmployeeData.name}`,
+                        sessionId: params.session_id,
+                        token: params.token,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
                 };
                 newNotification = yield notification_1.notificationModel.create(notificationObj);
                 //send push notification

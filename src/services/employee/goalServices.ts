@@ -46,7 +46,12 @@ export class GoalServices {
                         type_id: teamGoaRes.id,
                         sender_id: user.uid,
                         reciever_id: params[i].employee_ids[j],
-                        type: constants.NOTIFICATION_TYPE.assign_new_goal
+                        type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                        data: {
+                            goal_id: teamGoaRes.id,
+                            title: (params[i].title ? params[i].title : ''),
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                        },
                     }
                     await notificationModel.create(notificationObj);
 
@@ -345,7 +350,11 @@ export class GoalServices {
                 team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
                 sender_id: user.uid,
                 reciever_id: getGoalData.manager_id,
-                type: constants.NOTIFICATION_TYPE.goal_complete_request
+                type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                data: {
+                    goal_id: params.goal_id,
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request
+                },
             }
             await notificationModel.create(notificationReq);
 
@@ -449,7 +458,11 @@ export class GoalServices {
                     type_id: params.goal_id,
                     sender_id: user.uid,
                     reciever_id: getEmployeeId.employee_id,
-                    type: constants.NOTIFICATION_TYPE.goal_accept
+                    type: constants.NOTIFICATION_TYPE.goal_accept,
+                    data: {
+                        goal_id: params.goal_id,
+                        type: constants.NOTIFICATION_TYPE.goal_accept
+                    },
                 }
                 await notificationModel.create(notificationObj);
     
@@ -480,7 +493,11 @@ export class GoalServices {
                     type_id: params.goal_id,
                     sender_id: user.uid,
                     reciever_id: getEmployeeId.employee_id,
-                    type: constants.NOTIFICATION_TYPE.goal_reject
+                    type: constants.NOTIFICATION_TYPE.goal_reject,
+                    data: {
+                        goal_id: params.goal_id,
+                        type: constants.NOTIFICATION_TYPE.goal_reject
+                    },
                 }
                 await notificationModel.create(notificationObj);
     

@@ -275,4 +275,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+  * to get notifiaction
+  * @param req :[]
+  * @param res 
+  */
+    public async getNotifications(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getNotifications(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

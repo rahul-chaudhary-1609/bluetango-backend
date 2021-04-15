@@ -154,6 +154,9 @@ employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEm
 /* contact us for employee */
 employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.contactUs), employeeController.contactUs);
 
+/* contact us for employee */
+employeeRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getNotifications);
+
 
 // Chat routes
 /* get chat for employee */

@@ -14,6 +14,7 @@ import { teamGoalModel } from "../../models/teamGoal";
 import { emojiModel } from "../../models/emoji";
 import { coachManagementModel } from "../../models/coachManagement";
 import { contactUsModel } from "../../models/contactUs";
+import { notificationModel } from "../../models/notification";
 import { AuthService } from "./authService";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -424,5 +425,21 @@ export class EmployeeServices {
         }
 
         return await contactUsModel.create(contactObj);
+    }
+
+    /*
+* function to contact admin
+*/
+    public async getNotifications(params: any, user: any) {
+
+        let notifications = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
+            where: {
+                reciever_id: user.uid,
+            },
+            order: [["createdAt", "DESC"]]
+        }));
+
+        
+        return notifications;
     }
 }

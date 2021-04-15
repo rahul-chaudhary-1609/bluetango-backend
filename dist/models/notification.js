@@ -39,10 +39,14 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
         defaultValue: 0,
         comment: "0=> other, 1=> assign new goal, 2=>goal complete, 3=> rating, 4=>message, 5=>audio chat, 6=>video chat"
     },
+    data: {
+        type: sequelize_1.DataTypes.JSON,
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
     }
 }, {
     tableName: "notification"

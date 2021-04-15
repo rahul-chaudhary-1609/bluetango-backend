@@ -46,6 +46,7 @@ const teamGoal_1 = require("../../models/teamGoal");
 const emoji_1 = require("../../models/emoji");
 const coachManagement_1 = require("../../models/coachManagement");
 const contactUs_1 = require("../../models/contactUs");
+const notification_1 = require("../../models/notification");
 const authService_1 = require("./authService");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -426,6 +427,20 @@ class EmployeeServices {
                 status: constants.STATUS.active,
             };
             return yield contactUs_1.contactUsModel.create(contactObj);
+        });
+    }
+    /*
+* function to contact admin
+*/
+    getNotifications(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notifications = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
+                where: {
+                    reciever_id: user.uid,
+                },
+                order: [["createdAt", "DESC"]]
+            }));
+            return notifications;
         });
     }
 }

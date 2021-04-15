@@ -75,7 +75,12 @@ class GoalServices {
                             type_id: teamGoaRes.id,
                             sender_id: user.uid,
                             reciever_id: params[i].employee_ids[j],
-                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                            data: {
+                                goal_id: teamGoaRes.id,
+                                title: (params[i].title ? params[i].title : ''),
+                                type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            },
                         };
                         yield notification_1.notificationModel.create(notificationObj);
                         let employeeNotify = yield employee_1.employeeModel.findOne({
@@ -357,7 +362,11 @@ class GoalServices {
                     team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
                     sender_id: user.uid,
                     reciever_id: getGoalData.manager_id,
-                    type: constants.NOTIFICATION_TYPE.goal_complete_request
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                    data: {
+                        goal_id: params.goal_id,
+                        type: constants.NOTIFICATION_TYPE.goal_complete_request
+                    },
                 };
                 yield notification_1.notificationModel.create(notificationReq);
                 let managerData = yield employee_1.employeeModel.findOne({
@@ -448,7 +457,11 @@ class GoalServices {
                         type_id: params.goal_id,
                         sender_id: user.uid,
                         reciever_id: getEmployeeId.employee_id,
-                        type: constants.NOTIFICATION_TYPE.goal_accept
+                        type: constants.NOTIFICATION_TYPE.goal_accept,
+                        data: {
+                            goal_id: params.goal_id,
+                            type: constants.NOTIFICATION_TYPE.goal_accept
+                        },
                     };
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
@@ -478,7 +491,11 @@ class GoalServices {
                         type_id: params.goal_id,
                         sender_id: user.uid,
                         reciever_id: getEmployeeId.employee_id,
-                        type: constants.NOTIFICATION_TYPE.goal_reject
+                        type: constants.NOTIFICATION_TYPE.goal_reject,
+                        data: {
+                            goal_id: params.goal_id,
+                            type: constants.NOTIFICATION_TYPE.goal_reject
+                        },
                     };
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
