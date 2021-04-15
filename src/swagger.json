@@ -3485,7 +3485,7 @@
         "responses": {}
       }
     },
-    "/employee/markAsViewedNotification/{notification_id}": {
+    "/employee/markNotificationAsViewed/{notification_id}": {
       "put": {
         "tags": [
           "Employee"

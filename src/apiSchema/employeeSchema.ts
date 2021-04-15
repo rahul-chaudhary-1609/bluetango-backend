@@ -189,7 +189,7 @@ export const likeAchievement = Joi.object({
   achievement_id: Joi.number().required(),
 })
 
-export const markAsViewedNotification = Joi.object({
+export const markNotificationAsViewed = Joi.object({
   notification_id: Joi.number().required(),
 })
 

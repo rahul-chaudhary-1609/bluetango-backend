@@ -344,10 +344,10 @@ class EmployeeController {
  * @param req :[]
  * @param res
  */
-    markAsViewedNotification(req, res, next) {
+    markNotificationAsViewed(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeServices.markAsViewedNotification(req.params, req.user);
+                const responseFromService = yield employeeServices.markNotificationAsViewed(req.params, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

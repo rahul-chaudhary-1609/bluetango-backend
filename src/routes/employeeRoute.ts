@@ -158,7 +158,7 @@ employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmpl
 employeeRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getNotifications);
 
 /* contact us for employee */
-employeeRoute.put("/markAsViewedNotification/:notification_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.markAsViewedNotification), employeeController.markAsViewedNotification);
+employeeRoute.put("/markNotificationAsViewed/:notification_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.markNotificationAsViewed), employeeController.markNotificationAsViewed);
 
 
 // Chat routes

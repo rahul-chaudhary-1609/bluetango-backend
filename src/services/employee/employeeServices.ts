@@ -447,7 +447,7 @@ export class EmployeeServices {
     /*
 * function to mark as viewed notification
 */
-    public async markAsViewedNotification(params: any, user: any) {
+    public async markNotificationAsViewed(params: any, user: any) {
 
         let notification = await helperFunction.convertPromiseToObject(await notificationModel.update({
             status: 0,

@@ -447,7 +447,7 @@ class EmployeeServices {
     /*
 * function to mark as viewed notification
 */
-    markAsViewedNotification(params, user) {
+    markNotificationAsViewed(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({
                 status: 0,
