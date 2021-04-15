@@ -385,21 +385,21 @@ export class ChatServices {
         let newNotification = null;
 
         if (params.chat_type == 'text') {
-            //add notification 
-            let notificationObj = <any>{
-                type_id: params.chat_room_id,
-                sender_id: user.uid,
-                reciever_id: recieverId,
-                type: constants.NOTIFICATION_TYPE.message,
-                data: {
-                    type: constants.NOTIFICATION_TYPE.message,
-                    title: 'Message',
-                    message: params.message || `Message from ${senderEmployeeData.name}`,
-                    chat_room_id: params.chat_room_id,
-                    senderEmployeeData
-                },
-            }
-            newNotification = await notificationModel.create(notificationObj);
+            // //add notification 
+            // let notificationObj = <any>{
+            //     type_id: params.chat_room_id,
+            //     sender_id: user.uid,
+            //     reciever_id: recieverId,
+            //     type: constants.NOTIFICATION_TYPE.message,
+            //     data: {
+            //         type: constants.NOTIFICATION_TYPE.message,
+            //         title: 'Message',
+            //         message: params.message || `Message from ${senderEmployeeData.name}`,
+            //         chat_room_id: params.chat_room_id,
+            //         senderEmployeeData
+            //     },
+            // }
+            // newNotification = await notificationModel.create(notificationObj);
 
             //send push notification
             let notificationData = <any>{
