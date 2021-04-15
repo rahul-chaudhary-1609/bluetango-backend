@@ -3481,6 +3481,34 @@
                 "responses": {}
             }
         },
+        "/employee/markAsViewedNotification/{notification_id}": {
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "api to get notifiactions",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "notification_id",
+                        "in": "path",
+                        "description": "Enter notification id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/getAchievements": {
             "get": {
                 "tags": [

@@ -290,4 +290,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+ * to mark as viewed notification 
+ * @param req :[]
+ * @param res 
+ */
+    public async markAsViewedNotification(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.markAsViewedNotification(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

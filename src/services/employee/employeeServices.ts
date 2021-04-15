@@ -428,18 +428,37 @@ export class EmployeeServices {
     }
 
     /*
-* function to contact admin
+* function to get notification
 */
     public async getNotifications(params: any, user: any) {
 
         let notifications = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
             where: {
                 reciever_id: user.uid,
+                status:[0,1]
             },
             order: [["createdAt", "DESC"]]
         }));
 
         
         return notifications;
+    }
+
+    /*
+* function to mark as viewed notification
+*/
+    public async markAsViewedNotification(params: any, user: any) {
+
+        let notification = await helperFunction.convertPromiseToObject(await notificationModel.update({
+            status: 0,
+        },{
+            where: {
+                id: parseInt(params.notification_id),
+                reciever_id: user.uid,
+            }
+        }));
+
+
+        return notification;
     }
 }
