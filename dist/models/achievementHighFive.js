@@ -10,11 +10,15 @@ exports.achievementHighFiveModel = connection_1.sequelize.define("achievement_hi
         primaryKey: true,
         autoIncrement: true
     },
+    high_fived_by_employee_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    high_fived_by: {
+    high_fived_by_employee_details: {
         type: sequelize_1.DataTypes.JSON,
     },
     status: {
@@ -26,5 +30,5 @@ exports.achievementHighFiveModel = connection_1.sequelize.define("achievement_hi
 }, {
     tableName: "achievement_high_fives"
 });
-exports.achievementHighFiveModel.sync({ alter: false });
+exports.achievementHighFiveModel.sync({ alter: true });
 //# sourceMappingURL=achievementHighFive.js.map

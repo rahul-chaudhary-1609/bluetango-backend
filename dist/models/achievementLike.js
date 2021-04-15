@@ -10,11 +10,15 @@ exports.achievementLikeModel = connection_1.sequelize.define("achievement_likes"
         primaryKey: true,
         autoIncrement: true
     },
+    liked_by_employee_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    liked_by: {
+    liked_by_employee_details: {
         type: sequelize_1.DataTypes.JSON,
     },
     status: {
@@ -26,5 +30,5 @@ exports.achievementLikeModel = connection_1.sequelize.define("achievement_likes"
 }, {
     tableName: "achievement_likes"
 });
-exports.achievementLikeModel.sync({ alter: false });
+exports.achievementLikeModel.sync({ alter: true });
 //# sourceMappingURL=achievementLike.js.map

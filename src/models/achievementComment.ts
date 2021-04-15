@@ -9,6 +9,10 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
         primaryKey: true,
         autoIncrement: true
     },
+    commented_by_employee_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     achievement_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -17,9 +21,8 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    commented_by: {
+    commented_by_employee_details: {
         type: DataTypes.JSON,
-        allowNull: false,
     },
     status: {
         type: DataTypes.INTEGER,
@@ -32,4 +35,4 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
         tableName: "achievement_comments"
     }
 );
-achievementCommentModel.sync({ alter: false });
+achievementCommentModel.sync({ alter: true });

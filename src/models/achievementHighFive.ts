@@ -9,11 +9,15 @@ export const achievementHighFiveModel: any = sequelize.define("achievement_high_
         primaryKey: true,
         autoIncrement: true
     },
+    high_fived_by_employee_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     achievement_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    high_fived_by: {
+    high_fived_by_employee_details: {
         type: DataTypes.JSON,
     },
     status: {
@@ -27,4 +31,4 @@ export const achievementHighFiveModel: any = sequelize.define("achievement_high_
         tableName: "achievement_high_fives"
     }
 );
-achievementHighFiveModel.sync({ alter: false });
+achievementHighFiveModel.sync({ alter: true });

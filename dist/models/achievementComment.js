@@ -10,6 +10,10 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
         primaryKey: true,
         autoIncrement: true
     },
+    commented_by_employee_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
     achievement_id: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -18,9 +22,8 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false,
     },
-    commented_by: {
+    commented_by_employee_details: {
         type: sequelize_1.DataTypes.JSON,
-        allowNull: false,
     },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -31,5 +34,5 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
 }, {
     tableName: "achievement_comments"
 });
-exports.achievementCommentModel.sync({ alter: false });
+exports.achievementCommentModel.sync({ alter: true });
 //# sourceMappingURL=achievementComment.js.map

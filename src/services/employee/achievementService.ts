@@ -20,42 +20,49 @@ export class AchievementServices {
     public async getAchievements(user: any) {
 
         achievementModel.hasMany(achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
-        achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+        //achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasMany(achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
-        achievementModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        // achievementLikeModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
-        // achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
+        achievementModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        achievementLikeModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
+        //achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
+        achievementHighFiveModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" })
 
         let achievements = await helperFunction.convertPromiseToObject(
             await achievementModel.findAll({
+                attributes: {
+                    include: [
+                        [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id'),"likeCount")],
+                        [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id'),"highFiveCount")]
+                    ],                    
+                },
                 include: [
-                    {
-                        model: employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
-                        required:true
-                    },
+                    // {
+                    //     model: employeeModel,
+                    //     attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                    //     required:true
+                    // },
                     {
                         model: achievementLikeModel,
-                        attributes: ['id', 'liked_by',],
-                        where: { status: 1 },
-                        order: [["createdAt", "DESC"]],
-                        required: false,
-                    },
-                    {
-                        model: achievementCommentModel,
-                        attributes: ['id', 'commented_by','comment'],
+                        attributes: ['id', 'liked_by_employee_id', ],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
                         required: false,
                     },
                     {
                         model: achievementHighFiveModel,
-                        attributes: ['id', 'high_fived_by',],
+                        attributes: ['id', 'high_fived_by_employee_id',],
                         where: { status: 1 },
                         order: [["createdAt", "DESC"]],
                         required: false,
                     },
                 ],
+                group: [
+                    '"achievements.id"',
+                ],
+                // having: [
+                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), '>=', 0),
+                //     Sequelize.where(Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), '>=', 0)
+                // ],
                 order: [["createdAt", "DESC"]]
             })
         )
@@ -95,8 +102,9 @@ export class AchievementServices {
         );
 
         let achievementLikeObj = <any>{
+            liked_by_employee_id:user.uid,
             achievement_id: params.achievement_id,
-            liked_by: employeeData
+            liked_by_employee_details: employeeData
         }
 
         return await helperFunction.convertPromiseToObject(

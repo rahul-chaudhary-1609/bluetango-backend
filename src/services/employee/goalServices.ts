@@ -41,6 +41,8 @@ export class GoalServices {
                     }
                     await teamGoalAssignModel.create(teamGoalAssignObj);
 
+                    delete employeeData.password
+
                     // add notification for employee
                     let notificationObj = <any> {
                         type_id: teamGoaRes.id,
@@ -48,9 +50,12 @@ export class GoalServices {
                         reciever_id: params[i].employee_ids[j],
                         type: constants.NOTIFICATION_TYPE.assign_new_goal,
                         data: {
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                            title: 'Assign new goal',
+                            message: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
                             goal_id: teamGoaRes.id,
-                            title: (params[i].title ? params[i].title : ''),
-                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            senderEmplyeeData: employeeData,
+                            //title: (params[i].title?params[i].title: ''),                            
                         },
                     }
                     await notificationModel.create(notificationObj);
@@ -64,9 +69,12 @@ export class GoalServices {
                         title: 'Assign new goal',
                         body: `Your manager assigned a new goal- ${(params[i].title?params[i].title: '')}`,
                         data: {
-                            goal_id: teamGoaRes.id,
-                            title: (params[i].title?params[i].title: ''),
-                            type: constants.NOTIFICATION_TYPE.assign_new_goal
+                            type: constants.NOTIFICATION_TYPE.assign_new_goal,
+                            title: 'Assign new goal',
+                            message: `Your manager assigned a new goal- ${(params[i].title ? params[i].title : '')}`,
+                            goal_id: teamGoaRes.id,                            
+                            senderEmplyeeData:employeeData,
+                            //title: (params[i].title?params[i].title: ''),                            
                         },                        
                     }
                     await helperFunction.sendFcmNotification([employeeNotify.device_token], notificationData);
@@ -141,7 +149,7 @@ export class GoalServices {
                                 goal_id: teamGoalRes.id,
                                 title: (params.title?params.title: ''),
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal
-                            },                        
+                            },          
                         }
                         await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
                     } 
@@ -374,7 +382,7 @@ export class GoalServices {
                 data: {
                     goal_id: params.goal_id,
                     type: constants.NOTIFICATION_TYPE.goal_complete_request
-                },                        
+                },                                      
             }
             await helperFunction.sendFcmNotification([managerData.device_token], notificationData);
 

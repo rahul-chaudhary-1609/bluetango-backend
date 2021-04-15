@@ -43,6 +43,12 @@ export class QualitativeMeasuremetServices {
             where: { id: params.employee_id}
         })
 
+        let managerData = await employeeModel.findOne({
+            where: { id: params.employee_id }
+        })
+
+        delete managerData.password
+
         if (_.isEmpty(qualitativeMeasurementData)) {
             let resData =  await  qualitativeMeasurementModel.create(params);
 
@@ -53,8 +59,12 @@ export class QualitativeMeasuremetServices {
                 reciever_id: params.employee_id,
                 type: constants.NOTIFICATION_TYPE.rating,
                 data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'Rating',
+                    message: `your manager has given rating to you`,
                     id: resData.id,
-                    type: constants.NOTIFICATION_TYPE.rating
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
                 },
             }
             await notificationModel.create(notificationObj);
@@ -63,9 +73,13 @@ export class QualitativeMeasuremetServices {
                 title: 'Rating',
                 body: `your manager has given rating to you`,
                 data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'Rating',
+                    message: `your manager has given rating to you`,
                     id: resData.id,
-                    type: constants.NOTIFICATION_TYPE.rating
-                },                        
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
             }
             await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
 
