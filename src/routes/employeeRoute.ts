@@ -206,5 +206,8 @@ employeeRoute.put("/highFiveAchievement", validators.trimmer, tokenValidator.val
 /* add edit comment achievement */
 employeeRoute.post("/addEditCommentAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addEditCommentAchievement), achievementController.addEditCommentAchievement);
 
+/* get achievement comments*/
+employeeRoute.get("/getAchievementComments/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementComments), achievementController.getAchievementComments);
+
 
 export = employeeRoute;

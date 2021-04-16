@@ -20,11 +20,10 @@ export class AchievementServices {
     public async getAchievements(user: any) {
 
         achievementModel.hasMany(achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
-        //achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+        achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasMany(achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         achievementLikeModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
-        //achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
         achievementHighFiveModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" })
 
         let achievements = await helperFunction.convertPromiseToObject(
@@ -32,7 +31,8 @@ export class AchievementServices {
                 attributes: [
                     'id', 'employee_id', 'description','status' ,'createdAt','updatedAt',
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')),'likeCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount']
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
                 ],
                 include: [
                     {
@@ -48,6 +48,12 @@ export class AchievementServices {
                     },
                     {
                         model: achievementHighFiveModel,
+                        attributes: [],
+                        where: { status: 1 },
+                        required: false,
+                    },
+                    {
+                        model: achievementCommentModel,
                         attributes: [],
                         where: { status: 1 },
                         required: false,
@@ -199,6 +205,38 @@ export class AchievementServices {
 
         return await helperFunction.convertPromiseToObject(achievementComment);
 
+    }
+
+
+    /*
+    * function to get comments on achievement
+    */
+    public async getAchievementComments(params: any, user: any) {
+
+        achievementCommentModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
+
+        let achievementComments = await helperFunction.convertPromiseToObject(
+            await achievementCommentModel.findAll({
+                where: {
+                    achievement_id:parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required:false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+        )
+
+        for (let comment of achievementComments) {
+            comment.isCommented = false
+            if (comment.employee.id == parseInt(user.uid)) comment.isCommented = true;
+        }
+
+        return achievementComments;
     }
 
 }

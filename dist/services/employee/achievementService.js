@@ -46,17 +46,17 @@ class AchievementServices {
     getAchievements(user) {
         return __awaiter(this, void 0, void 0, function* () {
             achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
-            //achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
+            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasMany(achievementHighFive_1.achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
-            //achievementCommentModel.hasMany(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
             achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
             let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
                 attributes: [
                     'id', 'employee_id', 'description', 'status', 'createdAt', 'updatedAt',
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount']
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
                 ],
                 include: [
                     {
@@ -72,6 +72,12 @@ class AchievementServices {
                     },
                     {
                         model: achievementHighFive_1.achievementHighFiveModel,
+                        attributes: [],
+                        where: { status: 1 },
+                        required: false,
+                    },
+                    {
+                        model: achievementComment_1.achievementCommentModel,
                         attributes: [],
                         where: { status: 1 },
                         required: false,
@@ -194,6 +200,33 @@ class AchievementServices {
                 achievementComment = yield achievementComment_1.achievementCommentModel.create(achievementCommentObj);
             }
             return yield helperFunction.convertPromiseToObject(achievementComment);
+        });
+    }
+    /*
+    * function to get comments on achievement
+    */
+    getAchievementComments(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            achievementComment_1.achievementCommentModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" });
+            let achievementComments = yield helperFunction.convertPromiseToObject(yield achievementComment_1.achievementCommentModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let comment of achievementComments) {
+                comment.isCommented = false;
+                if (comment.employee.id == parseInt(user.uid))
+                    comment.isCommented = true;
+            }
+            return achievementComments;
         });
     }
 }

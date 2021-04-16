@@ -3618,12 +3618,12 @@
         "responses": {}
       }
     },
-    "/employee/addEditAchievement": {
+    "/employee/addEditCommentAchievement": {
       "post": {
         "tags": [
           "Employee"
         ],
-        "description": "api to add edit achivement",
+        "description": "api to add edit comment achivement",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -3655,6 +3655,34 @@
             "description": "Enter comment",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAchievementComments/{achievement_id}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get achivement comments",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "achievement_id",
+            "in": "path",
+            "description": "Enter achievement id",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}

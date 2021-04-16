@@ -199,6 +199,10 @@ export const addEditCommentAchievement = Joi.object({
   comment: Joi.string().required(),
 })
 
+export const getAchievementComments = Joi.object({
+  achievement_id: Joi.number().required(),
+})
+
 export const markNotificationAsViewed = Joi.object({
   notification_id: Joi.number().required(),
 })
