@@ -197,8 +197,11 @@ employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validat
 /* create achievement */
 employeeRoute.post("/createAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createAchievement), achievementController.createAchievement);
 
-/* like achievement */
+/* like dislike achievement */
 employeeRoute.put("/likeDislikeAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.likeDislikeAchievement), achievementController.likeDislikeAchievement);
+
+/* like dislike achievement */
+employeeRoute.put("/highFiveAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.highFiveAchievement), achievementController.highFiveAchievement);
 
 
 export = employeeRoute;

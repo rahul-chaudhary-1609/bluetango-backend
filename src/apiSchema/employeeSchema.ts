@@ -189,6 +189,10 @@ export const likeDislikeAchievement = Joi.object({
   achievement_id: Joi.number().required(),
 })
 
+export const highFiveAchievement = Joi.object({
+  achievement_id: Joi.number().required(),
+})
+
 export const markNotificationAsViewed = Joi.object({
   notification_id: Joi.number().required(),
 })

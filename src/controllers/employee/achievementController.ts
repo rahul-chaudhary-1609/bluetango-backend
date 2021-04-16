@@ -39,13 +39,27 @@ export class AchievementController {
     }
 
     /**
-    * like achievement
+    * like dislike achievement
     * @param req :[]
     * @param res 
     */
     public async likeDislikeAchievement(req: any, res: any, next: any) {
         try {
             const responseFromService = await achievementServices.likeDislikeAchievement(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * high five achievement
+    * @param req :[]
+    * @param res 
+    */
+    public async highFiveAchievement(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.highFiveAchievement(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

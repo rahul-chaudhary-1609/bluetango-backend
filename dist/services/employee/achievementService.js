@@ -139,6 +139,30 @@ class AchievementServices {
             return true;
         });
     }
+    /*
+    * function to like an achievement
+    */
+    highFiveAchievement(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                where: {
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: params.achievement_id,
+                }
+            });
+            if (achievementhighFive) {
+                yield achievementhighFive.destroy();
+            }
+            else {
+                let achievementHighFiveObj = {
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: params.achievement_id,
+                };
+                yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
+            }
+            return true;
+        });
+    }
 }
 exports.AchievementServices = AchievementServices;
 //# sourceMappingURL=achievementService.js.map

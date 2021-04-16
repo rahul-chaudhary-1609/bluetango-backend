@@ -135,4 +135,33 @@ export class AchievementServices {
 
     }
 
+    /*
+    * function to like an achievement
+    */
+    public async highFiveAchievement(params: any, user: any) {
+
+        let achievementhighFive = await achievementHighFiveModel.findOne({
+            where: {
+                high_fived_by_employee_id: user.uid,
+                achievement_id: params.achievement_id,
+            }
+        })
+
+        if (achievementhighFive) {
+            await achievementhighFive.destroy()
+        }
+        else {
+
+            let achievementHighFiveObj = <any>{
+                high_fived_by_employee_id: user.uid,
+                achievement_id: params.achievement_id,
+            }
+
+            await achievementHighFiveModel.create(achievementHighFiveObj)
+        }
+
+        return true;
+
+    }
+
 }

@@ -69,7 +69,7 @@ class AchievementController {
         });
     }
     /**
-    * like achievement
+    * like dislike achievement
     * @param req :[]
     * @param res
     */
@@ -77,6 +77,22 @@ class AchievementController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield achievementServices.likeDislikeAchievement(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * high five achievement
+    * @param req :[]
+    * @param res
+    */
+    highFiveAchievement(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.highFiveAchievement(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {
