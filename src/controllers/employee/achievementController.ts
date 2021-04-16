@@ -29,9 +29,9 @@ export class AchievementController {
     * @param req :[]
     * @param res 
     */
-    public async createAchievement(req: any, res: any, next: any) {
+    public async createUpdateAchievement(req: any, res: any, next: any) {
         try {
-            const responseFromService = await achievementServices.createAchievement(req.body,req.user);
+            const responseFromService = await achievementServices.createUpdateAchievement(req.body,req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

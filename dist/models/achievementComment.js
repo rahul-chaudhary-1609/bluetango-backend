@@ -30,5 +30,5 @@ exports.achievementCommentModel = connection_1.sequelize.define("achievement_com
 }, {
     tableName: "achievement_comments"
 });
-exports.achievementCommentModel.sync({ alter: true });
+exports.achievementCommentModel.sync({ alter: false });
 //# sourceMappingURL=achievementComment.js.map

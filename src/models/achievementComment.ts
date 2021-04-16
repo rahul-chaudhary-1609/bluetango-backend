@@ -31,4 +31,4 @@ export const achievementCommentModel: any = sequelize.define("achievement_commen
         tableName: "achievement_comments"
     }
 );
-achievementCommentModel.sync({ alter: true });
+achievementCommentModel.sync({ alter: false });

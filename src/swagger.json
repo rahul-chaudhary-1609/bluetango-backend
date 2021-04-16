@@ -3534,7 +3534,7 @@
         "responses": {}
       }
     },
-    "/employee/createAchievement": {
+    "/employee/createUpdateAchievement": {
       "post": {
         "tags": [
           "Employee"
@@ -3550,6 +3550,13 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "achievement_id",
+            "in": "formData",
+            "description": "Enter achievement id, when you will pass achievement id then it will be update otherwise it will be create",
+            "required": false,
+            "type": "number"
           },
           {
             "name": "description",

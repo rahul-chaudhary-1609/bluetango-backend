@@ -150,7 +150,7 @@ employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenV
 /* get achievements */
 employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);
 /* create achievement */
-employeeRoute.post("/createAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createAchievement), achievementController.createAchievement);
+employeeRoute.post("/createUpdateAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createUpdateAchievement), achievementController.createUpdateAchievement);
 /* like dislike achievement */
 employeeRoute.put("/likeDislikeAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.likeDislikeAchievement), achievementController.likeDislikeAchievement);
 /* like dislike achievement */

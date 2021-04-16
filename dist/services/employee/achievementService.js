@@ -114,13 +114,31 @@ class AchievementServices {
     /*
     * function to create achievement
     */
-    createAchievement(params, user) {
+    createUpdateAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let achievementObj = {
-                employee_id: user.uid,
-                description: params.description,
-            };
-            return yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
+            let achievement = {};
+            if (params.achievement_id) {
+                achievement = yield achievement_1.achievementModel.findOne({
+                    where: {
+                        employee_id: user.uid,
+                        id: parseInt(params.achievement_id)
+                    }
+                });
+                if (achievement) {
+                    achievement.description = params.description;
+                    yield achievement.save();
+                }
+                else
+                    throw new Error(constants.MESSAGES.no_achievement);
+            }
+            else {
+                let achievementObj = {
+                    employee_id: user.uid,
+                    description: params.description
+                };
+                achievement = yield achievement_1.achievementModel.create(achievementObj);
+            }
+            return yield helperFunction.convertPromiseToObject(achievement);
         });
     }
     /*

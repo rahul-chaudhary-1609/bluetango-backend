@@ -99,16 +99,36 @@ export class AchievementServices {
     /*
     * function to create achievement
     */
-    public async createAchievement(params:any,user: any) {
+    public async createUpdateAchievement(params:any,user: any) {
 
-        let achievementObj = <any>{
-            employee_id: user.uid,
-            description: params.description,
+        let achievement = <any>{};
+
+        if (params.achievement_id) {
+            achievement = await achievementModel.findOne({
+                where: {
+                    employee_id: user.uid,
+                    id: parseInt(params.achievement_id)
+                }
+            })
+
+            if (achievement) {
+                achievement.description = params.description;
+                await achievement.save();
+            }
+            else
+                throw new Error(constants.MESSAGES.no_achievement);
+        }
+        else {
+            let achievementObj = <any>{
+                employee_id: user.uid,
+                description: params.description
+            }
+
+            achievement = await achievementModel.create(achievementObj);
         }
 
-        return await helperFunction.convertPromiseToObject(
-            await achievementModel.create(achievementObj)
-        )
+
+        return await helperFunction.convertPromiseToObject(achievement);
 
     }
 
