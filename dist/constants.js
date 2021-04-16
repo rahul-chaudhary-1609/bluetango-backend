@@ -120,6 +120,8 @@ exports.MESSAGES = {
     video_chat_session_created: "Session created",
     advisor_details_fetched: "Advisor details fetched",
     no_qualitative_measure: "No qualitative measure found",
+    no_achievement_comment: "user have not commented anything on this achievement",
+    no_achievement: "no achievement found",
 };
 exports.code = {
     error_code: 400

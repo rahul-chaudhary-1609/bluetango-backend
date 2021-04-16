@@ -107,14 +107,14 @@ export class AchievementServices {
     }
 
     /*
-    * function to like an achievement
+    * function to like dislike an achievement
     */
     public async likeDislikeAchievement(params: any, user: any) {
 
         let achievementLike = await achievementLikeModel.findOne({
             where: {
                 liked_by_employee_id: user.uid,
-                achievement_id: params.achievement_id,
+                achievement_id: parseInt(params.achievement_id)
             }
         })
 
@@ -125,7 +125,7 @@ export class AchievementServices {
 
             let achievementLikeObj = <any>{
                 liked_by_employee_id: user.uid,
-                achievement_id: params.achievement_id,
+                achievement_id: parseInt(params.achievement_id)
             }
 
             await achievementLikeModel.create(achievementLikeObj)
@@ -136,14 +136,14 @@ export class AchievementServices {
     }
 
     /*
-    * function to like an achievement
+    * function to high five an achievement
     */
     public async highFiveAchievement(params: any, user: any) {
 
         let achievementhighFive = await achievementHighFiveModel.findOne({
             where: {
                 high_fived_by_employee_id: user.uid,
-                achievement_id: params.achievement_id,
+                achievement_id: parseInt(params.achievement_id)
             }
         })
 
@@ -154,13 +154,50 @@ export class AchievementServices {
 
             let achievementHighFiveObj = <any>{
                 high_fived_by_employee_id: user.uid,
-                achievement_id: params.achievement_id,
+                achievement_id: parseInt(params.achievement_id)
             }
 
             await achievementHighFiveModel.create(achievementHighFiveObj)
         }
 
         return true;
+
+    }
+
+    /*
+    * function to add edit comment on achievement
+    */
+    public async addEditCommentAchievement(params: any, user: any) {
+
+        let achievementComment = <any>{};
+
+        if (params.achievement_comment_id) {
+            achievementComment = await achievementCommentModel.findOne({
+                    where: {
+                        commented_by_employee_id: user.uid,
+                        id: parseInt(params.achievement_comment_id)
+                    }
+            })
+
+            if (achievementComment) {
+                achievementComment.comment = params.comment;
+                await achievementComment.save();
+            }
+            else
+                throw new Error(constants.MESSAGES.no_achievement_comment);
+        }
+        else {
+            let achievementCommentObj = <any>{
+                commented_by_employee_id: user.uid,
+                achievement_id: parseInt(params.achievement_id),
+                comment:params.comment
+            }
+
+            achievementComment = await achievementCommentModel.create(achievementCommentObj);
+        }        
+        
+
+        return await helperFunction.convertPromiseToObject(achievementComment);
 
     }
 

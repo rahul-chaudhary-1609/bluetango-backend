@@ -116,7 +116,9 @@ export const MESSAGES = {
   video_chat_session_create_error: "Error in video chat session creation",
   video_chat_session_created: "Session created",
   advisor_details_fetched: "Advisor details fetched",
-  no_qualitative_measure:"No qualitative measure found",
+  no_qualitative_measure: "No qualitative measure found",
+  no_achievement_comment: "user have not commented anything on this achievement",
+  no_achievement: "no achievement found",
 }
 
 export const code = {

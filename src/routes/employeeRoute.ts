@@ -203,5 +203,8 @@ employeeRoute.put("/likeDislikeAchievement", validators.trimmer, tokenValidator.
 /* like dislike achievement */
 employeeRoute.put("/highFiveAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.highFiveAchievement), achievementController.highFiveAchievement);
 
+/* add edit comment achievement */
+employeeRoute.post("/addEditCommentAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addEditCommentAchievement), achievementController.addEditCommentAchievement);
+
 
 export = employeeRoute;

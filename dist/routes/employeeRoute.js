@@ -155,5 +155,7 @@ employeeRoute.post("/createAchievement", validators.trimmer, tokenValidator.vali
 employeeRoute.put("/likeDislikeAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.likeDislikeAchievement), achievementController.likeDislikeAchievement);
 /* like dislike achievement */
 employeeRoute.put("/highFiveAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.highFiveAchievement), achievementController.highFiveAchievement);
+/* add edit comment achievement */
+employeeRoute.post("/addEditCommentAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addEditCommentAchievement), achievementController.addEditCommentAchievement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

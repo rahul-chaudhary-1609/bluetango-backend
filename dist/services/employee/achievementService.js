@@ -29,9 +29,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AchievementServices = void 0;
+const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const achievement_1 = require("../../models/achievement");
 const achievementLike_1 = require("../../models/achievementLike");
+const achievementComment_1 = require("../../models/achievementComment");
 const achievementHighFive_1 = require("../../models/achievementHighFive");
 const employee_1 = require("../../models/employee");
 const Sequelize = require('sequelize');
@@ -116,14 +118,14 @@ class AchievementServices {
         });
     }
     /*
-    * function to like an achievement
+    * function to like dislike an achievement
     */
     likeDislikeAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                 where: {
                     liked_by_employee_id: user.uid,
-                    achievement_id: params.achievement_id,
+                    achievement_id: parseInt(params.achievement_id)
                 }
             });
             if (achievementLike) {
@@ -132,7 +134,7 @@ class AchievementServices {
             else {
                 let achievementLikeObj = {
                     liked_by_employee_id: user.uid,
-                    achievement_id: params.achievement_id,
+                    achievement_id: parseInt(params.achievement_id)
                 };
                 yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
             }
@@ -140,14 +142,14 @@ class AchievementServices {
         });
     }
     /*
-    * function to like an achievement
+    * function to high five an achievement
     */
     highFiveAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
                 where: {
                     high_fived_by_employee_id: user.uid,
-                    achievement_id: params.achievement_id,
+                    achievement_id: parseInt(params.achievement_id)
                 }
             });
             if (achievementhighFive) {
@@ -156,11 +158,42 @@ class AchievementServices {
             else {
                 let achievementHighFiveObj = {
                     high_fived_by_employee_id: user.uid,
-                    achievement_id: params.achievement_id,
+                    achievement_id: parseInt(params.achievement_id)
                 };
                 yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
             }
             return true;
+        });
+    }
+    /*
+    * function to add edit comment on achievement
+    */
+    addEditCommentAchievement(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let achievementComment = {};
+            if (params.achievement_comment_id) {
+                achievementComment = yield achievementComment_1.achievementCommentModel.findOne({
+                    where: {
+                        commented_by_employee_id: user.uid,
+                        id: parseInt(params.achievement_comment_id)
+                    }
+                });
+                if (achievementComment) {
+                    achievementComment.comment = params.comment;
+                    yield achievementComment.save();
+                }
+                else
+                    throw new Error(constants.MESSAGES.no_achievement_comment);
+            }
+            else {
+                let achievementCommentObj = {
+                    commented_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id),
+                    comment: params.comment
+                };
+                achievementComment = yield achievementComment_1.achievementCommentModel.create(achievementCommentObj);
+            }
+            return yield helperFunction.convertPromiseToObject(achievementComment);
         });
     }
 }
