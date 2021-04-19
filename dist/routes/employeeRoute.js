@@ -163,5 +163,7 @@ employeeRoute.get("/getAchievementComments/:achievement_id", validators.trimmer,
 employeeRoute.delete("/deleteAchievement/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievement), achievementController.deleteAchievement);
 /* delete achievement comment*/
 employeeRoute.delete("/deleteAchievementComment/:achievement_comment_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievementComment), achievementController.deleteAchievementComment);
+/* get achievement likes list*/
+employeeRoute.get("/getAchievementLikesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementLikesList), achievementController.getAchievementLikesList);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

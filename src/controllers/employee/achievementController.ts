@@ -121,4 +121,18 @@ export class AchievementController {
             next(e)
         }
     }
+
+    /**
+    * get achievement likes list
+    * @param req :[]
+    * @param res 
+    */
+    public async getAchievementLikesList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.getAchievementLikesList(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

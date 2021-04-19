@@ -215,5 +215,8 @@ employeeRoute.delete("/deleteAchievement/:achievement_id", validators.trimmer, t
 /* delete achievement comment*/
 employeeRoute.delete("/deleteAchievementComment/:achievement_comment_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievementComment), achievementController.deleteAchievementComment);
 
+/* get achievement likes list*/
+employeeRoute.get("/getAchievementLikesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementLikesList), achievementController.getAchievementLikesList);
+
 
 export = employeeRoute;

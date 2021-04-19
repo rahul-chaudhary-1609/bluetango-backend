@@ -299,4 +299,37 @@ export class AchievementServices {
 
     }
 
+
+    /*
+    * function to get list of likes on achievement
+    */
+    public async getAchievementLikesList(params: any, user: any) {
+
+        achievementLikeModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
+
+        let achievementLikes = await helperFunction.convertPromiseToObject(
+            await achievementLikeModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+        )
+
+        for (let like of achievementLikes) {
+            like.isLiked = false
+            if (like.employee.id == parseInt(user.uid)) like.isLiked = true;
+        }
+
+        return achievementLikes;
+    }
+
+
 }

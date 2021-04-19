@@ -3751,6 +3751,34 @@
                 "responses": {}
             }
         },
+        "/employee/getAchievementLikesList/{achievement_id}": {
+            "get": {
+                "tags": [
+                    "EmployeeAchievement"
+                ],
+                "description": "api to get achievement likes list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "Enter achievement id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/getChatPopUpListAsEmployee": {
             "get": {
                 "tags": [

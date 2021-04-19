@@ -285,6 +285,33 @@ class AchievementServices {
                 throw new Error(constants.MESSAGES.no_achievement_comment);
         });
     }
+    /*
+    * function to get list of likes on achievement
+    */
+    getAchievementLikesList(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
+            let achievementLikes = yield helperFunction.convertPromiseToObject(yield achievementLike_1.achievementLikeModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let like of achievementLikes) {
+                like.isLiked = false;
+                if (like.employee.id == parseInt(user.uid))
+                    like.isLiked = true;
+            }
+            return achievementLikes;
+        });
+    }
 }
 exports.AchievementServices = AchievementServices;
 //# sourceMappingURL=achievementService.js.map
