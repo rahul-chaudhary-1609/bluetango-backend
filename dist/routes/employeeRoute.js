@@ -161,5 +161,7 @@ employeeRoute.post("/addEditCommentAchievement", validators.trimmer, tokenValida
 employeeRoute.get("/getAchievementComments/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementComments), achievementController.getAchievementComments);
 /* delete achievement*/
 employeeRoute.delete("/deleteAchievement/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievement), achievementController.deleteAchievement);
+/* delete achievement comment*/
+employeeRoute.delete("/deleteAchievementComment/:achievement_comment_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievementComment), achievementController.deleteAchievementComment);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

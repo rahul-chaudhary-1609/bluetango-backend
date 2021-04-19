@@ -266,6 +266,25 @@ class AchievementServices {
                 throw new Error(constants.MESSAGES.no_achievement);
         });
     }
+    /*
+    * function to delete an achievement comment
+    */
+    deleteAchievementComment(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let achievementComment = yield achievementComment_1.achievementCommentModel.findOne({
+                where: {
+                    commented_by_employee_id: user.uid,
+                    id: parseInt(params.achievement_comment_id)
+                }
+            });
+            if (achievementComment) {
+                yield achievementComment.destroy();
+                return true;
+            }
+            else
+                throw new Error(constants.MESSAGES.no_achievement_comment);
+        });
+    }
 }
 exports.AchievementServices = AchievementServices;
 //# sourceMappingURL=achievementService.js.map

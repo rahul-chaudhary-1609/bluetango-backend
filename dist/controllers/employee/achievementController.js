@@ -148,6 +148,22 @@ class AchievementController {
             }
         });
     }
+    /**
+    * delete achievement comment
+    * @param req :[]
+    * @param res
+    */
+    deleteAchievementComment(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.deleteAchievementComment(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.AchievementController = AchievementController;
 //# sourceMappingURL=achievementController.js.map

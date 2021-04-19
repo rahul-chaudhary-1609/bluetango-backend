@@ -107,4 +107,18 @@ export class AchievementController {
             next(e)
         }
     }
+
+    /**
+    * delete achievement comment
+    * @param req :[]
+    * @param res 
+    */
+    public async deleteAchievementComment(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.deleteAchievementComment(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

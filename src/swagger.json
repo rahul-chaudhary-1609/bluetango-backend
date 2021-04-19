@@ -3727,6 +3727,34 @@
         "responses": {}
       }
     },
+    "/employee/deleteAchievementComment/{achievement_comment_id}": {
+      "delete": {
+        "tags": [
+          "EmployeeAchievement"
+        ],
+        "description": "api to delete an achievement comment",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "achievement_comment_id",
+            "in": "path",
+            "description": "Enter achievement comment id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getChatPopUpListAsEmployee": {
       "get": {
         "tags": [

@@ -208,6 +208,10 @@ export const deleteAchievement = Joi.object({
   achievement_id: Joi.number().required(),
 })
 
+export const deleteAchievementComment = Joi.object({
+  achievement_comment_id: Joi.number().required(),
+})
+
 export const markNotificationAsViewed = Joi.object({
   notification_id: Joi.number().required(),
 })

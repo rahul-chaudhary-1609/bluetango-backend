@@ -279,4 +279,24 @@ export class AchievementServices {
         
     }
 
+    /*
+    * function to delete an achievement comment
+    */ 
+    public async deleteAchievementComment(params: any, user: any) {
+        let achievementComment = await achievementCommentModel.findOne({
+            where: {
+                commented_by_employee_id: user.uid,
+                id: parseInt(params.achievement_comment_id)
+            }
+        })
+
+        if (achievementComment) {
+            await achievementComment.destroy();
+            return true
+        }
+        else
+            throw new Error(constants.MESSAGES.no_achievement_comment);
+
+    }
+
 }
