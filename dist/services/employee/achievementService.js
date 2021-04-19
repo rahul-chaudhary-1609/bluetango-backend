@@ -146,23 +146,29 @@ class AchievementServices {
     */
     likeDislikeAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
-                where: {
-                    liked_by_employee_id: user.uid,
-                    achievement_id: parseInt(params.achievement_id)
+            let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
+            if (achievement) {
+                let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
+                    where: {
+                        liked_by_employee_id: user.uid,
+                        achievement_id: parseInt(params.achievement_id)
+                    }
+                });
+                if (achievementLike) {
+                    yield achievementLike.destroy();
                 }
-            });
-            if (achievementLike) {
-                yield achievementLike.destroy();
+                else {
+                    let achievementLikeObj = {
+                        liked_by_employee_id: user.uid,
+                        achievement_id: parseInt(params.achievement_id)
+                    };
+                    yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
+                }
+                return true;
             }
             else {
-                let achievementLikeObj = {
-                    liked_by_employee_id: user.uid,
-                    achievement_id: parseInt(params.achievement_id)
-                };
-                yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
+                throw new Error(constants.MESSAGES.no_achievement);
             }
-            return true;
         });
     }
     /*
@@ -170,23 +176,29 @@ class AchievementServices {
     */
     highFiveAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
-                where: {
-                    high_fived_by_employee_id: user.uid,
-                    achievement_id: parseInt(params.achievement_id)
+            let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
+            if (achievement) {
+                let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                    where: {
+                        high_fived_by_employee_id: user.uid,
+                        achievement_id: parseInt(params.achievement_id)
+                    }
+                });
+                if (achievementhighFive) {
+                    yield achievementhighFive.destroy();
                 }
-            });
-            if (achievementhighFive) {
-                yield achievementhighFive.destroy();
+                else {
+                    let achievementHighFiveObj = {
+                        high_fived_by_employee_id: user.uid,
+                        achievement_id: parseInt(params.achievement_id)
+                    };
+                    yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
+                }
+                return true;
             }
             else {
-                let achievementHighFiveObj = {
-                    high_fived_by_employee_id: user.uid,
-                    achievement_id: parseInt(params.achievement_id)
-                };
-                yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
+                throw new Error(constants.MESSAGES.no_achievement);
             }
-            return true;
         });
     }
     /*
@@ -194,30 +206,36 @@ class AchievementServices {
     */
     addEditCommentAchievement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let achievementComment = {};
-            if (params.achievement_comment_id) {
-                achievementComment = yield achievementComment_1.achievementCommentModel.findOne({
-                    where: {
-                        commented_by_employee_id: user.uid,
-                        id: parseInt(params.achievement_comment_id)
+            let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
+            if (achievement) {
+                let achievementComment = {};
+                if (params.achievement_comment_id) {
+                    achievementComment = yield achievementComment_1.achievementCommentModel.findOne({
+                        where: {
+                            commented_by_employee_id: user.uid,
+                            id: parseInt(params.achievement_comment_id)
+                        }
+                    });
+                    if (achievementComment) {
+                        achievementComment.comment = params.comment;
+                        yield achievementComment.save();
                     }
-                });
-                if (achievementComment) {
-                    achievementComment.comment = params.comment;
-                    yield achievementComment.save();
+                    else
+                        throw new Error(constants.MESSAGES.no_achievement_comment);
                 }
-                else
-                    throw new Error(constants.MESSAGES.no_achievement_comment);
+                else {
+                    let achievementCommentObj = {
+                        commented_by_employee_id: user.uid,
+                        achievement_id: parseInt(params.achievement_id),
+                        comment: params.comment
+                    };
+                    achievementComment = yield achievementComment_1.achievementCommentModel.create(achievementCommentObj);
+                }
+                return yield helperFunction.convertPromiseToObject(achievementComment);
             }
             else {
-                let achievementCommentObj = {
-                    commented_by_employee_id: user.uid,
-                    achievement_id: parseInt(params.achievement_id),
-                    comment: params.comment
-                };
-                achievementComment = yield achievementComment_1.achievementCommentModel.create(achievementCommentObj);
+                throw new Error(constants.MESSAGES.no_achievement);
             }
-            return yield helperFunction.convertPromiseToObject(achievementComment);
         });
     }
     /*
@@ -240,9 +258,9 @@ class AchievementServices {
                 order: [["createdAt", "DESC"]]
             }));
             for (let comment of achievementComments) {
-                comment.isCommented = false;
-                if (comment.employee.id == parseInt(user.uid))
-                    comment.isCommented = true;
+                comment.isSelf = false;
+                if (comment.employee && comment.employee.id == parseInt(user.uid))
+                    comment.isSelf = true;
             }
             return achievementComments;
         });
@@ -305,11 +323,42 @@ class AchievementServices {
                 order: [["createdAt", "DESC"]]
             }));
             for (let like of achievementLikes) {
-                like.isLiked = false;
-                if (like.employee.id == parseInt(user.uid))
-                    like.isLiked = true;
+                like.isSelf = false;
+                if (like.employee && like.employee.id == parseInt(user.uid)) {
+                    like.isSelf = true;
+                    break;
+                }
             }
             return achievementLikes;
+        });
+    }
+    /*
+    * function to get list of high fives on achievement
+    */
+    getAchievementHighFivesList(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
+            let achievementHighFives = yield helperFunction.convertPromiseToObject(yield achievementHighFive_1.achievementHighFiveModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let highFive of achievementHighFives) {
+                highFive.isSelf = false;
+                if (highFive.employee && highFive.employee.id == parseInt(user.uid)) {
+                    highFive.isSelf = true;
+                    break;
+                }
+            }
+            return achievementHighFives;
         });
     }
 }

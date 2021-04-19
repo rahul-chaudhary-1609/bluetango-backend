@@ -220,6 +220,10 @@ export const getAchievementLikesList = Joi.object({
   achievement_id: Joi.number().required(),
 })
 
+export const getAchievementHighFivesList = Joi.object({
+  achievement_id: Joi.number().required(),
+})
+
 export const editGoal = Joi.object({
   id: Joi.string().required(),
   title: Joi.string().required(),

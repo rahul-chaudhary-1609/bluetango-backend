@@ -135,4 +135,18 @@ export class AchievementController {
             next(e)
         }
     }
+
+    /**
+    * get achievement high fives list
+    * @param req :[]
+    * @param res 
+    */
+    public async getAchievementHighFivesList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.getAchievementHighFivesList(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

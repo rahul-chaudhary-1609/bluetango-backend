@@ -137,27 +137,34 @@ export class AchievementServices {
     */
     public async likeDislikeAchievement(params: any, user: any) {
 
-        let achievementLike = await achievementLikeModel.findOne({
-            where: {
-                liked_by_employee_id: user.uid,
-                achievement_id: parseInt(params.achievement_id)
-            }
-        })
+        let achievement = await achievementModel.findByPk(parseInt(params.achievement_id));
 
-        if (achievementLike) {
-            await achievementLike.destroy()
+        if (achievement) {
+            let achievementLike = await achievementLikeModel.findOne({
+                where: {
+                    liked_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id)
+                }
+            })
+
+            if (achievementLike) {
+                await achievementLike.destroy()
+            }
+            else {
+
+                let achievementLikeObj = <any>{
+                    liked_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id)
+                }
+
+                await achievementLikeModel.create(achievementLikeObj)
+            }
+
+            return true;
         }
         else {
-
-            let achievementLikeObj = <any>{
-                liked_by_employee_id: user.uid,
-                achievement_id: parseInt(params.achievement_id)
-            }
-
-            await achievementLikeModel.create(achievementLikeObj)
-        }
-
-        return true;        
+            throw new Error(constants.MESSAGES.no_achievement);
+        }               
 
     }
 
@@ -166,27 +173,34 @@ export class AchievementServices {
     */
     public async highFiveAchievement(params: any, user: any) {
 
-        let achievementhighFive = await achievementHighFiveModel.findOne({
-            where: {
-                high_fived_by_employee_id: user.uid,
-                achievement_id: parseInt(params.achievement_id)
-            }
-        })
+        let achievement = await achievementModel.findByPk(parseInt(params.achievement_id));
 
-        if (achievementhighFive) {
-            await achievementhighFive.destroy()
+        if (achievement) {
+            let achievementhighFive = await achievementHighFiveModel.findOne({
+                where: {
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id)
+                }
+            })
+
+            if (achievementhighFive) {
+                await achievementhighFive.destroy()
+            }
+            else {
+
+                let achievementHighFiveObj = <any>{
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id)
+                }
+
+                await achievementHighFiveModel.create(achievementHighFiveObj)
+            }
+
+            return true;
         }
         else {
-
-            let achievementHighFiveObj = <any>{
-                high_fived_by_employee_id: user.uid,
-                achievement_id: parseInt(params.achievement_id)
-            }
-
-            await achievementHighFiveModel.create(achievementHighFiveObj)
+            throw new Error(constants.MESSAGES.no_achievement);
         }
-
-        return true;
 
     }
 
@@ -195,35 +209,42 @@ export class AchievementServices {
     */
     public async addEditCommentAchievement(params: any, user: any) {
 
-        let achievementComment = <any>{};
+        let achievement = await achievementModel.findByPk(parseInt(params.achievement_id));
 
-        if (params.achievement_comment_id) {
-            achievementComment = await achievementCommentModel.findOne({
+        if (achievement) {
+            let achievementComment = <any>{};
+
+            if (params.achievement_comment_id) {
+                achievementComment = await achievementCommentModel.findOne({
                     where: {
                         commented_by_employee_id: user.uid,
                         id: parseInt(params.achievement_comment_id)
                     }
-            })
+                })
 
-            if (achievementComment) {
-                achievementComment.comment = params.comment;
-                await achievementComment.save();
+                if (achievementComment) {
+                    achievementComment.comment = params.comment;
+                    await achievementComment.save();
+                }
+                else
+                    throw new Error(constants.MESSAGES.no_achievement_comment);
             }
-            else
-                throw new Error(constants.MESSAGES.no_achievement_comment);
+            else {
+                let achievementCommentObj = <any>{
+                    commented_by_employee_id: user.uid,
+                    achievement_id: parseInt(params.achievement_id),
+                    comment: params.comment
+                }
+
+                achievementComment = await achievementCommentModel.create(achievementCommentObj);
+            }
+
+
+            return await helperFunction.convertPromiseToObject(achievementComment);
         }
         else {
-            let achievementCommentObj = <any>{
-                commented_by_employee_id: user.uid,
-                achievement_id: parseInt(params.achievement_id),
-                comment:params.comment
-            }
-
-            achievementComment = await achievementCommentModel.create(achievementCommentObj);
-        }        
-        
-
-        return await helperFunction.convertPromiseToObject(achievementComment);
+            throw new Error(constants.MESSAGES.no_achievement);
+        }       
 
     }
 
@@ -252,8 +273,8 @@ export class AchievementServices {
         )
 
         for (let comment of achievementComments) {
-            comment.isCommented = false
-            if (comment.employee.id == parseInt(user.uid)) comment.isCommented = true;
+            comment.isSelf = false
+            if (comment.employee && comment.employee.id == parseInt(user.uid)) comment.isSelf = true;
         }
 
         return achievementComments;
@@ -324,11 +345,48 @@ export class AchievementServices {
         )
 
         for (let like of achievementLikes) {
-            like.isLiked = false
-            if (like.employee.id == parseInt(user.uid)) like.isLiked = true;
+            like.isSelf = false
+            if (like.employee && like.employee.id == parseInt(user.uid)) {
+                like.isSelf = true;
+                break;
+            } 
         }
 
         return achievementLikes;
+    }
+
+    /*
+    * function to get list of high fives on achievement
+    */
+    public async getAchievementHighFivesList(params: any, user: any) {
+
+        achievementHighFiveModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" })
+
+        let achievementHighFives = await helperFunction.convertPromiseToObject(
+            await achievementHighFiveModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+        )
+
+        for (let highFive of achievementHighFives) {
+            highFive.isSelf = false
+            if (highFive.employee && highFive.employee.id == parseInt(user.uid)) {
+                highFive.isSelf = true;
+                break;
+            } 
+        }
+
+        return achievementHighFives;
     }
 
 
