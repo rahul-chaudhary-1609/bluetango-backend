@@ -259,4 +259,24 @@ export class AchievementServices {
         return achievementComments;
     }
 
+    /*
+    * function to delete an achievement
+    */
+    public async deleteAchievement(params: any, user: any) {
+            let achievement = await achievementModel.findOne({
+                where: {
+                    employee_id: user.uid,
+                    id: parseInt(params.achievement_id)
+                }
+            })
+
+            if (achievement) {
+                await achievement.destroy();
+                return true
+            }
+            else
+                throw new Error(constants.MESSAGES.no_achievement);
+        
+    }
+
 }

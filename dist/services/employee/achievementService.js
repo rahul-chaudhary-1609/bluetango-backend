@@ -247,6 +247,25 @@ class AchievementServices {
             return achievementComments;
         });
     }
+    /*
+    * function to delete an achievement
+    */
+    deleteAchievement(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let achievement = yield achievement_1.achievementModel.findOne({
+                where: {
+                    employee_id: user.uid,
+                    id: parseInt(params.achievement_id)
+                }
+            });
+            if (achievement) {
+                yield achievement.destroy();
+                return true;
+            }
+            else
+                throw new Error(constants.MESSAGES.no_achievement);
+        });
+    }
 }
 exports.AchievementServices = AchievementServices;
 //# sourceMappingURL=achievementService.js.map

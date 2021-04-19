@@ -159,5 +159,7 @@ employeeRoute.put("/highFiveAchievement", validators.trimmer, tokenValidator.val
 employeeRoute.post("/addEditCommentAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addEditCommentAchievement), achievementController.addEditCommentAchievement);
 /* get achievement comments*/
 employeeRoute.get("/getAchievementComments/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementComments), achievementController.getAchievementComments);
+/* delete achievement*/
+employeeRoute.delete("/deleteAchievement/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.deleteAchievement), achievementController.deleteAchievement);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

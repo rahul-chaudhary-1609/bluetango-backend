@@ -117,7 +117,7 @@ class AchievementController {
         });
     }
     /**
-    * comment achievement
+    * get comments of achievement
     * @param req :[]
     * @param res
     */
@@ -125,6 +125,22 @@ class AchievementController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield achievementServices.getAchievementComments(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * delete achievement
+    * @param req :[]
+    * @param res
+    */
+    deleteAchievement(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.deleteAchievement(req.params, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

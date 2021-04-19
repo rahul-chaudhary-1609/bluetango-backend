@@ -81,13 +81,27 @@ export class AchievementController {
     }
 
     /**
-    * comment achievement
+    * get comments of achievement
     * @param req :[]
     * @param res 
     */
     public async getAchievementComments(req: any, res: any, next: any) {
         try {
             const responseFromService = await achievementServices.getAchievementComments(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * delete achievement
+    * @param req :[]
+    * @param res 
+    */
+    public async deleteAchievement(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.deleteAchievement(req.params, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

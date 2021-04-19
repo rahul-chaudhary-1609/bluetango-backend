@@ -30,6 +30,10 @@
             "description": "Employee Chat related api's"
         },
         {
+            "name": "EmployeeAchievement",
+            "description": "Employee Achievement related api's"
+        },
+        {
             "name": "Employer",
             "description": "Employer related api's"
         }
@@ -3512,7 +3516,7 @@
         "/employee/getAchievements": {
             "get": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "get achievements of the employees",
                 "consumes": [
@@ -3533,7 +3537,7 @@
         "/employee/createUpdateAchievement": {
             "post": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "api to create achivement",
                 "consumes": [
@@ -3568,7 +3572,7 @@
         "/employee/likeDislikeAchievement": {
             "put": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "api to like achivement",
                 "consumes": [
@@ -3596,7 +3600,7 @@
         "/employee/highFiveAchievement": {
             "put": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "api to high five achivement",
                 "consumes": [
@@ -3624,7 +3628,7 @@
         "/employee/addEditCommentAchievement": {
             "post": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "api to add edit comment achivement",
                 "consumes": [
@@ -3666,9 +3670,37 @@
         "/employee/getAchievementComments/{achievement_id}": {
             "get": {
                 "tags": [
-                    "Employee"
+                    "EmployeeAchievement"
                 ],
                 "description": "api to get achivement comments",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "Enter achievement id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employee/deleteAchievement/{achievement_id}": {
+            "delete": {
+                "tags": [
+                    "EmployeeAchievement"
+                ],
+                "description": "api to delete an achievement",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],

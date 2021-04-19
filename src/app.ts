@@ -87,7 +87,7 @@ app.get('/api', (req, res) => {
     res.send("<center><p><b>Server is working properly!</b></p></center>");
 });
 //setup swagger for documentation
-app.use('/api-swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { swaggerOptions: { docExpansion: "none" } }));
  
 // for adding more route and api
 require("./routes")(app);

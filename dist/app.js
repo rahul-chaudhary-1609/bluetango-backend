@@ -95,7 +95,7 @@ app.get('/api', (req, res) => {
     res.send("<center><p><b>Server is working properly!</b></p></center>");
 });
 //setup swagger for documentation
-app.use('/api-swagger', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+app.use('/api-swagger', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default, { swaggerOptions: { docExpansion: "none" } }));
 // for adding more route and api
 require("./routes")(app);
 // app.use(cors()); 
