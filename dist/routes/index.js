@@ -26,12 +26,14 @@ const ROUTE_PREFIX = `/api/v1/`;
 const adminRoute_1 = __importDefault(require("./adminRoute"));
 const employeeRoute_1 = __importDefault(require("./employeeRoute"));
 const employerRoute_1 = __importDefault(require("./employerRoute"));
+const webRoute_1 = __importDefault(require("./webRoute"));
 const appUtils = __importStar(require("../utils/appUtils"));
 const constants = __importStar(require("../constants"));
 module.exports = function (app) {
     app.use(`${ROUTE_PREFIX}admin`, adminRoute_1.default);
     app.use(`${ROUTE_PREFIX}employee`, employeeRoute_1.default);
     app.use(`${ROUTE_PREFIX}employer`, employerRoute_1.default);
+    app.use(`${ROUTE_PREFIX}web`, webRoute_1.default);
     app.use((err, req, res, next) => {
         appUtils.errorResponse(res, err, constants.code.error_code);
     });

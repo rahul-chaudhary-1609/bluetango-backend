@@ -44,7 +44,8 @@ export class AuthService {
             throw new Error(constants.MESSAGES.deactivate_account);
         } else if (!_.isEmpty(existingUser) && existingUser.status == 2){
             throw new Error(constants.MESSAGES.delete_account);
-        } if (!_.isEmpty(existingUser) && existingUser.employer.status == 0) {
+        }
+        if (!_.isEmpty(existingUser) && existingUser.employer.status == 0) {
             throw new Error(constants.MESSAGES.deactivate_employer_account);
         } else if (!_.isEmpty(existingUser) && existingUser.employer.status == 2) {
             throw new Error(constants.MESSAGES.delete_employer_account);
