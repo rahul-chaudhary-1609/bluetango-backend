@@ -68,6 +68,22 @@ class HomepageController {
             }
         });
     }
+    /**
+* to get all articles
+* @param req :[]
+* @param res
+*/
+    getArticles(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield homepageServices.getArticles();
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.HomepageController = HomepageController;
 //# sourceMappingURL=homepageController.js.map

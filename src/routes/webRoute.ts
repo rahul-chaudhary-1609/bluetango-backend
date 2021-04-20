@@ -17,7 +17,8 @@ webRoute.get("/getCoaches", homepageController.getCoaches);
 /* get all advisors*/
 webRoute.get("/getAdvisors", homepageController.getAdvisors);
 
-
+/* get all articles*/
+webRoute.get("/getArticles", homepageController.getArticles);
 
 
 

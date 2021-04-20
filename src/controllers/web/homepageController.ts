@@ -40,5 +40,18 @@ export class HomepageController {
         }
     }
 
-   
+    /**
+* to get all articles
+* @param req :[]
+* @param res 
+*/
+    public async getArticles(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await homepageServices.getArticles();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

@@ -11,5 +11,7 @@ const homepageController = new homepageController_1.HomepageController();
 webRoute.get("/getCoaches", homepageController.getCoaches);
 /* get all advisors*/
 webRoute.get("/getAdvisors", homepageController.getAdvisors);
+/* get all articles*/
+webRoute.get("/getArticles", homepageController.getArticles);
 module.exports = webRoute;
 //# sourceMappingURL=webRoute.js.map

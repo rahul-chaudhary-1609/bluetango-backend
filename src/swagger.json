@@ -4335,6 +4335,19 @@
         "parameters": [],
         "responses": {}
       }
+    },
+    "/web/getArticles": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "api to get all articles",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [],
+        "responses": {}
+      }
     }
 
 

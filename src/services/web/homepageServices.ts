@@ -35,5 +35,15 @@ export class HomepageServices {
     }
 
 
- 
+    /*
+* function to get all articles
+*/
+    public async getArticles() {
+
+        let articleList = await articleManagementModel.findAndCountAll({
+            attributes: ['id', 'title', 'image', 'description']
+        });
+
+        return await helperFunction.convertPromiseToObject(articleList);
+    }
 }
