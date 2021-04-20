@@ -24,4 +24,21 @@ export class HomepageController {
             next(e)
         }
     }
+
+    /**
+  * to get all advisors
+  * @param req :[]
+  * @param res 
+  */
+    public async getAdvisors(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await homepageServices.getAdvisors();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+   
 }

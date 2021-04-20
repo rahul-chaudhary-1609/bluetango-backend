@@ -52,6 +52,22 @@ class HomepageController {
             }
         });
     }
+    /**
+  * to get all advisors
+  * @param req :[]
+  * @param res
+  */
+    getAdvisors(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield homepageServices.getAdvisors();
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.HomepageController = HomepageController;
 //# sourceMappingURL=homepageController.js.map

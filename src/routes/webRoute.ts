@@ -14,6 +14,11 @@ const homepageController = new HomepageController();
 /* get all coaches*/
 webRoute.get("/getCoaches", homepageController.getCoaches);
 
+/* get all advisors*/
+webRoute.get("/getAdvisors", homepageController.getAdvisors);
+
+
+
 
 
 export = webRoute;

@@ -4322,6 +4322,19 @@
         "parameters": [],
         "responses": {}
       }
+    },
+    "/web/getAdvisors": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "api to get all advisors",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [],
+        "responses": {}
+      }
     }
 
 

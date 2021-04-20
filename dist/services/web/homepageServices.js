@@ -31,6 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomepageServices = void 0;
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const coachManagement_1 = require("../../models/coachManagement");
+const advisorManagement_1 = require("../../models/advisorManagement");
 const Sequelize = require('sequelize');
 class HomepageServices {
     constructor() { }
@@ -43,6 +44,17 @@ class HomepageServices {
                 attributes: ['id', 'name', 'image', 'fileName', 'description']
             });
             return yield helperFunction.convertPromiseToObject(coachList);
+        });
+    }
+    /*
+* function to get all advisors
+*/
+    getAdvisors() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let advisorList = yield advisorManagement_1.advisorManagementModel.findAndCountAll({
+                attributes: ['id', 'title', 'image', 'description']
+            });
+            return yield helperFunction.convertPromiseToObject(advisorList);
         });
     }
 }

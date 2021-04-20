@@ -9,5 +9,7 @@ const homepageController = new homepageController_1.HomepageController();
 //website API's
 /* get all coaches*/
 webRoute.get("/getCoaches", homepageController.getCoaches);
+/* get all advisors*/
+webRoute.get("/getAdvisors", homepageController.getAdvisors);
 module.exports = webRoute;
 //# sourceMappingURL=webRoute.js.map
