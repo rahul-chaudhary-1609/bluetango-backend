@@ -50,7 +50,7 @@ const options = {
     origin: "*",
 };
 //use cors middleware
-app.use(cors_1.default(options));
+app.use(cors_1.default());
 app.use(body_parser_1.default.urlencoded({
     extended: false,
     limit: "50mb",
