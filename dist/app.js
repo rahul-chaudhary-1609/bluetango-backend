@@ -33,7 +33,6 @@ const swagger_json_1 = __importDefault(require("./swagger.json"));
 const cors_1 = __importDefault(require("cors"));
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
-var whitelist = ['https://hopeful-darwin-4689a1.netlify.app/', 'http://localhost:3000'];
 //options for cors midddleware
 const options = {
     allowedHeaders: [
@@ -48,16 +47,7 @@ const options = {
     ],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    //origin: "*",
-    // preflightContinue: true,
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
+    origin: "*",
 };
 //use cors middleware
 app.use(cors_1.default(options));
