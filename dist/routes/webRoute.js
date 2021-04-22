@@ -13,5 +13,7 @@ webRoute.get("/getCoaches", homepageController.getCoaches);
 webRoute.get("/getAdvisors", homepageController.getAdvisors);
 /* get all articles*/
 webRoute.get("/getArticles", homepageController.getArticles);
+/* get all articles*/
+webRoute.get("/getSubscriptions", homepageController.getSubscriptions);
 module.exports = webRoute;
 //# sourceMappingURL=webRoute.js.map

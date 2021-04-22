@@ -33,6 +33,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const coachManagement_1 = require("../../models/coachManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
 const articleManagement_1 = require("../../models/articleManagement");
+const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const Sequelize = require('sequelize');
 class HomepageServices {
     constructor() { }
@@ -67,6 +68,17 @@ class HomepageServices {
                 attributes: ['id', 'title', 'image', 'description']
             });
             return yield helperFunction.convertPromiseToObject(articleList);
+        });
+    }
+    /*
+ * function to get all subscription plans
+ */
+    getSubscriptions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let subscriptionList = yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
+                attributes: ['id', 'plan_name', 'description', 'charge', 'duration']
+            });
+            return yield helperFunction.convertPromiseToObject(subscriptionList);
         });
     }
 }

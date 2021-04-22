@@ -4348,6 +4348,19 @@
         "parameters": [],
         "responses": {}
       }
+    },
+    "/web/getSubscriptions": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "api to get all Subscription plans",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [],
+        "responses": {}
+      }
     }
 
 

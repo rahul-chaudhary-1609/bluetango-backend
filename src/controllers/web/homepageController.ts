@@ -54,4 +54,21 @@ export class HomepageController {
             next(e)
         }
     }
+
+    /**
+* to get all Subscription plans
+* @param req :[]
+* @param res 
+*/
+    public async getSubscriptions(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await homepageServices.getSubscriptions();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+
 }

@@ -20,6 +20,8 @@ webRoute.get("/getAdvisors", homepageController.getAdvisors);
 /* get all articles*/
 webRoute.get("/getArticles", homepageController.getArticles);
 
+/* get all articles*/
+webRoute.get("/getSubscriptions", homepageController.getSubscriptions);
 
 
 export = webRoute;

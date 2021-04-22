@@ -3,6 +3,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import { coachManagementModel } from "../../models/coachManagement";
 import { advisorManagementModel } from "../../models/advisorManagement";
 import { articleManagementModel } from "../../models/articleManagement";
+import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 
 const Sequelize = require('sequelize');
 
@@ -46,4 +47,17 @@ export class HomepageServices {
 
         return await helperFunction.convertPromiseToObject(articleList);
     }
+
+    /*
+ * function to get all subscription plans
+ */
+    public async getSubscriptions() {
+
+        let subscriptionList = await subscriptionManagementModel.findAndCountAll({
+            attributes: ['id', 'plan_name', 'description', 'charge','duration']
+        });
+
+        return await helperFunction.convertPromiseToObject(subscriptionList);
+    }
+
 }
