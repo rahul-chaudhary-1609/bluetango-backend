@@ -29,7 +29,7 @@ const options: cors.CorsOptions = {
   };
   
 //use cors middleware
-app.use(cors(options));
+app.use(cors());
 
 app.use(bodyParser.urlencoded(
     {
