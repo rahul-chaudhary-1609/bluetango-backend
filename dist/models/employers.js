@@ -36,6 +36,18 @@ exports.employersModel = connection_1.sequelize.define("employers", {
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
     },
+    first_time_login: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
+    },
+    first_time_reset_password: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
+    },
     reset_pass_otp: {
         type: sequelize_1.DataTypes.JSONB,
         allowNull: true,

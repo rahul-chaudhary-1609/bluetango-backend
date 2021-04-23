@@ -79,6 +79,29 @@ class AuthService {
             }
         });
     }
+    /*
+    * function to set new pass
+    */
+    resetPassword(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const update = {
+                password: yield appUtils.bcryptPassword(params.password)
+            };
+            const qry = {
+                where: {
+                    id: user.uid
+                }
+            };
+            if (user.user_role == constants.USER_ROLE.employer) {
+                update.first_time_reset_password = 0;
+                update.first_time_login = 0;
+                return yield models_1.employersModel.update(update, qry);
+            }
+            else {
+                throw new Error(constants.MESSAGES.user_not_found);
+            }
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map
