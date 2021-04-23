@@ -4338,6 +4338,40 @@
         "responses": {}
       }
     },
+    "/employer/forgotPassword": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Employee forgot password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_role",
+            "in": "formData",
+            "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4",
+            "required": true,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/web/getCoaches": {
       "get": {
         "tags": [

@@ -14,6 +14,9 @@ const managementController = new EmployerController.EmployeeController();
 /* login route for employer login */
 employerRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.login), authController.login);
 
+/* forget pass route for employee */
+employerRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.forgotPassword), authController.forgotPassword);
+
 /* reset pass route for employer */
 employerRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.resetPassword), tokenValidator.validateForgotPasswordToken, authController.resetPassword);
 

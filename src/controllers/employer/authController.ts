@@ -37,4 +37,19 @@ export class AuthController {
             next(error);
         }
     }
+
+    /**
+    * forgot password
+    * @param req :[email]
+    * @param res 
+    */
+    public async forgotPassword(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.forgotPassword(req.body);
+            const msg = constants.MESSAGES.forget_pass_otp;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            next(error)
+        }
+    }
 }
