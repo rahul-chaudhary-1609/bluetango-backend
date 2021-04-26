@@ -70,7 +70,7 @@ export const addEditEmployee = Joi.object ({
   })
   
   export const getEmployeeList = Joi.object ({
-    departmentId: Joi.string().optional(),
-    limit: Joi.string().optional(),
-    offset: Joi.string().optional()
+    departmentId: Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional()
   })

@@ -163,7 +163,7 @@ class EmployeeManagement {
     getEmployeeList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             if (params.departmentId) {
-                let departmentExists = yield models_1.departmentModel.findOne({ where: { id: params.departmentId } });
+                let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
                     throw new Error(constants.MESSAGES.invalid_department);
             }

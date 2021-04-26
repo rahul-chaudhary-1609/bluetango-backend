@@ -53,6 +53,9 @@ export class AuthService {
             password: await appUtils.bcryptPassword(params.password)
         };
 
+        console.log("User", user)
+        console.log("update",update)
+
         const qry = <any>{
             where: {
                 id: user.uid

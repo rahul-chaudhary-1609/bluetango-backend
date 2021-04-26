@@ -88,8 +88,8 @@ exports.addEditEmployee = joi_1.default.object({
     manager_id: joi_1.default.string().required(),
 });
 exports.getEmployeeList = joi_1.default.object({
-    departmentId: joi_1.default.string().optional(),
-    limit: joi_1.default.string().optional(),
-    offset: joi_1.default.string().optional()
+    departmentId: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional()
 });
 //# sourceMappingURL=employerSchema.js.map

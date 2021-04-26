@@ -141,7 +141,7 @@ export class EmployeeManagement {
     */
     public async getEmployeeList (params: any, user: any) {
         if(params.departmentId) {
-            let departmentExists = await departmentModel.findOne({where:{id: params.departmentId}});
+            let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});
             if(!departmentExists)
                 throw new Error(constants.MESSAGES.invalid_department);
         }

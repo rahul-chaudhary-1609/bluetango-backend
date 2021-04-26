@@ -87,6 +87,8 @@ class AuthService {
             const update = {
                 password: yield appUtils.bcryptPassword(params.password)
             };
+            console.log("User", user);
+            console.log("update", update);
             const qry = {
                 where: {
                     id: user.uid

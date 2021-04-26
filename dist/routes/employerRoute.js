@@ -35,7 +35,7 @@ employerRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBod
 /* forget pass route for employee */
 employerRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.forgotPassword), authController.forgotPassword);
 /* reset pass route for employer */
-employerRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.resetPassword), tokenValidator.validateForgotPasswordToken, authController.resetPassword);
+employerRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.resetPassword), tokenValidator.validateEmployerToken, authController.resetPassword);
 /* add or edit employers route for employers */
 employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employerSchema.addEditEmployee), tokenValidator.validateEmployerToken, managementController.addEditEmployee);
 /* get employers list route for employers */
