@@ -3174,6 +3174,27 @@
                 "responses": {}
             }
         },
+        "/employee/clearEmployeeDeviceToken": {
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Api to clear employee device token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/getCurrentManager": {
             "get": {
                 "tags": [

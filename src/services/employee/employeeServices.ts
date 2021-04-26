@@ -260,6 +260,22 @@ export class EmployeeServices {
     }
 
     /*
+* function to clear device token
+*/
+    public async clearEmployeeDeviceToken(user: any) {
+        return await employeeModel.update(
+            {
+                device_token: null,
+            },
+            {
+                where: { id: user.uid },
+                returning: true
+            }
+        )
+    }
+
+
+    /*
  * function to get current manager
  */
     public async getCurrentManager(user: any) {

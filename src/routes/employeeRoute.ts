@@ -102,6 +102,10 @@ employeeRoute.post("/feelAboutJobToday", validators.trimmer, tokenValidator.vali
 /* update device token */
 employeeRoute.put("/updateEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.updateEmployeeDeviceToken);
 
+/* update device token */
+employeeRoute.put("/clearEmployeeDeviceToken", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.clearEmployeeDeviceToken);
+
+
 /* get current manager */
 employeeRoute.get("/getCurrentManager", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCurrentManager);
 

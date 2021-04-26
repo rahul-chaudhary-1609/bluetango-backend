@@ -274,6 +274,19 @@ class EmployeeServices {
         });
     }
     /*
+* function to clear device token
+*/
+    clearEmployeeDeviceToken(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield employee_1.employeeModel.update({
+                device_token: null,
+            }, {
+                where: { id: user.uid },
+                returning: true
+            });
+        });
+    }
+    /*
  * function to get current manager
  */
     getCurrentManager(user) {

@@ -157,6 +157,21 @@ export class EmployeeController {
     }
 
     /**
+   * clear device token
+   * @param req :[]
+   * @param res 
+   */
+    public async clearEmployeeDeviceToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.clearEmployeeDeviceToken(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * get current manager
     * @param req :[]
     * @param res 

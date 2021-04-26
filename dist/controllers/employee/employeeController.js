@@ -196,6 +196,22 @@ class EmployeeController {
         });
     }
     /**
+   * clear device token
+   * @param req :[]
+   * @param res
+   */
+    clearEmployeeDeviceToken(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.clearEmployeeDeviceToken(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * get current manager
     * @param req :[]
     * @param res
