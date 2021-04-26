@@ -42,5 +42,7 @@ employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employer
 employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(employerSchema.getEmployeeList), tokenValidator.validateEmployerToken, managementController.getEmployeeList);
 /* update employer device token */
 employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody(employerSchema.updateEmployerDeviceToken), tokenValidator.validateEmployerToken, authController.updateEmployerDeviceToken);
+/* clear employer device token */
+employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

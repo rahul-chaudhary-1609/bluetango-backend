@@ -29,4 +29,7 @@ employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(em
 /* update employer device token */
 employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody(employerSchema.updateEmployerDeviceToken), tokenValidator.validateEmployerToken, authController.updateEmployerDeviceToken);
 
+/* clear employer device token */
+employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
+
 export = employerRoute;

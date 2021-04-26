@@ -125,5 +125,21 @@ export class AuthService {
     }
 
 
+    /*
+ * function to clear device token
+ */
+    public async clearEmployerDeviceToken(user: any) {
+        return await employersModel.update(
+            {
+                device_token: null,
+            },
+            {
+                where: { id: user.uid },
+                returning: true
+            }
+        )
+    }
+
+
 
 }

@@ -101,6 +101,22 @@ class AuthController {
             }
         });
     }
+    /**
+   * clear device token
+   * @param req :[]
+   * @param res
+   */
+    clearEmployerDeviceToken(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.clearEmployerDeviceToken(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map

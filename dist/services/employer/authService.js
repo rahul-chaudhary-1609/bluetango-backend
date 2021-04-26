@@ -155,6 +155,19 @@ class AuthService {
             });
         });
     }
+    /*
+ * function to clear device token
+ */
+    clearEmployerDeviceToken(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield models_1.employersModel.update({
+                device_token: null,
+            }, {
+                where: { id: user.uid },
+                returning: true
+            });
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map
