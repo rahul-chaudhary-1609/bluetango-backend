@@ -142,6 +142,19 @@ class AuthService {
             }
         });
     }
+    /*
+ * function to update device token
+ */
+    updateEmployerDeviceToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield models_1.employersModel.update({
+                device_token: params.device_token
+            }, {
+                where: { id: user.uid },
+                returning: true
+            });
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

@@ -74,3 +74,7 @@ export const addEditEmployee = Joi.object ({
     limit: Joi.number().optional(),
     offset: Joi.number().optional()
   })
+
+  export const updateEmployerDeviceToken = Joi.object({
+    device_token: Joi.string().required()
+})

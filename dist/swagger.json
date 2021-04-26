@@ -4368,6 +4368,34 @@
                 "responses": {}
             }
         },
+        "/employer/updateEmployerDeviceToken": {
+            "put": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to update employer device token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "formData",
+                        "description": "enter device token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/web/getCoaches": {
             "get": {
                 "tags": [

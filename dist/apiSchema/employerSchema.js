@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEmployeeList = exports.addEditEmployee = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -91,5 +91,8 @@ exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional()
+});
+exports.updateEmployerDeviceToken = joi_1.default.object({
+    device_token: joi_1.default.string().required()
 });
 //# sourceMappingURL=employerSchema.js.map

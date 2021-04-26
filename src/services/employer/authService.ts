@@ -109,5 +109,21 @@ export class AuthService {
 
     }
 
+    /*
+ * function to update device token
+ */
+    public async updateEmployerDeviceToken(params: any, user: any) {
+       return await employersModel.update(
+            {
+                device_token: params.device_token
+            },
+            {
+                where: { id: user.uid },
+                returning:true
+            }
+        )
+    }
+
+
 
 }

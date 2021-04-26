@@ -85,6 +85,22 @@ class AuthController {
             }
         });
     }
+    /**
+   * update device token
+   * @param req :[]
+   * @param res
+   */
+    updateEmployerDeviceToken(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.updateEmployerDeviceToken(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map
