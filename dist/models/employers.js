@@ -42,6 +42,10 @@ exports.employersModel = connection_1.sequelize.define("employers", {
         defaultValue: 1,
         comment: '0=>not first time,1=>first time'
     },
+    first_time_login_datetime: {
+        type: sequelize_1.DataTypes.DATE,
+        defaultValue: "2021-04-13",
+    },
     first_time_reset_password: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -79,5 +83,5 @@ exports.employersModel = connection_1.sequelize.define("employers", {
 }, {
     tableName: "employers"
 });
-exports.employersModel.sync({ alter: false });
+exports.employersModel.sync({ alter: true });
 //# sourceMappingURL=employers.js.map

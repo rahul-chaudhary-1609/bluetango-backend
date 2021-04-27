@@ -38,6 +38,7 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const tokenResponse = __importStar(require("../../utils/tokenResponse"));
 const models_1 = require("../../models");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class AuthService {
@@ -66,6 +67,50 @@ class AuthService {
                 if (comparePassword) {
                     delete existingUser.password;
                     delete existingUser.reset_pass_otp;
+                    existingUser.isFirstTimeLogin = false;
+                    if (existingUser.first_time_login == 1) {
+                        existingUser.isFirstTimeLogin = true;
+                        yield models_1.employersModel.update({
+                            first_time_login_datetime: new Date(),
+                        }, {
+                            where: {
+                                email: params.username.toLowerCase(),
+                            }
+                        });
+                    }
+                    else {
+                        let trial_expiry_date = new Date(existingUser.first_time_login_datetime);
+                        trial_expiry_date.setDate(trial_expiry_date.getDate() + 14);
+                        const timeDiff = Math.floor((trial_expiry_date.getTime() - (new Date()).getTime()) / 1000);
+                        if (timeDiff <= 259200) {
+                            //add notification 
+                            let notificationObj = {
+                                type_id: existingUser.id,
+                                sender_id: existingUser.id,
+                                reciever_id: existingUser.id,
+                                type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                                    title: 'Reminder Free Trial Expiration',
+                                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                                    existingUser
+                                },
+                            };
+                            yield notification_1.notificationModel.create(notificationObj);
+                            //send push notification
+                            let notificationData = {
+                                title: 'Reminder Free Trial Expiration',
+                                body: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                                    title: 'Reminder Free Trial Expiration',
+                                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                                    existingUser
+                                },
+                            };
+                            yield helperFunction.sendFcmNotification([existingUser.device_token], notificationData);
+                        }
+                    }
                     let token = yield tokenResponse.employerTokenResponse(existingUser);
                     existingUser.token = token.token;
                     return existingUser;

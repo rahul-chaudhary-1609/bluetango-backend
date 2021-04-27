@@ -41,6 +41,10 @@ export const employersModel: any = sequelize.define("employers", {
         defaultValue: 1,
         comment: '0=>not first time,1=>first time'
     },
+    first_time_login_datetime: {//applicable for all type of users
+        type: DataTypes.DATE,
+        defaultValue:"2021-04-13",
+    },
     first_time_reset_password: {//applicable for all type of users
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -80,4 +84,4 @@ export const employersModel: any = sequelize.define("employers", {
         tableName: "employers"
     }
 );
-employersModel.sync({ alter: false });
+employersModel.sync({ alter: true });
