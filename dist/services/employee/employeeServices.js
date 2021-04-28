@@ -423,7 +423,10 @@ class EmployeeServices {
     getCoachList(user) {
         return __awaiter(this, void 0, void 0, function* () {
             let coachList = yield coachManagement_1.coachManagementModel.findAndCountAll({
-                attributes: ['id', 'name', 'description']
+                attributes: ['id', 'name', 'description'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(coachList);
         });

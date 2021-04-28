@@ -425,7 +425,10 @@ export class EmployeeServices {
     public async getCoachList(user: any) {
 
         let coachList = await coachManagementModel.findAndCountAll({
-            attributes: ['id', 'name','description']            
+            attributes: ['id', 'name', 'description'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(coachList);
