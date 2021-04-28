@@ -126,7 +126,7 @@ exports.getQualitativeMeasurement = joi_1.default.object({
     employee_id: joi_1.default.string()
 });
 exports.getQualitativeMeasurementDetails = joi_1.default.object({
-    name: joi_1.default.string().required()
+    name: joi_1.default.string()
 });
 exports.searchTeamMember = joi_1.default.object({
     search_string: joi_1.default.string().required(),

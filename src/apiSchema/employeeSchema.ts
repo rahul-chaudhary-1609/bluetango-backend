@@ -119,7 +119,7 @@ export const getQualitativeMeasurement = Joi.object({
 })
 
 export const getQualitativeMeasurementDetails = Joi.object({
-  name: Joi.string().required()
+  name: Joi.string()
 })
 
 export const searchTeamMember = Joi.object({

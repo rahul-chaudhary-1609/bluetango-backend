@@ -95,7 +95,7 @@ export class QualitativeMeasuremetServices {
     */
    public async getQualitativeMeasurement(params: any,user:any) {
     qualitativeMeasurementModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
-       let qualitativeMeasurement =await qualitativeMeasurementModel.findAll({
+       let qualitativeMeasurement =await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findAll({
            where: { employee_id: params.employee_id ? params.employee_id :user.uid},
            include: [
                 {
@@ -103,12 +103,44 @@ export class QualitativeMeasuremetServices {
                     required: true,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 }
-           ]
-       })
+           ],
+           order: [["updatedAt", "DESC"]],
+           limit:1
+       }))
 
-       if (qualitativeMeasurement.length===0) throw new Error(constants.MESSAGES.no_qualitative_measure);
+       if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
+       
+       let result = {}
+       result['id'] = qualitativeMeasurement[0].id;
+       result['manager_id'] = qualitativeMeasurement[0].id;
+       result['employee_id'] = qualitativeMeasurement[0].employee_id;
 
-       return qualitativeMeasurement;
+       for (let key in qualitativeMeasurement[0]) {
+           if ([
+               "initiative",
+               "ability_to_delegate",
+               "clear_Communication",
+               "self_awareness_of_strengths_and_weaknesses",
+               "agile_thinking",
+               "influence",
+               "empathy",
+               "leadership_courage",
+               "customer_client_patient_satisfaction",
+               "team_contributions",
+               "time_management",
+               "work_product"
+           ].includes(key)) {
+               result[key] = {
+                   rating: qualitativeMeasurement[0][key],
+                   desc: qualitativeMeasurement[0][`${key}_desc`]
+               }
+           }
+           
+       }
+       
+       result['employee'] = qualitativeMeasurement[0].employee;
+
+       return result;
    }
 
     
@@ -117,8 +149,14 @@ export class QualitativeMeasuremetServices {
     */
     public async getQualitativeMeasurementDetails(params: any, user: any) {
         
+        let where = {}
+        if (params.name) {
+            where = {
+                name: params.name
+            }
+        }
         return await qualitativeMeasurementCommentModel.findAll({
-            where: { name: params.name },
+            where: where,
         })
     }
 

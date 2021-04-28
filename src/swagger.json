@@ -3395,7 +3395,7 @@
             "name": "name",
             "in": "query",
             "description": "name",
-            "required": true,
+            "required": false,
             "type": "string",
             "enum": [
               "initiative",

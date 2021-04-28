@@ -120,7 +120,7 @@ class QualitativeMeasuremetServices {
     getQualitativeMeasurement(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             qualitativeMeasurement_1.qualitativeMeasurementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            let qualitativeMeasurement = yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
+            let qualitativeMeasurement = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
                 where: { employee_id: params.employee_id ? params.employee_id : user.uid },
                 include: [
                     {
@@ -128,11 +128,39 @@ class QualitativeMeasuremetServices {
                         required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     }
-                ]
-            });
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
             if (qualitativeMeasurement.length === 0)
                 throw new Error(constants.MESSAGES.no_qualitative_measure);
-            return qualitativeMeasurement;
+            let result = {};
+            result['id'] = qualitativeMeasurement[0].id;
+            result['manager_id'] = qualitativeMeasurement[0].id;
+            result['employee_id'] = qualitativeMeasurement[0].employee_id;
+            for (let key in qualitativeMeasurement[0]) {
+                if ([
+                    "initiative",
+                    "ability_to_delegate",
+                    "clear_Communication",
+                    "self_awareness_of_strengths_and_weaknesses",
+                    "agile_thinking",
+                    "influence",
+                    "empathy",
+                    "leadership_courage",
+                    "customer_client_patient_satisfaction",
+                    "team_contributions",
+                    "time_management",
+                    "work_product"
+                ].includes(key)) {
+                    result[key] = {
+                        rating: qualitativeMeasurement[0][key],
+                        desc: qualitativeMeasurement[0][`${key}_desc`]
+                    };
+                }
+            }
+            result['employee'] = qualitativeMeasurement[0].employee;
+            return result;
         });
     }
     /*
@@ -140,8 +168,14 @@ class QualitativeMeasuremetServices {
     */
     getQualitativeMeasurementDetails(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            if (params.name) {
+                where = {
+                    name: params.name
+                };
+            }
             return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
-                where: { name: params.name },
+                where: where,
             });
         });
     }

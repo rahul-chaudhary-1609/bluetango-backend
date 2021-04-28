@@ -586,30 +586,43 @@ export class GoalServices {
     public async getQuantitativeStatsOfGoals(params: any, user: any) {
 
         teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
-        let quantitativeStatsOfGoals= await teamGoalAssignModel.findAll({
+        let quantitativeStatsOfGoals= await helperFunction.convertPromiseToObject(await teamGoalAssignModel.findAll({
             where: { employee_id: user.uid },
-            attributes: ['id', 'goal_id', 'employee_id', 'complete_measure'],
+            //attributes: ['id', 'goal_id', 'employee_id', 'complete_measure'],
             include: [
                 {
                     model: teamGoalModel,
                     required: true,
-                    attributes: ['id', 'title', 'enter_measure']
+                    //attributes: ['id', 'title', 'enter_measure']
                 }
             ]
-        })
+        }))
 
-        quantitativeStatsOfGoals = quantitativeStatsOfGoals.map((goal: any) => {
-            return <any>{
-                id: goal.id,
-                goal_id: goal.goal_id,
-                employee_id: goal.employee_id,
-                title: goal.team_goal.title,
+        // quantitativeStatsOfGoals = quantitativeStatsOfGoals.map((goal: any) => {
+        //     return <any>{
+        //         id: goal.id,
+        //         goal_id: goal.goal_id,
+        //         employee_id: goal.employee_id,
+        //         title: goal.team_goal.title,
+        //         quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
+        //         quantitative_stats_percent: (parseFloat(goal.complete_measure)/parseFloat(goal.team_goal.enter_measure))*100,
+        //     }
+        // })
+
+        let quantitativeStats = [];
+
+        for (let goal of quantitativeStatsOfGoals) {
+            quantitativeStats.push({
+                ...goal,
                 quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
                 quantitative_stats_percent: (parseFloat(goal.complete_measure)/parseFloat(goal.team_goal.enter_measure))*100,
-            }
-        })
 
-        return quantitativeStatsOfGoals;
+            })
+        }
+
+
+
+        return {quantitativeStats};
 
     }
 
