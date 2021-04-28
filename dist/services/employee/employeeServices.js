@@ -403,7 +403,7 @@ class EmployeeServices {
                     {
                         model: employers_1.employersModel,
                         required: false,
-                        attributes: ['id'],
+                        attributes: ['id', 'thought_of_the_day'],
                         include: [
                             {
                                 model: admin_1.adminModel,

@@ -404,7 +404,7 @@ export class EmployeeServices {
                 {
                     model: employersModel,
                     required: false,
-                    attributes: ['id'],
+                    attributes: ['id', 'thought_of_the_day'],
                     include: [
                         {
                             model: adminModel,
