@@ -96,7 +96,21 @@ export class QualitativeMeasuremetServices {
    public async getQualitativeMeasurement(params: any,user:any) {
     qualitativeMeasurementModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
        let qualitativeMeasurement =await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findAll({
-           where: { employee_id: params.employee_id ? params.employee_id :user.uid},
+           where: { employee_id: params.employee_id ? params.employee_id : user.uid },
+           attributes: ["id","manager_id","employee_id",
+               ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],               
+               ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
+               ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
+               ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
+               ["agile_thinking", "Agile Thinking"], ["agile_thinking_desc", "Agile Thinking_desc"],
+               ["influence", "Influence"], ["influence_desc", "Influence_desc"],
+               ["empathy", "Empathy"], ["empathy_desc", "Empathy_desc"],
+               ["leadership_courage", "Leadership Courage"], ["leadership_courage_desc", "Leadership Courage_desc"],
+               ["customer_client_patient_satisfaction", "Customer/Client/Patient Satisfaction"], ["customer_client_patient_satisfaction_desc", "Customer/Client/Patient Satisfaction_desc"],
+               ["team_contributions", "Team contributions"], ["team_contributions_desc", "Team contributions_desc"],
+               ["time_management", "Time Management"], ["time_management_desc", "Time Management_desc"],
+               ["work_product", "Work Product"], ["work_product_desc", "Work Product_desc"],
+           ],
            include: [
                 {
                     model: employeeModel,
@@ -110,30 +124,36 @@ export class QualitativeMeasuremetServices {
 
        if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
        
-       let result = {}
-       result['id'] = qualitativeMeasurement[0].id;
-       result['manager_id'] = qualitativeMeasurement[0].id;
-       result['employee_id'] = qualitativeMeasurement[0].employee_id;
+       let result = {
+           id: qualitativeMeasurement[0].id,
+           manager_id: qualitativeMeasurement[0].id,
+           employee_id: qualitativeMeasurement[0].employee_id,
+           qualitativeMeasures: [],
+       }
+
+       
 
        for (let key in qualitativeMeasurement[0]) {
            if ([
-               "initiative",
-               "ability_to_delegate",
-               "clear_Communication",
-               "self_awareness_of_strengths_and_weaknesses",
-               "agile_thinking",
-               "influence",
-               "empathy",
-               "leadership_courage",
-               "customer_client_patient_satisfaction",
-               "team_contributions",
-               "time_management",
-               "work_product"
+                "Initiative",
+               "Ability to Delegate",
+               "Clear Communication",
+               "Self-awareness of strengths and weaknesses",
+               "Agile Thinking",
+               "Influence",
+               "Empathy",
+               "Leadership Courage",
+               "Customer/Client/Patient Satisfaction",
+               "Team contributions",
+               "Time Management",
+               "Work Product",
            ].includes(key)) {
-               result[key] = {
-                   rating: qualitativeMeasurement[0][key],
-                   desc: qualitativeMeasurement[0][`${key}_desc`]
-               }
+               result.qualitativeMeasures.push({
+                    label:key,
+                    rating: qualitativeMeasurement[0][key],
+                    desc: qualitativeMeasurement[0][`${key}_desc`]    
+               })
+               
            }
            
        }
