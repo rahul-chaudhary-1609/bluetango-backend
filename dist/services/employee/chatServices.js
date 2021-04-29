@@ -238,6 +238,7 @@ class ChatServices {
                         room_id: chat.room_id,
                         user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                         status: chat.status,
+                        type: chat.type,
                         is_disabled,
                         createdAt: chat.createdAt,
                         updatedAt: chat.updatedAt
@@ -260,6 +261,7 @@ class ChatServices {
                         room_id: chat.room_id,
                         user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                         status: chat.status,
+                        type: chat.type,
                         is_disabled,
                         createdAt: chat.createdAt,
                         updatedAt: chat.updatedAt
