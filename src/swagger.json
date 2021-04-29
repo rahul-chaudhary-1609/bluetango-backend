@@ -3880,6 +3880,14 @@
             "description": "other_user_id",
             "required": true,
             "type": "number"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "0=> employee, 1=> coach, 2=> group",
+            "required": false,
+            "type": "number",
+            "enum":[0,1,2]
           }
         ],
         "responses": {}

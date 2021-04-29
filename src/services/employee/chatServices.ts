@@ -9,6 +9,7 @@ import { qualitativeMeasurementCommentModel } from "../../models/qualitativeMeas
 import { employeeModel } from "../../models/employee";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { notificationModel } from "../../models/notification";
+import { coachManagementModel } from "../../models/coachManagement";
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
@@ -59,65 +60,113 @@ export class ChatServices {
             throw new Error(constants.MESSAGES.self_chat);
         }
 
-        
-
-        let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
-            where: {
-                [Op.or]:[
-                    { [Op.and]: [ { user_id: user.uid}, { other_user_id: params.other_user_id}]  },
-                    { [Op.and]: [ { user_id: params.other_user_id}, { other_user_id: user.uid }]  }
-                ]
-            }
-        });
-
-        // if (chatRoomData) {
-        //     return chatRoomData;
-        // } else {
-        //     let chatRoomObj = <any> {
-        //         user_id: user.uid,
-        //         other_user_id: params.other_user_id,
-        //         room_id: await helperFunction.randomStringEightDigit()
-        //     }
-
-        //     return await chatRealtionMappingInRoomModel.create(chatRoomObj);
-        // }
-
-        if (!chatRoomData) {
-            let managerTeamMember = await managerTeamMemberModel.findOne({
+        if (params.type && params.type == constants.CHAT_ROOM_TYPE.coach) {
+            let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
                 where: {
-                    team_member_id: user.uid
+                    [Op.or]: [
+                        { [Op.and]: [{ user_id: user.uid }, { other_user_id: params.other_user_id }] },
+                        { [Op.and]: [{ user_id: params.other_user_id }, { other_user_id: user.uid }] }
+                    ],
+                    type:constants.CHAT_ROOM_TYPE.coach
                 }
             });
 
-            if (params.other_user_id != managerTeamMember.manager_id) throw new Error(constants.MESSAGES.only_manager_chat);
-            
-            let chatRoomObj = <any>{
-                user_id: user.uid,
-                other_user_id: params.other_user_id,
-                room_id: await helperFunction.randomStringEightDigit()
+
+            let coach = await coachManagementModel.findOne({
+                attributes: ['id', 'name', ['image','profile_pic_url']],
+                where: {
+                    id: parseInt(params.other_user_id),
+                }
+            });
+
+            if (!chatRoomData) {
+                
+
+                if (!coach) throw new Error(constants.MESSAGES.only_manager_or_coach_chat);
+
+                let chatRoomObj = <any>{
+                    user_id: user.uid,
+                    other_user_id: params.other_user_id,
+                    room_id: await helperFunction.randomStringEightDigit(),
+                    type: constants.CHAT_ROOM_TYPE.coach
+                }
+                chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
-            chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
+
+            
+            let users = await employeeModel.findAll({
+                attributes: ['id', 'name', 'profile_pic_url'],
+                where: {
+                    id: user.uid
+                }
+            });
+
+            chatRoomData = <any>{
+                id: chatRoomData.id,
+                user: users,
+                other_user: coach,
+                room_id: chatRoomData.room_id,
+                status: chatRoomData.status,
+                createdAt: chatRoomData.createdAt,
+                updatedAt: chatRoomData.updatedAt
+
+            }
+         
+
+            
+            return chatRoomData;
+        }
+        else {
+            let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    [Op.or]: [
+                        { [Op.and]: [{ user_id: user.uid }, { other_user_id: params.other_user_id }] },
+                        { [Op.and]: [{ user_id: params.other_user_id }, { other_user_id: user.uid }] }
+                    ],
+                    type: constants.CHAT_ROOM_TYPE.employee
+                }
+            });
+
+
+            if (!chatRoomData) {
+                let managerTeamMember = await managerTeamMemberModel.findOne({
+                    where: {
+                        team_member_id: user.uid
+                    }
+                });
+
+                if (params.other_user_id != managerTeamMember.manager_id) throw new Error(constants.MESSAGES.only_manager_or_coach_chat);
+
+                let chatRoomObj = <any>{
+                    user_id: user.uid,
+                    other_user_id: params.other_user_id,
+                    room_id: await helperFunction.randomStringEightDigit()
+                }
+                chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            }
+
+            let users = await employeeModel.findAll({
+                attributes: ['id', 'name', 'profile_pic_url'],
+                where: {
+                    id: [user.uid, params.other_user_id]
+                }
+            });
+
+            chatRoomData = <any>{
+                id: chatRoomData.id,
+                user: users.find((val: any) => val.id == user.uid),
+                other_user: users.find((val: any) => val.id == params.other_user_id),
+                room_id: chatRoomData.room_id,
+                status: chatRoomData.status,
+                createdAt: chatRoomData.createdAt,
+                updatedAt: chatRoomData.updatedAt
+
+            }
+
+            return chatRoomData;
+
         }
 
-        let users = await employeeModel.findAll({
-            attributes: ['id','name','profile_pic_url'],
-            where: {
-                id: [user.uid, params.other_user_id]
-            }
-        });
-
-        chatRoomData = <any>{
-            id: chatRoomData.id,
-            user: users.find((val: any) => val.id == user.uid),
-            other_user: users.find((val: any) => val.id == params.other_user_id),
-            room_id: chatRoomData.room_id,
-            status: chatRoomData.status,
-            createdAt: chatRoomData.createdAt,
-            updatedAt: chatRoomData.updatedAt
-            
-        }
-
-        return chatRoomData;
         
     }
 
@@ -126,14 +175,20 @@ export class ChatServices {
     */
     public async getChatList(user: any) {
 
-        let chatRoomData = await chatRealtionMappingInRoomModel.findAll({
+        let chatRoomDataUser = await chatRealtionMappingInRoomModel.findAll({
             where: {
-                [Op.or]: [
-                    {  user_id: user.uid },
-                    { other_user_id: user.uid }
-                ]
+                 user_id: user.uid,
             }
         });
+
+        let chatRoomDataOtherUser = await chatRealtionMappingInRoomModel.findAll({
+            where: {
+                other_user_id: user.uid,
+                type:constants.CHAT_ROOM_TYPE.employee
+            }
+        });
+
+        let chatRoomData=[...chatRoomDataUser,...chatRoomDataOtherUser]
 
         let currentUser = await employeeModel.findOne({
             attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
@@ -155,6 +210,16 @@ export class ChatServices {
                 }
             });
 
+
+            let coach = await coachManagementModel.findOne({
+                attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                where: {
+                    id,
+                    status:constants.STATUS.active,
+                }
+            });
+
+            
             if (currentUser.is_manager) {
 
                 let managerTeamMember_manager = await managerTeamMemberModel.findOne({
@@ -173,12 +238,15 @@ export class ChatServices {
                     return val.team_member_id
                 })
 
-                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
+                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id) )) is_disabled = true;
+
+                if (chat.type == constants.CHAT_ROOM_TYPE.coach && !coach) is_disabled = true;
+                if (chat.type == constants.CHAT_ROOM_TYPE.coach && coach) is_disabled = false;
 
                 chats.push({
                     id: chat.id,
                     room_id: chat.room_id,
-                    user: employee,
+                    user: chat.type==constants.CHAT_ROOM_TYPE.coach?coach:employee,
                     status: chat.status,
                     is_disabled,
                     createdAt: chat.createdAt,
@@ -195,12 +263,15 @@ export class ChatServices {
 
                 
 
-                if (managerTeamMember && employee.id!==managerTeamMember.manager_id) is_disabled=true;
+                if (managerTeamMember && employee.id !== managerTeamMember.manager_id) is_disabled = true;
+                
+                if (chat.type == constants.CHAT_ROOM_TYPE.coach && !coach) is_disabled = true;
+                if (chat.type == constants.CHAT_ROOM_TYPE.coach && coach) is_disabled = false;
 
                 chats.push({
                     id: chat.id,
                     room_id: chat.room_id,
-                    user: employee,
+                    user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                     status: chat.status,
                     is_disabled,
                     createdAt: chat.createdAt,
@@ -376,6 +447,12 @@ export class ChatServices {
             where: { id: recieverId, }
         })
 
+        if (chatRoomData.type == constants.CHAT_ROOM_TYPE.coach) {
+            recieverEmployeeData = await coachManagementModel.findOne({
+                where: { id: recieverId, }
+            })
+        }
+
         let senderEmployeeData = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
             where: { id: user.uid, }
         }))
@@ -511,6 +588,12 @@ export class ChatServices {
         let recieverEmployeeData = await employeeModel.findOne({
             where: { id: recieverId, }
         })
+
+        if (chatRoomData.type == constants.CHAT_ROOM_TYPE.coach) {
+            recieverEmployeeData = await coachManagementModel.findOne({
+                where: { id: recieverId, }
+            })
+        }
 
         let senderEmployeeData = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
             where: { id: user.uid, }

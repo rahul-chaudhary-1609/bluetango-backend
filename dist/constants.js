@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.STATUS = exports.NOTIFICATION_TYPE = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
+exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_TYPE = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
 exports.MESSAGES = {
     phone_already_registered: "An account with given phone number already exists",
     email_already_registered: "An account with given email already exists",
@@ -115,6 +115,7 @@ exports.MESSAGES = {
     advisor_updated: "Advisor updated",
     invalid_advisor: "Invalid advisor",
     only_manager_chat: "You can initiate chat with your manager only",
+    only_manager_or_coach_chat: "You can initiate chat either with your manager or with a coach",
     chat_room_notFound: "chat room not found",
     video_chat_session_create_error: "Error in video chat session creation",
     video_chat_session_created: "Session created",
@@ -182,5 +183,10 @@ exports.STATUS = {
     inactive: 0,
     active: 1,
     deleted: 2,
+};
+exports.CHAT_ROOM_TYPE = {
+    employee: 0,
+    coach: 1,
+    group: 2,
 };
 //# sourceMappingURL=constants.js.map

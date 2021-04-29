@@ -112,6 +112,7 @@ export const MESSAGES = {
   advisor_updated: "Advisor updated",
   invalid_advisor: "Invalid advisor",
   only_manager_chat: "You can initiate chat with your manager only",
+  only_manager_or_coach_chat: "You can initiate chat either with your manager or with a coach",
   chat_room_notFound: "chat room not found",
   video_chat_session_create_error: "Error in video chat session creation",
   video_chat_session_created: "Session created",
@@ -187,4 +188,10 @@ export const STATUS = {
   inactive: 0,
   active: 1,
   deleted: 2,
+}
+
+export const CHAT_ROOM_TYPE = {
+  employee: 0,
+  coach: 1,
+  group:2,
 }

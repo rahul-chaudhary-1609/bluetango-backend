@@ -143,7 +143,8 @@ export const viewGoalDetailsAsEmployee = Joi.object({
 })
 
 export const getChatRoomId = Joi.object({
-  other_user_id: Joi.string().required()
+  other_user_id: Joi.string().required(),
+  type: Joi.number(),
 })
 
 export const createChatSession = Joi.object({

@@ -145,7 +145,8 @@ exports.viewGoalDetailsAsEmployee = joi_1.default.object({
     goal_id: joi_1.default.string().required()
 });
 exports.getChatRoomId = joi_1.default.object({
-    other_user_id: joi_1.default.string().required()
+    other_user_id: joi_1.default.string().required(),
+    type: joi_1.default.number(),
 });
 exports.createChatSession = joi_1.default.object({
     chat_room_id: joi_1.default.string().required()
