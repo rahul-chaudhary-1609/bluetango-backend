@@ -30,6 +30,7 @@ const EmployerController = __importStar(require("../controllers/employer"));
 const employerRoute = express_1.default.Router();
 const authController = new EmployerController.AuthController();
 const managementController = new EmployerController.EmployeeController();
+const employerController = new EmployerController.EmployerController();
 /* login route for employer login */
 employerRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.login), authController.login);
 /* forget pass route for employee */
@@ -44,5 +45,7 @@ employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(em
 employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody(employerSchema.updateEmployerDeviceToken), tokenValidator.validateEmployerToken, authController.updateEmployerDeviceToken);
 /* clear employer device token */
 employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
+/* clear employer device token */
+employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerToken, employerController.getSubscriptionPlanList);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

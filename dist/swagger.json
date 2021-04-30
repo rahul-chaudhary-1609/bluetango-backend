@@ -4446,6 +4446,27 @@
                 "responses": {}
             }
         },
+        "/employer/getSubscriptionPlanList": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to get Subscription Plan List",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/web/getCoaches": {
             "get": {
                 "tags": [
