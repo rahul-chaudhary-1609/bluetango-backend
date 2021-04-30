@@ -5,6 +5,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employersModel } from  "../../models";
 import { notificationModel } from "../../models/notification";
+const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -47,42 +48,9 @@ export class AuthService {
                         }
                     }
                 );
+
+                this.scheduleFreeTrialExpirationNotificationJob(existingUser)
                 
-            }
-            else {
-                let trial_expiry_date = new Date(existingUser.first_time_login_datetime);
-                trial_expiry_date.setDate(trial_expiry_date.getDate()+14)
-                const timeDiff = Math.floor((trial_expiry_date.getTime() - (new Date()).getTime()) / 1000)
-
-                if (timeDiff <= 259200) {
-                    //add notification 
-                    let notificationObj = <any>{
-                        type_id: existingUser.id,
-                        sender_id: existingUser.id,
-                        reciever_id: existingUser.id,
-                        type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                        data: {
-                            type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                            title: 'Reminder Free Trial Expiration',
-                            message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                            existingUser
-                        },
-                    }
-                    await notificationModel.create(notificationObj);
-
-                    //send push notification
-                    let notificationData = <any>{
-                        title: 'Reminder Free Trial Expiration',
-                        body: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                        data: {
-                            type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                            title: 'Reminder Free Trial Expiration',
-                            message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                            existingUser
-                        },
-                    }
-                    await helperFunction.sendFcmNotification([existingUser.device_token], notificationData);
-                }
             }
             let token = await tokenResponse.employerTokenResponse(existingUser);
             existingUser.token = token.token;
@@ -93,6 +61,51 @@ export class AuthService {
     } else {
         throw new Error(constants.MESSAGES.invalid_email);
     }
+    }
+
+    /*
+    * function to schedule notification for free trial expiration
+    */
+
+    public async scheduleFreeTrialExpirationNotificationJob(existingUser: any) {
+
+        let trial_expiry_date = new Date(existingUser.first_time_login_datetime);
+        trial_expiry_date.setDate(trial_expiry_date.getDate() + 14)
+
+        let startTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(trial_expiry_date.getDate() + 11));
+        let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(trial_expiry_date.getDate() + 14));
+        
+        const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '* * */24 * * *' }, async function () {
+            
+            const timeDiff = Math.floor((trial_expiry_date.getTime() - (new Date()).getTime()) / 1000)
+            //add notification 
+            let notificationObj = <any>{
+                type_id: existingUser.id,
+                sender_id: existingUser.id,
+                reciever_id: existingUser.id,
+                type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                    title: 'Reminder Free Trial Expiration',
+                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                    existingUser
+                },
+            }
+            await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'Reminder Free Trial Expiration',
+                body: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                    title: 'Reminder Free Trial Expiration',
+                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
+                    existingUser
+                },
+            }
+            await helperFunction.sendFcmNotification([existingUser.device_token], notificationData);
+        });
     }
     
     /*
@@ -189,6 +202,31 @@ export class AuthService {
             }
         )
     }
+
+//     /*
+//     e005JBg1RamqXfRccvlXoH:APA91bH_05rZB3PS8JRhzqJTf4ocQ6CW0V3UBw_QUzYbOqiOvHWOud6YfALazkXo50gM6zX2xKT1vsw83MO9TvOe8oD8oHjD_p_mqwYaGgwXpYqi-Aeuw9TsF1Ig4BUTpTzQhRhrFYHN
+// * function to schedule job
+// */
+//     public async scheduleJob(user: any) {
+//         let dev ="e005JBg1RamqXfRccvlXoH:APA91bH_05rZB3PS8JRhzqJTf4ocQ6CW0V3UBw_QUzYbOqiOvHWOud6YfALazkXo50gM6zX2xKT1vsw83MO9TvOe8oD8oHjD_p_mqwYaGgwXpYqi-Aeuw9TsF1Ig4BUTpTzQhRhrFYHN"
+//         const startTime = new Date(Date.now() + 5000);
+//         const endTime = new Date(startTime.getTime() + 25000);
+//         const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/5 * * * * *' }, async function () {
+//             console.log('Time for tea!');
+//             let notificationData = <any>{
+//                 title: 'Reminder Free Trial Expiration',
+//                 body: `Your free trial of 14 days is going to expire in`,
+//                 data: {
+//                     type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+//                     title: 'Reminder Free Trial Expiration',
+//                     message: `Your free trial of 14 days is going to expire in `,
+//                 },
+//             }
+//             await helperFunction.sendFcmNotification([dev], notificationData);
+//         });
+
+//         return true;
+//     }
 
 
 

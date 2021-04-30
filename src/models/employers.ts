@@ -51,6 +51,12 @@ export const employersModel: any = sequelize.define("employers", {
         defaultValue: 1,
         comment: '0=>not first time,1=>first time'
     },
+    subscription_type: {//applicable for all type of users
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '0=>free,1=>paid'
+    },
     reset_pass_otp: {
         type: DataTypes.JSONB,
         allowNull: true,

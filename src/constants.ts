@@ -195,3 +195,8 @@ export const CHAT_ROOM_TYPE = {
   coach: 1,
   group:2,
 }
+
+export const EMPLOYER_SUBSCRIPTION_TYPE = {
+  free: 0,
+  paid:1,
+}
