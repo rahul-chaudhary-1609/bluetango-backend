@@ -139,7 +139,8 @@ export class EmployeeManagement {
     * get employee list function
     @param {} params pass all parameters from request
     */
-    public async getEmployeeList (params: any, user: any) {
+    public async getEmployeeList(params: any, user: any) {
+        employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});
             if(!departmentExists)
@@ -154,9 +155,28 @@ export class EmployeeManagement {
                 current_department_id: params.current_department_id
             }
         }
+        if (params.searchKey) {
+            let searchKey = params.searchKey;
+            whereCond = {
+                ...whereCond,
+                [Op.or]: [
+                    { name: { [Op.iLike]: `%${searchKey}%` } },
+                    { email: { [Op.iLike]: `%${searchKey}%` } },
+                    { phone_number: { [Op.iLike]: `%${searchKey}%` } }
+                ]
+            };
+        }
 
         return await employeeModel.findAndCountAll({
+            attributes: ['id', 'name', 'email', 'phone_number','profile_pic_url','current_department_id'],
             where: whereCond,
+            include: [
+                {
+                    model: departmentModel,
+                    attributes: ['id', 'name'],
+                    required:true,
+              }  
+            ],
             limit: limit,
             offset: offset,
             order: [["createdAt", "DESC"]]

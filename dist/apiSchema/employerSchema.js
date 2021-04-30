@@ -89,6 +89,7 @@ exports.addEditEmployee = joi_1.default.object({
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
+    searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional()
 });

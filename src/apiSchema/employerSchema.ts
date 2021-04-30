@@ -71,6 +71,7 @@ export const addEditEmployee = Joi.object ({
   
   export const getEmployeeList = Joi.object ({
     departmentId: Joi.number().optional(),
+    searchKey: Joi.string().optional(),
     limit: Joi.number().optional(),
     offset: Joi.number().optional()
   })

@@ -162,6 +162,7 @@ class EmployeeManagement {
     */
     getEmployeeList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
@@ -173,8 +174,24 @@ class EmployeeManagement {
             if (params.departmentId) {
                 whereCond = Object.assign(Object.assign({}, whereCond), { current_department_id: params.current_department_id });
             }
+            if (params.searchKey) {
+                let searchKey = params.searchKey;
+                whereCond = Object.assign(Object.assign({}, whereCond), { [Op.or]: [
+                        { name: { [Op.iLike]: `%${searchKey}%` } },
+                        { email: { [Op.iLike]: `%${searchKey}%` } },
+                        { phone_number: { [Op.iLike]: `%${searchKey}%` } }
+                    ] });
+            }
             return yield models_1.employeeModel.findAndCountAll({
+                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id'],
                 where: whereCond,
+                include: [
+                    {
+                        model: models_1.departmentModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    }
+                ],
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]

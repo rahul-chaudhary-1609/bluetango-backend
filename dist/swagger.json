@@ -4318,6 +4318,13 @@
                         "type": "number"
                     },
                     {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "searchKey",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "offset",
                         "in": "query",
                         "description": "page",
