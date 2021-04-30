@@ -213,6 +213,7 @@ class EmployeeManagement {
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
+                    status: [constants.STATUS.active, constants.STATUS.inactive]
                 },
                 include: [
                     {
@@ -286,6 +287,27 @@ class EmployeeManagement {
                 }
             }
             return { employeeDetails, goalStats, qualitativeMeasurements };
+        });
+    }
+    /**
+     * function to delete an employee
+     */
+    deleteEmployee(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield models_1.employeeModel.findOne({
+                where: {
+                    id: parseInt(params.employee_id),
+                    status: [constants.STATUS.active, constants.STATUS.inactive]
+                }
+            });
+            if (employee) {
+                employee.status = constants.STATUS.deleted,
+                    employee.save();
+            }
+            else {
+                throw new Error(constants.MESSAGES.employee_notFound);
+            }
+            return true;
         });
     }
 }

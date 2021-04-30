@@ -82,7 +82,23 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeService.viewEmployeeDetails(req.params);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * delete employee
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    deleteEmployee(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.deleteEmployee(req.params);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

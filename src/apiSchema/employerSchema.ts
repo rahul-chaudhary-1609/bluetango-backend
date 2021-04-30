@@ -83,3 +83,7 @@ export const addEditEmployee = Joi.object ({
 export const viewEmployeeDetails = Joi.object({
   employee_id: Joi.number().required()
 })
+
+export const deleteEmployee = Joi.object({
+  employee_id: Joi.number().required()
+})

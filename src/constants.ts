@@ -79,6 +79,7 @@ export const MESSAGES = {
   coach_add_update: "Coach added/updated successfully",
   coach_list_fetched: "Coach list fetched successfully",
   coach_deleted: "Coach deleted",
+  employee_deleted: "employee deleted",
   coach_not_found: "Coach not found",
   coach_details_fetched: "Coach details fetched successfully",
   contact_list_fetched: "Contact us list fetched successfully",

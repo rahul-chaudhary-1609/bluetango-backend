@@ -4506,6 +4506,34 @@
         "responses": {}
       }
     },
+    "/employer/deleteEmployee/{employee_id}": {
+      "delete": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to delete Employee ",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_id",
+            "in": "path",
+            "description": "employee id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/web/getCoaches": {
       "get": {
         "tags": [

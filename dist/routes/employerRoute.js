@@ -47,7 +47,9 @@ employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody
 employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
 /* clear employer device token */
 employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerToken, employerController.getSubscriptionPlanList);
-/* clear employer device token */
+/* view Employee Details */
 employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails), managementController.viewEmployeeDetails);
+/* delete Employee */
+employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

@@ -8,6 +8,7 @@ import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { teamGoalModel } from "../../models/teamGoal"
 import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
 import { teamGoalAssignModel } from "../../models/teamGoalAssign"
+import { emojiModel } from "../../models/emoji";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -202,6 +203,7 @@ export class EmployeeManagement {
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
+                    status: [constants.STATUS.active, constants.STATUS.inactive]
                 },
                 include: [
                     {
@@ -293,6 +295,29 @@ export class EmployeeManagement {
         }
 
         return {employeeDetails,goalStats,qualitativeMeasurements}
+    }
+
+    /**
+     * function to delete an employee
+     */
+
+    public async deleteEmployee(params: any) {
+        let employee = await employeeModel.findOne({
+            where:{
+                id: parseInt(params.employee_id),
+                status: [constants.STATUS.active, constants.STATUS.inactive]
+            }
+        })
+
+        if (employee) {
+            employee.status = constants.STATUS.deleted,
+            employee.save()
+        }
+        else {
+            throw new Error(constants.MESSAGES.employee_notFound)
+        }
+
+        return true;
     }
 
 }

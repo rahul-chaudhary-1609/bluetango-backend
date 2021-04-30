@@ -51,11 +51,28 @@ export class EmployeeController {
     public async viewEmployeeDetails(req: any, res: any) {
         try {
             const responseFromService = await employeeService.viewEmployeeDetails(req.params);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
+
+    /**
+    * delete employee
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    public async deleteEmployee(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.deleteEmployee(req.params);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    
 
 }
