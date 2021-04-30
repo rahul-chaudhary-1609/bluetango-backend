@@ -35,10 +35,24 @@ export class EmployeeController {
     */
     public async getEmployeeList(req: any, res: any) {
         try {
-            console.log(req.user);
             const responseFromService = await employeeService.getEmployeeList(req.query, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
             
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * view Employee Details
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    public async viewEmployeeDetails(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.viewEmployeeDetails(req.params);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }

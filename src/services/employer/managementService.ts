@@ -4,7 +4,10 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 const Sequelize = require('sequelize');
-import {managerTeamMemberModel} from "../../models/managerTeamMember";
+import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { teamGoalModel } from "../../models/teamGoal"
+import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
+import { teamGoalAssignModel } from "../../models/teamGoalAssign"
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -147,7 +150,9 @@ export class EmployeeManagement {
                 throw new Error(constants.MESSAGES.invalid_department);
         }
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let whereCond = <any>{};
+        let whereCond = <any>{
+            status:[constants.STATUS.active,constants.STATUS.inactive]
+        };
         whereCond.current_employer_id = user.uid;
         if (params.departmentId) {
             whereCond = {
@@ -168,7 +173,7 @@ export class EmployeeManagement {
         }
 
         return await employeeModel.findAndCountAll({
-            attributes: ['id', 'name', 'email', 'phone_number','profile_pic_url','current_department_id'],
+            attributes: ['id', 'name', 'email', 'phone_number','profile_pic_url','current_department_id','is_manager'],
             where: whereCond,
             include: [
                 {
@@ -182,6 +187,112 @@ export class EmployeeManagement {
             order: [["createdAt", "DESC"]]
         })
 
+    }
+
+    /**
+     * function to View employee details
+     */
+
+    public async viewEmployeeDetails(params: any) {
+
+        employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+
+        let employeeDetails = await helperFunction.convertPromiseToObject(
+            await employeeModel.findOne({
+                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
+                where: {
+                    id: parseInt(params.employee_id),
+                },
+                include: [
+                    {
+                        model: departmentModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    }
+                ],
+                
+            })
+        )
+
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        let quantitativeStatsOfGoals = await helperFunction.convertPromiseToObject(await teamGoalAssignModel.findAll({
+            where: { employee_id: parseInt(params.employee_id) },
+            include: [
+                {
+                    model: teamGoalModel,
+                    required: true,
+                }
+            ]
+        }))
+
+        let goalStats = [];
+
+        for (let goal of quantitativeStatsOfGoals) {
+            goalStats.push({
+                ...goal,
+                quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
+                quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100,
+
+            })
+        }
+
+        let qualitativeMeasurement = await helperFunction.convertPromiseToObject(await qualitativeMeasurementModel.findAll({
+            where: { employee_id: parseInt(params.employee_id) },
+            attributes: ["id", "manager_id", "employee_id",
+                ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],
+                ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
+                ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
+                ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
+                ["agile_thinking", "Agile Thinking"], ["agile_thinking_desc", "Agile Thinking_desc"],
+                ["influence", "Influence"], ["influence_desc", "Influence_desc"],
+                ["empathy", "Empathy"], ["empathy_desc", "Empathy_desc"],
+                ["leadership_courage", "Leadership Courage"], ["leadership_courage_desc", "Leadership Courage_desc"],
+                ["customer_client_patient_satisfaction", "Customer/Client/Patient Satisfaction"], ["customer_client_patient_satisfaction_desc", "Customer/Client/Patient Satisfaction_desc"],
+                ["team_contributions", "Team contributions"], ["team_contributions_desc", "Team contributions_desc"],
+                ["time_management", "Time Management"], ["time_management_desc", "Time Management_desc"],
+                ["work_product", "Work Product"], ["work_product_desc", "Work Product_desc"],
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit: 1
+        }))
+
+        if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
+
+        let qualitativeMeasurements = {
+            id: qualitativeMeasurement[0].id,
+            manager_id: qualitativeMeasurement[0].id,
+            employee_id: qualitativeMeasurement[0].employee_id,
+            qualitativeMeasures: [],
+        }
+
+
+
+        for (let key in qualitativeMeasurement[0]) {
+            if ([
+                "Initiative",
+                "Ability to Delegate",
+                "Clear Communication",
+                "Self-awareness of strengths and weaknesses",
+                "Agile Thinking",
+                "Influence",
+                "Empathy",
+                "Leadership Courage",
+                "Customer/Client/Patient Satisfaction",
+                "Team contributions",
+                "Time Management",
+                "Work Product",
+            ].includes(key)) {
+                qualitativeMeasurements.qualitativeMeasures.push({
+                    label: key,
+                    rating: qualitativeMeasurement[0][key],
+                    desc: qualitativeMeasurement[0][`${key}_desc`]
+                })
+
+            }
+
+        }
+
+        return {employeeDetails,goalStats,qualitativeMeasurements}
     }
 
 }

@@ -37,4 +37,7 @@ employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerTo
 /* clear employer device token */
 employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerToken, employerController.getSubscriptionPlanList);
 
+/* clear employer device token */
+employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken,joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails),  managementController.viewEmployeeDetails);
+
 export = employerRoute;

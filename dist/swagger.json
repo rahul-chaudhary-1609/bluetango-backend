@@ -4474,6 +4474,34 @@
                 "responses": {}
             }
         },
+        "/employer/viewEmployeeDetails/{employee_id}": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to view Employee Details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "employee id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/web/getCoaches": {
             "get": {
                 "tags": [

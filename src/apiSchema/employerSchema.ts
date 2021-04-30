@@ -78,4 +78,8 @@ export const addEditEmployee = Joi.object ({
 
   export const updateEmployerDeviceToken = Joi.object({
     device_token: Joi.string().required()
+  })
+
+export const viewEmployeeDetails = Joi.object({
+  employee_id: Joi.number().required()
 })
