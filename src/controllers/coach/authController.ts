@@ -25,5 +25,20 @@ export class AuthController {
     }
 
 
+    /**
+    * reset password
+    * @param req :[password]
+    * @param res 
+    */
+    public async resetPassword(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.resetPassword(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.reset_pass_success);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
 
 }

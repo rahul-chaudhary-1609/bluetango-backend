@@ -42,6 +42,22 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    first_time_login: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
+    },
+    first_time_login_datetime: {
+        type: sequelize_1.DataTypes.DATE,
+        defaultValue: "2021-04-13",
+    },
+    first_time_reset_password: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>not first time,1=>first time'
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

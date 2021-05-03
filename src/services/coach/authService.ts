@@ -52,5 +52,31 @@ export class AuthService {
 
     
 
+    /*
+    * function to set new pass 
+    */
+    public async resetPassword(params: any, user: any) {
+        const update = <any>{
+            password: await appUtils.bcryptPassword(params.password)
+        };
+
+        const qry = <any>{
+            where: {
+                id: user.uid
+            }
+        };
+        if (user.user_role == constants.USER_ROLE.coach) {
+            update.first_time_reset_password = 0;
+            update.first_time_login = 0;
+            return await coachManagementModel.update(update, qry);
+        } else {
+            throw new Error(constants.MESSAGES.user_not_found);
+        }
+       
+    }
+
+   
+
+
 
 }

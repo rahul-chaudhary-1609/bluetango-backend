@@ -52,7 +52,7 @@ export const coachTokenResponse = async (obj: any) => {
             id: obj.id,
             user_role: constants.USER_ROLE.coach
         },
-        process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY,
+        process.env.COACH_SECRET_KEY || constants.COACH_SECRET_KEY,
         { expiresIn: '1d' }
     );
     return { token };

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = void 0;
+exports.resetPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -45,5 +45,19 @@ exports.login = joi_1.default.object({
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     }),
     device_token: joi_1.default.string().optional()
+});
+exports.resetPassword = joi_1.default.object({
+    password: joi_1.default.string().min(8)
+        .max(15)
+        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        .required()
+        .messages({
+        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    })
 });
 //# sourceMappingURL=coachSchema.js.map

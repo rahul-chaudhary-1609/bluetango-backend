@@ -4566,6 +4566,34 @@
                 "responses": {}
             }
         },
+        "/coach/resetPassword": {
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "Employee reset password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter any jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/web/getCoaches": {
             "get": {
                 "tags": [

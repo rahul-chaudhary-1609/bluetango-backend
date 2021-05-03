@@ -1,5 +1,5 @@
 import express from "express";
-import * as employeeSchema from '../apiSchema/employeeSchema';
+import * as coachSchema from '../apiSchema/coachSchema';
 import * as joiSchemaValidation from '../middleware/joiSchemaValidation';
 import * as tokenValidator from "../middleware/tokenValidator";
 import * as validators from "../middleware/validators";
@@ -14,7 +14,10 @@ const authController = new AuthController();
 
 // auth API
 /* login route for employee login */
-coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
+coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.login), authController.login);
+
+/* reset pass route for all */
+coachRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.resetPassword), tokenValidator.validateCoachToken, authController.resetPassword);
 
 
 export = coachRoute;

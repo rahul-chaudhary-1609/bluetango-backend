@@ -22,14 +22,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const express_1 = __importDefault(require("express"));
-const employeeSchema = __importStar(require("../apiSchema/employeeSchema"));
+const coachSchema = __importStar(require("../apiSchema/coachSchema"));
 const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidation"));
+const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const validators = __importStar(require("../middleware/validators"));
 const authController_1 = require("../controllers/coach/authController");
 const coachRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 // auth API
 /* login route for employee login */
-coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employeeSchema.login), authController.login);
+coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.login), authController.login);
+/* reset pass route for all */
+coachRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.resetPassword), tokenValidator.validateCoachToken, authController.resetPassword);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map
