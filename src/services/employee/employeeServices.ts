@@ -468,6 +468,15 @@ export class EmployeeServices {
             order: [["createdAt", "DESC"]]
         }));
 
+        await notificationModel.update({
+            status: 0,
+        }, {
+            where: {
+                status: 1,
+                reciever_id: user.uid,
+            }
+        })
+
         
         return notifications;
     }

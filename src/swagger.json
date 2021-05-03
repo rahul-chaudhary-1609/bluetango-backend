@@ -4108,11 +4108,22 @@
             "name": "chat_type",
             "in": "formData",
             "description": "audio | video",
-            "required": false,
+            "required": true,
             "type": "string",
             "enum": [
               "audio",
               "video"
+            ]
+          },
+          {
+            "name": "disconnect_type",
+            "in": "formData",
+            "description": "1=> disconnected | 2=>missed",
+            "required": false,
+            "type": "string",
+            "enum": [
+              1,
+              2
             ]
           },
           {

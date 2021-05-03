@@ -184,7 +184,9 @@ export const NOTIFICATION_TYPE = {
   goal_accept: 7,
   goal_reject: 8,
   chat_disconnect: 9,
-  expiration_of_free_trial:10,
+  audio_chat_missed: 10,
+  video_chat_missed: 11,
+  expiration_of_free_trial:12,
 }
 
 export const STATUS = {
@@ -202,4 +204,9 @@ export const CHAT_ROOM_TYPE = {
 export const EMPLOYER_SUBSCRIPTION_TYPE = {
   free: 0,
   paid:1,
+}
+
+export const CHAT_DISCONNECT_TYPE= {
+  disconnected: 1,
+  missed: 2,
 }

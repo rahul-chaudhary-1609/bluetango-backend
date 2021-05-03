@@ -173,7 +173,8 @@ export const sendChatNotification = Joi.object({
 
 export const sendChatDisconnectNotification = Joi.object({
   chat_room_id: Joi.string().required(),
-  chat_type: Joi.string().trim().valid('audio', 'video'),
+  chat_type: Joi.string().trim().valid('audio', 'video').required(),
+  disconnect_type: Joi.number(),
   session_id: Joi.string(),
   token: Joi.string(),
 })

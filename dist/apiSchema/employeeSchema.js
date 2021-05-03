@@ -169,7 +169,8 @@ exports.sendChatNotification = joi_1.default.object({
 });
 exports.sendChatDisconnectNotification = joi_1.default.object({
     chat_room_id: joi_1.default.string().required(),
-    chat_type: joi_1.default.string().trim().valid('audio', 'video'),
+    chat_type: joi_1.default.string().trim().valid('audio', 'video').required(),
+    disconnect_type: joi_1.default.number(),
     session_id: joi_1.default.string(),
     token: joi_1.default.string(),
 });

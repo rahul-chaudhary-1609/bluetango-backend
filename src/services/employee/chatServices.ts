@@ -10,6 +10,7 @@ import { employeeModel } from "../../models/employee";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { notificationModel } from "../../models/notification";
 import { coachManagementModel } from "../../models/coachManagement";
+import e from "express";
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
@@ -21,19 +22,19 @@ export class ChatServices {
     /*
     * function to get chat popup list as employee
     */
-    public async getChatPopUpListAsEmployee( user: any) {
+    public async getChatPopUpListAsEmployee(user: any) {
 
-        teamGoalAssignModel.hasOne(teamGoalModel,{foreignKey: "id", sourceKey: "goal_id", targetKey: "id"})
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" })
         let employeeGoalData = await teamGoalAssignModel.findAll({
             where: {
                 employee_id: user.uid
             },
-            attributes:['id'],
-            include:[
+            attributes: ['id'],
+            include: [
                 {
                     model: teamGoalModel,
                     required: false,
-                    attributes: ['id','title']
+                    attributes: ['id', 'title']
                 }
             ]
         });
@@ -67,13 +68,13 @@ export class ChatServices {
                         { [Op.and]: [{ user_id: user.uid }, { other_user_id: params.other_user_id }] },
                         { [Op.and]: [{ user_id: params.other_user_id }, { other_user_id: user.uid }] }
                     ],
-                    type:constants.CHAT_ROOM_TYPE.coach
+                    type: constants.CHAT_ROOM_TYPE.coach
                 }
             });
 
 
             let coach = await coachManagementModel.findOne({
-                attributes: ['id', 'name', ['image','profile_pic_url']],
+                attributes: ['id', 'name', ['image', 'profile_pic_url']],
                 where: {
                     id: parseInt(params.other_user_id),
                 }
@@ -177,18 +178,18 @@ export class ChatServices {
 
         let chatRoomDataUser = await chatRealtionMappingInRoomModel.findAll({
             where: {
-                 user_id: user.uid,
+                user_id: user.uid,
             }
         });
 
         let chatRoomDataOtherUser = await chatRealtionMappingInRoomModel.findAll({
             where: {
                 other_user_id: user.uid,
-                type:constants.CHAT_ROOM_TYPE.employee
+                type: constants.CHAT_ROOM_TYPE.employee
             }
         });
 
-        let chatRoomData=[...chatRoomDataUser,...chatRoomDataOtherUser]
+        let chatRoomData = [...chatRoomDataUser, ...chatRoomDataOtherUser]
 
         let currentUser = await employeeModel.findOne({
             attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
@@ -204,7 +205,7 @@ export class ChatServices {
             let id = chat.other_user_id;
             if (chat.other_user_id == user.uid) id = chat.user_id;
             let employee = await employeeModel.findOne({
-                attributes: ['id','name','profile_pic_url','is_manager'],
+                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
                 where: {
                     id
                 }
@@ -215,7 +216,7 @@ export class ChatServices {
                 attributes: ['id', 'name', ['image', 'profile_pic_url']],
                 where: {
                     id,
-                    status:constants.STATUS.active,
+                    status: constants.STATUS.active,
                 }
             });
 
@@ -238,7 +239,7 @@ export class ChatServices {
                     return val.team_member_id
                 })
 
-                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id) )) is_disabled = true;
+                if (managerTeamMember_manager && employee.id !== managerTeamMember_manager.manager_id && !(employee_ids.includes(employee.id))) is_disabled = true;
 
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && !coach) is_disabled = true;
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && coach) is_disabled = false;
@@ -246,7 +247,7 @@ export class ChatServices {
                 chats.push({
                     id: chat.id,
                     room_id: chat.room_id,
-                    user: chat.type==constants.CHAT_ROOM_TYPE.coach?coach:employee,
+                    user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
@@ -258,7 +259,7 @@ export class ChatServices {
 
                 let managerTeamMember = await managerTeamMemberModel.findOne({
                     where: {
-                        team_member_id:user.uid
+                        team_member_id: user.uid
                     }
                 });
 
@@ -316,7 +317,7 @@ export class ChatServices {
         
         let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
-                room_id:params.chat_room_id,
+                room_id: params.chat_room_id,
             }
         });
 
@@ -344,11 +345,11 @@ export class ChatServices {
         await this.createSession(params);
         
 
-        chatRoomData= await chatRealtionMappingInRoomModel.findOne({
+        chatRoomData = await chatRealtionMappingInRoomModel.findOne({
             where: {
                 room_id: params.chat_room_id,
             }
-         });
+        });
         
         let token = opentok.generateToken(chatRoomData.chat_session_id, {
             role: "moderator",
@@ -396,12 +397,12 @@ export class ChatServices {
     public async dropChatSession(params: any, user: any) {
 
         let chatRoomData = await chatRealtionMappingInRoomModel.update({
-            chat_session_id:null,
-        },{
+            chat_session_id: null,
+        }, {
             where: {
                 room_id: params.chat_room_id,
             },
-            returning:true,
+            returning: true,
         });
 
 
@@ -414,7 +415,7 @@ export class ChatServices {
   */
     public async checkChatSession(params: any, user: any) {
 
-        let chatRoomData = await helperFunction.convertPromiseToObject( await chatRealtionMappingInRoomModel.findOne({
+        let chatRoomData = await helperFunction.convertPromiseToObject(await chatRealtionMappingInRoomModel.findOne({
             where: {
                 room_id: params.chat_room_id,
             }
@@ -422,7 +423,7 @@ export class ChatServices {
 
         let isSessionExist = false;
 
-        if (chatRoomData.chat_session_id) isSessionExist=true
+        if (chatRoomData.chat_session_id) isSessionExist = true
 
 
         return { isSessionExist };
@@ -455,7 +456,7 @@ export class ChatServices {
             })
         }
 
-        let senderEmployeeData = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
+        let senderEmployeeData = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
             where: { id: user.uid, }
         }))
 
@@ -488,7 +489,7 @@ export class ChatServices {
                     type: constants.NOTIFICATION_TYPE.message,
                     title: 'Message',
                     message: params.message || `Message from ${senderEmployeeData.name}`,
-                    chat_room_id:params.chat_room_id,
+                    chat_room_id: params.chat_room_id,
                     senderEmployeeData
                 },
             }
@@ -605,33 +606,36 @@ export class ChatServices {
 
         let notificationData = null;
 
-        if (!params.chat_type) {
-            //send push notification
-            notificationData = <any>{
-                title: 'Disconnected',
-                body: `Chat disconnected by ${senderEmployeeData.name}`,
-                data: {
-                    type: constants.NOTIFICATION_TYPE.chat_disconnect,
-                    title: 'Disconneted',
-                    message: `Chat disconnected by ${senderEmployeeData.name}`,
-                    sessionId: params.session_id || null,
-                    token: params.token || null,
-                    chat_room_id: params.chat_room_id,
-                    senderEmployeeData
-                },
-            }
-            await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
-        }
-        else {
+        if (params.disconnect_type && params.disconnect_type == constants.CHAT_DISCONNECT_TYPE.missed) {
+            
             if (params.chat_type == 'audio') {
+                //add notification 
+                let notificationObj = <any>{
+                    type_id: params.chat_room_id,
+                    sender_id: user.uid,
+                    reciever_id: recieverId,
+                    type: constants.NOTIFICATION_TYPE.audio_chat_missed,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.audio_chat_missed,
+                        title: 'Missed Audio Chat',
+                        message: `Missed audio chat from ${senderEmployeeData.name}`,
+                        sessionId: params.session_id || null,
+                        token: params.token || null,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
+                }
+                
+                await notificationModel.create(notificationObj);
+
                 //send push notification
                 notificationData = <any>{
-                    title: 'Disconnected',
-                    body: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                    title: 'Missed Audio Chat',
+                    body: `Missed audio chat from ${senderEmployeeData.name}`,
                     data: {
-                        type: constants.NOTIFICATION_TYPE.chat_disconnect,
-                        title: 'Disconnected',
-                        message: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                        type: constants.NOTIFICATION_TYPE.audio_chat_missed,
+                        title: 'Missed Audio Chat',
+                        message: `Missed audio chat from ${senderEmployeeData.name}`,
                         sessionId: params.session_id || null,
                         token: params.token || null,
                         chat_room_id: params.chat_room_id,
@@ -641,15 +645,32 @@ export class ChatServices {
                 await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
             }
             else if (params.chat_type == 'video') {
+                //add notification 
+                let notificationObj = <any>{
+                    type_id: params.chat_room_id,
+                    sender_id: user.uid,
+                    reciever_id: recieverId,
+                    type: constants.NOTIFICATION_TYPE.video_chat_missed,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.video_chat_missed,
+                        title: 'Missed Video Chat',
+                        message: `Missed video chat from ${senderEmployeeData.name}`,
+                        sessionId: params.session_id || null,
+                        token: params.token || null,
+                        chat_room_id: params.chat_room_id,
+                        senderEmployeeData
+                    },
+                }
+                await notificationModel.create(notificationObj);
                 //send push notification
                 notificationData = <any>{
-                    title: 'Disconnected',
-                    body: `Video chat disconnected by ${senderEmployeeData.name}`,
+                    title: 'Missed Video Chat',
+                    body: `Missed video chat from ${senderEmployeeData.name}`,
                     data: {
-                        type: constants.NOTIFICATION_TYPE.chat_disconnect,
-                        title: 'Disconnected',
-                        message: `Video chat disconnected by ${senderEmployeeData.name}`,
-                        sessionId: params.session_id ||null,
+                        type: constants.NOTIFICATION_TYPE.video_chat_missed,
+                        title: 'Missed Video Chat',
+                        message: `Missed video chat from ${senderEmployeeData.name}`,
+                        sessionId: params.session_id || null,
                         token: params.token || null,
                         chat_room_id: params.chat_room_id,
                         senderEmployeeData
@@ -657,7 +678,9 @@ export class ChatServices {
                 }
                 await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
             }
-            else {
+        }
+        else {
+            if (!params.chat_type) {
                 //send push notification
                 notificationData = <any>{
                     title: 'Disconnected',
@@ -674,7 +697,62 @@ export class ChatServices {
                 }
                 await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
             }
+            else {
+                if (params.chat_type == 'audio') {
+                    //send push notification
+                    notificationData = <any>{
+                        title: 'Disconnected',
+                        body: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconnected',
+                            message: `Audio chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    }
+                    await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+                else if (params.chat_type == 'video') {
+                    //send push notification
+                    notificationData = <any>{
+                        title: 'Disconnected',
+                        body: `Video chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconnected',
+                            message: `Video chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    }
+                    await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+                else {
+                    //send push notification
+                    notificationData = <any>{
+                        title: 'Disconnected',
+                        body: `Chat disconnected by ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.chat_disconnect,
+                            title: 'Disconneted',
+                            message: `Chat disconnected by ${senderEmployeeData.name}`,
+                            sessionId: params.session_id || null,
+                            token: params.token || null,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    }
+                    await helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
+            }
         }
+
+        
 
         return notificationData
 

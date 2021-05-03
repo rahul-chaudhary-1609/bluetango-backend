@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_TYPE = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
+exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_TYPE = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
 exports.MESSAGES = {
     phone_already_registered: "An account with given phone number already exists",
     email_already_registered: "An account with given email already exists",
@@ -180,7 +180,9 @@ exports.NOTIFICATION_TYPE = {
     goal_accept: 7,
     goal_reject: 8,
     chat_disconnect: 9,
-    expiration_of_free_trial: 10,
+    audio_chat_missed: 10,
+    video_chat_missed: 11,
+    expiration_of_free_trial: 12,
 };
 exports.STATUS = {
     inactive: 0,
@@ -195,5 +197,9 @@ exports.CHAT_ROOM_TYPE = {
 exports.EMPLOYER_SUBSCRIPTION_TYPE = {
     free: 0,
     paid: 1,
+};
+exports.CHAT_DISCONNECT_TYPE = {
+    disconnected: 1,
+    missed: 2,
 };
 //# sourceMappingURL=constants.js.map

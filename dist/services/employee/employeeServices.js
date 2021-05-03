@@ -462,6 +462,14 @@ class EmployeeServices {
                 },
                 order: [["createdAt", "DESC"]]
             }));
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    status: 1,
+                    reciever_id: user.uid,
+                }
+            });
             return notifications;
         });
     }
