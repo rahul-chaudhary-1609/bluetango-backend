@@ -38,6 +38,10 @@
             "description": "Employer related api's"
         },
         {
+            "name": "Coach",
+            "description": "Coach related api's"
+        },
+        {
             "name": "Web",
             "description": "Web related api's"
         }
@@ -2106,10 +2110,10 @@
                     {
                         "name": "user_role",
                         "in": "formData",
-                        "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4",
+                        "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4,coach=> 5",
                         "required": true,
                         "type": "number",
-                        "enum": [1, 2, 3, 4]
+                        "enum": [5]
                     }
                 ],
                 "responses": {}
@@ -4390,14 +4394,11 @@
                     {
                         "name": "user_role",
                         "in": "formData",
-                        "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4",
+                        "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4,coach=> 5",
                         "required": true,
                         "type": "number",
                         "enum": [
-                            1,
-                            2,
-                            3,
-                            4
+                            5
                         ]
                     }
                 ],
@@ -4525,6 +4526,41 @@
                         "description": "employee id",
                         "required": true,
                         "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/login": {
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "Employee Login",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "formData",
+                        "description": "email",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "formData",
+                        "description": "password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "formData",
+                        "description": "device_token",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}

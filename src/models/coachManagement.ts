@@ -37,6 +37,10 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    device_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,

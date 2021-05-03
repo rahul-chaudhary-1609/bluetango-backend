@@ -38,6 +38,10 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
+    device_token: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

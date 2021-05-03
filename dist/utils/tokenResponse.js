@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateEmailToken = exports.verificationEmailToken = exports.forgotPasswordTokenResponse = exports.employerTokenResponse = exports.employeeTokenResponse = exports.adminTokenResponse = exports.tokenResponse = void 0;
+exports.validateEmailToken = exports.verificationEmailToken = exports.forgotPasswordTokenResponse = exports.coachTokenResponse = exports.employerTokenResponse = exports.employeeTokenResponse = exports.adminTokenResponse = exports.tokenResponse = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const constants = __importStar(require("../constants"));
 exports.tokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
@@ -56,6 +56,13 @@ exports.employerTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, funct
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: constants.USER_ROLE.employer
+    }, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY, { expiresIn: '1d' });
+    return { token };
+});
+exports.coachTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = jsonwebtoken_1.default.sign({
+        id: obj.id,
+        user_role: constants.USER_ROLE.coach
     }, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY, { expiresIn: '1d' });
     return { token };
 });

@@ -22,22 +22,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ROUTE_PREFIX = `/api/v1/`;
-const adminRoute_1 = __importDefault(require("./adminRoute"));
-const employeeRoute_1 = __importDefault(require("./employeeRoute"));
-const employerRoute_1 = __importDefault(require("./employerRoute"));
-const coachRoute_1 = __importDefault(require("./coachRoute"));
-const webRoute_1 = __importDefault(require("./webRoute"));
-const appUtils = __importStar(require("../utils/appUtils"));
+exports.login = void 0;
+const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
-module.exports = function (app) {
-    app.use(`${ROUTE_PREFIX}admin`, adminRoute_1.default);
-    app.use(`${ROUTE_PREFIX}employee`, employeeRoute_1.default);
-    app.use(`${ROUTE_PREFIX}employer`, employerRoute_1.default);
-    app.use(`${ROUTE_PREFIX}coach`, coachRoute_1.default);
-    app.use(`${ROUTE_PREFIX}web`, webRoute_1.default);
-    app.use((err, req, res, next) => {
-        appUtils.errorResponse(res, err, constants.code.error_code);
-    });
-};
-//# sourceMappingURL=index.js.map
+exports.login = joi_1.default.object({
+    username: joi_1.default.string()
+        .regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i)
+        .required()
+        .messages({
+        "string.pattern.base": constants.MESSAGES.invalid_email
+    }),
+    password: joi_1.default.string().min(8)
+        .max(15)
+        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        .required()
+        .messages({
+        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
+    device_token: joi_1.default.string().optional()
+});
+//# sourceMappingURL=coachSchema.js.map

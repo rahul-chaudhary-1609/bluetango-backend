@@ -310,7 +310,7 @@ export class EmployeeManagement {
         })
 
         if (employee) {
-            employee.status = constants.STATUS.deleted,
+            employee.status = constants.STATUS.deleted;
             employee.save()
         }
         else {

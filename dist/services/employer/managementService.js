@@ -301,8 +301,8 @@ class EmployeeManagement {
                 }
             });
             if (employee) {
-                employee.status = constants.STATUS.deleted,
-                    employee.save();
+                employee.status = constants.STATUS.deleted;
+                employee.save();
             }
             else {
                 throw new Error(constants.MESSAGES.employee_notFound);

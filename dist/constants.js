@@ -160,7 +160,8 @@ exports.USER_ROLE = {
     super_admin: 1,
     sub_admin: 2,
     employee: 3,
-    employer: 4
+    employer: 4,
+    coach: 5,
 };
 exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
     approve: 1,
