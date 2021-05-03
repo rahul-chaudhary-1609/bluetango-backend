@@ -26,6 +26,15 @@ export const login = Joi.object({
     device_token: Joi.string().optional()
 });
 
+export const forgotPassword = Joi.object({
+    email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
+        .messages(
+            {
+                "string.pattern.base": constants.MESSAGES.invalid_email
+            }
+        ),
+    user_role: Joi.string().regex(new RegExp("^(?=.*[1-5])")).required(),
+});
 
 export const resetPassword = Joi.object({
     password: Joi.string().min(8)

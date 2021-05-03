@@ -8,6 +8,7 @@ import { adminModel } from "../../models/admin";
 import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
+import { coachManagementModel } from "../../models/coachManagement";
 import { emojiModel } from "../../models/emoji";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -137,6 +138,8 @@ export class AuthService {
             return await employeeModel.update(update, qry);
         } else if (user.user_role == constants.USER_ROLE.employer) {
             return await employersModel.update(update, qry);
+        } else if (user.user_role == constants.USER_ROLE.coach) {
+            return await coachManagementModel.update(update, qry);
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }

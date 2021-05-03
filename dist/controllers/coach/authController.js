@@ -53,6 +53,23 @@ class AuthController {
         });
     }
     /**
+    * forgot password
+    * @param req :[email]
+    * @param res
+    */
+    forgotPassword(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.forgotPassword(req.body);
+                const msg = constants.MESSAGES.forget_pass_otp;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    /**
     * reset password
     * @param req :[password]
     * @param res

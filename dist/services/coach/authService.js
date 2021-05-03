@@ -82,6 +82,44 @@ class AuthService {
             }
         });
     }
+    /**
+    * reset password function to add the data
+    * @param {*} params pass all parameters from request
+    */
+    forgotPassword(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var existingUser;
+            const qry = {
+                where: {
+                    email: params.email.toLowerCase(),
+                    status: { [Op.ne]: 2 }
+                }
+            };
+            if (params.user_role == constants.USER_ROLE.coach) {
+                existingUser = yield coachManagement_1.coachManagementModel.findOne(qry);
+            }
+            else {
+                throw new Error(constants.MESSAGES.user_not_found);
+            }
+            if (!lodash_1.default.isEmpty(existingUser)) {
+                // params.country_code = existingUser.country_code;
+                let token = yield tokenResponse.forgotPasswordTokenResponse(existingUser, params.user_role);
+                const mailParams = {};
+                mailParams.to = params.email;
+                mailParams.html = `Hi ${existingUser.name}
+                <br> Click on the link below to reset your password
+                <br> ${process.env.WEB_HOST_URL}?token=${token.token}
+                <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
+                `;
+                mailParams.subject = "Reset Password Request";
+                yield helperFunction.sendEmail(mailParams);
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.user_not_found);
+            }
+        });
+    }
     /*
     * function to set new pass
     */

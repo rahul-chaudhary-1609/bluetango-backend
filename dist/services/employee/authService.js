@@ -42,6 +42,7 @@ const admin_1 = require("../../models/admin");
 const employers_1 = require("../../models/employers");
 const department_1 = require("../../models/department");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
+const coachManagement_1 = require("../../models/coachManagement");
 const emoji_1 = require("../../models/emoji");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -174,6 +175,9 @@ class AuthService {
             }
             else if (user.user_role == constants.USER_ROLE.employer) {
                 return yield employers_1.employersModel.update(update, qry);
+            }
+            else if (user.user_role == constants.USER_ROLE.coach) {
+                return yield coachManagement_1.coachManagementModel.update(update, qry);
             }
             else {
                 throw new Error(constants.MESSAGES.user_not_found);

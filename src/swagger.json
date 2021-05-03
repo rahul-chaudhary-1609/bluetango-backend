@@ -4540,7 +4540,7 @@
         "tags": [
           "Coach"
         ],
-        "description": "Employee Login",
+        "description": "Coach Login",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -4570,12 +4570,43 @@
         "responses": {}
       }
     },
+    "/coach/forgotPassword": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "Coach forgot password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_role",
+            "in": "formData",
+            "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4,coach=> 5",
+            "required": true,
+            "type": "number",
+            "enum": [
+              5
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/resetPassword": {
       "post": {
         "tags": [
           "Coach"
         ],
-        "description": "Employee reset password",
+        "description": "Coach reset password",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],

@@ -50,7 +50,43 @@ export class AuthService {
         }
     }
 
-    
+    /**
+    * reset password function to add the data
+    * @param {*} params pass all parameters from request 
+    */
+    public async forgotPassword(params: any) {
+        var existingUser;
+        const qry = <any>{
+            where: {
+                email: params.email.toLowerCase(),
+                status: { [Op.ne]: 2 }
+            }
+        };
+
+        if (params.user_role == constants.USER_ROLE.coach) {
+            existingUser = await coachManagementModel.findOne(qry);
+        } else {
+            throw new Error(constants.MESSAGES.user_not_found);
+        }
+
+        if (!_.isEmpty(existingUser)) {
+            // params.country_code = existingUser.country_code;
+            let token = await tokenResponse.forgotPasswordTokenResponse(existingUser, params.user_role);
+            const mailParams = <any>{};
+            mailParams.to = params.email;
+            mailParams.html = `Hi ${existingUser.name}
+                <br> Click on the link below to reset your password
+                <br> ${process.env.WEB_HOST_URL}?token=${token.token}
+                <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
+                `;
+            mailParams.subject = "Reset Password Request";
+            await helperFunction.sendEmail(mailParams);
+            return true;
+        } else {
+            throw new Error(constants.MESSAGES.user_not_found);
+        }
+
+    }
 
     /*
     * function to set new pass 
