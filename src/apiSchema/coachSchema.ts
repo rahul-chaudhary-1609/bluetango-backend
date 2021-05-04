@@ -72,3 +72,35 @@ export const editProfile = Joi.object({
     image: Joi.string().optional(),
     fileName: Joi.string().optional()
 })
+
+export const createChatSession = Joi.object({
+    chat_room_id: Joi.string().required()
+})
+
+export const dropChatSession = Joi.object({
+    chat_room_id: Joi.string().required()
+})
+
+export const checkChatSession = Joi.object({
+    chat_room_id: Joi.string().required()
+})
+
+export const getChatSessionIdandToken = Joi.object({
+    chat_room_id: Joi.string().required()
+})
+
+export const sendChatNotification = Joi.object({
+    chat_room_id: Joi.string().required(),
+    chat_type: Joi.string().trim().valid('text', 'audio', 'video').required(),
+    message: Joi.string(),
+    session_id: Joi.string(),
+    token: Joi.string(),
+})
+
+export const sendChatDisconnectNotification = Joi.object({
+    chat_room_id: Joi.string().required(),
+    chat_type: Joi.string().trim().valid('audio', 'video').required(),
+    disconnect_type: Joi.number(),
+    session_id: Joi.string(),
+    token: Joi.string(),
+})

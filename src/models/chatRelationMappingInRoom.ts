@@ -34,7 +34,7 @@ export const chatRealtionMappingInRoomModel: any = sequelize.define("chat_relati
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: "0=>inActive, 1=> active"
+        comment: "0=>inactive, 1=> active"
     }
 },
     {

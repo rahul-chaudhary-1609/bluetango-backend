@@ -6,7 +6,8 @@
   },
   "basePath": "/api/v1",
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "consumes": [
     "application/json",
@@ -40,6 +41,10 @@
     {
       "name": "Coach",
       "description": "Coach related api's"
+    },
+    {
+      "name": "CoachChat",
+      "description": "Coach Chat related api's"
     },
     {
       "name": "Web",
@@ -4731,6 +4736,264 @@
             "name": "fileName",
             "in": "formData",
             "description": "file name",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getChatList": {
+      "get": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "get chat list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/createChatSession": {
+      "post": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "create chat session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/dropChatSession": {
+      "delete": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "drop chat session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/checkChatSession/{chat_room_id}": {
+      "get": {
+        "tags": [
+          "coachChat"
+        ],
+        "description": "check chat session exist or not",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "path",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getChatSessionIdandToken/{chat_room_id}": {
+      "get": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "get video chat session id and token",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "path",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/sendChatNotification": {
+      "post": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "send chat notification",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_type",
+            "in": "formData",
+            "description": "text | audio | video",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "text",
+              "audio",
+              "video"
+            ]
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "Enter chat session id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "formData",
+            "description": "Enter chat token",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "Enter message in case of text chat",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/sendChatDisconnectNotification": {
+      "post": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "send chat disconnect notification",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_type",
+            "in": "formData",
+            "description": "audio | video",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "audio",
+              "video"
+            ]
+          },
+          {
+            "name": "disconnect_type",
+            "in": "formData",
+            "description": "1=> disconnected | 2=>missed",
+            "required": false,
+            "type": "string",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "Enter chat session id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "token",
+            "in": "formData",
+            "description": "Enter chat token",
             "required": false,
             "type": "string"
           }

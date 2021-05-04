@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -87,5 +87,31 @@ exports.editProfile = joi_1.default.object({
     description: joi_1.default.string().optional(),
     image: joi_1.default.string().optional(),
     fileName: joi_1.default.string().optional()
+});
+exports.createChatSession = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.dropChatSession = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.checkChatSession = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.getChatSessionIdandToken = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required()
+});
+exports.sendChatNotification = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required(),
+    chat_type: joi_1.default.string().trim().valid('text', 'audio', 'video').required(),
+    message: joi_1.default.string(),
+    session_id: joi_1.default.string(),
+    token: joi_1.default.string(),
+});
+exports.sendChatDisconnectNotification = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required(),
+    chat_type: joi_1.default.string().trim().valid('audio', 'video').required(),
+    disconnect_type: joi_1.default.number(),
+    session_id: joi_1.default.string(),
+    token: joi_1.default.string(),
 });
 //# sourceMappingURL=coachSchema.js.map

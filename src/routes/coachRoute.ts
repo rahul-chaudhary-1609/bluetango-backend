@@ -5,11 +5,13 @@ import * as tokenValidator from "../middleware/tokenValidator";
 import * as validators from "../middleware/validators";
 
 import { AuthController } from "../controllers/coach/authController";
+import { ChatController } from "../controllers/coach/chatController";
 
 
 const coachRoute = express.Router();
 
 const authController = new AuthController();
+const chatController = new ChatController();
 
 
 // auth API
@@ -27,5 +29,30 @@ coachRoute.get("/getProfile", tokenValidator.validateCoachToken,  authController
 
 /* forget pass route for employee */
 coachRoute.put("/editProfile", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.editProfile), authController.editProfile);
+
+
+// Chat routes
+
+/* get chat list */
+coachRoute.get("/getChatList", validators.trimmer, tokenValidator.validateCoachToken, chatController.getChatList);
+
+/* create video chat session*/
+coachRoute.post("/createChatSession", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.createChatSession), chatController.createChatSession);
+
+/* get video chat session id and token */
+coachRoute.get("/getChatSessionIdandToken/:chat_room_id", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getChatSessionIdandToken), chatController.getChatSessionIdandToken);
+
+/* create video chat session*/
+coachRoute.delete("/dropChatSession", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.dropChatSession), chatController.dropChatSession);
+
+/* create video chat session*/
+coachRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.checkChatSession), chatController.checkChatSession);
+
+/* send video/audio chat notification*/
+coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatNotification), chatController.sendChatNotification);
+
+/* send disconnect video/audio chat notification*/
+coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+
 
 export = coachRoute;
