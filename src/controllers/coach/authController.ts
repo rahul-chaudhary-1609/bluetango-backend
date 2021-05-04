@@ -53,5 +53,21 @@ export class AuthController {
         }
     }
 
+    /**
+    * get  profile
+    * @param req 
+    * @param res 
+    */
+    public async getProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.getProfile(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+
 
 }

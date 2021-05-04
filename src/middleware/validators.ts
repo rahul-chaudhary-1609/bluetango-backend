@@ -8,7 +8,7 @@
 // }
 
 export const trimmer = (req, res, next) => {
-    if (req.method === 'POST') {
+    if (req.method === 'POST' || req.method === 'PUT') {
         const temp = {};
         for (let [key, value] of Object.entries(req.body)) {
             key = (<any>key).trim();

@@ -4,6 +4,7 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { coachManagementModel } from "../../models/coachManagement";
+import { param } from "../../routes/adminRoute";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -111,7 +112,27 @@ export class AuthService {
        
     }
 
-   
+    /*
+    * function to get profile 
+    */
+    public async getProfile(user: any) {
+        let profile= await helperFunction.convertPromiseToObject(
+            await coachManagementModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status:{[Op.ne]:2}
+                }
+            })
+        )
+
+        delete profile.password;
+
+        return profile
+
+    }
+
+
+    
 
 
 

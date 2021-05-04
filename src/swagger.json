@@ -4640,6 +4640,27 @@
         "responses": {}
       }
     },
+    "/coach/getProfile": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "Coach get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter any jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/web/getCoaches": {
       "get": {
         "tags": [

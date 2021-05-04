@@ -85,6 +85,22 @@ class AuthController {
             }
         });
     }
+    /**
+    * get  profile
+    * @param req
+    * @param res
+    */
+    getProfile(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getProfile(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map

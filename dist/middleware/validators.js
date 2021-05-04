@@ -10,7 +10,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatUsername = exports.isValidEmail = exports.trimmer = void 0;
 exports.trimmer = (req, res, next) => {
-    if (req.method === 'POST') {
+    if (req.method === 'POST' || req.method === 'PUT') {
         const temp = {};
         for (let [key, value] of Object.entries(req.body)) {
             key = key.trim();

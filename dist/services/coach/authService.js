@@ -143,6 +143,21 @@ class AuthService {
             }
         });
     }
+    /*
+    * function to get profile
+    */
+    getProfile(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let profile = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+            }));
+            delete profile.password;
+            return profile;
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

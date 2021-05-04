@@ -22,5 +22,8 @@ coachRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.valida
 /* forget pass route for employee */
 coachRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.forgotPassword), authController.forgotPassword);
 
+/* forget pass route for employee */
+coachRoute.get("/getProfile", tokenValidator.validateCoachToken,  authController.getProfile);
+
 
 export = coachRoute;
