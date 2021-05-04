@@ -4661,6 +4661,83 @@
         "responses": {}
       }
     },
+    "/coach/editProfile": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "Coach edit profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter any jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "country_code",
+            "in": "formData",
+            "description": "country code",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "phone_number",
+            "in": "formData",
+            "description": "phone number",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image url",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/web/getCoaches": {
       "get": {
         "tags": [

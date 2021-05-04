@@ -132,7 +132,36 @@ export class AuthService {
     }
 
 
-    
+    /*
+    * function to get profile 
+    */
+    public async editProfile(params: any,user: any) {
+        let profile = await coachManagementModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+        })
+        
+        let currentProfile = await helperFunction.convertPromiseToObject(profile);        
+
+        profile.name = params.name || currentProfile.name;
+        profile.email = params.email || currentProfile.email;
+        profile.password = params.password ? await appUtils.bcryptPassword(params.password): currentProfile.password;
+        profile.country_code = params.country_code || currentProfile.country_code;
+        profile.phone_number = params.phone_number || currentProfile.phone_number;
+        profile.description = params.description || currentProfile.description;
+        profile.image = params.image || currentProfile.image;
+        profile.fileName = params.fileName || currentProfile.fileName;
+
+        profile.save();
+
+        return profile;
+
+    }
+
+
+   
 
 
 

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -66,5 +66,26 @@ exports.resetPassword = joi_1.default.object({
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     })
+});
+exports.editProfile = joi_1.default.object({
+    name: joi_1.default.string().optional(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).optional(),
+    password: joi_1.default.string().min(8).optional()
+        .max(15)
+        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .required()
+        .messages({
+        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
+    country_code: joi_1.default.string().optional(),
+    phone_number: joi_1.default.string().optional(),
+    description: joi_1.default.string().optional(),
+    image: joi_1.default.string().optional(),
+    fileName: joi_1.default.string().optional()
 });
 //# sourceMappingURL=coachSchema.js.map

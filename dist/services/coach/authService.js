@@ -158,6 +158,30 @@ class AuthService {
             return profile;
         });
     }
+    /*
+    * function to get profile
+    */
+    editProfile(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let profile = yield coachManagement_1.coachManagementModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+            });
+            let currentProfile = yield helperFunction.convertPromiseToObject(profile);
+            profile.name = params.name || currentProfile.name;
+            profile.email = params.email || currentProfile.email;
+            profile.password = params.password ? yield appUtils.bcryptPassword(params.password) : currentProfile.password;
+            profile.country_code = params.country_code || currentProfile.country_code;
+            profile.phone_number = params.phone_number || currentProfile.phone_number;
+            profile.description = params.description || currentProfile.description;
+            profile.image = params.image || currentProfile.image;
+            profile.fileName = params.fileName || currentProfile.fileName;
+            profile.save();
+            return profile;
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

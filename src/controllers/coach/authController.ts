@@ -67,7 +67,19 @@ export class AuthController {
         }
     }
 
-
+    /**
+    * edit profile
+    * @param req 
+    * @param res 
+    */
+    public async editProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.editProfile(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (error) {
+            next(error);
+        }
+    }
 
 
 }

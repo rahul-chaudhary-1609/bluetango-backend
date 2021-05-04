@@ -38,5 +38,7 @@ coachRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.valida
 coachRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.forgotPassword), authController.forgotPassword);
 /* forget pass route for employee */
 coachRoute.get("/getProfile", tokenValidator.validateCoachToken, authController.getProfile);
+/* forget pass route for employee */
+coachRoute.put("/editProfile", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.editProfile), authController.editProfile);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map
