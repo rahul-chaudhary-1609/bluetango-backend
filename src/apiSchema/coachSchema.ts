@@ -104,3 +104,8 @@ export const sendChatDisconnectNotification = Joi.object({
     session_id: Joi.string(),
     token: Joi.string(),
 })
+
+
+export const updateEmployerDeviceToken = Joi.object({
+    device_token: Joi.string().required()
+})

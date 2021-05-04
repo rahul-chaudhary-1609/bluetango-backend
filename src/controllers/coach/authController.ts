@@ -81,5 +81,35 @@ export class AuthController {
         }
     }
 
+    /**
+  * update device token
+  * @param req :[]
+  * @param res 
+  */
+    public async updateEmployerDeviceToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.updateEmployerDeviceToken(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+   * clear device token
+   * @param req :[]
+   * @param res 
+   */
+    public async clearEmployerDeviceToken(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.clearEmployerDeviceToken(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 
 }

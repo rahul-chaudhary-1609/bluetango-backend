@@ -182,6 +182,32 @@ class AuthService {
             return profile;
         });
     }
+    /*
+* function to update device token
+*/
+    updateEmployerDeviceToken(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield coachManagement_1.coachManagementModel.update({
+                device_token: params.device_token
+            }, {
+                where: { id: user.uid },
+                returning: true
+            });
+        });
+    }
+    /*
+ * function to clear device token
+ */
+    clearEmployerDeviceToken(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield coachManagement_1.coachManagementModel.update({
+                device_token: null,
+            }, {
+                where: { id: user.uid },
+                returning: true
+            });
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

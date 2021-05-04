@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.updateEmployerDeviceToken = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -113,5 +113,8 @@ exports.sendChatDisconnectNotification = joi_1.default.object({
     disconnect_type: joi_1.default.number(),
     session_id: joi_1.default.string(),
     token: joi_1.default.string(),
+});
+exports.updateEmployerDeviceToken = joi_1.default.object({
+    device_token: joi_1.default.string().required()
 });
 //# sourceMappingURL=coachSchema.js.map

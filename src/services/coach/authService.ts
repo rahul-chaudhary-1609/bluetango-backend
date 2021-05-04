@@ -161,7 +161,36 @@ export class AuthService {
     }
 
 
-   
+    /*
+* function to update device token
+*/
+    public async updateEmployerDeviceToken(params: any, user: any) {
+        return await coachManagementModel.update(
+            {
+                device_token: params.device_token
+            },
+            {
+                where: { id: user.uid },
+                returning: true
+            }
+        )
+    }
+
+
+    /*
+ * function to clear device token
+ */
+    public async clearEmployerDeviceToken(user: any) {
+        return await coachManagementModel.update(
+            {
+                device_token: null,
+            },
+            {
+                where: { id: user.uid },
+                returning: true
+            }
+        )
+    }
 
 
 

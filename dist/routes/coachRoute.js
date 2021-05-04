@@ -42,6 +42,10 @@ coachRoute.post("/forgotPassword", validators.trimmer, joiSchemaValidation.valid
 coachRoute.get("/getProfile", tokenValidator.validateCoachToken, authController.getProfile);
 /* forget pass route for employee */
 coachRoute.put("/editProfile", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.editProfile), authController.editProfile);
+/* update employer device token */
+coachRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody(coachSchema.updateEmployerDeviceToken), tokenValidator.validateCoachToken, authController.updateEmployerDeviceToken);
+/* clear employer device token */
+coachRoute.put("/clearEmployerDeviceToken", tokenValidator.validateCoachToken, authController.clearEmployerDeviceToken);
 // Chat routes
 /* get chat list */
 coachRoute.get("/getChatList", validators.trimmer, tokenValidator.validateCoachToken, chatController.getChatList);

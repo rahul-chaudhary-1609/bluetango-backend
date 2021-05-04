@@ -4641,6 +4641,55 @@
                 "responses": {}
             }
         },
+        "/coach/updateEmployerDeviceToken": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "Api to update coach device token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "device_token",
+                        "in": "formData",
+                        "description": "enter device token",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/clearEmployerDeviceToken": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "Api to clear coach device token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/getProfile": {
             "get": {
                 "tags": [
@@ -4819,7 +4868,7 @@
         "/coach/checkChatSession/{chat_room_id}": {
             "get": {
                 "tags": [
-                    "coachChat"
+                    "CoachChat"
                 ],
                 "description": "check chat session exist or not",
                 "consumes": [
