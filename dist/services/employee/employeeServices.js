@@ -207,7 +207,9 @@ class EmployeeServices {
     */
     getEmoji() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield emoji_1.emojiModel.findAll();
+            return yield emoji_1.emojiModel.findAll({
+                order: [["id"]]
+            });
         });
     }
     /*

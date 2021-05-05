@@ -187,7 +187,9 @@ export class EmployeeServices {
     * function to add thought of the day
     */
     public async getEmoji() {
-        return await emojiModel.findAll();
+        return await emojiModel.findAll({
+            order: [["id"]]
+        });
     }
 
      /*
