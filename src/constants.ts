@@ -3,6 +3,7 @@ export const MESSAGES = {
   email_already_registered: "An account with given email already exists",
   email_phone_already_registered: "An account with given email or phone already exists",
   invalid_password: "Incorrect Password",
+  invalid_old_password: "Incorrect old password",
   invalid_email: "Incorrect Email",
   deactivate_account:'Your account has been de-activated by Admin. Please contact to admin',
   delete_account: 'Your account has been deleted by Admin. Please contact to admin',

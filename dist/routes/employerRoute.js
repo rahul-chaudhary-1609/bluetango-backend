@@ -51,5 +51,9 @@ employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerTok
 employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails), managementController.viewEmployeeDetails);
 /* delete Employee */
 employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
+/* forget pass route for employee */
+employerRoute.get("/getProfile", tokenValidator.validateEmployerToken, employerController.getProfile);
+/* forget pass route for employee */
+employerRoute.put("/editProfile", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.editProfile), employerController.editProfile);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

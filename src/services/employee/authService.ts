@@ -249,7 +249,7 @@ export class AuthService {
                 where: { id: user.uid }
             });
         } else {
-            throw new Error(constants.MESSAGES.invalid_password);
+            throw new Error(constants.MESSAGES.invalid_old_password);
         }
 
     }

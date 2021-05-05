@@ -281,7 +281,7 @@ class AuthService {
                 });
             }
             else {
-                throw new Error(constants.MESSAGES.invalid_password);
+                throw new Error(constants.MESSAGES.invalid_old_password);
             }
         });
     }

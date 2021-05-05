@@ -24,6 +24,34 @@ export class EmployerController {
         }
     }
 
+    /**
+    * get employer profile
+    * @param req 
+    * @param res 
+    */
+    public async getProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.getProfile(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * edit employer profile
+    * @param req 
+    * @param res 
+    */
+    public async editProfile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.editProfile(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
     
 }

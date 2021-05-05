@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import * as constants from '../constants';
-import { join } from 'path';
 
 export const login = Joi.object({
     username: Joi.string()

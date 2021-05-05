@@ -29,7 +29,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployerService = void 0;
+const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
+const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -45,6 +47,45 @@ class EmployerService {
                 attributes: ['id', 'plan_name', 'description', 'charge', 'duration']
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
+        });
+    }
+    /*
+* function to get profile
+*/
+    getProfile(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let profile = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+            }));
+            delete profile.password;
+            return profile;
+        });
+    }
+    /*
+    * function to get profile
+    */
+    editProfile(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let profile = yield models_1.employersModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+            });
+            let currentProfile = yield helperFunction.convertPromiseToObject(profile);
+            profile.name = params.name || currentProfile.name;
+            profile.email = params.email || currentProfile.email;
+            profile.password = params.password ? yield appUtils.bcryptPassword(params.password) : currentProfile.password;
+            profile.country_code = params.country_code || currentProfile.country_code;
+            profile.phone_number = params.phone_number || currentProfile.phone_number;
+            profile.industry_type = params.industry_type || currentProfile.industry_type;
+            profile.address = params.address || currentProfile.address;
+            profile.thought_of_the_day = params.thought_of_the_day || currentProfile.thought_of_the_day;
+            profile.save();
+            return profile;
         });
     }
 }

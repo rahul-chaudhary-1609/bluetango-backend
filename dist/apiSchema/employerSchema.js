@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -42,7 +42,7 @@ exports.login = joi_1.default.object({
 });
 exports.forgotPassword = joi_1.default.object({
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    user_role: joi_1.default.string().regex(new RegExp("^(?=.*[1-4])")).required(),
+    user_role: joi_1.default.string().regex(new RegExp("^(?=.*[1-5])")).required(),
 });
 exports.resetPassword = joi_1.default.object({
     password: joi_1.default.string().min(8)
@@ -101,5 +101,26 @@ exports.viewEmployeeDetails = joi_1.default.object({
 });
 exports.deleteEmployee = joi_1.default.object({
     employee_id: joi_1.default.number().required()
+});
+exports.editProfile = joi_1.default.object({
+    name: joi_1.default.string().optional(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).optional(),
+    password: joi_1.default.string().min(8).optional()
+        .max(15)
+        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .required()
+        .messages({
+        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
+    country_code: joi_1.default.string().optional(),
+    phone_number: joi_1.default.string().optional(),
+    industry_type: joi_1.default.number().optional(),
+    address: joi_1.default.string().optional(),
+    thought_of_the_day: joi_1.default.string().optional()
 });
 //# sourceMappingURL=employerSchema.js.map

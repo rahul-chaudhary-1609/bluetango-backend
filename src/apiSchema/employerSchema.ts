@@ -20,7 +20,7 @@ export const login = Joi.object({
 
 export const forgotPassword = Joi.object({
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-  user_role: Joi.string().regex(new RegExp("^(?=.*[1-4])")).required(),
+  user_role: Joi.string().regex(new RegExp("^(?=.*[1-5])")).required(),
 });
 
 export const resetPassword = Joi.object({
@@ -86,4 +86,26 @@ export const viewEmployeeDetails = Joi.object({
 
 export const deleteEmployee = Joi.object({
   employee_id: Joi.number().required()
+})
+
+export const editProfile = Joi.object({
+  name: Joi.string().optional(),
+  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).optional(),
+  password: Joi.string().min(8).optional()
+    .max(15)
+    .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // .required()
+    .messages({
+      "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+      "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+      "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+      "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+      "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+      "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
+  country_code: Joi.string().optional(),
+  phone_number: Joi.string().optional(),
+  industry_type: Joi.number().optional(),
+  address: Joi.string().optional(),
+  thought_of_the_day: Joi.string().optional()
 })
