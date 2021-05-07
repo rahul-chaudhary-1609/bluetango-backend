@@ -170,6 +170,7 @@ class AuthService {
                 return yield admin_1.adminModel.update(update, qry);
             }
             else if (user.user_role == constants.USER_ROLE.employee) {
+                update.first_time_login = 0;
                 update.first_time_reset_password = 0;
                 return yield employee_1.employeeModel.update(update, qry);
             }
@@ -248,7 +249,7 @@ class AuthService {
    */
     updateProfile(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            params.first_time_login = 0;
+            //params.first_time_login = 0;
             return yield employee_1.employeeModel.update(params, {
                 where: { id: user.uid }
             });
