@@ -20,7 +20,6 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
     },
     description: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
     },
     complete_measure: {
         type: sequelize_1.DataTypes.BIGINT,
@@ -31,10 +30,10 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "1=> approve, 2=> rejected, 3=> requested"
+        comment: "1=> approved, 2=> rejected, 3=> requested"
     }
 }, {
     tableName: "team_goal_assign_completion_by_employee"
 });
-exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
+exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: false });
 //# sourceMappingURL=teamGoalAssignCompletionByEmployee.js.map

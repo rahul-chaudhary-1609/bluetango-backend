@@ -2731,7 +2731,7 @@
               "name": "description",
               "in": "formData",
               "description": "description",
-              "required": true,
+              "required": false,
               "type": "string"
           }
           

@@ -32,4 +32,4 @@ export const contactUsModel: any = sequelize.define("contact_us", {
         tableName: "contact_us"
     }
 );
-contactUsModel.sync({ alter: true });
+contactUsModel.sync({ alter: false });

@@ -236,7 +236,7 @@ exports.addGoal = joi_1.default.object().keys({
 });
 exports.submitGoalAsEmployee = joi_1.default.object({
     complete_measure: joi_1.default.string().required(),
-    description: joi_1.default.string().required(),
+    description: joi_1.default.string().optional(),
     team_goal_assign_id: joi_1.default.string().required(),
     goal_id: joi_1.default.string().required()
 });

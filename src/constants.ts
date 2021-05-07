@@ -122,6 +122,7 @@ export const MESSAGES = {
   no_qualitative_measure: "No qualitative measure found",
   no_achievement_comment: "user have not commented anything on this achievement",
   no_achievement: "no achievement found",
+  team_goal_complete_request_pending:"You already have a pending request for approval",
 }
 
 export const code = {
@@ -169,7 +170,7 @@ export const USER_ROLE = {
 }
 
 export const TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
-  approve: 1,
+  approved: 1,
   rejected: 2,
   requested: 3
 }

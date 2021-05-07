@@ -19,7 +19,6 @@ export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("te
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
     complete_measure: {
         type: DataTypes.BIGINT,
@@ -30,11 +29,11 @@ export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("te
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "1=> approve, 2=> rejected, 3=> requested"
+        comment: "1=> approved, 2=> rejected, 3=> requested"
     }
 },
     {
         tableName: "team_goal_assign_completion_by_employee"
     }
 );
-teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
+teamGoalAssignCompletionByEmployeeModel.sync({ alter: false });
