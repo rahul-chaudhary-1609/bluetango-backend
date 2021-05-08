@@ -69,6 +69,9 @@ employeeRoute.get("/viewGoalAsManager", validators.trimmer, tokenValidator.valid
 /* view goal details for manager */
 employeeRoute.get("/viewGoalDetailsAsManager", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewGoalDetailsAsManager), goalController.viewGoalDetailsAsManager);
 
+/* view goal details for manager */
+employeeRoute.get("/viewGoalAssignCompletionAsManager", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewGoalAssignCompletionAsManager), goalController.viewGoalAssignCompletionAsManager);
+
 /* delete goal for manager */
 employeeRoute.delete("/deleteGoal", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), goalController.deleteGoal);
 

@@ -68,6 +68,20 @@ export class GoalController {
         }
     }
 
+    /**
+* view goal details as manager
+* @param req :[]
+* @param res 
+*/
+    public async viewGoalAssignCompletionAsManager(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.viewGoalAssignCompletionAsManager(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
      /**
     * get goal request as manager
     * @param req :[]

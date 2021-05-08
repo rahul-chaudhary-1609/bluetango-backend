@@ -135,7 +135,7 @@ export const viewGoalAsManager = Joi.object({
 })
 
 export const viewGoalDetailsAsManager = Joi.object({
-  goal_id: Joi.string().required()
+  goal_id: Joi.number().required()
 })
 
 export const viewGoalDetailsAsEmployee = Joi.object({
@@ -296,3 +296,8 @@ export const addQualitativeMeasurement = Joi.object({
   work_product: Joi.string().required(),
   work_product_desc: Joi.string().optional()
 })
+
+export const viewGoalAssignCompletionAsManager = Joi.object({
+  goal_id: Joi.number().required(),
+  team_goal_assign_id: Joi.number().required(),
+});

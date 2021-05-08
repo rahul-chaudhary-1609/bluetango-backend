@@ -272,7 +272,7 @@ class GoalServices {
             teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
-            return yield teamGoal_1.teamGoalModel.findOne({
+            let goalDetailsAsManager = yield teamGoal_1.teamGoalModel.findOne({
                 where: { manager_id: user.uid, id: params.goal_id },
                 include: [
                     {
@@ -293,6 +293,7 @@ class GoalServices {
                 ],
                 order: [["createdAt", "DESC"]]
             });
+            return goalDetailsAsManager;
         });
     }
     /*
@@ -609,7 +610,7 @@ class GoalServices {
         return __awaiter(this, void 0, void 0, function* () {
             teamGoal_1.teamGoalModel.hasOne(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            let GoalDetailsAsEmployee = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+            let goalDetailsAsEmployee = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
                 where: { id: params.goal_id },
                 include: [
                     {
@@ -629,12 +630,26 @@ class GoalServices {
             let teamGoalAssignCompletion = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
                 where: {
                     goal_id: params.goal_id,
-                    team_goal_assign_id: GoalDetailsAsEmployee.team_goal_assign.id,
+                    team_goal_assign_id: goalDetailsAsEmployee.team_goal_assign.id,
                 }
             }));
-            GoalDetailsAsEmployee.team_goal_assign.team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
-            GoalDetailsAsEmployee.team_goal_assign.complete_measure_percent = (parseFloat(GoalDetailsAsEmployee.team_goal_assign.complete_measure) / parseFloat(GoalDetailsAsEmployee.enter_measure)) * 100;
-            return GoalDetailsAsEmployee;
+            goalDetailsAsEmployee.team_goal_assign.team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
+            goalDetailsAsEmployee.team_goal_assign.complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assign.complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;
+            return goalDetailsAsEmployee;
+        });
+    }
+    /*
+    * function to view goal details as employee
+    */
+    viewGoalAssignCompletionAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let teamGoalAssignCompletion = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
+                where: {
+                    goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
+                }
+            }));
+            return teamGoalAssignCompletion;
         });
     }
 }

@@ -103,6 +103,22 @@ class GoalController {
         });
     }
     /**
+* view goal details as manager
+* @param req :[]
+* @param res
+*/
+    viewGoalAssignCompletionAsManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.viewGoalAssignCompletionAsManager(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
    * get goal request as manager
    * @param req :[]
    * @param res

@@ -2583,7 +2583,42 @@
             "name": "goal_id",
             "in": "query",
             "description": "goal_id",
-            "required": false,
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/viewGoalAssignCompletionAsManager": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "view Goal Assign Completion As Manager",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "goal_id",
+            "in": "query",
+            "description": "goal_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "team_goal_assign_id",
+            "in": "query",
+            "description": "team_goal_assign_id",
+            "required": true,
             "type": "number"
           }
         ],
