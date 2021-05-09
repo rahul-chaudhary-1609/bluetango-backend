@@ -652,13 +652,43 @@ class GoalServices {
     */
     viewGoalAssignCompletionAsManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let goalDetailsAsEmployee = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+                where: { id: params.goal_id },
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        where: { id: params.team_goal_assign_id, },
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                required: true,
+                                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                            }
+                        ]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
             let teamGoalAssignCompletion = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
                 where: {
                     goal_id: params.goal_id,
-                    team_goal_assign_id: params.team_goal_assign_id,
+                    team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
                 }
             }));
-            return teamGoalAssignCompletion;
+            goalDetailsAsEmployee.team_goal_assigns[0].team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
+            goalDetailsAsEmployee.team_goal_assigns[0].complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assigns[0].complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;
+            return goalDetailsAsEmployee;
+            // let teamGoalAssignCompletion = await helperFunction.convertPromiseToObject(
+            //     await teamGoalAssignCompletionByEmployeeModel.findAll({
+            //         where: {
+            //             goal_id: params.goal_id,
+            //             team_goal_assign_id: params.team_goal_assign_id,
+            //         }
+            //     })
+            // )
+            // return teamGoalAssignCompletion;
         });
     }
 }
