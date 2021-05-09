@@ -397,9 +397,10 @@ export class GoalServices {
                 type: constants.NOTIFICATION_TYPE.goal_complete_request,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                    title: 'Goal Submit',
+                    title: 'Goal Submitted',
                     message: `Goal submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
                     //title: (params[i].title?params[i].title: ''),                            
                 },
@@ -417,13 +418,14 @@ export class GoalServices {
 
             // send push notification
             let notificationData = <any> {
-                title: 'Goal Submit',
+                title: 'Goal Submitted',
                 body: `Goal submitted by ${employeeData.name}`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                    title: 'Goal Submit',
+                    title: 'Goal Submitted',
                     message: `Goal submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
                     //title: (params[i].title?params[i].title: ''),                            
                 },
@@ -522,7 +524,7 @@ export class GoalServices {
                     type: constants.NOTIFICATION_TYPE.goal_accept,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_accept,
-                        title: 'Accept your goal',
+                        title: 'Goal Accepted',
                         message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
                         senderEmplyeeData: managerData,
@@ -533,11 +535,11 @@ export class GoalServices {
     
                 // send push notification
                 let notificationData = <any>{
-                    title: 'Accept your goal',
+                    title: 'Goal Accepted',
                     body: `Your manager has accepted your goal`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_accept,
-                        title: 'Accept your goal',
+                        title: 'Goal Accepted',
                         message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
                         senderEmplyeeData: managerData,
@@ -565,7 +567,7 @@ export class GoalServices {
                     type: constants.NOTIFICATION_TYPE.goal_reject,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_reject,
-                        title: 'Reject your goal',
+                        title: 'Goal Rejected',
                         message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
                         senderEmplyeeData: managerData,
@@ -576,11 +578,11 @@ export class GoalServices {
     
                 // send push notification
                 let notificationData = <any>{
-                    title: 'Reject your goal',
+                    title: 'Goal Rejected',
                     body: `Your manager rejected your goal`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_reject,
-                        title: 'Reject your goal',
+                        title: 'Goal Rejected',
                         message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
                         senderEmplyeeData: managerData,
@@ -646,7 +648,7 @@ export class GoalServices {
     */
     public async viewGoalDetailsAsEmployee(params: any, user: any) {
 
-        teamGoalModel.hasOne(teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalModel.hasMany(teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
         teamGoalAssignModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
         
         let goalDetailsAsEmployee= await helperFunction.convertPromiseToObject( await teamGoalModel.findOne({
@@ -673,14 +675,14 @@ export class GoalServices {
             await teamGoalAssignCompletionByEmployeeModel.findAll({
                 where: {
                     goal_id: params.goal_id,
-                    team_goal_assign_id: goalDetailsAsEmployee.team_goal_assign.id,
+                    team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
                 }
             })
         )
 
-        goalDetailsAsEmployee.team_goal_assign.team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
+        goalDetailsAsEmployee.team_goal_assigns[0].team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
 
-        goalDetailsAsEmployee.team_goal_assign.complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assign.complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;
+        goalDetailsAsEmployee.team_goal_assigns[0].complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assigns[0].complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;
             
         return goalDetailsAsEmployee;
     
