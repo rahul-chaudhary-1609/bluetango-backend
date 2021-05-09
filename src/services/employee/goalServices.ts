@@ -382,6 +382,7 @@ export class GoalServices {
                 goal_id: params.goal_id,
                 description: params.description,
                 complete_measure: params.complete_measure,
+                total_complete_measure: compeleteData.complete_measure,
                 status:constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
             };
             let teamGoalAssignRequestRes = await helperFunction.convertPromiseToObject(  
@@ -555,9 +556,17 @@ export class GoalServices {
                     status: 1, // 
                     complete_measure: parseInt(getEmployeeId.complete_measure) + parseInt(getGoalCompleteData.complete_measure)
                 }
-                return teamGoalAssignModel.update(teamGoalAssignObj, {
+                await  teamGoalAssignModel.update(teamGoalAssignObj, {
                     where: { id: params.team_goal_assign_id }
                 })
+
+                await teamGoalAssignCompletionByEmployeeModel.update({
+                    total_complete_measure: parseInt(getEmployeeId.complete_measure) + parseInt(getGoalCompleteData.complete_measure),
+                }, {
+                    where: { id: params.team_goal_assign_completion_by_employee_id }
+                });
+
+                return true;
             } else {
                 // add goal reject notification
                 let notificationObj = <any>{

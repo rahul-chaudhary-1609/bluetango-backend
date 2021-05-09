@@ -26,6 +26,11 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
         allowNull: false,
         defaultValue: 0
     },
+    total_complete_measure: {
+        type: sequelize_1.DataTypes.BIGINT,
+        allowNull: false,
+        defaultValue: 0
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -35,5 +40,5 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
 }, {
     tableName: "team_goal_assign_completion_by_employee"
 });
-exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: false });
+exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
 //# sourceMappingURL=teamGoalAssignCompletionByEmployee.js.map

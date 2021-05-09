@@ -384,6 +384,7 @@ class GoalServices {
                     goal_id: params.goal_id,
                     description: params.description,
                     complete_measure: params.complete_measure,
+                    total_complete_measure: compeleteData.complete_measure,
                     status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
                 };
                 let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
@@ -397,7 +398,7 @@ class GoalServices {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                        title: 'Goal Submit',
+                        title: 'Goal Submitted',
                         message: `Goal submitted by ${employeeData.name}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
@@ -413,11 +414,11 @@ class GoalServices {
                 // })
                 // send push notification
                 let notificationData = {
-                    title: 'Goal Submit',
+                    title: 'Goal Submitted',
                     body: `Goal submitted by ${employeeData.name}`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                        title: 'Goal Submit',
+                        title: 'Goal Submitted',
                         message: `Goal submitted by ${employeeData.name}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
@@ -504,7 +505,7 @@ class GoalServices {
                         type: constants.NOTIFICATION_TYPE.goal_accept,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_accept,
-                            title: 'Accept your goal',
+                            title: 'Goal Accepted',
                             message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
                             senderEmplyeeData: managerData,
@@ -513,11 +514,11 @@ class GoalServices {
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
                     let notificationData = {
-                        title: 'Accept your goal',
+                        title: 'Goal Accepted',
                         body: `Your manager has accepted your goal`,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_accept,
-                            title: 'Accept your goal',
+                            title: 'Goal Accepted',
                             message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
                             senderEmplyeeData: managerData,
@@ -531,9 +532,15 @@ class GoalServices {
                         status: 1,
                         complete_measure: parseInt(getEmployeeId.complete_measure) + parseInt(getGoalCompleteData.complete_measure)
                     };
-                    return teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
+                    yield teamGoalAssign_1.teamGoalAssignModel.update(teamGoalAssignObj, {
                         where: { id: params.team_goal_assign_id }
                     });
+                    yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update({
+                        total_complete_measure: parseInt(getEmployeeId.complete_measure) + parseInt(getGoalCompleteData.complete_measure),
+                    }, {
+                        where: { id: params.team_goal_assign_completion_by_employee_id }
+                    });
+                    return true;
                 }
                 else {
                     // add goal reject notification
@@ -544,7 +551,7 @@ class GoalServices {
                         type: constants.NOTIFICATION_TYPE.goal_reject,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_reject,
-                            title: 'Reject your goal',
+                            title: 'Goal Rejected',
                             message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
                             senderEmplyeeData: managerData,
@@ -553,11 +560,11 @@ class GoalServices {
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
                     let notificationData = {
-                        title: 'Reject your goal',
+                        title: 'Goal Rejected',
                         body: `Your manager rejected your goal`,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_reject,
-                            title: 'Reject your goal',
+                            title: 'Goal Rejected',
                             message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
                             senderEmplyeeData: managerData,
