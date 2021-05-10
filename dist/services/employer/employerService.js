@@ -133,6 +133,18 @@ class EmployerService {
             }));
         });
     }
+    /*
+   * function to view my payments
+   */
+    myPayments(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findAndCountAll({
+                where: {
+                    employer_id: parseInt(user.uid),
+                }
+            }));
+        });
+    }
 }
 exports.EmployerService = EmployerService;
 //# sourceMappingURL=employerService.js.map

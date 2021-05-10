@@ -125,6 +125,20 @@ export class EmployerService {
         )
     }
 
+    /*
+   * function to view my payments 
+   */
+    public async myPayments(user: any) {
+
+        return await helperFunction.convertPromiseToObject(
+            await paymentManagementModel.findAndCountAll({
+                where: {
+                    employer_id: parseInt(user.uid),
+                }
+            })
+        )
+    }
+
 
    
 

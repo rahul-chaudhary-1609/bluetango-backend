@@ -61,5 +61,7 @@ employerRoute.get("/getProfile", tokenValidator.validateEmployerToken, employerC
 employerRoute.put("/editProfile", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.editProfile), employerController.editProfile);
 /* view Current Plan Details */
 employerRoute.get("/mySubscription", validators.trimmer, tokenValidator.validateEmployerToken, employerController.mySubscription);
+/* view all payments */
+employerRoute.get("/myPayments", validators.trimmer, tokenValidator.validateEmployerToken, employerController.myPayments);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

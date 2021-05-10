@@ -4799,6 +4799,27 @@
                 "responses": {}
             }
         },
+        "/employer/myPayments": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to view all payments of a employer ",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/login": {
             "post": {
                 "tags": [

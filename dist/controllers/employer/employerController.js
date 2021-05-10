@@ -116,6 +116,22 @@ class EmployerController {
             }
         });
     }
+    /**
+    * view all payments
+    * @param req
+    * @param res
+    */
+    myPayments(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.myPayments(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployerController = EmployerController;
 //# sourceMappingURL=employerController.js.map

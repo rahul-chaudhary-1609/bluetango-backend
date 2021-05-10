@@ -80,6 +80,19 @@ export class EmployerController {
         }
     }
 
+    /**
+    * view all payments
+    * @param req 
+    * @param res 
+    */
+    public async myPayments(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.myPayments(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
     
 }
