@@ -265,7 +265,8 @@ export const submitGoalAsEmployee = Joi.object({
 export const goalAcceptRejectAsManager = Joi.object({
   goal_id:  Joi.string().required(),
   team_goal_assign_id:  Joi.string().required(),
-  team_goal_assign_completion_by_employee_id:  Joi.string().required(),
+  team_goal_assign_completion_by_employee_id: Joi.string().required(),
+  manager_comment: Joi.string().optional(),
   status:  Joi.string().regex(new RegExp("^(?=.*[1-2])")).required(),
 });
 

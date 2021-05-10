@@ -473,7 +473,8 @@ class GoalServices {
     goalAcceptRejectAsManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let teamGoalAssignCompletionByEmployeeObj = {
-                status: parseInt(params.status)
+                status: parseInt(params.status),
+                manager_comment: params.manager_comment || null,
             };
             let teamGoalAssignCompletionByEmployeeCheck = yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findOne({
                 where: {
@@ -509,6 +510,7 @@ class GoalServices {
                             title: 'Goal Accepted',
                             message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
+                            team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
                         },
                     };
@@ -522,6 +524,7 @@ class GoalServices {
                             title: 'Goal Accepted',
                             message: `Your manager has accepted your goal`,
                             goal_id: params.goal_id,
+                            team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
                         },
                     };
@@ -555,6 +558,7 @@ class GoalServices {
                             title: 'Goal Rejected',
                             message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
+                            team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
                         },
                     };
@@ -568,6 +572,7 @@ class GoalServices {
                             title: 'Goal Rejected',
                             message: `Your manager rejected your goal`,
                             goal_id: params.goal_id,
+                            team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
                         },
                     };
@@ -677,7 +682,8 @@ class GoalServices {
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
-                }
+                },
+                order: [["createdAt", "DESC"]],
             }));
             goalDetailsAsEmployee.team_goal_assigns[0].team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
             goalDetailsAsEmployee.team_goal_assigns[0].complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assigns[0].complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;

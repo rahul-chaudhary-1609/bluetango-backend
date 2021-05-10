@@ -2713,6 +2713,13 @@
             "type": "number"
           },
           {
+            "name": "manager_comment",
+            "in": "formData",
+            "description": "manager comment",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "status",
             "in": "formData",
             "description": "status, approve=>1, rejected=> 2",

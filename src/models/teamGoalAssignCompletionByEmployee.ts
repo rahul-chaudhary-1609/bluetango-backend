@@ -20,6 +20,9 @@ export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("te
     description: {
         type: DataTypes.STRING,
     },
+    manager_comment: {
+        type: DataTypes.STRING,
+    },
     complete_measure: {
         type: DataTypes.BIGINT,
         allowNull: false,

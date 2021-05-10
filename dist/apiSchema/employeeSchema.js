@@ -244,6 +244,7 @@ exports.goalAcceptRejectAsManager = joi_1.default.object({
     goal_id: joi_1.default.string().required(),
     team_goal_assign_id: joi_1.default.string().required(),
     team_goal_assign_completion_by_employee_id: joi_1.default.string().required(),
+    manager_comment: joi_1.default.string().optional(),
     status: joi_1.default.string().regex(new RegExp("^(?=.*[1-2])")).required(),
 });
 exports.addQualitativeMeasurement = joi_1.default.object({

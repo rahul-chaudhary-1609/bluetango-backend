@@ -21,6 +21,9 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
     description: {
         type: sequelize_1.DataTypes.STRING,
     },
+    manager_comment: {
+        type: sequelize_1.DataTypes.STRING,
+    },
     complete_measure: {
         type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,

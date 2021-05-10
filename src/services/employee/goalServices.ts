@@ -483,7 +483,8 @@ export class GoalServices {
     public async goalAcceptRejectAsManager(params: any, user: any) {
 
         let teamGoalAssignCompletionByEmployeeObj = <any>{
-            status: parseInt(params.status)
+            status: parseInt(params.status),
+            manager_comment:params.manager_comment || null,
         };
         let teamGoalAssignCompletionByEmployeeCheck = await teamGoalAssignCompletionByEmployeeModel.findOne({
             where: {
@@ -529,6 +530,7 @@ export class GoalServices {
                         title: 'Goal Accepted',
                         message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
+                        team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
                         //title: (params[i].title?params[i].title: ''),                            
                     },
@@ -544,6 +546,7 @@ export class GoalServices {
                         title: 'Goal Accepted',
                         message: `Your manager has accepted your goal`,
                         goal_id: params.goal_id,
+                        team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
                         //title: (params[i].title?params[i].title: ''),                            
                     },
@@ -580,6 +583,7 @@ export class GoalServices {
                         title: 'Goal Rejected',
                         message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
+                        team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
                         //title: (params[i].title?params[i].title: ''),                            
                     },
@@ -595,6 +599,7 @@ export class GoalServices {
                         title: 'Goal Rejected',
                         message: `Your manager rejected your goal`,
                         goal_id: params.goal_id,
+                        team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
                         //title: (params[i].title?params[i].title: ''),                            
                     },
@@ -733,7 +738,8 @@ export class GoalServices {
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
-                }
+                },
+                order: [["createdAt", "DESC"]],
             })
         )
 
