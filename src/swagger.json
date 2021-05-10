@@ -4670,6 +4670,62 @@
         "responses": {}
       }
     },
+    "/employer/buyPlan": {
+      "post": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to buy plan",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "plan_id",
+            "in": "formData",
+            "description": "plan id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "purchase_date",
+            "in": "formData",
+            "description": "purchase date",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "expiry_date",
+            "in": "formData",
+            "description": "expiry date",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "in": "formData",
+            "description": "amount",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "transaction_id",
+            "in": "formData",
+            "description": "transaction id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/viewEmployeeDetails/{employee_id}": {
       "get": {
         "tags": [
@@ -4721,6 +4777,27 @@
             "description": "employee id",
             "required": true,
             "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/mySubscription": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to view Current Plan Details ",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}

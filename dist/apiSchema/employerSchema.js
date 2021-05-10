@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -148,5 +148,12 @@ exports.editProfile = joi_1.default.object({
     industry_type: joi_1.default.number().optional(),
     address: joi_1.default.string().optional(),
     thought_of_the_day: joi_1.default.string().optional()
+});
+exports.buyPlan = joi_1.default.object({
+    plan_id: joi_1.default.number().required(),
+    purchase_date: joi_1.default.string().required(),
+    expiry_date: joi_1.default.string().required(),
+    amount: joi_1.default.number().required(),
+    transaction_id: joi_1.default.string().required(),
 });
 //# sourceMappingURL=employerSchema.js.map

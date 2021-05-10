@@ -1,5 +1,6 @@
 import _ from "lodash";
 import * as helperFunction from "../../utils/helperFunction";
+import * as constants from "../../constants";
 import { coachManagementModel } from "../../models/coachManagement";
 import { advisorManagementModel } from "../../models/advisorManagement";
 import { articleManagementModel } from "../../models/articleManagement";
@@ -17,7 +18,10 @@ export class HomepageServices {
     public async getCoaches() {
 
         let coachList = await coachManagementModel.findAndCountAll({
-            attributes: ['id', 'name', 'image', 'fileName', 'description']
+            attributes: ['id', 'name', 'image', 'fileName', 'description'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(coachList);
@@ -29,7 +33,10 @@ export class HomepageServices {
     public async getAdvisors() {
 
         let advisorList = await advisorManagementModel.findAndCountAll({
-            attributes: ['id', 'title','image', 'description']
+            attributes: ['id', 'title', 'image', 'description'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(advisorList);
@@ -42,7 +49,10 @@ export class HomepageServices {
     public async getArticles() {
 
         let articleList = await articleManagementModel.findAndCountAll({
-            attributes: ['id', 'title', 'image', 'description']
+            attributes: ['id', 'title', 'image', 'description'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(articleList);
@@ -54,7 +64,10 @@ export class HomepageServices {
     public async getSubscriptions() {
 
         let subscriptionList = await subscriptionManagementModel.findAndCountAll({
-            attributes: ['id', 'plan_name', 'description', 'charge','duration']
+            attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(subscriptionList);

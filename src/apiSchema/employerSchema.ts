@@ -136,3 +136,11 @@ export const editProfile = Joi.object({
   address: Joi.string().optional(),
   thought_of_the_day: Joi.string().optional()
 })
+
+export const buyPlan = Joi.object({
+  plan_id: Joi.number().required(),
+  purchase_date: Joi.string().required(),
+  expiry_date: Joi.string().required(),
+  amount: Joi.number().required(),
+  transaction_id: Joi.string().required(),
+})

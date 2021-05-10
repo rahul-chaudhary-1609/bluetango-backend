@@ -43,5 +43,5 @@ exports.teamGoalAssignCompletionByEmployeeModel = connection_1.sequelize.define(
 }, {
     tableName: "team_goal_assign_completion_by_employee"
 });
-exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
+exports.teamGoalAssignCompletionByEmployeeModel.sync({ alter: false });
 //# sourceMappingURL=teamGoalAssignCompletionByEmployee.js.map

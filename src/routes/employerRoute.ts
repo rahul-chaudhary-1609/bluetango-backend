@@ -37,8 +37,11 @@ employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody
 employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
 
 
-/* clear employer device token */
+/* get Subscription Plan List */
 employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerToken, employerController.getSubscriptionPlanList);
+
+/* buy Plan*/
+employerRoute.post("/buyPlan", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.buyPlan), employerController.buyPlan);
 
 /* view Employee Details */
 employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken,joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails),  managementController.viewEmployeeDetails);
@@ -48,10 +51,13 @@ employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEm
 employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
 
 
-/* forget pass route for employee */
+/* route to get profile */
 employerRoute.get("/getProfile", tokenValidator.validateEmployerToken, employerController.getProfile);
 
-/* forget pass route for employee */
+/* edit profile */
 employerRoute.put("/editProfile", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.editProfile), employerController.editProfile);
+
+/* view Current Plan Details */
+employerRoute.get("/mySubscription", validators.trimmer, tokenValidator.validateEmployerToken, employerController.mySubscription);
 
 export = employerRoute;

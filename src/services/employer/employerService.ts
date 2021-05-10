@@ -19,10 +19,38 @@ export class EmployerService {
     */
     public async getSubscriptionPlanList(user:any) {
         let subscriptionList = await subscriptionManagementModel.findAndCountAll({
-            attributes: ['id', 'plan_name', 'description', 'charge', 'duration']
+            attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
+            where: {
+                status: constants.STATUS.active,
+            }
         });
 
         return await helperFunction.convertPromiseToObject(subscriptionList);
+    }
+
+    /**
+    * function to buy Subscription Plan
+    @param {} params pass all parameters from request
+    */
+    public async buyPlan(params: any, user: any) {
+        let subscriptionPlan = await helperFunction.convertPromiseToObject(
+            await subscriptionManagementModel.findByPk(parseInt(params.plan_id))
+        );
+
+        let paymentObj = <any>{
+            admin_id:constants.USER_ROLE.super_admin,
+            employer_id: parseInt(user.uid),
+            plan_id: parseInt(params.plan_id),
+            purchase_date: params.purchase_date,
+            expiry_date: params.expiry_date,
+            amount: parseFloat(params.amount),
+            transaction_id: params.transaction_id,
+            details:subscriptionPlan,
+        }
+
+        return await helperFunction.convertPromiseToObject(
+            await paymentManagementModel.create(paymentObj)
+        )
     }
 
     /*
@@ -77,13 +105,22 @@ export class EmployerService {
     /*
     * function to view current plan details 
     */
-    public async viewCurrentPlanDetails(params: any, user: any) {
+    public async mySubscription( user: any) {
+
+        paymentManagementModel.hasOne(subscriptionManagementModel,{foreignKey:"id",sourceKey:"plan_id",targetKey:"id"})
+
         return await helperFunction.convertPromiseToObject(
             await paymentManagementModel.findOne({
                 where: {
                     employer_id: parseInt(user.uid),
                     status:constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
-                }
+                },
+                include: [
+                    {
+                        model: subscriptionManagementModel,
+                        required:true                        
+                    }
+                ]
             })
         )
     }

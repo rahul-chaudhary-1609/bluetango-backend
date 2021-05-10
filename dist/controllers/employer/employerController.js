@@ -53,6 +53,22 @@ class EmployerController {
         });
     }
     /**
+  * get buy Subscription Plan
+  * @param req
+  * @param res
+  */
+    buyPlan(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.buyPlan(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * get employer profile
     * @param req
     * @param res
@@ -77,6 +93,22 @@ class EmployerController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employerService.editProfile(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+    * view Current Plan Details
+    * @param req
+    * @param res
+    */
+    mySubscription(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.mySubscription(req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

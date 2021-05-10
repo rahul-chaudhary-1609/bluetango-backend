@@ -30,7 +30,7 @@ export const paymentManagementModel: any = sequelize.define("payment_management"
         allowNull: false,
     },
     amount: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
     transaction_id: {

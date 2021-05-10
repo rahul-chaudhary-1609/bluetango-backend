@@ -44,4 +44,4 @@ export const teamGoalAssignCompletionByEmployeeModel: any = sequelize.define("te
         tableName: "team_goal_assign_completion_by_employee"
     }
 );
-teamGoalAssignCompletionByEmployeeModel.sync({ alter: true });
+teamGoalAssignCompletionByEmployeeModel.sync({ alter: false });

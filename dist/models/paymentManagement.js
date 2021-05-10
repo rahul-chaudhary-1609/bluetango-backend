@@ -31,7 +31,7 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
         allowNull: false,
     },
     amount: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,
     },
     transaction_id: {
@@ -50,5 +50,5 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
 }, {
     tableName: "payment_management"
 });
-exports.paymentManagementModel.sync({ alter: false });
+exports.paymentManagementModel.sync({ alter: true });
 //# sourceMappingURL=paymentManagement.js.map

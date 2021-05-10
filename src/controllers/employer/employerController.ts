@@ -25,6 +25,20 @@ export class EmployerController {
     }
 
     /**
+  * get buy Subscription Plan 
+  * @param req 
+  * @param res 
+  */
+    public async buyPlan(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.buyPlan(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * get employer profile
     * @param req 
     * @param res 
@@ -46,6 +60,20 @@ export class EmployerController {
     public async editProfile(req: any, res: any, next: any) {
         try {
             const responseFromService = await employerService.editProfile(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+    * view Current Plan Details
+    * @param req 
+    * @param res 
+    */
+    public async mySubscription(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.mySubscription(req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

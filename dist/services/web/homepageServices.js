@@ -30,6 +30,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomepageServices = void 0;
 const helperFunction = __importStar(require("../../utils/helperFunction"));
+const constants = __importStar(require("../../constants"));
 const coachManagement_1 = require("../../models/coachManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
 const articleManagement_1 = require("../../models/articleManagement");
@@ -43,7 +44,10 @@ class HomepageServices {
     getCoaches() {
         return __awaiter(this, void 0, void 0, function* () {
             let coachList = yield coachManagement_1.coachManagementModel.findAndCountAll({
-                attributes: ['id', 'name', 'image', 'fileName', 'description']
+                attributes: ['id', 'name', 'image', 'fileName', 'description'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(coachList);
         });
@@ -54,7 +58,10 @@ class HomepageServices {
     getAdvisors() {
         return __awaiter(this, void 0, void 0, function* () {
             let advisorList = yield advisorManagement_1.advisorManagementModel.findAndCountAll({
-                attributes: ['id', 'title', 'image', 'description']
+                attributes: ['id', 'title', 'image', 'description'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(advisorList);
         });
@@ -65,7 +72,10 @@ class HomepageServices {
     getArticles() {
         return __awaiter(this, void 0, void 0, function* () {
             let articleList = yield articleManagement_1.articleManagementModel.findAndCountAll({
-                attributes: ['id', 'title', 'image', 'description']
+                attributes: ['id', 'title', 'image', 'description'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(articleList);
         });
@@ -76,7 +86,10 @@ class HomepageServices {
     getSubscriptions() {
         return __awaiter(this, void 0, void 0, function* () {
             let subscriptionList = yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
-                attributes: ['id', 'plan_name', 'description', 'charge', 'duration']
+                attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
         });

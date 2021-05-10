@@ -46,9 +46,32 @@ class EmployerService {
     getSubscriptionPlanList(user) {
         return __awaiter(this, void 0, void 0, function* () {
             let subscriptionList = yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
-                attributes: ['id', 'plan_name', 'description', 'charge', 'duration']
+                attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
+                where: {
+                    status: constants.STATUS.active,
+                }
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
+        });
+    }
+    /**
+    * function to buy Subscription Plan
+    @param {} params pass all parameters from request
+    */
+    buyPlan(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let subscriptionPlan = yield helperFunction.convertPromiseToObject(yield subscriptionManagement_1.subscriptionManagementModel.findByPk(parseInt(params.plan_id)));
+            let paymentObj = {
+                admin_id: constants.USER_ROLE.super_admin,
+                employer_id: parseInt(user.uid),
+                plan_id: parseInt(params.plan_id),
+                purchase_date: params.purchase_date,
+                expiry_date: params.expiry_date,
+                amount: parseFloat(params.amount),
+                transaction_id: params.transaction_id,
+                details: subscriptionPlan,
+            };
+            return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.create(paymentObj));
         });
     }
     /*
@@ -93,13 +116,20 @@ class EmployerService {
     /*
     * function to view current plan details
     */
-    viewCurrentPlanDetails(params, user) {
+    mySubscription(user) {
         return __awaiter(this, void 0, void 0, function* () {
+            paymentManagement_1.paymentManagementModel.hasOne(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "id", sourceKey: "plan_id", targetKey: "id" });
             return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
                 where: {
                     employer_id: parseInt(user.uid),
                     status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
-                }
+                },
+                include: [
+                    {
+                        model: subscriptionManagement_1.subscriptionManagementModel,
+                        required: true
+                    }
+                ]
             }));
         });
     }
