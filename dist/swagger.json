@@ -4456,6 +4456,41 @@
                 "responses": {}
             }
         },
+        "/employer/changePassword": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer change password",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "old_password",
+                        "in": "formData",
+                        "description": "old_password",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "formData",
+                        "description": "new_password",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/updateEmployerDeviceToken": {
             "put": {
                 "tags": [

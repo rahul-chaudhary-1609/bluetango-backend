@@ -229,5 +229,28 @@ export class AuthService {
 //     }
 
 
+    /*
+    * function to change password 
+    */
+    public async changePassword(params: any, user: any) {
+        let getEmployerData = await helperFunction.convertPromiseToObject(
+            await employersModel.findOne({
+                where: { id: user.uid }
+            })
+        );
+        let comparePassword = await appUtils.comparePassword(params.old_password, getEmployerData.password);
+        if (comparePassword) {
+            let update = {
+                'password': await appUtils.bcryptPassword(params.new_password)
+            };
+
+            return await employersModel.update(update, {
+                where: { id: user.uid }
+            });
+        } else {
+            throw new Error(constants.MESSAGES.invalid_old_password);
+        }
+
+    }
 
 }

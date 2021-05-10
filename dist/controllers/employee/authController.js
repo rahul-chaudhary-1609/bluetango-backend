@@ -156,7 +156,7 @@ class AuthController {
         });
     }
     /**
-   * update profile
+   * change password
    * @param req :[]
    * @param res
    */

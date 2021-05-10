@@ -82,4 +82,18 @@ export class AuthController {
             next(e)
         }
     }
+
+    /**
+   * change password
+   * @param req :[]
+   * @param res 
+   */
+    public async changePassword(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.changePassword(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 }

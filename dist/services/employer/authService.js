@@ -224,6 +224,51 @@ class AuthService {
             });
         });
     }
+    //     /*
+    //     e005JBg1RamqXfRccvlXoH:APA91bH_05rZB3PS8JRhzqJTf4ocQ6CW0V3UBw_QUzYbOqiOvHWOud6YfALazkXo50gM6zX2xKT1vsw83MO9TvOe8oD8oHjD_p_mqwYaGgwXpYqi-Aeuw9TsF1Ig4BUTpTzQhRhrFYHN
+    // * function to schedule job
+    // */
+    //     public async scheduleJob(user: any) {
+    //         let dev ="e005JBg1RamqXfRccvlXoH:APA91bH_05rZB3PS8JRhzqJTf4ocQ6CW0V3UBw_QUzYbOqiOvHWOud6YfALazkXo50gM6zX2xKT1vsw83MO9TvOe8oD8oHjD_p_mqwYaGgwXpYqi-Aeuw9TsF1Ig4BUTpTzQhRhrFYHN"
+    //         const startTime = new Date(Date.now() + 5000);
+    //         const endTime = new Date(startTime.getTime() + 25000);
+    //         const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/5 * * * * *' }, async function () {
+    //             console.log('Time for tea!');
+    //             let notificationData = <any>{
+    //                 title: 'Reminder Free Trial Expiration',
+    //                 body: `Your free trial of 14 days is going to expire in`,
+    //                 data: {
+    //                     type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+    //                     title: 'Reminder Free Trial Expiration',
+    //                     message: `Your free trial of 14 days is going to expire in `,
+    //                 },
+    //             }
+    //             await helperFunction.sendFcmNotification([dev], notificationData);
+    //         });
+    //         return true;
+    //     }
+    /*
+    * function to change password
+    */
+    changePassword(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getEmployerData = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                where: { id: user.uid }
+            }));
+            let comparePassword = yield appUtils.comparePassword(params.old_password, getEmployerData.password);
+            if (comparePassword) {
+                let update = {
+                    'password': yield appUtils.bcryptPassword(params.new_password)
+                };
+                return yield models_1.employersModel.update(update, {
+                    where: { id: user.uid }
+                });
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_old_password);
+            }
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

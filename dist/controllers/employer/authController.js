@@ -117,6 +117,22 @@ class AuthController {
             }
         });
     }
+    /**
+   * change password
+   * @param req :[]
+   * @param res
+   */
+    changePassword(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.changePassword(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map
