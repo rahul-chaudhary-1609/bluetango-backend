@@ -11,11 +11,9 @@ export const contactUsModel: any = sequelize.define("contact_us", {
     },
     employer_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
     },
     employee_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
     },
     message: {
         type: DataTypes.TEXT,

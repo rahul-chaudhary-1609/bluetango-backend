@@ -93,6 +93,21 @@ export class EmployerController {
             next(e)
         }
     }
+
+    /**
+  * to contact admin
+  * @param req :[]
+  * @param res 
+  */
+    public async contactUs(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.contactUs(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
     
     
 }

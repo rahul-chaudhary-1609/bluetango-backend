@@ -448,7 +448,7 @@ export class EmployeeServices {
         }));
 
         let contactObj = <any>{
-            employer_id: employee.current_employer_id,
+            //employer_id: employee.current_employer_id,
             employee_id: user.uid,
             message: params.message,
             status:constants.STATUS.active,

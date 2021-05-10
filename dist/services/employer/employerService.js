@@ -35,6 +35,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
+const contactUs_1 = require("../../models/contactUs");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployerService {
@@ -143,6 +144,18 @@ class EmployerService {
                     employer_id: parseInt(user.uid),
                 }
             }));
+        });
+    }
+    /*
+    * function to contact admin
+    */
+    contactUs(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let contactObj = {
+                employer_id: parseInt(user.uid),
+                message: params.message,
+            };
+            return yield contactUs_1.contactUsModel.create(contactObj);
         });
     }
 }

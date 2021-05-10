@@ -12,11 +12,9 @@ exports.contactUsModel = connection_1.sequelize.define("contact_us", {
     },
     employer_id: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
     },
     employee_id: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
     },
     message: {
         type: sequelize_1.DataTypes.TEXT,
@@ -31,5 +29,5 @@ exports.contactUsModel = connection_1.sequelize.define("contact_us", {
 }, {
     tableName: "contact_us"
 });
-exports.contactUsModel.sync({ alter: false });
+exports.contactUsModel.sync({ alter: true });
 //# sourceMappingURL=contactUs.js.map

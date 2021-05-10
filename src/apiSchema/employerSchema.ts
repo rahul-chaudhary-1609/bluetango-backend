@@ -144,3 +144,7 @@ export const buyPlan = Joi.object({
   amount: Joi.number().required(),
   transaction_id: Joi.string().required(),
 })
+
+export const contactUs = Joi.object({
+  message: Joi.string().required(),
+})

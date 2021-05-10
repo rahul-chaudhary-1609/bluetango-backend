@@ -7,6 +7,7 @@ import { employersModel } from "../../models";
 import { notificationModel } from "../../models/notification";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
+import { contactUsModel } from "../../models/contactUs";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -139,6 +140,18 @@ export class EmployerService {
         )
     }
 
+    /*
+    * function to contact admin
+    */
+    public async contactUs(params: any, user: any) {
+
+        let contactObj = <any>{
+            employer_id: parseInt(user.uid),
+            message: params.message,
+        }
+
+        return await contactUsModel.create(contactObj);
+    }
 
    
 

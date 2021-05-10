@@ -132,6 +132,22 @@ class EmployerController {
             }
         });
     }
+    /**
+  * to contact admin
+  * @param req :[]
+  * @param res
+  */
+    contactUs(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.contactUs(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployerController = EmployerController;
 //# sourceMappingURL=employerController.js.map

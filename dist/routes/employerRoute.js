@@ -63,5 +63,7 @@ employerRoute.put("/editProfile", validators.trimmer, tokenValidator.validateEmp
 employerRoute.get("/mySubscription", validators.trimmer, tokenValidator.validateEmployerToken, employerController.mySubscription);
 /* view all payments */
 employerRoute.get("/myPayments", validators.trimmer, tokenValidator.validateEmployerToken, employerController.myPayments);
+/* contact us for employee */
+employerRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.contactUs), employerController.contactUs);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

@@ -63,4 +63,8 @@ employerRoute.get("/mySubscription", validators.trimmer, tokenValidator.validate
 /* view all payments */
 employerRoute.get("/myPayments", validators.trimmer, tokenValidator.validateEmployerToken, employerController.myPayments);
 
+/* contact us for employee */
+employerRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.contactUs), employerController.contactUs);
+
+
 export = employerRoute;
