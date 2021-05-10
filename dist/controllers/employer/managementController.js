@@ -81,7 +81,7 @@ class EmployeeController {
     viewEmployeeDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeService.viewEmployeeDetails(req.params);
+                const responseFromService = yield employeeService.viewEmployeeDetails(req.params, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
@@ -97,7 +97,7 @@ class EmployeeController {
     deleteEmployee(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeService.deleteEmployee(req.params);
+                const responseFromService = yield employeeService.deleteEmployee(req.params, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
             }
             catch (error) {

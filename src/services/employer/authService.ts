@@ -5,6 +5,7 @@ import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employersModel } from  "../../models";
 import { notificationModel } from "../../models/notification";
+import { paymentManagementModel } from "../../models/paymentManagement";
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -33,26 +34,69 @@ export class AuthService {
        }else if (!_.isEmpty(existingUser)) {
         existingUser = await helperFunction.convertPromiseToObject(existingUser);
         let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
-        if (comparePassword) {
+           if (comparePassword) {
+               let updateObj = <any>{};
             delete existingUser.password;
             delete existingUser.reset_pass_otp;
             existingUser.isFirstTimeLogin = false;
             if (existingUser.first_time_login == 1) {
                 existingUser.isFirstTimeLogin = true;
-                await employersModel.update({
+
+                updateObj = {
+                    ...updateObj,
                     first_time_login_datetime: new Date(),
-                },
-                    {
-                        where: {
-                            email: params.username.toLowerCase(),
-                        }
-                    }
-                );
+                }
 
                 this.scheduleFreeTrialExpirationNotificationJob(existingUser)
                 
             }
-            let token = await tokenResponse.employerTokenResponse(existingUser);
+            if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
+                let firstLoginDate = new Date(existingUser.first_time_login_datetime);
+                let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
+
+                if ((new Date()) < endTime) {
+                    updateObj = {
+                        ...updateObj,
+                        subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan,
+                    }
+                }
+               }
+               if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.paid) {
+                   let plan = await paymentManagementModel.findOne({
+                       where: {
+                           employer_id: parseInt(existingUser.id),
+                           status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                       }
+                   })
+
+                   if (plan) {
+                       if ((new Date()) < (new Date(plan.expiry_date))) {
+                           updateObj = {
+                               ...updateObj,
+                               subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan,
+                           }
+                           plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.exhausted;
+                           plan.save()
+                       }                       
+                   }
+                   else
+                    {
+                       updateObj = {
+                           ...updateObj,
+                           subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan,
+                       }
+                    }
+               }
+
+               let token = await tokenResponse.employerTokenResponse(existingUser);
+
+               await employersModel.update(updateObj,
+                   {
+                       where: {
+                           email: params.username.toLowerCase(),
+                       }
+                   }
+               );
             existingUser.token = token.token;
             return existingUser;
         } else {
@@ -68,16 +112,16 @@ export class AuthService {
     */
 
     public async scheduleFreeTrialExpirationNotificationJob(existingUser: any) {
+        let firstLoginDate = new Date(existingUser.first_time_login_datetime);
+        let trialExpiryDate = new Date(existingUser.first_time_login_datetime);
+        trialExpiryDate.setDate(trialExpiryDate.getDate() + 14)
 
-        let trial_expiry_date = new Date(existingUser.first_time_login_datetime);
-        trial_expiry_date.setDate(trial_expiry_date.getDate() + 14)
-
-        let startTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(trial_expiry_date.getDate() + 11));
-        let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(trial_expiry_date.getDate() + 14));
+        let startTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 11));
+        let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
         
         const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '* * */24 * * *' }, async function () {
             
-            const timeDiff = Math.floor((trial_expiry_date.getTime() - (new Date()).getTime()) / 1000)
+            const timeDiff = Math.floor((trialExpiryDate.getTime() - (new Date()).getTime()) / 1000)
             //add notification 
             let notificationObj = <any>{
                 type_id: existingUser.id,

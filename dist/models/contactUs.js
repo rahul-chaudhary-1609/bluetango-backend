@@ -29,5 +29,5 @@ exports.contactUsModel = connection_1.sequelize.define("contact_us", {
 }, {
     tableName: "contact_us"
 });
-exports.contactUsModel.sync({ alter: true });
+exports.contactUsModel.sync({ alter: false });
 //# sourceMappingURL=contactUs.js.map

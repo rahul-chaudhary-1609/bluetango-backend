@@ -126,6 +126,8 @@ exports.MESSAGES = {
     no_achievement_comment: "user have not commented anything on this achievement",
     no_achievement: "no achievement found",
     team_goal_complete_request_pending: "You already have a pending request for approval",
+    employer_no_plan: "You do not have any active plan to avail this service",
+    no_plan: "Subscription does not exist",
 };
 exports.code = {
     error_code: 400
@@ -205,6 +207,7 @@ exports.CHAT_ROOM_TYPE = {
 exports.EMPLOYER_SUBSCRIPTION_TYPE = {
     free: 0,
     paid: 1,
+    no_plan: 2,
 };
 exports.CHAT_DISCONNECT_TYPE = {
     disconnected: 1,

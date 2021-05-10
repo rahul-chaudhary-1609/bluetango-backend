@@ -81,6 +81,21 @@ export class EmployerController {
     }
 
     /**
+ * to cancelPlan
+ * @param req :[]
+ * @param res 
+ */
+    public async cancelPlan(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.cancelPlan(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * view all payments
     * @param req 
     * @param res 
@@ -109,5 +124,5 @@ export class EmployerController {
         }
     }
     
-    
+
 }

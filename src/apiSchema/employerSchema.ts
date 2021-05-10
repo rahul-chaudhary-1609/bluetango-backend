@@ -145,6 +145,10 @@ export const buyPlan = Joi.object({
   transaction_id: Joi.string().required(),
 })
 
+export const cancelPlan = Joi.object({
+  subscription_id: Joi.number().required(),
+})
+
 export const contactUs = Joi.object({
   message: Joi.string().required(),
 })

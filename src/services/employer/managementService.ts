@@ -14,12 +14,26 @@ var Op = Sequelize.Op;
 export class EmployeeManagement {
     constructor() { }
 
+
+    /**
+     * to check whether user have any active plan or not
+     */
+    public async haveActivePlan(user: any) {
+        let employer = await helperFunction.convertPromiseToObject(
+            await employersModel.findByPk(parseInt(user.uid))
+        );
+
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free || employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.paid) return false
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) return true
+    }
+
     /**
     * add edit employee function
     @param {} params pass all parameters from request
     */
     public async addEditEmployee(params: any, user: any) {
 
+        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
         params.email = (params.email).toLowerCase();
         // check employee is exist or not
         if (params.manager_id=='0') {
@@ -144,6 +158,9 @@ export class EmployeeManagement {
     @param {} params pass all parameters from request
     */
     public async getEmployeeList(params: any, user: any) {
+
+        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});
@@ -194,7 +211,9 @@ export class EmployeeManagement {
      * function to View employee details
      */
 
-    public async viewEmployeeDetails(params: any) {
+    public async viewEmployeeDetails(params: any, user: any) {
+        
+        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
 
@@ -301,7 +320,10 @@ export class EmployeeManagement {
      * function to delete an employee
      */
 
-    public async deleteEmployee(params: any) {
+    public async deleteEmployee(params: any, user: any) {
+        
+        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
         let employee = await employeeModel.findOne({
             where:{
                 id: parseInt(params.employee_id),

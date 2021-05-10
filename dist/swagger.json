@@ -4799,6 +4799,34 @@
                 "responses": {}
             }
         },
+        "/employer/cancelPlan": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to cancel Current Plan ",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "subscription_id",
+                        "in": "formData",
+                        "description": "subscription id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/myPayments": {
             "get": {
                 "tags": [

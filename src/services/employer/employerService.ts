@@ -34,6 +34,19 @@ export class EmployerService {
     @param {} params pass all parameters from request
     */
     public async buyPlan(params: any, user: any) {
+
+        let plan =await paymentManagementModel.findOne({
+                where: {
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            })
+
+        if (plan) {
+            plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.exhausted;
+            plan.save()
+        }
+
         let subscriptionPlan = await helperFunction.convertPromiseToObject(
             await subscriptionManagementModel.findByPk(parseInt(params.plan_id))
         );
@@ -49,9 +62,21 @@ export class EmployerService {
             details:subscriptionPlan,
         }
 
-        return await helperFunction.convertPromiseToObject(
+        let newPlan= await helperFunction.convertPromiseToObject(
             await paymentManagementModel.create(paymentObj)
         )
+
+        if (newPlan) {
+            await employersModel.update({
+                subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.paid
+            }, {
+                where: {
+                    id: parseInt(user.uid)
+                }
+            })
+        }
+
+        return newPlan
     }
 
     /*
@@ -110,7 +135,7 @@ export class EmployerService {
 
         paymentManagementModel.hasOne(subscriptionManagementModel,{foreignKey:"id",sourceKey:"plan_id",targetKey:"id"})
 
-        return await helperFunction.convertPromiseToObject(
+        let subscription= await helperFunction.convertPromiseToObject(
             await paymentManagementModel.findOne({
                 where: {
                     employer_id: parseInt(user.uid),
@@ -124,6 +149,42 @@ export class EmployerService {
                 ]
             })
         )
+
+        if (!subscription) throw new Error(constants.MESSAGES.employer_no_plan);
+
+        return subscription
+    }
+
+    /*
+    * function to cancel current plan 
+    */
+    public async cancelPlan(params: any, user: any) {
+        
+        let plan = await paymentManagementModel.findOne({
+                where: {
+                    id: parseInt(params.subscription_id),
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            })
+
+        if (plan) {
+            plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.cancelled;
+            plan.save()
+            await employersModel.update({
+                subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan
+            }, {
+                where: {
+                    id: parseInt(user.uid)
+                }
+            })
+            return plan
+        }
+        else {
+           throw new Error(constants.MESSAGES.no_plan)
+        }
+
+
     }
 
     /*
@@ -135,7 +196,8 @@ export class EmployerService {
             await paymentManagementModel.findAndCountAll({
                 where: {
                     employer_id: parseInt(user.uid),
-                }
+                },
+                order: [["createdAt", "DESC"]]
             })
         )
     }

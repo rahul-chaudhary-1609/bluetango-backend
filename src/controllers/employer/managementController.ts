@@ -50,7 +50,7 @@ export class EmployeeController {
     */
     public async viewEmployeeDetails(req: any, res: any) {
         try {
-            const responseFromService = await employeeService.viewEmployeeDetails(req.params);
+            const responseFromService = await employeeService.viewEmployeeDetails(req.params, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
@@ -65,7 +65,7 @@ export class EmployeeController {
     */
     public async deleteEmployee(req: any, res: any) {
         try {
-            const responseFromService = await employeeService.deleteEmployee(req.params);
+            const responseFromService = await employeeService.deleteEmployee(req.params, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
 
         } catch (error) {

@@ -60,6 +60,10 @@ employerRoute.put("/editProfile", validators.trimmer, tokenValidator.validateEmp
 /* view Current Plan Details */
 employerRoute.get("/mySubscription", validators.trimmer, tokenValidator.validateEmployerToken, employerController.mySubscription);
 
+/* cancel Plan*/
+employerRoute.post("/cancelPlan", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.cancelPlan), employerController.cancelPlan);
+
+
 /* view all payments */
 employerRoute.get("/myPayments", validators.trimmer, tokenValidator.validateEmployerToken, employerController.myPayments);
 

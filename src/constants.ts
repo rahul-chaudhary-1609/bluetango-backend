@@ -122,7 +122,9 @@ export const MESSAGES = {
   no_qualitative_measure: "No qualitative measure found",
   no_achievement_comment: "user have not commented anything on this achievement",
   no_achievement: "no achievement found",
-  team_goal_complete_request_pending:"You already have a pending request for approval",
+  team_goal_complete_request_pending: "You already have a pending request for approval",
+  employer_no_plan: "You do not have any active plan to avail this service",
+  no_plan:"Subscription does not exist",
 }
 
 export const code = {
@@ -212,7 +214,8 @@ export const CHAT_ROOM_TYPE = {
 
 export const EMPLOYER_SUBSCRIPTION_TYPE = {
   free: 0,
-  paid:1,
+  paid: 1,
+  no_plan:2,
 }
 
 export const CHAT_DISCONNECT_TYPE= {

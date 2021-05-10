@@ -61,6 +61,16 @@ class EmployerService {
     */
     buyPlan(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let plan = yield paymentManagement_1.paymentManagementModel.findOne({
+                where: {
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            });
+            if (plan) {
+                plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.exhausted;
+                plan.save();
+            }
             let subscriptionPlan = yield helperFunction.convertPromiseToObject(yield subscriptionManagement_1.subscriptionManagementModel.findByPk(parseInt(params.plan_id)));
             let paymentObj = {
                 admin_id: constants.USER_ROLE.super_admin,
@@ -72,7 +82,17 @@ class EmployerService {
                 transaction_id: params.transaction_id,
                 details: subscriptionPlan,
             };
-            return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.create(paymentObj));
+            let newPlan = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.create(paymentObj));
+            if (newPlan) {
+                yield models_1.employersModel.update({
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.paid
+                }, {
+                    where: {
+                        id: parseInt(user.uid)
+                    }
+                });
+            }
+            return newPlan;
         });
     }
     /*
@@ -120,7 +140,7 @@ class EmployerService {
     mySubscription(user) {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.hasOne(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "id", sourceKey: "plan_id", targetKey: "id" });
-            return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
+            let subscription = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
                 where: {
                     employer_id: parseInt(user.uid),
                     status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
@@ -132,6 +152,38 @@ class EmployerService {
                     }
                 ]
             }));
+            if (!subscription)
+                throw new Error(constants.MESSAGES.employer_no_plan);
+            return subscription;
+        });
+    }
+    /*
+    * function to cancel current plan
+    */
+    cancelPlan(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let plan = yield paymentManagement_1.paymentManagementModel.findOne({
+                where: {
+                    id: parseInt(params.subscription_id),
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            });
+            if (plan) {
+                plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.cancelled;
+                plan.save();
+                yield models_1.employersModel.update({
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan
+                }, {
+                    where: {
+                        id: parseInt(user.uid)
+                    }
+                });
+                return plan;
+            }
+            else {
+                throw new Error(constants.MESSAGES.no_plan);
+            }
         });
     }
     /*
@@ -142,7 +194,8 @@ class EmployerService {
             return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findAndCountAll({
                 where: {
                     employer_id: parseInt(user.uid),
-                }
+                },
+                order: [["createdAt", "DESC"]]
             }));
         });
     }

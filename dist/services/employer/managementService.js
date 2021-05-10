@@ -46,11 +46,25 @@ var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
     /**
+     * to check whether user have any active plan or not
+     */
+    haveActivePlan(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employer = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findByPk(parseInt(user.uid)));
+            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free || employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.paid)
+                return false;
+            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan)
+                return true;
+        });
+    }
+    /**
     * add edit employee function
     @param {} params pass all parameters from request
     */
     addEditEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
+                throw new Error(constants.MESSAGES.employer_no_plan);
             params.email = (params.email).toLowerCase();
             // check employee is exist or not
             if (params.manager_id == '0') {
@@ -165,6 +179,8 @@ class EmployeeManagement {
     */
     getEmployeeList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
+                throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
@@ -206,8 +222,10 @@ class EmployeeManagement {
     /**
      * function to View employee details
      */
-    viewEmployeeDetails(params) {
+    viewEmployeeDetails(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
+                throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
@@ -292,8 +310,10 @@ class EmployeeManagement {
     /**
      * function to delete an employee
      */
-    deleteEmployee(params) {
+    deleteEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
+                throw new Error(constants.MESSAGES.employer_no_plan);
             let employee = yield models_1.employeeModel.findOne({
                 where: {
                     id: parseInt(params.employee_id),

@@ -55,7 +55,7 @@ export const employersModel: any = sequelize.define("employers", {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: '0=>free,1=>paid'
+        comment: '0=>free,1=>paid,2=>no plan'
     },
     reset_pass_otp: {
         type: DataTypes.JSONB,

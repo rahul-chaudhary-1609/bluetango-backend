@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contactUs = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -155,6 +155,9 @@ exports.buyPlan = joi_1.default.object({
     expiry_date: joi_1.default.string().required(),
     amount: joi_1.default.number().required(),
     transaction_id: joi_1.default.string().required(),
+});
+exports.cancelPlan = joi_1.default.object({
+    subscription_id: joi_1.default.number().required(),
 });
 exports.contactUs = joi_1.default.object({
     message: joi_1.default.string().required(),

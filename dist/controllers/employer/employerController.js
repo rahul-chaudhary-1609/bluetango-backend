@@ -117,6 +117,22 @@ class EmployerController {
         });
     }
     /**
+ * to cancelPlan
+ * @param req :[]
+ * @param res
+ */
+    cancelPlan(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.cancelPlan(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * view all payments
     * @param req
     * @param res
