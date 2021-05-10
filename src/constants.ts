@@ -175,6 +175,13 @@ export const TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
   requested: 3
 }
 
+export const EMPLOYER_SUBSCRIPTION_PLAN_STATUS = {
+  inactive:0,
+  active: 1,
+  cancelled: 2,
+  exhausted: 3,  
+}
+
 export const NOTIFICATION_TYPE = {
   other: 0,
   assign_new_goal: 1,

@@ -42,7 +42,10 @@ exports.paymentManagementModel = connection_1.sequelize.define("payment_manageme
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '0=>inactive,1=>active,2=>deleted'
+        comment: '0=>inactive,1=>active,2=>cancelled,3=>exhausted,'
+    },
+    details: {
+        type: sequelize_1.DataTypes.JSON,
     },
 }, {
     tableName: "payment_management"

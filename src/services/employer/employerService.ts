@@ -6,6 +6,7 @@ import * as tokenResponse from "../../utils/tokenResponse";
 import { employersModel } from "../../models";
 import { notificationModel } from "../../models/notification";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
+import { paymentManagementModel } from "../../models/paymentManagement";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -70,6 +71,21 @@ export class EmployerService {
 
         return profile;
 
+    }
+
+
+    /*
+    * function to view current plan details 
+    */
+    public async viewCurrentPlanDetails(params: any, user: any) {
+        return await helperFunction.convertPromiseToObject(
+            await paymentManagementModel.findOne({
+                where: {
+                    employer_id: parseInt(user.uid),
+                    status:constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            })
+        )
     }
 
 

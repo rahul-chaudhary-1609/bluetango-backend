@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_TYPE = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
+exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.MESSAGES = void 0;
 exports.MESSAGES = {
     phone_already_registered: "An account with given phone number already exists",
     email_already_registered: "An account with given email already exists",
@@ -170,6 +170,12 @@ exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = {
     approved: 1,
     rejected: 2,
     requested: 3
+};
+exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = {
+    inactive: 0,
+    active: 1,
+    cancelled: 2,
+    exhausted: 3,
 };
 exports.NOTIFICATION_TYPE = {
     other: 0,

@@ -29,10 +29,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployerService = void 0;
+const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
+const paymentManagement_1 = require("../../models/paymentManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployerService {
@@ -86,6 +88,19 @@ class EmployerService {
             profile.thought_of_the_day = params.thought_of_the_day || currentProfile.thought_of_the_day;
             profile.save();
             return profile;
+        });
+    }
+    /*
+    * function to view current plan details
+    */
+    viewCurrentPlanDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
+                where: {
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            }));
         });
     }
 }
