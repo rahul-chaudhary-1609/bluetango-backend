@@ -317,7 +317,8 @@ export class GoalServices {
                 },
                 {
                     model:teamGoalAssignCompletionByEmployeeModel,
-                    required: false
+                    required: false,
+                    where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested, }
                 }
             ],
             limit: limit,
@@ -685,6 +686,7 @@ export class GoalServices {
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
+                    status:[constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approved,constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.rejected],
                 }
             })
         )
