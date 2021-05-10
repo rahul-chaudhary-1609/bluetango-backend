@@ -326,7 +326,8 @@ class GoalServices {
                     {
                         model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
                         required: false,
-                        where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested, }
+                        where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested, },
+                        order: [["createdAt", "DESC"]]
                     }
                 ],
                 limit: limit,
@@ -647,7 +648,8 @@ class GoalServices {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
                     status: [constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.approved, constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.rejected],
-                }
+                },
+                order: [["createdAt", "DESC"]],
             }));
             goalDetailsAsEmployee.team_goal_assigns[0].team_goal_assign_completion_by_employees = teamGoalAssignCompletion;
             goalDetailsAsEmployee.team_goal_assigns[0].complete_measure_percent = (parseFloat(goalDetailsAsEmployee.team_goal_assigns[0].complete_measure) / parseFloat(goalDetailsAsEmployee.enter_measure)) * 100;
