@@ -2907,7 +2907,7 @@
             "name": "self_awareness_of_strengths_and_weaknesses",
             "in": "formData",
             "description": "self_awareness_of_strengths_and_weaknesses",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -2935,7 +2935,7 @@
             "name": "influence",
             "in": "formData",
             "description": "influence",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -2963,7 +2963,7 @@
             "name": "leadership_courage",
             "in": "formData",
             "description": "leadership_courage",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -2977,7 +2977,7 @@
             "name": "customer_client_patient_satisfaction",
             "in": "formData",
             "description": "customer_client_patient_satisfaction",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -2991,7 +2991,7 @@
             "name": "team_contributions",
             "in": "formData",
             "description": "team_contributions",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -3005,7 +3005,7 @@
             "name": "time_management",
             "in": "formData",
             "description": "time_management",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -3019,7 +3019,7 @@
             "name": "work_product",
             "in": "formData",
             "description": "work_product",
-            "required": true,
+            "required": false,
             "type": "number"
           },
           {
@@ -3550,6 +3550,27 @@
           "Employee"
         ],
         "description": "api to get notifiactions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getUnseenNotificationCount": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get Unseen Notification Count",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],

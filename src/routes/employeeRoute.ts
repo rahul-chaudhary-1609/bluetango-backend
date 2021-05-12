@@ -164,6 +164,9 @@ employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmpl
 /* contact us for employee */
 employeeRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getNotifications);
 
+/* to get unseen notification count */
+employeeRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getUnseenNotificationCount);
+
 /* contact us for employee */
 employeeRoute.put("/markNotificationAsViewed/:notification_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.markNotificationAsViewed), employeeController.markNotificationAsViewed);
 

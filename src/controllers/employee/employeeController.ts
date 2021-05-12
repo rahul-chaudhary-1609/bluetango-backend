@@ -307,6 +307,21 @@ export class EmployeeController {
     }
 
     /**
+*  to get unseen notification count
+* @param req :[]
+* @param res 
+*/
+    public async getUnseenNotificationCount(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getUnseenNotificationCount(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
  * to mark as viewed notification 
  * @param req :[]
  * @param res 

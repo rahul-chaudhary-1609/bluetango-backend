@@ -356,6 +356,22 @@ class EmployeeController {
         });
     }
     /**
+*  to get unseen notification count
+* @param req :[]
+* @param res
+*/
+    getUnseenNotificationCount(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getUnseenNotificationCount(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
  * to mark as viewed notification
  * @param req :[]
  * @param res

@@ -21,9 +21,15 @@ exports.qualitativeMeasurementCommentModel = connection_1.sequelize.define("qual
     comment: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
-    }
+    },
+    status: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
+    },
 }, {
     tableName: "qualitattive_measurement_comment"
 });
-exports.qualitativeMeasurementCommentModel.sync({ alter: false });
+exports.qualitativeMeasurementCommentModel.sync({ alter: true });
 //# sourceMappingURL=qualitativeMeasurementComment.js.map

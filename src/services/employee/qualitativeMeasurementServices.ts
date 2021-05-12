@@ -97,19 +97,19 @@ export class QualitativeMeasuremetServices {
     qualitativeMeasurementModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
        let qualitativeMeasurement =await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findAll({
            where: { employee_id: params.employee_id ? params.employee_id : user.uid },
-           attributes: ["id","manager_id","employee_id",
+           attributes: ["id", "manager_id", "employee_id", "createdAt", "updatedAt",
                ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],               
                ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
                ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
-               ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
+            //    ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
                ["agile_thinking", "Agile Thinking"], ["agile_thinking_desc", "Agile Thinking_desc"],
-               ["influence", "Influence"], ["influence_desc", "Influence_desc"],
+            //    ["influence", "Influence"], ["influence_desc", "Influence_desc"],
                ["empathy", "Empathy"], ["empathy_desc", "Empathy_desc"],
-               ["leadership_courage", "Leadership Courage"], ["leadership_courage_desc", "Leadership Courage_desc"],
-               ["customer_client_patient_satisfaction", "Customer/Client/Patient Satisfaction"], ["customer_client_patient_satisfaction_desc", "Customer/Client/Patient Satisfaction_desc"],
-               ["team_contributions", "Team contributions"], ["team_contributions_desc", "Team contributions_desc"],
-               ["time_management", "Time Management"], ["time_management_desc", "Time Management_desc"],
-               ["work_product", "Work Product"], ["work_product_desc", "Work Product_desc"],
+            //    ["leadership_courage", "Leadership Courage"], ["leadership_courage_desc", "Leadership Courage_desc"],
+            //    ["customer_client_patient_satisfaction", "Customer/Client/Patient Satisfaction"], ["customer_client_patient_satisfaction_desc", "Customer/Client/Patient Satisfaction_desc"],
+            //    ["team_contributions", "Team contributions"], ["team_contributions_desc", "Team contributions_desc"],
+            //    ["time_management", "Time Management"], ["time_management_desc", "Time Management_desc"],
+            //    ["work_product", "Work Product"], ["work_product_desc", "Work Product_desc"],
            ],
            include: [
                 {
@@ -120,14 +120,16 @@ export class QualitativeMeasuremetServices {
            ],
            order: [["updatedAt", "DESC"]],
            limit:1
-       }))
+       })) 
 
        if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
        
        let result = {
            id: qualitativeMeasurement[0].id,
-           manager_id: qualitativeMeasurement[0].id,
+           manager_id: qualitativeMeasurement[0].manager_id,
            employee_id: qualitativeMeasurement[0].employee_id,
+           createdAt: qualitativeMeasurement[0].createdAt,
+           updatedAt: qualitativeMeasurement[0].updatedAt,
            qualitativeMeasures: [],
        }
 
@@ -138,15 +140,15 @@ export class QualitativeMeasuremetServices {
                 "Initiative",
                "Ability to Delegate",
                "Clear Communication",
-               "Self-awareness of strengths and weaknesses",
+            //    "Self-awareness of strengths and weaknesses",
                "Agile Thinking",
-               "Influence",
+            //    "Influence",
                "Empathy",
-               "Leadership Courage",
-               "Customer/Client/Patient Satisfaction",
-               "Team contributions",
-               "Time Management",
-               "Work Product",
+            //    "Leadership Courage",
+            //    "Customer/Client/Patient Satisfaction",
+            //    "Team contributions",
+            //    "Time Management",
+            //    "Work Product",
            ].includes(key)) {
                result.qualitativeMeasures.push({
                     label:key,
@@ -169,9 +171,10 @@ export class QualitativeMeasuremetServices {
     */
     public async getQualitativeMeasurementDetails(params: any, user: any) {
         
-        let where = {}
+        let where = <any>{ status: constants.STATUS.active}
         if (params.name) {
             where = {
+                ...where,
                 name: params.name
             }
         }
@@ -186,7 +189,9 @@ export class QualitativeMeasuremetServices {
     * get qualitative measurement comment list
     */
     public async getQuantitativeMeasurementCommentList() {
-        return await qualitativeMeasurementCommentModel.findAll();
+        return await qualitativeMeasurementCommentModel.findAll({
+            where: { status: constants.STATUS.active }
+        });
     }
 
 }

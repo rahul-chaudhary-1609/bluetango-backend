@@ -122,19 +122,14 @@ class QualitativeMeasuremetServices {
             qualitativeMeasurement_1.qualitativeMeasurementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             let qualitativeMeasurement = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
                 where: { employee_id: params.employee_id ? params.employee_id : user.uid },
-                attributes: ["id", "manager_id", "employee_id",
+                attributes: ["id", "manager_id", "employee_id", "createdAt", "updatedAt",
                     ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],
                     ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
                     ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
-                    ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
+                    //    ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
                     ["agile_thinking", "Agile Thinking"], ["agile_thinking_desc", "Agile Thinking_desc"],
-                    ["influence", "Influence"], ["influence_desc", "Influence_desc"],
+                    //    ["influence", "Influence"], ["influence_desc", "Influence_desc"],
                     ["empathy", "Empathy"], ["empathy_desc", "Empathy_desc"],
-                    ["leadership_courage", "Leadership Courage"], ["leadership_courage_desc", "Leadership Courage_desc"],
-                    ["customer_client_patient_satisfaction", "Customer/Client/Patient Satisfaction"], ["customer_client_patient_satisfaction_desc", "Customer/Client/Patient Satisfaction_desc"],
-                    ["team_contributions", "Team contributions"], ["team_contributions_desc", "Team contributions_desc"],
-                    ["time_management", "Time Management"], ["time_management_desc", "Time Management_desc"],
-                    ["work_product", "Work Product"], ["work_product_desc", "Work Product_desc"],
                 ],
                 include: [
                     {
@@ -150,8 +145,10 @@ class QualitativeMeasuremetServices {
                 throw new Error(constants.MESSAGES.no_qualitative_measure);
             let result = {
                 id: qualitativeMeasurement[0].id,
-                manager_id: qualitativeMeasurement[0].id,
+                manager_id: qualitativeMeasurement[0].manager_id,
                 employee_id: qualitativeMeasurement[0].employee_id,
+                createdAt: qualitativeMeasurement[0].createdAt,
+                updatedAt: qualitativeMeasurement[0].updatedAt,
                 qualitativeMeasures: [],
             };
             for (let key in qualitativeMeasurement[0]) {
@@ -159,15 +156,10 @@ class QualitativeMeasuremetServices {
                     "Initiative",
                     "Ability to Delegate",
                     "Clear Communication",
-                    "Self-awareness of strengths and weaknesses",
+                    //    "Self-awareness of strengths and weaknesses",
                     "Agile Thinking",
-                    "Influence",
+                    //    "Influence",
                     "Empathy",
-                    "Leadership Courage",
-                    "Customer/Client/Patient Satisfaction",
-                    "Team contributions",
-                    "Time Management",
-                    "Work Product",
                 ].includes(key)) {
                     result.qualitativeMeasures.push({
                         label: key,
@@ -185,11 +177,9 @@ class QualitativeMeasuremetServices {
     */
     getQualitativeMeasurementDetails(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let where = {};
+            let where = { status: constants.STATUS.active };
             if (params.name) {
-                where = {
-                    name: params.name
-                };
+                where = Object.assign(Object.assign({}, where), { name: params.name });
             }
             return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
                 where: where,
@@ -201,7 +191,9 @@ class QualitativeMeasuremetServices {
     */
     getQuantitativeMeasurementCommentList() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll();
+            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
+                where: { status: constants.STATUS.active }
+            });
         });
     }
 }

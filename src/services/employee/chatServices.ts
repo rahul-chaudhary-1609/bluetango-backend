@@ -39,7 +39,9 @@ export class ChatServices {
             ]
         });
 
-        let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll();
+        let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll({
+            where:{status:constants.STATUS.active}
+        });
 
         // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
         //     console.log("val",val)
