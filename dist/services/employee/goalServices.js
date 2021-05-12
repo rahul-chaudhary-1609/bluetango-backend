@@ -620,6 +620,33 @@ class GoalServices {
         });
     }
     /*
+ * function to get Quantitative Stats of goals as manager
+ */
+    getQuantitativeStatsOfGoalsAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employeeData = yield employee_1.employeeModel.findOne({
+                where: { id: user.uid, is_manager: 1 }
+            });
+            if (!employeeData)
+                throw new Error(constants.MESSAGES.not_manager);
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+            let quantitativeStatsOfGoals = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
+                where: { employee_id: parseInt(params.employee_id) },
+                include: [
+                    {
+                        model: teamGoal_1.teamGoalModel,
+                        required: true,
+                    }
+                ]
+            }));
+            let quantitativeStats = [];
+            for (let goal of quantitativeStatsOfGoals) {
+                quantitativeStats.push(Object.assign(Object.assign({}, goal), { quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`, quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100 }));
+            }
+            return { quantitativeStats };
+        });
+    }
+    /*
     * function to view goal details as employee
     */
     viewGoalDetailsAsEmployee(params, user) {

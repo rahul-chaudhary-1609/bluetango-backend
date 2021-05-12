@@ -660,6 +660,41 @@ export class GoalServices {
     }
 
     /*
+ * function to get Quantitative Stats of goals as manager
+ */
+    public async getQuantitativeStatsOfGoalsAsManager(params: any, user: any) {
+
+        let employeeData = await employeeModel.findOne({
+            where: { id: user.uid, is_manager: 1 }
+        })
+        if (!employeeData) throw new Error(constants.MESSAGES.not_manager)
+            
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        let quantitativeStatsOfGoals = await helperFunction.convertPromiseToObject(await teamGoalAssignModel.findAll({
+            where: { employee_id: parseInt(params.employee_id)},
+            include: [
+                {
+                    model: teamGoalModel,
+                    required: true,
+                }
+            ]
+        }))
+
+        let quantitativeStats = [];
+
+        for (let goal of quantitativeStatsOfGoals) {
+            quantitativeStats.push({
+                ...goal,
+                quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`,
+                quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100,
+
+            })
+        }
+        return { quantitativeStats };
+
+    }
+
+    /*
     * function to view goal details as employee
     */
     public async viewGoalDetailsAsEmployee(params: any, user: any) {

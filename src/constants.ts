@@ -124,7 +124,8 @@ export const MESSAGES = {
   no_achievement: "no achievement found",
   team_goal_complete_request_pending: "You already have a pending request for approval",
   employer_no_plan: "You do not have any active plan to avail this service",
-  no_plan:"Subscription does not exist",
+  no_plan: "Subscription does not exist",
+  not_manager:"manager token is required",
 }
 
 export const code = {

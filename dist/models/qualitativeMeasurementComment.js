@@ -31,5 +31,5 @@ exports.qualitativeMeasurementCommentModel = connection_1.sequelize.define("qual
 }, {
     tableName: "qualitattive_measurement_comment"
 });
-exports.qualitativeMeasurementCommentModel.sync({ alter: true });
+exports.qualitativeMeasurementCommentModel.sync({ alter: false });
 //# sourceMappingURL=qualitativeMeasurementComment.js.map

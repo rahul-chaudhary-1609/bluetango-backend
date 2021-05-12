@@ -112,6 +112,8 @@ employeeRoute.get("/viewFeelAboutJobToday", validators.trimmer, tokenValidator.v
 employeeRoute.get("/viewThoughtOfTheDayFromAdmin", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.viewThoughtOfTheDayFromAdmin);
 /* to get Quantitative Stats of goals on dashbord as team member view*/
 employeeRoute.get("/getQuantitativeStatsOfGoals", validators.trimmer, tokenValidator.validateEmployeeToken, goalController.getQuantitativeStatsOfGoals);
+/* to get Quantitative Stats of goals on dashbord as manager view*/
+employeeRoute.get("/getQuantitativeStatsOfGoalsAsManager/:employee_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getQuantitativeStatsOfGoalsAsManager), goalController.getQuantitativeStatsOfGoalsAsManager);
 /* view goal details for employee */
 employeeRoute.get("/viewGoalDetailsAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewGoalDetailsAsEmployee), goalController.viewGoalDetailsAsEmployee);
 // QualitativeMeasurement routes

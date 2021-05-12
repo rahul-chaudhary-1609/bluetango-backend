@@ -215,6 +215,22 @@ class GoalController {
         });
     }
     /**
+    * get Quantitative Stats of goals as manager
+    * @param req :[]
+    * @param res
+    */
+    getQuantitativeStatsOfGoalsAsManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.getQuantitativeStatsOfGoalsAsManager(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * view goal details as employee
     * @param req :[]
     * @param res

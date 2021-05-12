@@ -3397,6 +3397,34 @@
         "responses": {}
       }
     },
+    "/employee/getQuantitativeStatsOfGoalsAsManager/{employee_id}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to to get Quantitative Stats of goals as manager",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_id",
+            "in": "path",
+            "description": "employee id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getQualitativeMeasurement": {
       "get": {
         "tags": [

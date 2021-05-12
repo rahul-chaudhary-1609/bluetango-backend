@@ -32,4 +32,4 @@ export const qualitativeMeasurementCommentModel: any = sequelize.define("qualita
         tableName: "qualitattive_measurement_comment"
     }
 );
-qualitativeMeasurementCommentModel.sync({ alter: true });
+qualitativeMeasurementCommentModel.sync({ alter: false });
