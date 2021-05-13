@@ -127,21 +127,72 @@ class EmployeeServices {
                 ],
                 attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url']
             }));
-            let qualitativeMeasurementDetails = yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
+            // let qualitativeMeasurementDetails = await qualitativeMeasurementModel.findOne({
+            //     where:{ employee_id: params.id},
+            //     group: 'employee_id',
+            //     attributes:[
+            //         'employee_id',
+            //         [Sequelize.fn('AVG', Sequelize.col('initiative')), 'initiative_count'],
+            //         [Sequelize.fn('AVG', Sequelize.col('ability_to_delegate')), 'ability_to_delegate_count'],
+            //         [Sequelize.fn('AVG', Sequelize.col('clear_Communication')), 'clear_Communication_count'],
+            //         // [Sequelize.fn('AVG', Sequelize.col('self_awareness_of_strengths_and_weaknesses')), 'self_awareness_of_strengths_and_weaknesses_count'],
+            //         [Sequelize.fn('AVG', Sequelize.col('agile_thinking')), 'agile_thinking_count'],
+            //         // [Sequelize.fn('AVG', Sequelize.col('influence')), 'influence_count'], 
+            //         [Sequelize.fn('AVG', Sequelize.col('empathy')), 'empathy_count'],
+            //         // [Sequelize.fn('AVG', Sequelize.col('leadership_courage')), 'leadership_courage_count'], 
+            //         // [Sequelize.fn('AVG', Sequelize.col('customer_client_patient_satisfaction')), 'customer_client_patient_satisfaction_count'],
+            //         // [Sequelize.fn('AVG', Sequelize.col('team_contributions')), 'team_contributions_count'], 
+            //         // [Sequelize.fn('AVG', Sequelize.col('time_management')), 'time_management_count'],
+            //         // [Sequelize.fn('AVG', Sequelize.col('work_product')), 'work_product_count']
+            //     ]
+            // })
+            let qualitativeMeasurement = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
                 where: { employee_id: params.id },
-                group: 'employee_id',
-                attributes: [
-                    'employee_id',
-                    [Sequelize.fn('AVG', Sequelize.col('initiative')), 'initiative_count'],
-                    [Sequelize.fn('AVG', Sequelize.col('ability_to_delegate')), 'ability_to_delegate_count'],
-                    [Sequelize.fn('AVG', Sequelize.col('clear_Communication')), 'clear_Communication_count'],
-                    // [Sequelize.fn('AVG', Sequelize.col('self_awareness_of_strengths_and_weaknesses')), 'self_awareness_of_strengths_and_weaknesses_count'],
-                    [Sequelize.fn('AVG', Sequelize.col('agile_thinking')), 'agile_thinking_count'],
-                    // [Sequelize.fn('AVG', Sequelize.col('influence')), 'influence_count'], 
-                    [Sequelize.fn('AVG', Sequelize.col('empathy')), 'empathy_count'],
-                ]
-            });
-            employeeDetails.qualitativeMeasurementDetails = qualitativeMeasurementDetails;
+                attributes: ["id", "manager_id", "employee_id", "createdAt", "updatedAt",
+                    ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],
+                    ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
+                    ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
+                    //    ["self_awareness_of_strengths_and_weaknesses", "Self-awareness of strengths and weaknesses"], ["self_awareness_of_strengths_and_weaknesses_desc", "Self-awareness of strengths and weaknesses_desc"],
+                    ["agile_thinking", "Agile Thinking"], ["agile_thinking_desc", "Agile Thinking_desc"],
+                    //    ["influence", "Influence"], ["influence_desc", "Influence_desc"],
+                    ["empathy", "Empathy"], ["empathy_desc", "Empathy_desc"],
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
+            if (qualitativeMeasurement.length === 0)
+                throw new Error(constants.MESSAGES.no_qualitative_measure);
+            let startDate = new Date(qualitativeMeasurement[0].createdAt);
+            let endDate = new Date(qualitativeMeasurement[0].createdAt);
+            endDate.setMonth(startDate.getMonth() + 3);
+            let result = {
+                id: qualitativeMeasurement[0].id,
+                manager_id: qualitativeMeasurement[0].manager_id,
+                employee_id: qualitativeMeasurement[0].employee_id,
+                startDate,
+                endDate,
+                createdAt: qualitativeMeasurement[0].createdAt,
+                updatedAt: qualitativeMeasurement[0].updatedAt,
+                qualitativeMeasures: [],
+            };
+            for (let key in qualitativeMeasurement[0]) {
+                if ([
+                    "Initiative",
+                    "Ability to Delegate",
+                    "Clear Communication",
+                    //    "Self-awareness of strengths and weaknesses",
+                    "Agile Thinking",
+                    //    "Influence",
+                    "Empathy",
+                ].includes(key)) {
+                    result.qualitativeMeasures.push({
+                        label: key,
+                        rating: qualitativeMeasurement[0][key],
+                        desc: qualitativeMeasurement[0][`${key}_desc`]
+                    });
+                }
+            }
+            employeeDetails.qualitativeMeasurementDetails = result;
             return employeeDetails;
         });
     }
