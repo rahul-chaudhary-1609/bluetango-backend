@@ -3,7 +3,7 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
-import { employersModel } from  "../../models";
+import { employersModel, industryTypeModel, employeeModel, } from "../../models";
 import { notificationModel } from "../../models/notification";
 import { paymentManagementModel } from "../../models/paymentManagement";
 const schedule = require('node-schedule');
@@ -97,6 +97,16 @@ export class AuthService {
                        }
                    }
                );
+
+               existingUser.industry_info = await helperFunction.convertPromiseToObject(await industryTypeModel.findByPk(existingUser.industry_type))
+               existingUser.no_of_employee = await helperFunction.convertPromiseToObject(
+                   await employeeModel.count({
+                       where: {
+                           current_employer_id: parseInt(existingUser.id),
+                           status: [constants.STATUS.active, constants.STATUS.inactive],
+                       }
+                   })
+               )
             existingUser.token = token.token;
             return existingUser;
         } else {

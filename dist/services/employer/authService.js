@@ -107,6 +107,13 @@ class AuthService {
                             email: params.username.toLowerCase(),
                         }
                     });
+                    existingUser.industry_info = yield helperFunction.convertPromiseToObject(yield models_1.industryTypeModel.findByPk(existingUser.industry_type));
+                    existingUser.no_of_employee = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.count({
+                        where: {
+                            current_employer_id: parseInt(existingUser.id),
+                            status: [constants.STATUS.active, constants.STATUS.inactive],
+                        }
+                    }));
                     existingUser.token = token.token;
                     return existingUser;
                 }
