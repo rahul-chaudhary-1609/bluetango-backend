@@ -143,7 +143,7 @@ export class EmployeeServices {
             limit: 1
         }))
 
-        if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
+        //if (qualitativeMeasurement.length === 0) throw new Error(constants.MESSAGES.no_qualitative_measure);
         let startDate = new Date(qualitativeMeasurement[0].createdAt);
         let endDate = new Date(qualitativeMeasurement[0].createdAt)
         endDate.setMonth(startDate.getMonth() + 3);
