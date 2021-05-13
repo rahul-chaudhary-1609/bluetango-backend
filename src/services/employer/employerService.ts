@@ -3,10 +3,11 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
-import { employersModel } from "../../models";
+import { employeeModel, employersModel } from "../../models";
 import { notificationModel } from "../../models/notification";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
+import { industryTypeModel } from "../../models/industryType";
 import { contactUsModel } from "../../models/contactUs";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -83,11 +84,29 @@ export class EmployerService {
 * function to get profile 
 */
     public async getProfile(user: any) {
+        employersModel.hasOne(industryTypeModel, { as:"industry_info",foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
+        
         let profile = await helperFunction.convertPromiseToObject(
             await employersModel.findOne({
                 where: {
                     id: parseInt(user.uid),
                     status: { [Op.ne]: 2 }
+                },
+                include: [
+                    {
+                        model: industryTypeModel,
+                        as:"industry_info",
+                        required:true
+                    }
+                ]
+            })
+        )
+
+        profile.no_of_employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.count({
+                where: {
+                    current_employer_id:parseInt(user.uid),
+                    status:[constants.STATUS.active,constants.STATUS.inactive],
                 }
             })
         )

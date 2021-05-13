@@ -35,6 +35,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
+const industryType_1 = require("../../models/industryType");
 const contactUs_1 = require("../../models/contactUs");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -100,10 +101,24 @@ class EmployerService {
 */
     getProfile(user) {
         return __awaiter(this, void 0, void 0, function* () {
+            models_1.employersModel.hasOne(industryType_1.industryTypeModel, { as: "industry_info", foreignKey: "id", sourceKey: "industry_type", targetKey: "id" });
             let profile = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
                 where: {
                     id: parseInt(user.uid),
                     status: { [Op.ne]: 2 }
+                },
+                include: [
+                    {
+                        model: industryType_1.industryTypeModel,
+                        as: "industry_info",
+                        required: true
+                    }
+                ]
+            }));
+            profile.no_of_employee = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.count({
+                where: {
+                    current_employer_id: parseInt(user.uid),
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
                 }
             }));
             delete profile.password;
