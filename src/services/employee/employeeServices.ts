@@ -85,22 +85,27 @@ export class EmployeeServices {
     */
     public async viewDetailsEmployee(params:any) {
         employeeModel.hasMany(teamGoalAssignModel,{ foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
-        teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         let employeeDetails = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
                 where: { id: params.id},
-                include:[
-                    {
-                        model: teamGoalAssignModel,
-                        required: false,
-                        include: [
-                            {
-                                model: teamGoalModel,
-                                required: false
-                            }
-                        ]
-                    }
+            include: [
+                {
+                    model: departmentModel,
+                    required: true
+                },
+                {
+                    model: teamGoalAssignModel,
+                    required: false,
+                    include: [
+                        {
+                            model: teamGoalModel,
+                            required: false
+                        }
+                    ]
+                },
                 ],
-                attributes: ['id', 'name', 'email', 'phone_number','country_code', 'profile_pic_url']
+            attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url','current_department_id']
             }) );
 
         // let qualitativeMeasurementDetails = await qualitativeMeasurementModel.findOne({

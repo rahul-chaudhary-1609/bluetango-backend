@@ -111,9 +111,14 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             employee_1.employeeModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(department_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: { id: params.id },
                 include: [
+                    {
+                        model: department_1.departmentModel,
+                        required: true
+                    },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
                         required: false,
@@ -123,9 +128,9 @@ class EmployeeServices {
                                 required: false
                             }
                         ]
-                    }
+                    },
                 ],
-                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url']
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url', 'current_department_id']
             }));
             // let qualitativeMeasurementDetails = await qualitativeMeasurementModel.findOne({
             //     where:{ employee_id: params.id},
