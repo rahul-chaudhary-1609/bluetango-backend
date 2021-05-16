@@ -67,7 +67,7 @@ class EmployeeServices {
                     {
                         model: employee_1.employeeModel,
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
                         include: [
                             {
                                 model: emoji_1.emojiModel,
@@ -81,6 +81,12 @@ class EmployeeServices {
                 offset: offset,
                 order: [["createdAt", "DESC"]]
             }));
+            for (let obj of teamMembersData.rows) {
+                obj.isEmployeeEnergyUpdatedInLast24Hour = true;
+                const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000);
+                if (timeDiff > 86400)
+                    obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+            }
             let date = new Date();
             date.setMonth(date.getMonth() - 3);
             //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
