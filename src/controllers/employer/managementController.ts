@@ -51,7 +51,7 @@ export class EmployeeController {
     public async getDepartmentList(req: any, res: any) {
         try {
             const responseFromService = await employeeService.getDepartmentList();
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);

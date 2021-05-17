@@ -82,7 +82,7 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeService.getDepartmentList();
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employers_list);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
