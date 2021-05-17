@@ -213,8 +213,8 @@ export class EmployeeServices {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-        return await managerTeamMemberModel.findAndCountAll({
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+        let teamMembersData= await helperFunction.convertPromiseToObject( await managerTeamMemberModel.findAndCountAll({
             where: { manager_id: user.uid},
             include: [
                 {
@@ -227,7 +227,7 @@ export class EmployeeServices {
                             {email: { [Op.iLike]: `%${params.search_string}%`}}
                         ]
                     },
-                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code','energy_last_updated', 'profile_pic_url'],
                     include: [
                         {
                             model: emojiModel,
@@ -242,6 +242,18 @@ export class EmployeeServices {
             order: [["createdAt", "DESC"]]
 
         })
+        )
+
+        for (let obj of teamMembersData.rows) {
+            obj.isEmployeeEnergyUpdatedInLast24Hour = true;
+
+            const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000)
+
+            if (timeDiff > 86400) obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+
+        }
+
+        return teamMembersData
     }
 
     /*

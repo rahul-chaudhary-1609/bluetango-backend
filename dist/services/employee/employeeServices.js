@@ -216,7 +216,7 @@ class EmployeeServices {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
             employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-            return yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
+            let teamMembersData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findAndCountAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
@@ -229,7 +229,7 @@ class EmployeeServices {
                                 { email: { [Op.iLike]: `%${params.search_string}%` } }
                             ]
                         },
-                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
                         include: [
                             {
                                 model: emoji_1.emojiModel,
@@ -242,7 +242,14 @@ class EmployeeServices {
                 limit: limit,
                 offset: offset,
                 order: [["createdAt", "DESC"]]
-            });
+            }));
+            for (let obj of teamMembersData.rows) {
+                obj.isEmployeeEnergyUpdatedInLast24Hour = true;
+                const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000);
+                if (timeDiff > 86400)
+                    obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+            }
+            return teamMembersData;
         });
     }
     /*
