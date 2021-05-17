@@ -269,7 +269,7 @@ class EmployeeManagement {
             }
             let qualitativeMeasurement = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findAll({
                 where: { employee_id: parseInt(params.employee_id) },
-                attributes: ["id", "manager_id", "employee_id", "createdAt", "updatededAt",
+                attributes: ["id", "manager_id", "employee_id", "createdAt", "updatedAt",
                     ["initiative", "Initiative"], ["initiative_desc", "Initiative_desc"],
                     ["ability_to_delegate", "Ability to Delegate"], ["ability_to_delegate_desc", "Ability to Delegate_desc"],
                     ["clear_Communication", "Clear Communication"], ["clear_Communication_desc", "Clear Communication_desc"],
