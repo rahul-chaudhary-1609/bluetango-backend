@@ -208,6 +208,18 @@ export class EmployeeManagement {
     }
 
     /**
+     * funtion to get department list
+     */
+    public async getDepartmentList() {
+        return await helperFunction.convertPromiseToObject(
+            await departmentModel.findAndCountAll({
+                where: {
+                    status:constants.STATUS.active
+                }
+            })
+        )
+    }
+    /**
      * function to View employee details
      */
 

@@ -220,6 +220,18 @@ class EmployeeManagement {
         });
     }
     /**
+     * funtion to get department list
+     */
+    getDepartmentList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.convertPromiseToObject(yield models_1.departmentModel.findAndCountAll({
+                where: {
+                    status: constants.STATUS.active
+                }
+            }));
+        });
+    }
+    /**
      * function to View employee details
      */
     viewEmployeeDetails(params, user) {

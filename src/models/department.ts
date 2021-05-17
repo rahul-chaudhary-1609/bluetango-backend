@@ -12,7 +12,13 @@ export const departmentModel: any = sequelize.define("department", {
     name: {
         type: DataTypes.STRING,
         allowNull: true,
-    }
+    },
+    status: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
+    },
 },
     {
         tableName: "department"

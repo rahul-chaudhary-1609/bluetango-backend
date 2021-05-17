@@ -42,6 +42,8 @@ employerRoute.post("/changePassword", validators.trimmer, joiSchemaValidation.va
 /* add or edit employers route for employers */
 employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employerSchema.addEditEmployee), tokenValidator.validateEmployerToken, managementController.addEditEmployee);
 /* get employers list route for employers */
+employerRoute.get("/getDepartmentList", tokenValidator.validateEmployerToken, managementController.getDepartmentList);
+/* get employers list route for employers */
 employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(employerSchema.getEmployeeList), tokenValidator.validateEmployerToken, managementController.getEmployeeList);
 /* update employer device token */
 employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody(employerSchema.updateEmployerDeviceToken), tokenValidator.validateEmployerToken, authController.updateEmployerDeviceToken);

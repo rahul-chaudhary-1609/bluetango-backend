@@ -13,7 +13,13 @@ exports.departmentModel = connection_1.sequelize.define("department", {
     name: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
-    }
+    },
+    status: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
+    },
 }, {
     tableName: "department"
 });
