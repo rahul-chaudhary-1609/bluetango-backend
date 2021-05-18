@@ -58,6 +58,22 @@ class EmployeeController {
         });
     }
     /**
+  * get manager list
+  * @param req :[get data]
+  * @param res : [employers data]
+  */
+    getManagerList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getManagerList();
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
     * get employee list
     * @param req :[get data]
     * @param res : [employers data]

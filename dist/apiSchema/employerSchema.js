@@ -111,6 +111,7 @@ exports.addEditEmployee = joi_1.default.object({
     prev_exit: joi_1.default.string().optional(),
     current_date_of_joining: joi_1.default.string().required(),
     manager_id: joi_1.default.string().required(),
+    is_manager: joi_1.default.number().valid(0, 1).optional(),
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),

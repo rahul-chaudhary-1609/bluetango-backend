@@ -4429,6 +4429,27 @@
         "responses": {}
       }
     },
+    "/employer/getManagerList": {
+      "get": {
+      "tags": [
+        "Employer"
+      ],
+      "description": "Api to get manager list",
+      "consumes": [
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Enter jwt token for authentication",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "responses": {}
+    }
+  },
     "/employer/getEmployeeList": {
       "get": {
         "tags": [

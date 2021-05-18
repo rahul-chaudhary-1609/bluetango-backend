@@ -154,6 +154,23 @@ export class EmployeeManagement {
     }
 
     /**
+     * get managers list 
+     */
+
+    public async getManagerList() {
+        return await helperFunction.convertPromiseToObject(
+            await employeeModel.findAll({
+                attributes:['id','name','is_manager'],
+                where: {
+                    is_manager: 1,
+                    status:constants.STATUS.active
+                }
+            })
+        )
+    }
+
+
+    /**
     * get employee list function
     @param {} params pass all parameters from request
     */

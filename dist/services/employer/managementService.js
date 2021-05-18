@@ -174,6 +174,20 @@ class EmployeeManagement {
         });
     }
     /**
+     * get managers list
+     */
+    getManagerList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findAll({
+                attributes: ['id', 'name', 'is_manager'],
+                where: {
+                    is_manager: 1,
+                    status: constants.STATUS.active
+                }
+            }));
+        });
+    }
+    /**
     * get employee list function
     @param {} params pass all parameters from request
     */

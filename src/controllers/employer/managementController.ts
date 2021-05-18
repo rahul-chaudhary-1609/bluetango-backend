@@ -29,6 +29,21 @@ export class EmployeeController {
     }
 
     /**
+  * get manager list
+  * @param req :[get data]
+  * @param res : [employers data]
+  */
+    public async getManagerList(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.getManagerList();
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
     * get employee list
     * @param req :[get data]
     * @param res : [employers data]
