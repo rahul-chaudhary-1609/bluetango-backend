@@ -296,31 +296,33 @@ class EmployeeManagement {
                 order: [["updatedAt", "DESC"]],
                 limit: 1
             }));
-            if (qualitativeMeasurement.length === 0)
-                throw new Error(constants.MESSAGES.no_qualitative_measure);
-            let qualitativeMeasurements = {
-                id: qualitativeMeasurement[0].id,
-                manager_id: qualitativeMeasurement[0].manager_id,
-                employee_id: qualitativeMeasurement[0].employee_id,
-                createdAt: qualitativeMeasurement[0].createdAt,
-                updatedAt: qualitativeMeasurement[0].updatedAt,
-                qualitativeMeasures: [],
-            };
-            for (let key in qualitativeMeasurement[0]) {
-                if ([
-                    "Initiative",
-                    "Ability to Delegate",
-                    "Clear Communication",
-                    // "Self-awareness of strengths and weaknesses",
-                    "Agile Thinking",
-                    // "Influence",
-                    "Empathy",
-                ].includes(key)) {
-                    qualitativeMeasurements.qualitativeMeasures.push({
-                        label: key,
-                        rating: qualitativeMeasurement[0][key],
-                        desc: qualitativeMeasurement[0][`${key}_desc`]
-                    });
+            let qualitativeMeasurements = null;
+            if (qualitativeMeasurement.length === 0) {
+                //throw new Error(constants.MESSAGES.no_qualitative_measure);
+                qualitativeMeasurements = {
+                    id: qualitativeMeasurement[0].id,
+                    manager_id: qualitativeMeasurement[0].manager_id,
+                    employee_id: qualitativeMeasurement[0].employee_id,
+                    createdAt: qualitativeMeasurement[0].createdAt,
+                    updatedAt: qualitativeMeasurement[0].updatedAt,
+                    qualitativeMeasures: [],
+                };
+                for (let key in qualitativeMeasurement[0]) {
+                    if ([
+                        "Initiative",
+                        "Ability to Delegate",
+                        "Clear Communication",
+                        // "Self-awareness of strengths and weaknesses",
+                        "Agile Thinking",
+                        // "Influence",
+                        "Empathy",
+                    ].includes(key)) {
+                        qualitativeMeasurements.qualitativeMeasures.push({
+                            label: key,
+                            rating: qualitativeMeasurement[0][key],
+                            desc: qualitativeMeasurement[0][`${key}_desc`]
+                        });
+                    }
                 }
             }
             return { employeeDetails, goalStats, qualitativeMeasurements };
