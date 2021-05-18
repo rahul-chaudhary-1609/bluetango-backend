@@ -175,7 +175,7 @@ export class EmployeeManagement {
         if (params.departmentId) {
             whereCond = {
                 ...whereCond,
-                current_department_id: params.current_department_id
+                current_department_id: parseInt(params.departmentId)
             }
         }
         if (params.searchKey) {

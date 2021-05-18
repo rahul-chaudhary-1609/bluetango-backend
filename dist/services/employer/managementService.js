@@ -193,7 +193,7 @@ class EmployeeManagement {
             };
             whereCond.current_employer_id = user.uid;
             if (params.departmentId) {
-                whereCond = Object.assign(Object.assign({}, whereCond), { current_department_id: params.current_department_id });
+                whereCond = Object.assign(Object.assign({}, whereCond), { current_department_id: parseInt(params.departmentId) });
             }
             if (params.searchKey) {
                 let searchKey = params.searchKey;
