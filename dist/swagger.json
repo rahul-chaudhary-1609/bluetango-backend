@@ -4320,7 +4320,7 @@
                         "name": "password",
                         "in": "formData",
                         "description": "password",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
@@ -4348,7 +4348,7 @@
                         "name": "current_designation",
                         "in": "formData",
                         "description": "designation",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
@@ -4369,35 +4369,35 @@
                         "name": "prev_employer",
                         "in": "formData",
                         "description": "prev_employer",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "prev_department",
                         "in": "formData",
                         "description": "prev_department",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "prev_designation",
                         "in": "formData",
                         "description": "prev_designation",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "prev_date_of_joining",
                         "in": "formData",
                         "description": "prev_date_of_joining YYYY-MM-DD",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     },
                     {
                         "name": "prev_exit",
                         "in": "formData",
                         "description": "prev_exit YYYY-MM-DD",
-                        "required": true,
+                        "required": false,
                         "type": "string"
                     }
                 ],

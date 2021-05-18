@@ -19,7 +19,6 @@ export const employeeModel: any = sequelize.define("employee", {
     },
     current_designation: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     current_date_of_joining: {
         type: DataTypes.DATE,
@@ -27,51 +26,44 @@ export const employeeModel: any = sequelize.define("employee", {
     },
     prev_employer: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     prev_department: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     prev_designation: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     prev_date_of_joining: {
         type: DataTypes.DATE,
-        allowNull: true,
     },
     prev_exit: {
         type: DataTypes.DATE,
-        allowNull: true,
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     date_of_birth: {
         type: DataTypes.DATEONLY,
-        allowNull: true,
     },
     employee_code: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     profile_pic_url: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     country_code: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     phone_number: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     status: {
         type: DataTypes.INTEGER,
@@ -93,13 +85,12 @@ export const employeeModel: any = sequelize.define("employee", {
     },
     is_manager: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         defaultValue: 0,
         comment: '0=>notManager,1=>manager'
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: true,
     },
     accomplishments: {
         type: DataTypes.TEXT,

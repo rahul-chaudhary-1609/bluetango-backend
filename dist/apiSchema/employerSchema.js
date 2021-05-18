@@ -91,7 +91,6 @@ exports.addEditEmployee = joi_1.default.object({
     password: joi_1.default.string().min(8)
         .max(15)
         .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
         "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
@@ -99,17 +98,17 @@ exports.addEditEmployee = joi_1.default.object({
         "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }),
+    }).optional(),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     current_department_id: joi_1.default.string().required(),
-    current_designation: joi_1.default.string().required(),
+    current_designation: joi_1.default.string().optional(),
     employee_code: joi_1.default.string().required(),
-    prev_employer: joi_1.default.string().required(),
-    prev_department: joi_1.default.string().required(),
-    prev_designation: joi_1.default.string().required(),
-    prev_date_of_joining: joi_1.default.string().required(),
-    prev_exit: joi_1.default.string().required(),
+    prev_employer: joi_1.default.string().optional(),
+    prev_department: joi_1.default.string().optional(),
+    prev_designation: joi_1.default.string().optional(),
+    prev_date_of_joining: joi_1.default.string().optional(),
+    prev_exit: joi_1.default.string().optional(),
     current_date_of_joining: joi_1.default.string().required(),
     manager_id: joi_1.default.string().required(),
 });

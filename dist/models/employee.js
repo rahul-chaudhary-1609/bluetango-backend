@@ -20,7 +20,6 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     },
     current_designation: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     current_date_of_joining: {
         type: sequelize_1.DataTypes.DATE,
@@ -28,51 +27,44 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     },
     prev_employer: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     prev_department: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     prev_designation: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     prev_date_of_joining: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: true,
     },
     prev_exit: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: true,
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     date_of_birth: {
         type: sequelize_1.DataTypes.DATEONLY,
-        allowNull: true,
     },
     employee_code: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     profile_pic_url: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     country_code: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     phone_number: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -94,13 +86,12 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     },
     is_manager: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         defaultValue: 0,
         comment: '0=>notManager,1=>manager'
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
     },
     accomplishments: {
         type: sequelize_1.DataTypes.TEXT,
