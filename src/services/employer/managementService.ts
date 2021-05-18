@@ -248,7 +248,7 @@ export class EmployeeManagement {
 
         let employeeDetails = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
+                //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
                     status: [constants.STATUS.active, constants.STATUS.inactive]
@@ -263,6 +263,8 @@ export class EmployeeManagement {
                 
             })
         )
+
+        delete employeeDetails.password
 
         teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         let quantitativeStatsOfGoals = await helperFunction.convertPromiseToObject(await teamGoalAssignModel.findAll({

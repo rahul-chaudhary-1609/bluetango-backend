@@ -254,7 +254,7 @@ class EmployeeManagement {
                 throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
+                //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
                     status: [constants.STATUS.active, constants.STATUS.inactive]
@@ -267,6 +267,7 @@ class EmployeeManagement {
                     }
                 ],
             }));
+            delete employeeDetails.password;
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             let quantitativeStatsOfGoals = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
                 where: { employee_id: parseInt(params.employee_id) },
