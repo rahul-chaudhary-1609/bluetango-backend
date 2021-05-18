@@ -310,7 +310,7 @@ export class EmployeeManagement {
 
         let qualitativeMeasurements = null;
 
-        if (qualitativeMeasurement.length === 0) {
+        if (qualitativeMeasurement.length !== 0) {
             //throw new Error(constants.MESSAGES.no_qualitative_measure);
 
             qualitativeMeasurements = {

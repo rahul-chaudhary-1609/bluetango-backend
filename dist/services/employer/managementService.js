@@ -297,7 +297,7 @@ class EmployeeManagement {
                 limit: 1
             }));
             let qualitativeMeasurements = null;
-            if (qualitativeMeasurement.length === 0) {
+            if (qualitativeMeasurement.length !== 0) {
                 //throw new Error(constants.MESSAGES.no_qualitative_measure);
                 qualitativeMeasurements = {
                     id: qualitativeMeasurement[0].id,
