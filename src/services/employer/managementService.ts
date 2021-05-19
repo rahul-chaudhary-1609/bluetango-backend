@@ -245,6 +245,7 @@ export class EmployeeManagement {
         if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
 
         let employeeDetails = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
@@ -254,6 +255,11 @@ export class EmployeeManagement {
                     status: [constants.STATUS.active, constants.STATUS.inactive]
                 },
                 include: [
+                    {
+                        model: managerTeamMemberModel,
+                        attributes: ['id', 'manager_id','team_member_id'],
+                        required: true,
+                    },
                     {
                         model: departmentModel,
                         attributes: ['id', 'name'],

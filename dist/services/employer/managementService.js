@@ -253,6 +253,7 @@ class EmployeeManagement {
             if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
                 throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                 //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
@@ -260,6 +261,11 @@ class EmployeeManagement {
                     status: [constants.STATUS.active, constants.STATUS.inactive]
                 },
                 include: [
+                    {
+                        model: managerTeamMember_1.managerTeamMemberModel,
+                        attributes: ['id', 'manager_id', 'team_member_id'],
+                        required: true,
+                    },
                     {
                         model: models_1.departmentModel,
                         attributes: ['id', 'name'],
