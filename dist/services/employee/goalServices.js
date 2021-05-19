@@ -380,59 +380,58 @@ class GoalServices {
                 throw new Error(constants.MESSAGES.team_goal_complete_request_pending);
             }
             delete employeeData.password;
-            if (getGoalData.enter_measure >= (parseInt(compeleteData.complete_measure) + parseInt(params.complete_measure))) {
-                let createObj = {
-                    team_goal_assign_id: params.team_goal_assign_id,
-                    goal_id: params.goal_id,
-                    description: params.description,
-                    complete_measure: params.complete_measure,
-                    total_complete_measure: compeleteData.complete_measure,
-                    status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
-                };
-                let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
-                // notification add
-                let notificationReq = {
-                    type_id: params.goal_id,
-                    team_goal_assign_id: params.team_goal_assign_id,
-                    team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
-                    sender_id: user.uid,
-                    reciever_id: getGoalData.manager_id,
+            //if (getGoalData.enter_measure >= ( parseInt(compeleteData.complete_measure)+ parseInt(params.complete_measure) ) ) {
+            let createObj = {
+                team_goal_assign_id: params.team_goal_assign_id,
+                goal_id: params.goal_id,
+                description: params.description,
+                complete_measure: params.complete_measure,
+                total_complete_measure: compeleteData.complete_measure,
+                status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested
+            };
+            let teamGoalAssignRequestRes = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.create(createObj));
+            // notification add
+            let notificationReq = {
+                type_id: params.goal_id,
+                team_goal_assign_id: params.team_goal_assign_id,
+                team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
+                sender_id: user.uid,
+                reciever_id: getGoalData.manager_id,
+                type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                    data: {
-                        type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                        title: 'Goal Submitted',
-                        message: `Goal submitted by ${employeeData.name}`,
-                        goal_id: params.goal_id,
-                        team_goal_assign_id: params.team_goal_assign_id,
-                        senderEmplyeeData: employeeData,
-                    },
-                };
-                yield notification_1.notificationModel.create(notificationReq);
-                let managerData = yield employee_1.employeeModel.findOne({
-                    where: { id: getGoalData.manager_id }
-                });
-                // let employeeData = await employeeModel.findOne({
-                //     where: { id: getGoalData.manager_id }
-                // })
-                // send push notification
-                let notificationData = {
                     title: 'Goal Submitted',
-                    body: `Goal submitted by ${employeeData.name}`,
-                    data: {
-                        type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                        title: 'Goal Submitted',
-                        message: `Goal submitted by ${employeeData.name}`,
-                        goal_id: params.goal_id,
-                        team_goal_assign_id: params.team_goal_assign_id,
-                        senderEmplyeeData: employeeData,
-                    },
-                };
-                yield helperFunction.sendFcmNotification([managerData.device_token], notificationData);
-                return teamGoalAssignRequestRes;
-            }
-            else {
-                throw new Error(constants.MESSAGES.invalid_measure);
-            }
+                    message: `Goal submitted by ${employeeData.name}`,
+                    goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
+                    senderEmplyeeData: employeeData,
+                },
+            };
+            yield notification_1.notificationModel.create(notificationReq);
+            let managerData = yield employee_1.employeeModel.findOne({
+                where: { id: getGoalData.manager_id }
+            });
+            // let employeeData = await employeeModel.findOne({
+            //     where: { id: getGoalData.manager_id }
+            // })
+            // send push notification
+            let notificationData = {
+                title: 'Goal Submitted',
+                body: `Goal submitted by ${employeeData.name}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.goal_complete_request,
+                    title: 'Goal Submitted',
+                    message: `Goal submitted by ${employeeData.name}`,
+                    goal_id: params.goal_id,
+                    team_goal_assign_id: params.team_goal_assign_id,
+                    senderEmplyeeData: employeeData,
+                },
+            };
+            yield helperFunction.sendFcmNotification([managerData.device_token], notificationData);
+            return teamGoalAssignRequestRes;
+            // } else {
+            //     throw new Error(constants.MESSAGES.invalid_measure);
+            //  }
         });
     }
     /*

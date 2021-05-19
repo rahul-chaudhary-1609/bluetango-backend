@@ -378,7 +378,7 @@ export class GoalServices {
 
         delete employeeData.password
 
-        if (getGoalData.enter_measure >= ( parseInt(compeleteData.complete_measure)+ parseInt(params.complete_measure) ) ) {
+        //if (getGoalData.enter_measure >= ( parseInt(compeleteData.complete_measure)+ parseInt(params.complete_measure) ) ) {
             let createObj = <any> {
                 team_goal_assign_id: params.team_goal_assign_id,
                 goal_id: params.goal_id,
@@ -436,9 +436,9 @@ export class GoalServices {
             await helperFunction.sendFcmNotification([managerData.device_token], notificationData);
 
             return teamGoalAssignRequestRes;
-        } else {
-            throw new Error(constants.MESSAGES.invalid_measure);
-         }
+        // } else {
+        //     throw new Error(constants.MESSAGES.invalid_measure);
+        //  }
      
     }
 
