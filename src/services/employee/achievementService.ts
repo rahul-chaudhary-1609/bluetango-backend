@@ -7,6 +7,7 @@ import { achievementLikeModel } from "../../models/achievementLike";
 import { achievementCommentModel } from "../../models/achievementComment";
 import { achievementHighFiveModel } from "../../models/achievementHighFive";
 import { employeeModel } from "../../models/employee";
+import { notificationModel } from "../../models/notification";
 
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -29,7 +30,7 @@ export class AchievementServices {
         let achievements = await helperFunction.convertPromiseToObject(
             await achievementModel.findAll({
                 attributes: [
-                    'id', 'employee_id', 'description','status' ,'createdAt','updatedAt',
+                    'id', 'employee_id', 'description', 'status','last_action_on','createdAt','updatedAt',
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')),'likeCount'],
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
@@ -62,7 +63,7 @@ export class AchievementServices {
                 group: [
                     '"achievements.id"', '"employee.id"'
                 ],                
-                order: [["createdAt", "DESC"]]
+                order: [["last_action_on", "DESC"]]
             })
         )
 
@@ -121,14 +122,55 @@ export class AchievementServices {
         else {
             let achievementObj = <any>{
                 employee_id: user.uid,
-                description: params.description
+                description: params.description,
+                last_action_on:new Date(),
             }
 
-            achievement = await achievementModel.create(achievementObj);
+            achievement = await helperFunction.convertPromiseToObject( await achievementModel.create(achievementObj));
+
+            // let senderData = await employeeModel.findByPk(parseInt(user.uid));
+            // let recieversData = await helperFunction.convertPromiseToObject(
+            //     await employeeModel.findAll({
+            //         where: {
+            //             status:constants.STATUS.active
+            //         }
+            //     })
+            // ) 
+
+            // for (let recieverData of recieversData) {
+            //     // add notification for employee
+            //     let notificationObj = <any>{
+            //         type_id: parseInt(achievement.id),
+            //         sender_id: senderData.id,
+            //         reciever_id: recieverData.id,
+            //         type: constants.NOTIFICATION_TYPE.achievement_post,
+            //         data: {
+            //             type: constants.NOTIFICATION_TYPE.achievement_post,
+            //             title: 'New Achievement Post',
+            //             message: `${senderData.name} has posted new achievement`,
+            //             id: parseInt(achievement.id),
+            //             senderEmplyeeData: senderData,
+            //         },
+            //     }
+            //     await notificationModel.create(notificationObj);
+            //     // send push notification
+            //     let notificationData = <any>{
+            //         title: 'New Achievement Post',
+            //         body: `${senderData.name} has posted new achievement`,
+            //         data: {
+            //             type: constants.NOTIFICATION_TYPE.achievement_post,
+            //             title: 'New Achievement Post',
+            //             message: `${senderData.name} has posted new achievement`,
+            //             id: parseInt(achievement.id),
+            //             senderEmplyeeData: senderData,
+            //         },
+            //     }
+            //     await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
+            // }
         }
 
 
-        return await helperFunction.convertPromiseToObject(achievement);
+        return achievement;
 
     }
 
@@ -156,8 +198,42 @@ export class AchievementServices {
                     liked_by_employee_id: user.uid,
                     achievement_id: parseInt(params.achievement_id)
                 }
-
                 await achievementLikeModel.create(achievementLikeObj)
+                
+                achievement.last_action_on = new Date();
+                achievement.save();
+
+                let senderData = await employeeModel.findByPk(parseInt(user.uid));
+                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+
+                // add notification for employee
+                let notificationObj = <any>{
+                    type_id: parseInt(params.achievement_id),
+                    sender_id: senderData.id,
+                    reciever_id: recieverData.id,
+                    type: constants.NOTIFICATION_TYPE.achievement_like,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_like,
+                        title: 'Achievement Like',
+                        message: `${senderData.name} has liked your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,                          
+                    },
+                }
+                await notificationModel.create(notificationObj);
+                // send push notification
+                let notificationData = <any>{
+                    title: 'Achievement Like',
+                    body: `${senderData.name} has liked your achievement post`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_like,
+                        title: 'Achievement Like',
+                        message: `${senderData.name} has liked your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,
+                    },
+                }
+                await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
             return true;
@@ -194,6 +270,40 @@ export class AchievementServices {
                 }
 
                 await achievementHighFiveModel.create(achievementHighFiveObj)
+                achievement.last_action_on = new Date();
+                achievement.save();
+
+                let senderData = await employeeModel.findByPk(parseInt(user.uid));
+                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+
+                // add notification for employee
+                let notificationObj = <any>{
+                    type_id: parseInt(params.achievement_id),
+                    sender_id: senderData.id,
+                    reciever_id: recieverData.id,
+                    type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                        title: 'Achievement Highfive',
+                        message: `${senderData.name} has reacted as highfive on your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,
+                    },
+                }
+                await notificationModel.create(notificationObj);
+                // send push notification
+                let notificationData = <any>{
+                    title: 'Achievement Highfive',
+                    body: `${senderData.name} has reacted as highfive on your achievement post`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                        title: 'Achievement Highfive',
+                        message: `${senderData.name} has reacted as highfive on your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,
+                    },
+                }
+                await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
             return true;
@@ -237,6 +347,40 @@ export class AchievementServices {
                 }
 
                 achievementComment = await achievementCommentModel.create(achievementCommentObj);
+                achievement.last_action_on = new Date();
+                achievement.save();
+
+                let senderData = await employeeModel.findByPk(parseInt(user.uid));
+                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+
+                // add notification for employee
+                let notificationObj = <any>{
+                    type_id: parseInt(params.achievement_id),
+                    sender_id: senderData.id,
+                    reciever_id: recieverData.id,
+                    type: constants.NOTIFICATION_TYPE.achievement_comment,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_comment,
+                        title: 'Achievement Comment',
+                        message: `${senderData.name} has commented on your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,
+                    },
+                }
+                await notificationModel.create(notificationObj);
+                // send push notification
+                let notificationData = <any>{
+                    title: 'Achievement Comment',
+                    body: `${senderData.name} has commented on your achievement post`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.achievement_comment,
+                        title: 'Achievement Comment',
+                        message: `${senderData.name} has commented on your achievement post`,
+                        id: parseInt(params.achievement_id),
+                        senderEmplyeeData: senderData,
+                    },
+                }
+                await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
 

@@ -36,6 +36,7 @@ const achievementLike_1 = require("../../models/achievementLike");
 const achievementComment_1 = require("../../models/achievementComment");
 const achievementHighFive_1 = require("../../models/achievementHighFive");
 const employee_1 = require("../../models/employee");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class AchievementServices {
@@ -53,7 +54,7 @@ class AchievementServices {
             achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
             let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
                 attributes: [
-                    'id', 'employee_id', 'description', 'status', 'createdAt', 'updatedAt',
+                    'id', 'employee_id', 'description', 'status', 'last_action_on', 'createdAt', 'updatedAt',
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
                     [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
@@ -86,7 +87,7 @@ class AchievementServices {
                 group: [
                     '"achievements.id"', '"employee.id"'
                 ],
-                order: [["createdAt", "DESC"]]
+                order: [["last_action_on", "DESC"]]
             }));
             for (let achievement of achievements) {
                 achievement.isLiked = false;
@@ -134,11 +135,50 @@ class AchievementServices {
             else {
                 let achievementObj = {
                     employee_id: user.uid,
-                    description: params.description
+                    description: params.description,
+                    last_action_on: new Date(),
                 };
-                achievement = yield achievement_1.achievementModel.create(achievementObj);
+                achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
+                // let senderData = await employeeModel.findByPk(parseInt(user.uid));
+                // let recieversData = await helperFunction.convertPromiseToObject(
+                //     await employeeModel.findAll({
+                //         where: {
+                //             status:constants.STATUS.active
+                //         }
+                //     })
+                // ) 
+                // for (let recieverData of recieversData) {
+                //     // add notification for employee
+                //     let notificationObj = <any>{
+                //         type_id: parseInt(achievement.id),
+                //         sender_id: senderData.id,
+                //         reciever_id: recieverData.id,
+                //         type: constants.NOTIFICATION_TYPE.achievement_post,
+                //         data: {
+                //             type: constants.NOTIFICATION_TYPE.achievement_post,
+                //             title: 'New Achievement Post',
+                //             message: `${senderData.name} has posted new achievement`,
+                //             id: parseInt(achievement.id),
+                //             senderEmplyeeData: senderData,
+                //         },
+                //     }
+                //     await notificationModel.create(notificationObj);
+                //     // send push notification
+                //     let notificationData = <any>{
+                //         title: 'New Achievement Post',
+                //         body: `${senderData.name} has posted new achievement`,
+                //         data: {
+                //             type: constants.NOTIFICATION_TYPE.achievement_post,
+                //             title: 'New Achievement Post',
+                //             message: `${senderData.name} has posted new achievement`,
+                //             id: parseInt(achievement.id),
+                //             senderEmplyeeData: senderData,
+                //         },
+                //     }
+                //     await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
+                // }
             }
-            return yield helperFunction.convertPromiseToObject(achievement);
+            return achievement;
         });
     }
     /*
@@ -163,6 +203,38 @@ class AchievementServices {
                         achievement_id: parseInt(params.achievement_id)
                     };
                     yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
+                    achievement.last_action_on = new Date();
+                    achievement.save();
+                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
+                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    // add notification for employee
+                    let notificationObj = {
+                        type_id: parseInt(params.achievement_id),
+                        sender_id: senderData.id,
+                        reciever_id: recieverData.id,
+                        type: constants.NOTIFICATION_TYPE.achievement_like,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_like,
+                            title: 'Achievement Like',
+                            message: `${senderData.name} has liked your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    let notificationData = {
+                        title: 'Achievement Like',
+                        body: `${senderData.name} has liked your achievement post`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_like,
+                            title: 'Achievement Like',
+                            message: `${senderData.name} has liked your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
                 return true;
             }
@@ -193,6 +265,38 @@ class AchievementServices {
                         achievement_id: parseInt(params.achievement_id)
                     };
                     yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
+                    achievement.last_action_on = new Date();
+                    achievement.save();
+                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
+                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    // add notification for employee
+                    let notificationObj = {
+                        type_id: parseInt(params.achievement_id),
+                        sender_id: senderData.id,
+                        reciever_id: recieverData.id,
+                        type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                            title: 'Achievement Highfive',
+                            message: `${senderData.name} has reacted as highfive on your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    let notificationData = {
+                        title: 'Achievement Highfive',
+                        body: `${senderData.name} has reacted as highfive on your achievement post`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_highfive,
+                            title: 'Achievement Highfive',
+                            message: `${senderData.name} has reacted as highfive on your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
                 return true;
             }
@@ -230,6 +334,38 @@ class AchievementServices {
                         comment: params.comment
                     };
                     achievementComment = yield achievementComment_1.achievementCommentModel.create(achievementCommentObj);
+                    achievement.last_action_on = new Date();
+                    achievement.save();
+                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
+                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    // add notification for employee
+                    let notificationObj = {
+                        type_id: parseInt(params.achievement_id),
+                        sender_id: senderData.id,
+                        reciever_id: recieverData.id,
+                        type: constants.NOTIFICATION_TYPE.achievement_comment,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_comment,
+                            title: 'Achievement Comment',
+                            message: `${senderData.name} has commented on your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    let notificationData = {
+                        title: 'Achievement Comment',
+                        body: `${senderData.name} has commented on your achievement post`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_comment,
+                            title: 'Achievement Comment',
+                            message: `${senderData.name} has commented on your achievement post`,
+                            id: parseInt(params.achievement_id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
                 return yield helperFunction.convertPromiseToObject(achievementComment);
             }

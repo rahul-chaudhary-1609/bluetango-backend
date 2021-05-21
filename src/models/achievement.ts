@@ -17,6 +17,10 @@ export const achievementModel: any = sequelize.define("achievements", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    last_action_on: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -28,4 +32,4 @@ export const achievementModel: any = sequelize.define("achievements", {
         tableName: "achievements"
     }
 );
-achievementModel.sync({ alter: false });
+achievementModel.sync({ alter: true });

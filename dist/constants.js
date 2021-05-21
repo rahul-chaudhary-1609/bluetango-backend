@@ -193,7 +193,11 @@ exports.NOTIFICATION_TYPE = {
     chat_disconnect: 9,
     audio_chat_missed: 10,
     video_chat_missed: 11,
-    expiration_of_free_trial: 12,
+    achievement_post: 12,
+    achievement_like: 13,
+    achievement_highfive: 14,
+    achievement_comment: 15,
+    expiration_of_free_trial: 16,
 };
 exports.STATUS = {
     inactive: 0,

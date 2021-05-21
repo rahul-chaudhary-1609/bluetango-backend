@@ -18,6 +18,10 @@ exports.achievementModel = connection_1.sequelize.define("achievements", {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false,
     },
+    last_action_on: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -27,5 +31,5 @@ exports.achievementModel = connection_1.sequelize.define("achievements", {
 }, {
     tableName: "achievements"
 });
-exports.achievementModel.sync({ alter: false });
+exports.achievementModel.sync({ alter: true });
 //# sourceMappingURL=achievement.js.map
