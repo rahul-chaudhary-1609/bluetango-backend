@@ -51,4 +51,4 @@ export const notificationModel: any = sequelize.define("notification", {
         tableName: "notification"
     }
 );
-notificationModel.sync({ alter: true });
+notificationModel.sync({ alter: false });

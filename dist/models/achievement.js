@@ -31,5 +31,5 @@ exports.achievementModel = connection_1.sequelize.define("achievements", {
 }, {
     tableName: "achievements"
 });
-exports.achievementModel.sync({ alter: true });
+exports.achievementModel.sync({ alter: false });
 //# sourceMappingURL=achievement.js.map

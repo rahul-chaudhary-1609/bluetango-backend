@@ -32,4 +32,4 @@ export const achievementModel: any = sequelize.define("achievements", {
         tableName: "achievements"
     }
 );
-achievementModel.sync({ alter: true });
+achievementModel.sync({ alter: false });

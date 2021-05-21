@@ -51,5 +51,5 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
 }, {
     tableName: "notification"
 });
-exports.notificationModel.sync({ alter: true });
+exports.notificationModel.sync({ alter: false });
 //# sourceMappingURL=notification.js.map

@@ -401,7 +401,7 @@ class GoalServices {
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
                     title: 'Goal Submitted',
-                    message: `Goal submitted by ${employeeData.name}`,
+                    message: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
                     team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
@@ -417,11 +417,11 @@ class GoalServices {
             // send push notification
             let notificationData = {
                 title: 'Goal Submitted',
-                body: `Goal submitted by ${employeeData.name}`,
+                body: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
                     title: 'Goal Submitted',
-                    message: `Goal submitted by ${employeeData.name}`,
+                    message: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
                     goal_id: params.goal_id,
                     team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
@@ -472,6 +472,9 @@ class GoalServices {
    */
     goalAcceptRejectAsManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let getGoalData = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+                where: { id: params.goal_id }
+            }));
             let teamGoalAssignCompletionByEmployeeObj = {
                 status: parseInt(params.status),
                 manager_comment: params.manager_comment || null,
@@ -508,7 +511,7 @@ class GoalServices {
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_accept,
                             title: 'Goal Accepted',
-                            message: `Your manager has accepted your goal`,
+                            message: `Your manager has accepted your goal - ${getGoalData.title}`,
                             goal_id: params.goal_id,
                             team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
@@ -518,11 +521,11 @@ class GoalServices {
                     // send push notification
                     let notificationData = {
                         title: 'Goal Accepted',
-                        body: `Your manager has accepted your goal`,
+                        body: `Your manager has accepted your goal - ${getGoalData.title}`,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_accept,
                             title: 'Goal Accepted',
-                            message: `Your manager has accepted your goal`,
+                            message: `Your manager has accepted your goal - ${getGoalData.title}`,
                             goal_id: params.goal_id,
                             team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
@@ -556,7 +559,7 @@ class GoalServices {
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_reject,
                             title: 'Goal Rejected',
-                            message: `Your manager rejected your goal`,
+                            message: `Your manager has rejected your goal - ${getGoalData.title}`,
                             goal_id: params.goal_id,
                             team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
@@ -566,11 +569,11 @@ class GoalServices {
                     // send push notification
                     let notificationData = {
                         title: 'Goal Rejected',
-                        body: `Your manager rejected your goal`,
+                        body: `Your manager has rejected your goal - ${getGoalData.title}`,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_reject,
                             title: 'Goal Rejected',
-                            message: `Your manager rejected your goal`,
+                            message: `Your manager has rejected your goal - ${getGoalData.title}`,
                             goal_id: params.goal_id,
                             team_goal_assign_id: params.team_goal_assign_id,
                             senderEmplyeeData: managerData,
