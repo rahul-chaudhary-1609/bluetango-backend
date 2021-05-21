@@ -363,7 +363,7 @@ class EmployeeController {
     getUnseenNotificationCount(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeServices.getUnseenNotificationCount(req.params, req.user);
+                const responseFromService = yield employeeServices.getUnseenNotificationCount(req.query, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {
@@ -376,10 +376,10 @@ class EmployeeController {
  * @param req :[]
  * @param res
  */
-    markNotificationAsViewed(req, res, next) {
+    markNotificationsAsViewed(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeServices.markNotificationAsViewed(req.params, req.user);
+                const responseFromService = yield employeeServices.markNotificationsAsViewed(req.query, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

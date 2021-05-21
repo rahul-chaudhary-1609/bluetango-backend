@@ -313,7 +313,7 @@ export class EmployeeController {
 */
     public async getUnseenNotificationCount(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.getUnseenNotificationCount(req.params, req.user);
+            const responseFromService = await employeeServices.getUnseenNotificationCount(req.query, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {
@@ -326,9 +326,9 @@ export class EmployeeController {
  * @param req :[]
  * @param res 
  */
-    public async markNotificationAsViewed(req: any, res: any, next: any) {
+    public async markNotificationsAsViewed(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.markNotificationAsViewed(req.params, req.user);
+            const responseFromService = await employeeServices.markNotificationsAsViewed(req.query, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {

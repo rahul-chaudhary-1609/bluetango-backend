@@ -3605,12 +3605,20 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "type",
+                        "required": false,
+                        "type": "string",
+                        "enum": ["achievement", "chat", "goal", "rating"]
                     }
                 ],
                 "responses": {}
             }
         },
-        "/employee/markNotificationAsViewed/{notification_id}": {
+        "/employee/markNotificationsAsViewed": {
             "put": {
                 "tags": [
                     "Employee"
@@ -3628,11 +3636,17 @@
                         "type": "string"
                     },
                     {
-                        "name": "notification_id",
-                        "in": "path",
-                        "description": "Enter notification id",
-                        "required": true,
-                        "type": "string"
+                        "name": "type",
+                        "in": "query",
+                        "description": "type",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "achievement",
+                            "chat",
+                            "goal",
+                            "rating"
+                        ]
                     }
                 ],
                 "responses": {}

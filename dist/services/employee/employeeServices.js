@@ -526,11 +526,42 @@ class EmployeeServices {
 */
     getUnseenNotificationCount(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let unseenNotificationCount = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
-                where: {
-                    reciever_id: user.uid,
-                    status: 1,
+            let whereCondition = null;
+            if (params && params.type) {
+                if (params.type == "achievement") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.achievement_like,
+                            constants.NOTIFICATION_TYPE.achievement_highfive,
+                            constants.NOTIFICATION_TYPE.achievement_comment,
+                        ] });
                 }
+                else if (params.type == "chat") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.audio_chat,
+                            constants.NOTIFICATION_TYPE.video_chat,
+                            constants.NOTIFICATION_TYPE.audio_chat_missed,
+                            constants.NOTIFICATION_TYPE.video_chat_missed,
+                            constants.NOTIFICATION_TYPE.chat_disconnect,
+                        ] });
+                }
+                else if (params.type == "goal") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.assign_new_goal,
+                            constants.NOTIFICATION_TYPE.goal_complete_request,
+                            constants.NOTIFICATION_TYPE.goal_accept,
+                            constants.NOTIFICATION_TYPE.goal_reject,
+                        ] });
+                }
+                else if (params.type == "rating") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.rating
+                        ] });
+                }
+            }
+            let unseenNotificationCount = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
+                where: Object.assign(Object.assign({}, whereCondition), { reciever_id: user.uid, status: 1 })
             }));
             return { unseenNotificationCount };
         });
@@ -538,15 +569,46 @@ class EmployeeServices {
     /*
 * function to mark as viewed notification
 */
-    markNotificationAsViewed(params, user) {
+    markNotificationsAsViewed(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let whereCondition = null;
+            if (params && params.type) {
+                if (params.type == "achievement") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.achievement_like,
+                            constants.NOTIFICATION_TYPE.achievement_highfive,
+                            constants.NOTIFICATION_TYPE.achievement_comment,
+                        ] });
+                }
+                else if (params.type == "chat") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.audio_chat,
+                            constants.NOTIFICATION_TYPE.video_chat,
+                            constants.NOTIFICATION_TYPE.audio_chat_missed,
+                            constants.NOTIFICATION_TYPE.video_chat_missed,
+                            constants.NOTIFICATION_TYPE.chat_disconnect,
+                        ] });
+                }
+                else if (params.type == "goal") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.assign_new_goal,
+                            constants.NOTIFICATION_TYPE.goal_complete_request,
+                            constants.NOTIFICATION_TYPE.goal_accept,
+                            constants.NOTIFICATION_TYPE.goal_reject,
+                        ] });
+                }
+                else if (params.type == "rating") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.rating
+                        ] });
+                }
+            }
             let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({
                 status: 0,
             }, {
-                where: {
-                    id: parseInt(params.notification_id),
-                    reciever_id: user.uid,
-                }
+                where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid })
             }));
             return notification;
         });

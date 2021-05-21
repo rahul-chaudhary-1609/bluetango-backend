@@ -214,8 +214,12 @@ export const deleteAchievementComment = Joi.object({
   achievement_comment_id: Joi.number().required(),
 })
 
-export const markNotificationAsViewed = Joi.object({
-  notification_id: Joi.number().required(),
+export const markNotificationsAsViewed = Joi.object({
+  type: Joi.string().optional(),
+})
+
+export const getUnseenNotificationCount = Joi.object({
+  type: Joi.string().optional(),
 })
 
 export const getAchievementLikesList = Joi.object({

@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { constant } from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
@@ -561,8 +561,58 @@ export class EmployeeServices {
 */
     public async getUnseenNotificationCount(params: any, user: any) {
 
+        let whereCondition = null;
+        
+        if (params && params.type) {
+            if (params.type == "achievement") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                        constants.NOTIFICATION_TYPE.achievement_like,
+                        constants.NOTIFICATION_TYPE.achievement_highfive,
+                        constants.NOTIFICATION_TYPE.achievement_comment,
+                    ]
+                }
+            }
+            else if (params.type == "chat") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.audio_chat,
+                        constants.NOTIFICATION_TYPE.video_chat,
+                        constants.NOTIFICATION_TYPE.audio_chat_missed,
+                        constants.NOTIFICATION_TYPE.video_chat_missed,
+                        constants.NOTIFICATION_TYPE.chat_disconnect,
+                    ]
+                }
+            }
+            else if (params.type == "goal") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.assign_new_goal,
+                        constants.NOTIFICATION_TYPE.goal_complete_request,
+                        constants.NOTIFICATION_TYPE.goal_accept,
+                        constants.NOTIFICATION_TYPE.goal_reject,
+                    ]
+                }
+            }
+            else if (params.type == "rating") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.rating
+                    ]
+                }
+            }
+            
+        }
+
         let unseenNotificationCount = await helperFunction.convertPromiseToObject(await notificationModel.count({
             where: {
+                ...whereCondition,
                 reciever_id: user.uid,
                 status:1,
             }
@@ -575,13 +625,65 @@ export class EmployeeServices {
     /*
 * function to mark as viewed notification
 */
-    public async markNotificationAsViewed(params: any, user: any) {
+    public async markNotificationsAsViewed(params: any, user: any) {
+
+        let whereCondition = null;
+
+        if (params && params.type) {
+            if (params.type == "achievement") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                        constants.NOTIFICATION_TYPE.achievement_like,
+                        constants.NOTIFICATION_TYPE.achievement_highfive,
+                        constants.NOTIFICATION_TYPE.achievement_comment,
+                    ]
+                }
+            }
+            else if (params.type == "chat") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.audio_chat,
+                        constants.NOTIFICATION_TYPE.video_chat,
+                        constants.NOTIFICATION_TYPE.audio_chat_missed,
+                        constants.NOTIFICATION_TYPE.video_chat_missed,
+                        constants.NOTIFICATION_TYPE.chat_disconnect,
+                    ]
+                }
+            }
+            else if (params.type == "goal") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.assign_new_goal,
+                        constants.NOTIFICATION_TYPE.goal_complete_request,
+                        constants.NOTIFICATION_TYPE.goal_accept,
+                        constants.NOTIFICATION_TYPE.goal_reject,
+                    ]
+                }
+            }
+            else if (params.type == "rating") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.rating
+                    ]
+                }
+            }
+
+        }
+
 
         let notification = await helperFunction.convertPromiseToObject(await notificationModel.update({
             status: 0,
         },{
             where: {
-                id: parseInt(params.notification_id),
+                //id: parseInt(params.notification_id),
+                ...whereCondition,
+                status: 1,
                 reciever_id: user.uid,
             }
         }));

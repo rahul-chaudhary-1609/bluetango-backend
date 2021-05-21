@@ -168,10 +168,10 @@ employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmpl
 employeeRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getNotifications);
 
 /* to get unseen notification count */
-employeeRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getUnseenNotificationCount);
+employeeRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getUnseenNotificationCount), employeeController.getUnseenNotificationCount);
 
 /* contact us for employee */
-employeeRoute.put("/markNotificationAsViewed/:notification_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.markNotificationAsViewed), employeeController.markNotificationAsViewed);
+employeeRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.markNotificationsAsViewed), employeeController.markNotificationsAsViewed);
 
 
 // Chat routes
