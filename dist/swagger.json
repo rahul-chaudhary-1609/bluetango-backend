@@ -3673,6 +3673,34 @@
                 "responses": {}
             }
         },
+        "/employee/getAchievementById/{achievement_id}": {
+            "get": {
+                "tags": [
+                    "EmployeeAchievement"
+                ],
+                "description": "get achievement by id",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "achievement id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/createUpdateAchievement": {
             "post": {
                 "tags": [

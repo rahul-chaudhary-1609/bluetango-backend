@@ -157,6 +157,8 @@ employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenV
 //achievement API's
 /* get achievements */
 employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);
+/* get achievement by id */
+employeeRoute.get("/getAchievementById/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementById), achievementController.getAchievementById);
 /* create achievement */
 employeeRoute.post("/createUpdateAchievement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createUpdateAchievement), achievementController.createUpdateAchievement);
 /* like dislike achievement */

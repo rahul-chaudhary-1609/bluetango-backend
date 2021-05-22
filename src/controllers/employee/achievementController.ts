@@ -25,6 +25,20 @@ export class AchievementController {
     }
 
     /**
+    * get achievement by id
+    * @param req :[]
+    * @param res 
+    */
+    public async getAchievementById(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await achievementServices.getAchievementById(req.params,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * create achievement
     * @param req :[]
     * @param res 

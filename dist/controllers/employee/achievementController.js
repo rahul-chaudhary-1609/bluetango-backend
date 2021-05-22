@@ -53,6 +53,22 @@ class AchievementController {
         });
     }
     /**
+    * get achievement by id
+    * @param req :[]
+    * @param res
+    */
+    getAchievementById(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield achievementServices.getAchievementById(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * create achievement
     * @param req :[]
     * @param res

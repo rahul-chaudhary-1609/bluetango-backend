@@ -183,6 +183,11 @@ export const contactUs = Joi.object({
   message: Joi.string().required(),
 })
 
+export const getAchievementById = Joi.object({
+  achievement_id: Joi.number().required(),
+})
+
+
 export const createUpdateAchievement = Joi.object({
   achievement_id: Joi.number(),
   description: Joi.string().required(),

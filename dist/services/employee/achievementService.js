@@ -92,6 +92,7 @@ class AchievementServices {
             for (let achievement of achievements) {
                 achievement.isLiked = false;
                 achievement.isHighFived = false;
+                achievement.isSelf = false;
                 let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                     where: {
                         liked_by_employee_id: user.uid,
@@ -108,8 +109,87 @@ class AchievementServices {
                     achievement.isLiked = true;
                 if (achievementHighFive)
                     achievement.isHighFived = true;
+                if (achievement.employee && achievement.employee.id == parseInt(user.uid))
+                    achievement.isSelf = true;
             }
             return { achievements };
+        });
+    }
+    /*
+    * function to get achievemnet by id
+    */
+    getAchievementById(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasMany(achievementHighFive_1.achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
+            achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
+            achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
+            let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findOne({
+                attributes: [
+                    'id', 'employee_id', 'description', 'status', 'last_action_on', 'createdAt', 'updatedAt',
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
+                    [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
+                ],
+                where: {
+                    id: parseInt(params.achievement_id),
+                },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        required: true
+                    },
+                    {
+                        model: achievementLike_1.achievementLikeModel,
+                        attributes: [],
+                        where: { status: 1 },
+                        required: false,
+                    },
+                    {
+                        model: achievementHighFive_1.achievementHighFiveModel,
+                        attributes: [],
+                        where: { status: 1 },
+                        required: false,
+                    },
+                    {
+                        model: achievementComment_1.achievementCommentModel,
+                        attributes: [],
+                        where: { status: 1 },
+                        required: false,
+                    },
+                ],
+                group: [
+                    '"achievements.id"', '"employee.id"'
+                ],
+                order: [["last_action_on", "DESC"]]
+            }));
+            if (!achievement)
+                throw new Error(constants.MESSAGES.no_achievement);
+            achievement.isLiked = false;
+            achievement.isHighFived = false;
+            achievement.isSelf = false;
+            let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
+                where: {
+                    liked_by_employee_id: user.uid,
+                    achievement_id: achievement.id,
+                }
+            });
+            let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                where: {
+                    high_fived_by_employee_id: user.uid,
+                    achievement_id: achievement.id,
+                }
+            });
+            if (achievementLike)
+                achievement.isLiked = true;
+            if (achievementHighFive)
+                achievement.isHighFived = true;
+            if (achievement.employee && achievement.employee.id == parseInt(user.uid))
+                achievement.isSelf = true;
+            return { achievement };
         });
     }
     /*
