@@ -46,18 +46,10 @@ class AchievementServices {
     */
     getAchievements(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
-            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
-            achievement_1.achievementModel.hasMany(achievementHighFive_1.achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
-            achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
             let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
                 attributes: [
                     'id', 'employee_id', 'description', 'status', 'last_action_on', 'createdAt', 'updatedAt',
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
                 ],
                 include: [
                     {
@@ -65,27 +57,6 @@ class AchievementServices {
                         attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
                         required: true
                     },
-                    {
-                        model: achievementLike_1.achievementLikeModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                    {
-                        model: achievementHighFive_1.achievementHighFiveModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                    {
-                        model: achievementComment_1.achievementCommentModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                ],
-                group: [
-                    '"achievements.id"', '"employee.id"'
                 ],
                 order: [["last_action_on", "DESC"]]
             }));
@@ -93,16 +64,34 @@ class AchievementServices {
                 achievement.isLiked = false;
                 achievement.isHighFived = false;
                 achievement.isSelf = false;
+                achievement.likeCount = yield achievementLike_1.achievementLikeModel.count({
+                    where: {
+                        achievement_id: parseInt(achievement.id),
+                        status: constants.STATUS.active,
+                    }
+                });
+                achievement.highFiveCount = yield achievementHighFive_1.achievementHighFiveModel.count({
+                    where: {
+                        achievement_id: parseInt(achievement.id),
+                        status: constants.STATUS.active,
+                    }
+                });
+                achievement.commentCount = yield achievementComment_1.achievementCommentModel.count({
+                    where: {
+                        achievement_id: parseInt(achievement.id),
+                        status: constants.STATUS.active,
+                    }
+                });
                 let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                     where: {
                         liked_by_employee_id: user.uid,
-                        achievement_id: achievement.id,
+                        achievement_id: parseInt(achievement.id),
                     }
                 });
                 let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
                     where: {
                         high_fived_by_employee_id: user.uid,
-                        achievement_id: achievement.id,
+                        achievement_id: parseInt(achievement.id),
                     }
                 });
                 if (achievementLike)
@@ -120,18 +109,10 @@ class AchievementServices {
     */
     getAchievementById(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            achievement_1.achievementModel.hasMany(achievementLike_1.achievementLikeModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
-            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
-            achievement_1.achievementModel.hasMany(achievementHighFive_1.achievementHighFiveModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
-            achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
             let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findOne({
                 attributes: [
                     'id', 'employee_id', 'description', 'status', 'last_action_on', 'createdAt', 'updatedAt',
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_likes.id')), 'likeCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_high_fives.id')), 'highFiveCount'],
-                    [Sequelize.fn('COUNT', Sequelize.col('achievement_comments.id')), 'commentCount']
                 ],
                 where: {
                     id: parseInt(params.achievement_id),
@@ -142,27 +123,6 @@ class AchievementServices {
                         attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
                         required: true
                     },
-                    {
-                        model: achievementLike_1.achievementLikeModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                    {
-                        model: achievementHighFive_1.achievementHighFiveModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                    {
-                        model: achievementComment_1.achievementCommentModel,
-                        attributes: [],
-                        where: { status: 1 },
-                        required: false,
-                    },
-                ],
-                group: [
-                    '"achievements.id"', '"employee.id"'
                 ],
                 order: [["last_action_on", "DESC"]]
             }));
@@ -171,16 +131,34 @@ class AchievementServices {
             achievement.isLiked = false;
             achievement.isHighFived = false;
             achievement.isSelf = false;
+            achievement.likeCount = yield achievementLike_1.achievementLikeModel.count({
+                where: {
+                    achievement_id: parseInt(achievement.id),
+                    status: constants.STATUS.active,
+                }
+            });
+            achievement.highFiveCount = yield achievementHighFive_1.achievementHighFiveModel.count({
+                where: {
+                    achievement_id: parseInt(achievement.id),
+                    status: constants.STATUS.active,
+                }
+            });
+            achievement.commentCount = yield achievementComment_1.achievementCommentModel.count({
+                where: {
+                    achievement_id: parseInt(achievement.id),
+                    status: constants.STATUS.active,
+                }
+            });
             let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                 where: {
                     liked_by_employee_id: user.uid,
-                    achievement_id: achievement.id,
+                    achievement_id: parseInt(achievement.id),
                 }
             });
             let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
                 where: {
                     high_fived_by_employee_id: user.uid,
-                    achievement_id: achievement.id,
+                    achievement_id: parseInt(achievement.id),
                 }
             });
             if (achievementLike)
