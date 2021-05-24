@@ -46,6 +46,7 @@ class AchievementServices {
     */
     getAchievements(user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
                 attributes: [
@@ -58,7 +59,8 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                        where: { current_employer_id: employee.current_employer_id },
                         required: true
                     },
                 ],
@@ -68,24 +70,6 @@ class AchievementServices {
                 achievement.isLiked = false;
                 achievement.isHighFived = false;
                 achievement.isSelf = false;
-                // achievement.likeCount = await achievementLikeModel.count({
-                //     where: {
-                //         achievement_id: parseInt(achievement.id),
-                //         status: constants.STATUS.active,
-                //     }
-                // })
-                // achievement.highFiveCount = await achievementHighFiveModel.count({
-                //     where: {
-                //         achievement_id: parseInt(achievement.id),
-                //         status: constants.STATUS.active,
-                //     }
-                // })
-                // achievement.commentCount = await achievementCommentModel.count({
-                //     where: {
-                //         achievement_id: parseInt(achievement.id),
-                //         status: constants.STATUS.active,
-                //     }
-                // })
                 let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                     where: {
                         liked_by_employee_id: user.uid,
@@ -128,7 +112,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
                         required: true
                     },
                 ],
@@ -139,24 +123,6 @@ class AchievementServices {
             achievement.isLiked = false;
             achievement.isHighFived = false;
             achievement.isSelf = false;
-            // achievement.likeCount = await achievementLikeModel.count({
-            //     where: {
-            //         achievement_id: parseInt(achievement.id),
-            //         status: constants.STATUS.active,
-            //     }
-            // })
-            // achievement.highFiveCount = await achievementHighFiveModel.count({
-            //     where: {
-            //         achievement_id: parseInt(achievement.id),
-            //         status: constants.STATUS.active,
-            //     }
-            // })
-            // achievement.commentCount = await achievementCommentModel.count({
-            //     where: {
-            //         achievement_id: parseInt(achievement.id),
-            //         status: constants.STATUS.active,
-            //     }
-            // })
             let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                 where: {
                     liked_by_employee_id: user.uid,
@@ -205,44 +171,43 @@ class AchievementServices {
                     last_action_on: new Date(),
                 };
                 achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
-                // let senderData = await employeeModel.findByPk(parseInt(user.uid));
-                // let recieversData = await helperFunction.convertPromiseToObject(
-                //     await employeeModel.findAll({
-                //         where: {
-                //             status:constants.STATUS.active
-                //         }
-                //     })
-                // ) 
-                // for (let recieverData of recieversData) {
-                //     // add notification for employee
-                //     let notificationObj = <any>{
-                //         type_id: parseInt(achievement.id),
-                //         sender_id: senderData.id,
-                //         reciever_id: recieverData.id,
-                //         type: constants.NOTIFICATION_TYPE.achievement_post,
-                //         data: {
-                //             type: constants.NOTIFICATION_TYPE.achievement_post,
-                //             title: 'New Achievement Post',
-                //             message: `${senderData.name} has posted new achievement`,
-                //             id: parseInt(achievement.id),
-                //             senderEmplyeeData: senderData,
-                //         },
-                //     }
-                //     await notificationModel.create(notificationObj);
-                //     // send push notification
-                //     let notificationData = <any>{
-                //         title: 'New Achievement Post',
-                //         body: `${senderData.name} has posted new achievement`,
-                //         data: {
-                //             type: constants.NOTIFICATION_TYPE.achievement_post,
-                //             title: 'New Achievement Post',
-                //             message: `${senderData.name} has posted new achievement`,
-                //             id: parseInt(achievement.id),
-                //             senderEmplyeeData: senderData,
-                //         },
-                //     }
-                //     await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
-                // }
+                let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
+                let recieversData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                    where: {
+                        current_employer_id: senderData.current_employer_id,
+                        status: constants.STATUS.active
+                    }
+                }));
+                for (let recieverData of recieversData) {
+                    // add notification for employee
+                    let notificationObj = {
+                        type_id: parseInt(achievement.id),
+                        sender_id: senderData.id,
+                        reciever_id: recieverData.id,
+                        type: constants.NOTIFICATION_TYPE.achievement_post,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_post,
+                            title: 'New Achievement Post',
+                            message: `${senderData.name} has posted new achievement`,
+                            id: parseInt(achievement.id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield notification_1.notificationModel.create(notificationObj);
+                    // send push notification
+                    let notificationData = {
+                        title: 'New Achievement Post',
+                        body: `${senderData.name} has posted new achievement`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_post,
+                            title: 'New Achievement Post',
+                            message: `${senderData.name} has posted new achievement`,
+                            id: parseInt(achievement.id),
+                            senderEmplyeeData: senderData,
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
+                }
             }
             return achievement;
         });
@@ -271,7 +236,7 @@ class AchievementServices {
                         achievement_id: parseInt(params.achievement_id)
                     };
                     yield achievementLike_1.achievementLikeModel.create(achievementLikeObj);
-                    achievement.last_action_on = new Date();
+                    //achievement.last_action_on = new Date();
                     achievement.like_count = parseInt(achievement.like_count) + 1;
                     achievement.save();
                     let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
@@ -336,7 +301,7 @@ class AchievementServices {
                         achievement_id: parseInt(params.achievement_id)
                     };
                     yield achievementHighFive_1.achievementHighFiveModel.create(achievementHighFiveObj);
-                    achievement.last_action_on = new Date();
+                    //achievement.last_action_on = new Date();
                     achievement.high_five_count = parseInt(achievement.high_five_count) + 1;
                     achievement.save();
                     let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));

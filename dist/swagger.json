@@ -3612,7 +3612,7 @@
                         "description": "type",
                         "required": false,
                         "type": "string",
-                        "enum": ["achievement", "chat", "goal", "rating"]
+                        "enum": ["achievement", "achievement_post_only", "chat", "goal", "rating"]
                     }
                 ],
                 "responses": {}
@@ -3643,6 +3643,7 @@
                         "type": "string",
                         "enum": [
                             "achievement",
+                            "achievement_post_only",
                             "chat",
                             "goal",
                             "rating"

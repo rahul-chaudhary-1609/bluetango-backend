@@ -538,6 +538,9 @@ export class EmployeeServices {
         let notifications = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
             where: {
                 reciever_id: user.uid,
+                type: {
+                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                },
                 status:[0,1]
             },
             order: [["createdAt", "DESC"]]
@@ -548,6 +551,9 @@ export class EmployeeServices {
         }, {
             where: {
                 status: 1,
+                type: {
+                  [Op.notIn]:[constants.NOTIFICATION_TYPE.achievement_post]
+                },
                 reciever_id: user.uid,
             }
         })
@@ -572,6 +578,14 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_like,
                         constants.NOTIFICATION_TYPE.achievement_highfive,
                         constants.NOTIFICATION_TYPE.achievement_comment,
+                    ]
+                }
+            }
+            else if (params.type == "achievement_post_only") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
                     ]
                 }
             }
@@ -638,6 +652,14 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_like,
                         constants.NOTIFICATION_TYPE.achievement_highfive,
                         constants.NOTIFICATION_TYPE.achievement_comment,
+                    ]
+                }
+            }
+            else if (params.type == "achievement_post_only") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
                     ]
                 }
             }

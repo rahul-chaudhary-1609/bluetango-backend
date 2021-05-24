@@ -506,6 +506,9 @@ class EmployeeServices {
             let notifications = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
                 where: {
                     reciever_id: user.uid,
+                    type: {
+                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    },
                     status: [0, 1]
                 },
                 order: [["createdAt", "DESC"]]
@@ -515,6 +518,9 @@ class EmployeeServices {
             }, {
                 where: {
                     status: 1,
+                    type: {
+                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    },
                     reciever_id: user.uid,
                 }
             });
@@ -534,6 +540,11 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_like,
                             constants.NOTIFICATION_TYPE.achievement_highfive,
                             constants.NOTIFICATION_TYPE.achievement_comment,
+                        ] });
+                }
+                else if (params.type == "achievement_post_only") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
                         ] });
                 }
                 else if (params.type == "chat") {
@@ -579,6 +590,11 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_like,
                             constants.NOTIFICATION_TYPE.achievement_highfive,
                             constants.NOTIFICATION_TYPE.achievement_comment,
+                        ] });
+                }
+                else if (params.type == "achievement_post_only") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
                         ] });
                 }
                 else if (params.type == "chat") {
