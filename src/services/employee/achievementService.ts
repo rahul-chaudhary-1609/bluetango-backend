@@ -25,7 +25,11 @@ export class AchievementServices {
         let achievements = await helperFunction.convertPromiseToObject(
             await achievementModel.findAll({
                 attributes: [
-                    'id', 'employee_id', 'description', 'status','last_action_on','createdAt','updatedAt',
+                    'id', 'employee_id', 'description', 'status',
+                    ['like_count', 'likeCount'],
+                    ['high_five_count', 'highFiveCount'],
+                    ['comment_count', 'commentCount'],
+                    'last_action_on', 'createdAt', 'updatedAt',
                 ],
                 include: [
                     {
@@ -44,26 +48,26 @@ export class AchievementServices {
             achievement.isHighFived = false;
             achievement.isSelf = false;
             
-            achievement.likeCount = await achievementLikeModel.count({
-                where: {
-                    achievement_id: parseInt(achievement.id),
-                    status: constants.STATUS.active,
-                }
-            })
+            // achievement.likeCount = await achievementLikeModel.count({
+            //     where: {
+            //         achievement_id: parseInt(achievement.id),
+            //         status: constants.STATUS.active,
+            //     }
+            // })
 
-            achievement.highFiveCount = await achievementHighFiveModel.count({
-                where: {
-                    achievement_id: parseInt(achievement.id),
-                    status: constants.STATUS.active,
-                }
-            })
+            // achievement.highFiveCount = await achievementHighFiveModel.count({
+            //     where: {
+            //         achievement_id: parseInt(achievement.id),
+            //         status: constants.STATUS.active,
+            //     }
+            // })
 
-            achievement.commentCount = await achievementCommentModel.count({
-                where: {
-                    achievement_id: parseInt(achievement.id),
-                    status: constants.STATUS.active,
-                }
-            })
+            // achievement.commentCount = await achievementCommentModel.count({
+            //     where: {
+            //         achievement_id: parseInt(achievement.id),
+            //         status: constants.STATUS.active,
+            //     }
+            // })
 
             let achievementLike = await achievementLikeModel.findOne({
                 where: {
@@ -101,7 +105,11 @@ export class AchievementServices {
         let achievement = await helperFunction.convertPromiseToObject(
             await achievementModel.findOne({
                 attributes: [
-                    'id', 'employee_id', 'description', 'status', 'last_action_on', 'createdAt', 'updatedAt',
+                    'id', 'employee_id', 'description', 'status',
+                    ['like_count', 'likeCount'],
+                    ['high_five_count', 'highFiveCount'],
+                    ['comment_count', 'commentCount'],
+                    'last_action_on', 'createdAt', 'updatedAt',
                 ],
                 where: {
                     id:parseInt(params.achievement_id),
@@ -124,26 +132,26 @@ export class AchievementServices {
         achievement.isHighFived = false;
         achievement.isSelf = false;
 
-        achievement.likeCount = await achievementLikeModel.count({
-            where: {
-                achievement_id: parseInt(achievement.id),
-                status: constants.STATUS.active,
-            }
-        })
+        // achievement.likeCount = await achievementLikeModel.count({
+        //     where: {
+        //         achievement_id: parseInt(achievement.id),
+        //         status: constants.STATUS.active,
+        //     }
+        // })
 
-        achievement.highFiveCount = await achievementHighFiveModel.count({
-            where: {
-                achievement_id: parseInt(achievement.id),
-                status: constants.STATUS.active,
-            }
-        })
+        // achievement.highFiveCount = await achievementHighFiveModel.count({
+        //     where: {
+        //         achievement_id: parseInt(achievement.id),
+        //         status: constants.STATUS.active,
+        //     }
+        // })
 
-        achievement.commentCount = await achievementCommentModel.count({
-            where: {
-                achievement_id: parseInt(achievement.id),
-                status: constants.STATUS.active,
-            }
-        })
+        // achievement.commentCount = await achievementCommentModel.count({
+        //     where: {
+        //         achievement_id: parseInt(achievement.id),
+        //         status: constants.STATUS.active,
+        //     }
+        // })
 
         let achievementLike = await achievementLikeModel.findOne({
             where: {
@@ -262,7 +270,9 @@ export class AchievementServices {
             })
 
             if (achievementLike) {
-                await achievementLike.destroy()
+                await achievementLike.destroy();
+                achievement.like_count = parseInt(achievement.like_count) - 1
+                achievement.save();
             }
             else {
 
@@ -273,6 +283,7 @@ export class AchievementServices {
                 await achievementLikeModel.create(achievementLikeObj)
                 
                 achievement.last_action_on = new Date();
+                achievement.like_count = parseInt(achievement.like_count)+1
                 achievement.save();
 
                 let senderData = await employeeModel.findByPk(parseInt(user.uid));
@@ -333,6 +344,8 @@ export class AchievementServices {
 
             if (achievementhighFive) {
                 await achievementhighFive.destroy()
+                achievement.high_five_count = parseInt(achievement.high_five_count) - 1
+                achievement.save();
             }
             else {
 
@@ -343,6 +356,7 @@ export class AchievementServices {
 
                 await achievementHighFiveModel.create(achievementHighFiveObj)
                 achievement.last_action_on = new Date();
+                achievement.high_five_count = parseInt(achievement.high_five_count) + 1
                 achievement.save();
 
                 let senderData = await employeeModel.findByPk(parseInt(user.uid));
@@ -420,6 +434,7 @@ export class AchievementServices {
 
                 achievementComment = await achievementCommentModel.create(achievementCommentObj);
                 achievement.last_action_on = new Date();
+                achievement.comment_count = parseInt(achievement.comment_count) + 1
                 achievement.save();
 
                 let senderData = await employeeModel.findByPk(parseInt(user.uid));
@@ -529,6 +544,9 @@ export class AchievementServices {
 
         if (achievementComment) {
             await achievementComment.destroy();
+            let achievement = await achievementModel.findByPk(parseInt(achievementComment.achievement_id));
+            achievement.comment_count = parseInt(achievement.comment_count) - 1
+            achievement.save();
             return true
         }
         else

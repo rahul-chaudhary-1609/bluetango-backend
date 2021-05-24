@@ -27,6 +27,21 @@ exports.achievementModel = connection_1.sequelize.define("achievements", {
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    like_count: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    high_five_count: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    comment_count: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
     }
 }, {
     tableName: "achievements"

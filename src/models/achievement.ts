@@ -26,6 +26,21 @@ export const achievementModel: any = sequelize.define("achievements", {
         allowNull: false,
         defaultValue: 1,
         comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    like_count: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    high_five_count: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    comment_count: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
     }
 },
     {
