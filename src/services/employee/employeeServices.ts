@@ -623,6 +623,14 @@ export class EmployeeServices {
             }
             
         }
+        else{
+            whereCondition = {
+                ...whereCondition,
+                type: {
+                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                },
+            }
+        }
 
         let unseenNotificationCount = await helperFunction.convertPromiseToObject(await notificationModel.count({
             where: {
@@ -696,6 +704,14 @@ export class EmployeeServices {
                 }
             }
 
+        }
+        else {
+            whereCondition = {
+                ...whereCondition,
+                type: {
+                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                },
+            }
         }
 
 

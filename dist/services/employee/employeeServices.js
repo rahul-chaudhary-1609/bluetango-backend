@@ -571,6 +571,11 @@ class EmployeeServices {
                         ] });
                 }
             }
+            else {
+                whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
+                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    } });
+            }
             let unseenNotificationCount = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
                 where: Object.assign(Object.assign({}, whereCondition), { reciever_id: user.uid, status: 1 })
             }));
@@ -620,6 +625,11 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.rating
                         ] });
                 }
+            }
+            else {
+                whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
+                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    } });
             }
             let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({
                 status: 0,
