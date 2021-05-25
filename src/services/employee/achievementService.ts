@@ -84,6 +84,7 @@ export class AchievementServices {
 
         achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        achievementCommentModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" })
 
         let achievement = await helperFunction.convertPromiseToObject(
             await achievementModel.findOne({
@@ -105,7 +106,15 @@ export class AchievementServices {
                     },
                     {
                         model: achievementCommentModel,
-                        required:true
+                        required: true,
+                        include: [
+                            {
+                                model: employeeModel,
+                                attributes: ['id', 'name', 'profile_pic_url'],
+                                required: false
+                            }
+                        ],
+                        order: [["createdAt", "DESC"]]
                     }
                 ],
                 order: [["last_action_on", "DESC"]]

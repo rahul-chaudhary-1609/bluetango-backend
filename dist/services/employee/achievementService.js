@@ -99,6 +99,7 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            achievementComment_1.achievementCommentModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" });
             let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findOne({
                 attributes: [
                     'id', 'employee_id', 'description', 'status',
@@ -118,7 +119,15 @@ class AchievementServices {
                     },
                     {
                         model: achievementComment_1.achievementCommentModel,
-                        required: true
+                        required: true,
+                        include: [
+                            {
+                                model: employee_1.employeeModel,
+                                attributes: ['id', 'name', 'profile_pic_url'],
+                                required: false
+                            }
+                        ],
+                        order: [["createdAt", "DESC"]]
                     }
                 ],
                 order: [["last_action_on", "DESC"]]
