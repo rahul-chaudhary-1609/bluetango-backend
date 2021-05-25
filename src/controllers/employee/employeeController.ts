@@ -313,7 +313,7 @@ export class EmployeeController {
 */
     public async getUnseenNotificationCount(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.getUnseenNotificationCount(req.query, req.user);
+            const responseFromService = await employeeServices.getUnseenNotificationCount( req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {

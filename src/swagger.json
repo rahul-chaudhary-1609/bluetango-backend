@@ -3609,14 +3609,6 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "description": "type",
-            "required": false,
-            "type": "string",
-            "enum":["achievement","achievement_post_only","chat","goal","rating"]
           }
 
         ],

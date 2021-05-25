@@ -223,9 +223,9 @@ export const markNotificationsAsViewed = Joi.object({
   type: Joi.string().optional(),
 })
 
-export const getUnseenNotificationCount = Joi.object({
-  type: Joi.string().optional(),
-})
+// export const getUnseenNotificationCount = Joi.object({
+//   type: Joi.string().optional(),
+// })
 
 export const getAchievementLikesList = Joi.object({
   achievement_id: Joi.number().required(),

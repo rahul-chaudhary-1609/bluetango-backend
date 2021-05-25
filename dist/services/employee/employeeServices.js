@@ -507,7 +507,10 @@ class EmployeeServices {
                 where: {
                     reciever_id: user.uid,
                     type: {
-                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.message
+                        ]
                     },
                     status: [0, 1]
                 },
@@ -519,7 +522,10 @@ class EmployeeServices {
                 where: {
                     status: 1,
                     type: {
-                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.message
+                        ]
                     },
                     reciever_id: user.uid,
                 }
@@ -530,56 +536,87 @@ class EmployeeServices {
     /*
 * function to get unseen notification count
 */
-    getUnseenNotificationCount(params, user) {
+    getUnseenNotificationCount(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let whereCondition = null;
-            if (params && params.type) {
-                if (params.type == "achievement") {
-                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+            return {
+                all: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: {
+                            [Op.notIn]: [
+                                constants.NOTIFICATION_TYPE.achievement_post,
+                                constants.NOTIFICATION_TYPE.message
+                            ]
+                        },
+                        status: 1,
+                    }
+                }),
+                achievement: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.achievement_like,
                             constants.NOTIFICATION_TYPE.achievement_highfive,
                             constants.NOTIFICATION_TYPE.achievement_comment,
-                        ] });
-                }
-                else if (params.type == "achievement_post_only") {
-                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                        ],
+                        status: 1,
+                    }
+                }),
+                achievement_post_only: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
                             constants.NOTIFICATION_TYPE.achievement_post,
-                        ] });
-                }
-                else if (params.type == "chat") {
-                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                        ],
+                        status: 1,
+                    }
+                }),
+                chat: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.audio_chat,
                             constants.NOTIFICATION_TYPE.video_chat,
                             constants.NOTIFICATION_TYPE.audio_chat_missed,
                             constants.NOTIFICATION_TYPE.video_chat_missed,
                             constants.NOTIFICATION_TYPE.chat_disconnect,
-                        ] });
-                }
-                else if (params.type == "goal") {
-                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                        ],
+                        status: 1,
+                    }
+                }),
+                chat_message_only: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ],
+                        status: 1,
+                    }
+                }),
+                goal: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
                             constants.NOTIFICATION_TYPE.assign_new_goal,
                             constants.NOTIFICATION_TYPE.goal_complete_request,
                             constants.NOTIFICATION_TYPE.goal_accept,
                             constants.NOTIFICATION_TYPE.goal_reject,
-                        ] });
-                }
-                else if (params.type == "rating") {
-                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                        ],
+                        status: 1,
+                    }
+                }),
+                rating: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        type: [
                             constants.NOTIFICATION_TYPE.rating
-                        ] });
-                }
-            }
-            else {
-                whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
-                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
-                    } });
-            }
-            let unseenNotificationCount = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
-                where: Object.assign(Object.assign({}, whereCondition), { reciever_id: user.uid, status: 1 })
-            }));
-            return { unseenNotificationCount };
+                        ],
+                        status: 1,
+                    }
+                })
+            };
         });
     }
     /*
@@ -612,6 +649,11 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.chat_disconnect,
                         ] });
                 }
+                else if (params.type == "chat_message_only") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ] });
+                }
                 else if (params.type == "goal") {
                     whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
                             constants.NOTIFICATION_TYPE.assign_new_goal,
@@ -628,7 +670,10 @@ class EmployeeServices {
             }
             else {
                 whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
-                        [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.message
+                        ]
                     } });
             }
             let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({

@@ -539,7 +539,10 @@ export class EmployeeServices {
             where: {
                 reciever_id: user.uid,
                 type: {
-                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    [Op.notIn]: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                        constants.NOTIFICATION_TYPE.message
+                    ]
                 },
                 status:[0,1]
             },
@@ -552,7 +555,10 @@ export class EmployeeServices {
             where: {
                 status: 1,
                 type: {
-                  [Op.notIn]:[constants.NOTIFICATION_TYPE.achievement_post]
+                    [Op.notIn]: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                        constants.NOTIFICATION_TYPE.message
+                    ]
                 },
                 reciever_id: user.uid,
             }
@@ -565,33 +571,48 @@ export class EmployeeServices {
     /*
 * function to get unseen notification count
 */
-    public async getUnseenNotificationCount(params: any, user: any) {
+    public async getUnseenNotificationCount( user: any) {
 
-        let whereCondition = null;
-        
-        if (params && params.type) {
-            if (params.type == "achievement") {
-                whereCondition = {
-                    ...whereCondition,
+        return {
+            all : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
+                    type: {
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.achievement_post,
+                            constants.NOTIFICATION_TYPE.message
+                        ]
+                    },
+                    status: 1,
+                }
+            }),
+
+            achievement : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.achievement_like,
                         constants.NOTIFICATION_TYPE.achievement_highfive,
                         constants.NOTIFICATION_TYPE.achievement_comment,
-                    ]
+                    ],
+                    status: 1,
                 }
-            }
-            else if (params.type == "achievement_post_only") {
-                whereCondition = {
-                    ...whereCondition,
+            }),
+
+            achievement_post_only : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.achievement_post,
-                    ]
+                    ],
+                    status: 1,
                 }
-            }
-            else if (params.type == "chat") {
-                whereCondition = {
-                    ...whereCondition,
+            }),
+
+            chat : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.audio_chat,
@@ -599,49 +620,48 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.audio_chat_missed,
                         constants.NOTIFICATION_TYPE.video_chat_missed,
                         constants.NOTIFICATION_TYPE.chat_disconnect,
-                    ]
+                    ],
+                    status: 1,
                 }
-            }
-            else if (params.type == "goal") {
-                whereCondition = {
-                    ...whereCondition,
+            }),
+
+            chat_message_only : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                    ],
+                    status: 1,
+                }
+            }),
+
+            goal : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.assign_new_goal,
                         constants.NOTIFICATION_TYPE.goal_complete_request,
                         constants.NOTIFICATION_TYPE.goal_accept,
                         constants.NOTIFICATION_TYPE.goal_reject,
-                    ]
+                    ],
+                    status: 1,
                 }
-            }
-            else if (params.type == "rating") {
-                whereCondition = {
-                    ...whereCondition,
+            }),
+
+            rating : await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.rating
-                    ]
+                    ],
+                    status: 1,
                 }
-            }
-            
-        }
-        else{
-            whereCondition = {
-                ...whereCondition,
-                type: {
-                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
-                },
-            }
+            })
+
         }
 
-        let unseenNotificationCount = await helperFunction.convertPromiseToObject(await notificationModel.count({
-            where: {
-                ...whereCondition,
-                reciever_id: user.uid,
-                status:1,
-            }
-        }));
-
-
-        return { unseenNotificationCount };
+        
+        
     }
 
     /*
@@ -684,6 +704,14 @@ export class EmployeeServices {
                     ]
                 }
             }
+            else if (params.type == "chat_message_only") {
+                whereCondition = {
+                    ...whereCondition,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                    ]
+                }
+            }
             else if (params.type == "goal") {
                 whereCondition = {
                     ...whereCondition,
@@ -709,7 +737,10 @@ export class EmployeeServices {
             whereCondition = {
                 ...whereCondition,
                 type: {
-                    [Op.notIn]: [constants.NOTIFICATION_TYPE.achievement_post]
+                    [Op.notIn]: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                        constants.NOTIFICATION_TYPE.message
+                    ]
                 },
             }
         }
