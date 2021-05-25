@@ -282,7 +282,7 @@ export class AchievementServices {
                 await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
-            return true;
+            return achievement;
         }
         else {
             throw new Error(constants.MESSAGES.no_achievement);
@@ -355,7 +355,7 @@ export class AchievementServices {
                 await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
-            return true;
+            return achievement;
         }
         else {
             throw new Error(constants.MESSAGES.no_achievement);
