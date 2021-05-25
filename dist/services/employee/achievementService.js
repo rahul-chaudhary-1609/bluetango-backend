@@ -241,6 +241,9 @@ class AchievementServices {
                     achievement.save();
                     let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
                     let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    delete recieverData.password;
+                    delete senderData.password;
+                    achievement.employee = recieverData;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(params.achievement_id),
@@ -306,6 +309,9 @@ class AchievementServices {
                     achievement.save();
                     let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
                     let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    delete recieverData.password;
+                    delete senderData.password;
+                    achievement.employee = recieverData;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(params.achievement_id),

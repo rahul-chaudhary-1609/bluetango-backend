@@ -252,6 +252,11 @@ export class AchievementServices {
                 let senderData = await employeeModel.findByPk(parseInt(user.uid));
                 let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
 
+                delete recieverData.password
+                delete senderData.password
+
+                achievement.employee = recieverData;
+                
                 // add notification for employee
                 let notificationObj = <any>{
                     type_id: parseInt(params.achievement_id),
@@ -324,6 +329,11 @@ export class AchievementServices {
 
                 let senderData = await employeeModel.findByPk(parseInt(user.uid));
                 let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+
+                delete recieverData.password
+                delete senderData.password
+
+                achievement.employee = recieverData;
 
                 // add notification for employee
                 let notificationObj = <any>{
