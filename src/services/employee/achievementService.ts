@@ -170,7 +170,7 @@ export class AchievementServices {
 
             achievement = await helperFunction.convertPromiseToObject( await achievementModel.create(achievementObj));
 
-            let senderData = await employeeModel.findByPk(parseInt(user.uid));
+            let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
             let recieversData = await helperFunction.convertPromiseToObject(
                 await employeeModel.findAll({
                     where: {
@@ -178,9 +178,12 @@ export class AchievementServices {
                         status:constants.STATUS.active
                     }
                 })
-            ) 
+            )
+            
+            delete senderData.password
 
             for (let recieverData of recieversData) {
+                delete recieverData.password
                 // add notification for employee
                 let notificationObj = <any>{
                     type_id: parseInt(achievement.id),
@@ -225,6 +228,16 @@ export class AchievementServices {
         let achievement = await achievementModel.findByPk(parseInt(params.achievement_id));
 
         if (achievement) {
+
+            let employee = await helperFunction.convertPromiseToObject(
+                await employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    where: {
+                        id: parseInt(achievement.employee_id),
+                    }
+                })
+            )
+
             let achievementLike = await achievementLikeModel.findOne({
                 where: {
                     liked_by_employee_id: user.uid,
@@ -249,13 +262,12 @@ export class AchievementServices {
                 achievement.like_count = parseInt(achievement.like_count)+1
                 achievement.save();
 
-                let senderData = await employeeModel.findByPk(parseInt(user.uid));
-                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+                let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
+                let recieverData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(achievement.employee_id)));
 
                 delete recieverData.password
                 delete senderData.password
 
-                achievement.employee = recieverData;
                 
                 // add notification for employee
                 let notificationObj = <any>{
@@ -287,6 +299,8 @@ export class AchievementServices {
                 await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
+            achievement = await helperFunction.convertPromiseToObject(achievement);
+            achievement.employee = employee;
             return achievement;
         }
         else {
@@ -303,6 +317,17 @@ export class AchievementServices {
         let achievement = await achievementModel.findByPk(parseInt(params.achievement_id));
 
         if (achievement) {
+
+            let employee = await helperFunction.convertPromiseToObject(
+                await employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    where: {
+                        id: parseInt(achievement.employee_id),
+                    }
+                })
+            )
+
+
             let achievementhighFive = await achievementHighFiveModel.findOne({
                 where: {
                     high_fived_by_employee_id: user.uid,
@@ -327,13 +352,11 @@ export class AchievementServices {
                 achievement.high_five_count = parseInt(achievement.high_five_count) + 1
                 achievement.save();
 
-                let senderData = await employeeModel.findByPk(parseInt(user.uid));
-                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+                let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
+                let recieverData = await helperFunction.convertPromiseToObject( await employeeModel.findByPk(parseInt(achievement.employee_id)));
 
                 delete recieverData.password
                 delete senderData.password
-
-                achievement.employee = recieverData;
 
                 // add notification for employee
                 let notificationObj = <any>{
@@ -365,6 +388,8 @@ export class AchievementServices {
                 await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
 
+            achievement = await helperFunction.convertPromiseToObject(achievement);
+            achievement.employee = employee;
             return achievement;
         }
         else {
@@ -410,8 +435,12 @@ export class AchievementServices {
                 achievement.comment_count = parseInt(achievement.comment_count) + 1
                 achievement.save();
 
-                let senderData = await employeeModel.findByPk(parseInt(user.uid));
-                let recieverData = await employeeModel.findByPk(parseInt(achievement.employee_id));
+                let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
+                let recieverData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(achievement.employee_id)));
+
+                delete recieverData.password
+                delete senderData.password
+
 
                 // add notification for employee
                 let notificationObj = <any>{

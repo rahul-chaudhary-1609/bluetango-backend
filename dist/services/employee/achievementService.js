@@ -171,14 +171,16 @@ class AchievementServices {
                     last_action_on: new Date(),
                 };
                 achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.create(achievementObj));
-                let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
+                let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
                 let recieversData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
                     where: {
                         current_employer_id: senderData.current_employer_id,
                         status: constants.STATUS.active
                     }
                 }));
+                delete senderData.password;
                 for (let recieverData of recieversData) {
+                    delete recieverData.password;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(achievement.id),
@@ -219,6 +221,12 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
+                let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    where: {
+                        id: parseInt(achievement.employee_id),
+                    }
+                }));
                 let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
                     where: {
                         liked_by_employee_id: user.uid,
@@ -239,11 +247,10 @@ class AchievementServices {
                     //achievement.last_action_on = new Date();
                     achievement.like_count = parseInt(achievement.like_count) + 1;
                     achievement.save();
-                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
-                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
+                    let recieverData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id)));
                     delete recieverData.password;
                     delete senderData.password;
-                    achievement.employee = recieverData;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(params.achievement_id),
@@ -273,6 +280,8 @@ class AchievementServices {
                     };
                     yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
+                achievement = yield helperFunction.convertPromiseToObject(achievement);
+                achievement.employee = employee;
                 return achievement;
             }
             else {
@@ -287,6 +296,12 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
+                let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    where: {
+                        id: parseInt(achievement.employee_id),
+                    }
+                }));
                 let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
                     where: {
                         high_fived_by_employee_id: user.uid,
@@ -307,11 +322,10 @@ class AchievementServices {
                     //achievement.last_action_on = new Date();
                     achievement.high_five_count = parseInt(achievement.high_five_count) + 1;
                     achievement.save();
-                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
-                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
+                    let recieverData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id)));
                     delete recieverData.password;
                     delete senderData.password;
-                    achievement.employee = recieverData;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(params.achievement_id),
@@ -341,6 +355,8 @@ class AchievementServices {
                     };
                     yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
+                achievement = yield helperFunction.convertPromiseToObject(achievement);
+                achievement.employee = employee;
                 return achievement;
             }
             else {
@@ -380,8 +396,10 @@ class AchievementServices {
                     achievement.last_action_on = new Date();
                     achievement.comment_count = parseInt(achievement.comment_count) + 1;
                     achievement.save();
-                    let senderData = yield employee_1.employeeModel.findByPk(parseInt(user.uid));
-                    let recieverData = yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id));
+                    let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
+                    let recieverData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id)));
+                    delete recieverData.password;
+                    delete senderData.password;
                     // add notification for employee
                     let notificationObj = {
                         type_id: parseInt(params.achievement_id),
