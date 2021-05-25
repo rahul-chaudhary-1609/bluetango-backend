@@ -3637,6 +3637,7 @@
                             "achievement",
                             "achievement_post_only",
                             "chat",
+                            "chat_message_only",
                             "goal",
                             "rating"
                         ]
