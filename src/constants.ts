@@ -125,7 +125,8 @@ export const MESSAGES = {
   team_goal_complete_request_pending: "You already have a pending request for approval",
   employer_no_plan: "You do not have any active plan to avail this service",
   no_plan: "Subscription does not exist",
-  not_manager:"manager token is required",
+  not_manager: "manager token is required",
+  chat_room_required:"Chat room id is required in case of chat message only type",
 }
 
 export const code = {

@@ -625,15 +625,16 @@ export class EmployeeServices {
                 }
             }),
 
-            chat_message_only : await notificationModel.count({
+            chat_message_only : (await helperFunction.convertPromiseToObject( await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
                     ],
                     status: 1,
-                }
-            }),
+                },
+                group: ['type_id']
+            }))).length,
 
             goal : await notificationModel.count({
                 where: {
@@ -705,11 +706,15 @@ export class EmployeeServices {
                 }
             }
             else if (params.type == "chat_message_only") {
+
+                if (!params.chat_room_id) throw new Error(constants.MESSAGES.chat_room_required)
+
                 whereCondition = {
                     ...whereCondition,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
-                    ]
+                    ],
+                    type_id:parseInt(params.chat_room_id),
                 }
             }
             else if (params.type == "goal") {

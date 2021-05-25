@@ -3641,6 +3641,13 @@
                             "goal",
                             "rating"
                         ]
+                    },
+                    {
+                        "name": "chat_room_id",
+                        "in": "query",
+                        "description": "chat room id (required only in case of chat_message_only type)",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}

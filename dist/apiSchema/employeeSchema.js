@@ -206,6 +206,7 @@ exports.deleteAchievementComment = joi_1.default.object({
 });
 exports.markNotificationsAsViewed = joi_1.default.object({
     type: joi_1.default.string().optional(),
+    chat_room_id: joi_1.default.number().optional(),
 });
 // export const getUnseenNotificationCount = Joi.object({
 //   type: Joi.string().optional(),

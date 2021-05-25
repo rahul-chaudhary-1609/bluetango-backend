@@ -586,15 +586,16 @@ class EmployeeServices {
                         status: 1,
                     }
                 }),
-                chat_message_only: yield notification_1.notificationModel.count({
+                chat_message_only: (yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
                         type: [
                             constants.NOTIFICATION_TYPE.message,
                         ],
                         status: 1,
-                    }
-                }),
+                    },
+                    group: ['type_id']
+                }))).length,
                 goal: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
@@ -650,9 +651,11 @@ class EmployeeServices {
                         ] });
                 }
                 else if (params.type == "chat_message_only") {
+                    if (!params.chat_room_id)
+                        throw new Error(constants.MESSAGES.chat_room_required);
                     whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
                             constants.NOTIFICATION_TYPE.message,
-                        ] });
+                        ], type_id: parseInt(params.chat_room_id) });
                 }
                 else if (params.type == "goal") {
                     whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
