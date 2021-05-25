@@ -82,6 +82,7 @@ export class AchievementServices {
     */
     public async getAchievementById(params:any,user: any) {
 
+        achievementModel.hasMany(achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" })
         achievementModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
 
         let achievement = await helperFunction.convertPromiseToObject(
@@ -102,6 +103,10 @@ export class AchievementServices {
                         attributes: ['id', 'name', 'profile_pic_url','current_employer_id', 'createdAt', 'updatedAt'],
                         required: true
                     },
+                    {
+                        model: achievementCommentModel,
+                        required:true
+                    }
                 ],
                 order: [["last_action_on", "DESC"]]
             })
@@ -132,6 +137,11 @@ export class AchievementServices {
         if (achievementLike) achievement.isLiked = true;
         if (achievementHighFive) achievement.isHighFived = true;
         if (achievement.employee && achievement.employee.id == parseInt(user.uid)) achievement.isSelf = true;
+
+        for (let comment of achievement.achievement_comments) {
+            comment.isSelf = false
+            if (comment.employee && comment.employee.id == parseInt(user.uid)) comment.isSelf = true;
+        }
 
 
 

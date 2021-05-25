@@ -97,6 +97,7 @@ class AchievementServices {
     */
     getAchievementById(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findOne({
                 attributes: [
@@ -115,6 +116,10 @@ class AchievementServices {
                         attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
                         required: true
                     },
+                    {
+                        model: achievementComment_1.achievementCommentModel,
+                        required: true
+                    }
                 ],
                 order: [["last_action_on", "DESC"]]
             }));
@@ -141,6 +146,11 @@ class AchievementServices {
                 achievement.isHighFived = true;
             if (achievement.employee && achievement.employee.id == parseInt(user.uid))
                 achievement.isSelf = true;
+            for (let comment of achievement.achievement_comments) {
+                comment.isSelf = false;
+                if (comment.employee && comment.employee.id == parseInt(user.uid))
+                    comment.isSelf = true;
+            }
             return { achievement };
         });
     }
