@@ -59,7 +59,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                         where: { current_employer_id: employee.current_employer_id },
                         required: true
                     },
@@ -113,7 +113,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                         required: true
                     },
                 ],
@@ -242,7 +242,7 @@ class AchievementServices {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
                 let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
-                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                     where: {
                         id: parseInt(achievement.employee_id),
                     }
@@ -317,7 +317,7 @@ class AchievementServices {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
                 let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
-                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                     where: {
                         id: parseInt(achievement.employee_id),
                     }
@@ -469,7 +469,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'status', 'profile_pic_url'],
                         required: false
                     }
                 ],
@@ -538,7 +538,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'status', 'profile_pic_url'],
                         required: false
                     }
                 ],
@@ -574,7 +574,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'status', 'profile_pic_url'],
                         required: false
                     }
                 ],
