@@ -530,6 +530,7 @@ class AchievementServices {
     getAchievementLikesList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             achievementLike_1.achievementLikeModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" });
+            let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id)));
             let achievementLikes = yield helperFunction.convertPromiseToObject(yield achievementLike_1.achievementLikeModel.findAll({
                 where: {
                     achievement_id: parseInt(params.achievement_id)
@@ -550,6 +551,8 @@ class AchievementServices {
                     break;
                 }
             }
+            achievementLikes.likeCount = achievement.like_count;
+            achievementLikes.highFiveCount = achievement.high_five_count;
             return achievementLikes;
         });
     }
@@ -559,6 +562,7 @@ class AchievementServices {
     getAchievementHighFivesList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             achievementHighFive_1.achievementHighFiveModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" });
+            let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id)));
             let achievementHighFives = yield helperFunction.convertPromiseToObject(yield achievementHighFive_1.achievementHighFiveModel.findAll({
                 where: {
                     achievement_id: parseInt(params.achievement_id)
@@ -579,6 +583,8 @@ class AchievementServices {
                     break;
                 }
             }
+            achievementHighFives.likeCount = achievement.like_count;
+            achievementHighFives.highFiveCount = achievement.high_five_count;
             return achievementHighFives;
         });
     }

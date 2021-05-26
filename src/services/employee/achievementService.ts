@@ -587,6 +587,8 @@ export class AchievementServices {
 
         achievementLikeModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "liked_by_employee_id", targetKey: "id" })
 
+        let achievement = await helperFunction.convertPromiseToObject(await achievementModel.findByPk(parseInt(params.achievement_id)));
+
         let achievementLikes = await helperFunction.convertPromiseToObject(
             await achievementLikeModel.findAll({
                 where: {
@@ -611,6 +613,9 @@ export class AchievementServices {
             } 
         }
 
+        achievementLikes.likeCount = achievement.like_count;
+        achievementLikes.highFiveCount = achievement.high_five_count;
+
         return achievementLikes;
     }
 
@@ -620,6 +625,8 @@ export class AchievementServices {
     public async getAchievementHighFivesList(params: any, user: any) {
 
         achievementHighFiveModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "high_fived_by_employee_id", targetKey: "id" })
+
+        let achievement = await helperFunction.convertPromiseToObject(await achievementModel.findByPk(parseInt(params.achievement_id)));
 
         let achievementHighFives = await helperFunction.convertPromiseToObject(
             await achievementHighFiveModel.findAll({
@@ -644,6 +651,10 @@ export class AchievementServices {
                 break;
             } 
         }
+
+
+        achievementHighFives.likeCount = achievement.like_count;
+        achievementHighFives.highFiveCount = achievement.high_five_count;
 
         return achievementHighFives;
     }
