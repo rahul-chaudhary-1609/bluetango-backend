@@ -149,7 +149,7 @@ class AchievementServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url'],
+                        attributes: ['id', 'name', 'status', 'profile_pic_url'],
                         required: false
                     }
                 ],
