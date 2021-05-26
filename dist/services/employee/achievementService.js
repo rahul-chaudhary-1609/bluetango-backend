@@ -551,9 +551,13 @@ class AchievementServices {
                     break;
                 }
             }
-            achievementLikes.likeCount = achievement.like_count;
-            achievementLikes.highFiveCount = achievement.high_five_count;
-            return achievementLikes;
+            // achievementLikes.likeCount = achievement.like_count;
+            // achievementLikes.highFiveCount = achievement.high_five_count;
+            return {
+                achievementLikes,
+                likeCount: achievement.like_count,
+                highFiveCount: achievement.high_five_count,
+            };
         });
     }
     /*
@@ -583,9 +587,13 @@ class AchievementServices {
                     break;
                 }
             }
-            achievementHighFives.likeCount = achievement.like_count;
-            achievementHighFives.highFiveCount = achievement.high_five_count;
-            return achievementHighFives;
+            // achievementHighFives.likeCount = achievement.like_count;
+            // achievementHighFives.highFiveCount = achievement.high_five_count;
+            return {
+                achievementHighFives,
+                likeCount: achievement.like_count,
+                highFiveCount: achievement.high_five_count,
+            };
         });
     }
 }
