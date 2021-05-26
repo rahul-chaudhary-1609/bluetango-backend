@@ -60,8 +60,9 @@ export class QualitativeMeasuremetServices {
                 type: constants.NOTIFICATION_TYPE.rating,
                 data: {
                     type: constants.NOTIFICATION_TYPE.rating,
-                    title: 'Rating',
-                    message: `your manager has given rating to you`,
+                    title: 'New rating',
+                    //message: `your manager has given rating to you`,
+                    message: `Your rating has been updated`,
                     id: resData.id,
                     senderEmplyeeData: managerData,
                     //title: (params[i].title?params[i].title: ''),                            
@@ -70,12 +71,12 @@ export class QualitativeMeasuremetServices {
             await notificationModel.create(notificationObj);
             // send push notification
             let notificationData = <any> {
-                title: 'Rating',
-                body: `your manager has given rating to you`,
+                title: 'New rating',
+                body: `Your rating has been updated`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.rating,
-                    title: 'Rating',
-                    message: `your manager has given rating to you`,
+                    title: 'New rating',
+                    message: `Your rating has been updated`,
                     id: resData.id,
                     senderEmplyeeData: managerData,
                     //title: (params[i].title?params[i].title: ''),                            

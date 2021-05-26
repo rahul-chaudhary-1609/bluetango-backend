@@ -52,7 +52,8 @@ export class GoalServices {
                         data: {
                             type: constants.NOTIFICATION_TYPE.assign_new_goal,
                             title: 'New goal assigned',
-                            message: `New goal is assigned by your manager - ${(params[i].title ? params[i].title : '')}`,
+                            //message: `New goal is assigned by your manager - ${(params[i].title ? params[i].title : '')}`,
+                            message: `${(params[i].title ? params[i].title : '')}`,
                             goal_id: teamGoaRes.id,
                             senderEmplyeeData: employeeData,
                             //title: (params[i].title?params[i].title: ''),                            
@@ -67,11 +68,11 @@ export class GoalServices {
                     //send push notification
                     let notificationData = <any> {
                         title: 'New goal assigned',
-                        body: `New goal is assigned by your manager - ${(params[i].title?params[i].title: '')}`,
+                        body: `${(params[i].title?params[i].title: '')}`,
                         data: {
                             type: constants.NOTIFICATION_TYPE.assign_new_goal,
                             title: 'New goal assigned',
-                            message: `New goal is assigned by your manager - ${(params[i].title ? params[i].title : '')}`,
+                            message: `${(params[i].title ? params[i].title : '')}`,
                             goal_id: teamGoaRes.id,                            
                             senderEmplyeeData:employeeData,
                             //title: (params[i].title?params[i].title: ''),                            
@@ -141,7 +142,7 @@ export class GoalServices {
                             data: {
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal,
                                 title: 'New goal assigned',
-                                message: `New goal is assigned by your manager - ${(params.title ? params.title : '')}`,
+                                message: `${(params.title ? params.title : '')}`,
                                 goal_id: teamGoalRes.id,
                                 senderEmplyeeData: employeeData,
                                 //title: (params[i].title?params[i].title: ''),                            
@@ -156,11 +157,11 @@ export class GoalServices {
                         // send push notification
                         let notificationData = <any> {
                             title: 'New goal assigned',
-                            body: `New goal is assigned by your manager - ${(params.title?params.title: '')}`,
+                            body: `${(params.title?params.title: '')}`,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal,
                                 title: 'New goal assigned',
-                                message: `New goal is assigned by your manager - ${(params.title ? params.title : '')}`,
+                                message: `${(params.title ? params.title : '')}`,
                                 goal_id: teamGoalRes.id,
                                 senderEmplyeeData: employeeData,
                                 //title: (params[i].title?params[i].title: ''),                            
@@ -400,8 +401,10 @@ export class GoalServices {
                 type: constants.NOTIFICATION_TYPE.goal_complete_request,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                    title: 'Goal Submitted',
-                    message: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
+                    // title: 'Goal Submitted',
+                    // message: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
+                    title: `${employeeData.name} submitted the goal`,
+                    message: `${getGoalData.title}`,
                     goal_id: params.goal_id,
                     team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
@@ -421,12 +424,12 @@ export class GoalServices {
 
             // send push notification
             let notificationData = <any> {
-                title: 'Goal Submitted',
-                body: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
+                title: `${employeeData.name} submitted the goal`,
+                body: `${getGoalData.title}`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
-                    title: 'Goal Submitted',
-                    message: `Goal - ${getGoalData.title} submitted by ${employeeData.name}`,
+                    title: `${employeeData.name} submitted the goal`,
+                    message: `${getGoalData.title}`,
                     goal_id: params.goal_id,
                     team_goal_assign_id: params.team_goal_assign_id,
                     senderEmplyeeData: employeeData,
@@ -533,7 +536,8 @@ export class GoalServices {
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_accept,
                         title: 'Goal Accepted',
-                        message: `Your manager has accepted your goal - ${getGoalData.title}`,
+                        // message: `Your manager has accepted your goal - ${getGoalData.title}`,
+                        message: `${getGoalData.title}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
@@ -545,11 +549,11 @@ export class GoalServices {
                 // send push notification
                 let notificationData = <any>{
                     title: 'Goal Accepted',
-                    body: `Your manager has accepted your goal - ${getGoalData.title}`,
+                    body: `${getGoalData.title}`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_accept,
                         title: 'Goal Accepted',
-                        message: `Your manager has accepted your goal - ${getGoalData.title}`,
+                        message: `${getGoalData.title}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
@@ -586,7 +590,7 @@ export class GoalServices {
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_reject,
                         title: 'Goal Rejected',
-                        message: `Your manager has rejected your goal - ${getGoalData.title}`,
+                        message: `${getGoalData.title}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,
@@ -598,11 +602,11 @@ export class GoalServices {
                 // send push notification
                 let notificationData = <any>{
                     title: 'Goal Rejected',
-                    body: `Your manager has rejected your goal - ${getGoalData.title}`,
+                    body: `${getGoalData.title}`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.goal_reject,
                         title: 'Goal Rejected',
-                        message: `Your manager has rejected your goal - ${getGoalData.title}`,
+                        message: `${getGoalData.title}`,
                         goal_id: params.goal_id,
                         team_goal_assign_id: params.team_goal_assign_id,
                         senderEmplyeeData: managerData,

@@ -279,8 +279,8 @@ class AchievementServices {
                         type: constants.NOTIFICATION_TYPE.achievement_like,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_like,
-                            title: 'Achievement Like',
-                            message: `${senderData.name} has liked your achievement post`,
+                            title: `${senderData.name} has liked your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
@@ -288,12 +288,12 @@ class AchievementServices {
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
                     let notificationData = {
-                        title: 'Achievement Like',
-                        body: `${senderData.name} has liked your achievement post`,
+                        title: `${senderData.name} has liked your post`,
+                        body: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_like,
-                            title: 'Achievement Like',
-                            message: `${senderData.name} has liked your achievement post`,
+                            title: `${senderData.name} has liked your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
@@ -354,8 +354,8 @@ class AchievementServices {
                         type: constants.NOTIFICATION_TYPE.achievement_highfive,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_highfive,
-                            title: 'Achievement Highfive',
-                            message: `${senderData.name} has reacted as highfive on your achievement post`,
+                            title: `${senderData.name} has reacted on your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
@@ -363,12 +363,12 @@ class AchievementServices {
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
                     let notificationData = {
-                        title: 'Achievement Highfive',
-                        body: `${senderData.name} has reacted as highfive on your achievement post`,
+                        title: `${senderData.name} has reacted on your post`,
+                        body: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_highfive,
-                            title: 'Achievement Highfive',
-                            message: `${senderData.name} has reacted as highfive on your achievement post`,
+                            title: `${senderData.name} has reacted on your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
@@ -428,8 +428,8 @@ class AchievementServices {
                         type: constants.NOTIFICATION_TYPE.achievement_comment,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_comment,
-                            title: 'Achievement Comment',
-                            message: `${senderData.name} has commented on your achievement post`,
+                            title: `${senderData.name} has commented on your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
@@ -437,12 +437,12 @@ class AchievementServices {
                     yield notification_1.notificationModel.create(notificationObj);
                     // send push notification
                     let notificationData = {
-                        title: 'Achievement Comment',
-                        body: `${senderData.name} has commented on your achievement post`,
+                        title: `${senderData.name} has commented on your post`,
+                        body: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                         data: {
                             type: constants.NOTIFICATION_TYPE.achievement_comment,
-                            title: 'Achievement Comment',
-                            message: `${senderData.name} has commented on your achievement post`,
+                            title: `${senderData.name} has commented on your post`,
+                            message: achievement.description.length > 40 ? `${achievement.description.slice(0, 40)}...` : achievement.description,
                             id: parseInt(params.achievement_id),
                             senderEmplyeeData: senderData,
                         },
