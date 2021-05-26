@@ -97,7 +97,6 @@ class AchievementServices {
     */
     getAchievementById(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            achievement_1.achievementModel.hasMany(achievementComment_1.achievementCommentModel, { foreignKey: "achievement_id", sourceKey: "id", targetKey: "achievement_id" });
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             achievementComment_1.achievementCommentModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "commented_by_employee_id", targetKey: "id" });
             let achievement = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findOne({
@@ -117,18 +116,6 @@ class AchievementServices {
                         attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'createdAt', 'updatedAt'],
                         required: true
                     },
-                    {
-                        model: achievementComment_1.achievementCommentModel,
-                        required: false,
-                        include: [
-                            {
-                                model: employee_1.employeeModel,
-                                attributes: ['id', 'name', 'profile_pic_url'],
-                                required: false
-                            }
-                        ],
-                        order: [["createdAt", "DESC"]]
-                    }
                 ],
                 order: [["last_action_on", "DESC"]]
             }));
@@ -155,11 +142,25 @@ class AchievementServices {
                 achievement.isHighFived = true;
             if (achievement.employee && achievement.employee.id == parseInt(user.uid))
                 achievement.isSelf = true;
-            for (let comment of achievement.achievement_comments) {
+            let achievementComments = yield helperFunction.convertPromiseToObject(yield achievementComment_1.achievementCommentModel.findAll({
+                where: {
+                    achievement_id: parseInt(params.achievement_id)
+                },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        required: false
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let comment of achievementComments) {
                 comment.isSelf = false;
                 if (comment.employee && comment.employee.id == parseInt(user.uid))
                     comment.isSelf = true;
             }
+            achievement.achievement_comments = achievementComments;
             return { achievement };
         });
     }
