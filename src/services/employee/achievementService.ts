@@ -38,7 +38,7 @@ export class AchievementServices {
                         model: employeeModel,
                         attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id','createdAt', 'updatedAt'],
                         where: { current_employer_id: employee.current_employer_id},
-                        required:false
+                        required:true
                     },
                 ],               
                 order: [["last_action_on", "DESC"]]
@@ -102,7 +102,7 @@ export class AchievementServices {
                     {
                         model: employeeModel,
                         attributes: ['id', 'name', 'profile_pic_url','current_employer_id', 'createdAt', 'updatedAt'],
-                        required: false
+                        required: true
                     },
                     {
                         model: achievementCommentModel,
