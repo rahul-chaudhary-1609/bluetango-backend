@@ -208,36 +208,37 @@ export class AchievementServices {
             for (let recieverData of recieversData) {
                 delete recieverData.password
 
-                if (recieverData.id == senderData.id) continue;
+                if (recieverData.id != senderData.id) {
                 
-                // add notification for employee
-                let notificationObj = <any>{
-                    type_id: parseInt(achievement.id),
-                    sender_id: senderData.id,
-                    reciever_id: recieverData.id,
-                    type: constants.NOTIFICATION_TYPE.achievement_post,
-                    data: {
+                    // add notification for employee
+                    let notificationObj = <any>{
+                        type_id: parseInt(achievement.id),
+                        sender_id: senderData.id,
+                        reciever_id: recieverData.id,
                         type: constants.NOTIFICATION_TYPE.achievement_post,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_post,
+                            title: `New post from ${senderData.name}`,
+                            message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                            id: parseInt(achievement.id),
+                            senderEmplyeeData: senderData,
+                        },
+                    }
+                    await notificationModel.create(notificationObj);
+                    // send push notification
+                    let notificationData = <any>{
                         title: `New post from ${senderData.name}`,
-                        message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                        id: parseInt(achievement.id),
-                        senderEmplyeeData: senderData,
-                    },
+                        body: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.achievement_post,
+                            title: `New post from ${senderData.name}`,
+                            message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                            id: parseInt(achievement.id),
+                            senderEmplyeeData: senderData,
+                        },
+                    }
+                    await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
                 }
-                await notificationModel.create(notificationObj);
-                // send push notification
-                let notificationData = <any>{
-                    title: `New post from ${senderData.name}`,
-                    body: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                    data: {
-                        type: constants.NOTIFICATION_TYPE.achievement_post,
-                        title: `New post from ${senderData.name}`,
-                        message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                        id: parseInt(achievement.id),
-                        senderEmplyeeData: senderData,
-                    },
-                }
-                await helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
             }
         }
 

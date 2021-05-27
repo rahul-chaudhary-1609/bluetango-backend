@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.industryTypeModel = exports.departmentModel = exports.employeeModel = exports.employersModel = exports.adminModel = void 0;
+exports.coachManagementModel = exports.industryTypeModel = exports.departmentModel = exports.employeeModel = exports.employersModel = exports.adminModel = void 0;
 const admin_1 = require("./admin");
 Object.defineProperty(exports, "adminModel", { enumerable: true, get: function () { return admin_1.adminModel; } });
 const employers_1 = require("./employers");
@@ -12,6 +12,8 @@ Object.defineProperty(exports, "departmentModel", { enumerable: true, get: funct
 const industryType_1 = require("./industryType");
 Object.defineProperty(exports, "industryTypeModel", { enumerable: true, get: function () { return industryType_1.industryTypeModel; } });
 const emoji_1 = require("./emoji");
+const coachManagement_1 = require("./coachManagement");
+Object.defineProperty(exports, "coachManagementModel", { enumerable: true, get: function () { return coachManagement_1.coachManagementModel; } });
 /* all associations put here to avoid duplicate association */
 employee_1.employeeModel.hasOne(emoji_1.emojiModel, { as: 'energy_emoji_data', foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
 employee_1.employeeModel.hasOne(emoji_1.emojiModel, { as: 'job_emoji_data', foreignKey: "id", sourceKey: "job_emoji_id", targetKey: "id" });

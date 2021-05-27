@@ -201,36 +201,36 @@ class AchievementServices {
                 delete senderData.password;
                 for (let recieverData of recieversData) {
                     delete recieverData.password;
-                    if (recieverData.id == senderData.id)
-                        continue;
-                    // add notification for employee
-                    let notificationObj = {
-                        type_id: parseInt(achievement.id),
-                        sender_id: senderData.id,
-                        reciever_id: recieverData.id,
-                        type: constants.NOTIFICATION_TYPE.achievement_post,
-                        data: {
+                    if (recieverData.id != senderData.id) {
+                        // add notification for employee
+                        let notificationObj = {
+                            type_id: parseInt(achievement.id),
+                            sender_id: senderData.id,
+                            reciever_id: recieverData.id,
                             type: constants.NOTIFICATION_TYPE.achievement_post,
+                            data: {
+                                type: constants.NOTIFICATION_TYPE.achievement_post,
+                                title: `New post from ${senderData.name}`,
+                                message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                                id: parseInt(achievement.id),
+                                senderEmplyeeData: senderData,
+                            },
+                        };
+                        yield notification_1.notificationModel.create(notificationObj);
+                        // send push notification
+                        let notificationData = {
                             title: `New post from ${senderData.name}`,
-                            message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                            id: parseInt(achievement.id),
-                            senderEmplyeeData: senderData,
-                        },
-                    };
-                    yield notification_1.notificationModel.create(notificationObj);
-                    // send push notification
-                    let notificationData = {
-                        title: `New post from ${senderData.name}`,
-                        body: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                        data: {
-                            type: constants.NOTIFICATION_TYPE.achievement_post,
-                            title: `New post from ${senderData.name}`,
-                            message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
-                            id: parseInt(achievement.id),
-                            senderEmplyeeData: senderData,
-                        },
-                    };
-                    yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
+                            body: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                            data: {
+                                type: constants.NOTIFICATION_TYPE.achievement_post,
+                                title: `New post from ${senderData.name}`,
+                                message: achievement.description.length > 50 ? `${achievement.description.slice(0, 50)}...` : achievement.description,
+                                id: parseInt(achievement.id),
+                                senderEmplyeeData: senderData,
+                            },
+                        };
+                        yield helperFunction.sendFcmNotification([recieverData.device_token], notificationData);
+                    }
                 }
             }
             return achievement;

@@ -1,6 +1,7 @@
 import * as constants from '../constants'
 import jwt from 'jsonwebtoken';
 import { EmployersService } from '../services/admin/employersService'
+import { adminModel, employersModel, employeeModel, coachManagementModel } from '../models';
 
 //Instantiates a Home services  
 const employersService = new EmployersService();
@@ -63,6 +64,20 @@ export const validateEmployeeToken = async (req, res, next) => {
         }
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.EMPLOYEE_SECRET_KEY || constants.EMPLOYEE_SECRET_KEY);
+
+        const employee = await employeeModel.findByPk(decoded.id);
+
+        if (employee.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account
+            //return res.status(response.status).send(response);
+        }
+        else if (employee.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account
+            //return res.status(response.status).send(response);
+        }
+
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
@@ -84,6 +99,20 @@ export const validateEmployerToken = async (req, res, next) => {
         }
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY);
+
+        const employer = await employersModel.findByPk(decoded.id);
+
+        if (employer.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account
+            //return res.status(response.status).send(response);
+        }
+        else if (employer.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account
+            //return res.status(response.status).send(response);
+        }
+
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
@@ -105,6 +134,20 @@ export const validateCoachToken = async (req, res, next) => {
         }
         const token = req.headers.authorization;
         const decoded = jwt.verify(token, process.env.COACH_SECRET_KEY || constants.COACH_SECRET_KEY);
+
+        const coach = await coachManagementModel.findByPk(decoded.id);
+
+        if (coach.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account
+            //return res.status(response.status).send(response);
+        }
+        else if (coach.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account
+            //return res.status(response.status).send(response);
+        }
+
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role

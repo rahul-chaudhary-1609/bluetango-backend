@@ -35,6 +35,7 @@ exports.validateCoachToken = exports.validateEmployerToken = exports.validateEmp
 const constants = __importStar(require("../constants"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const employersService_1 = require("../services/admin/employersService");
+const models_1 = require("../models");
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -94,6 +95,17 @@ exports.validateEmployeeToken = (req, res, next) => __awaiter(void 0, void 0, vo
         }
         const token = req.headers.authorization;
         const decoded = jsonwebtoken_1.default.verify(token, process.env.EMPLOYEE_SECRET_KEY || constants.EMPLOYEE_SECRET_KEY);
+        const employee = yield models_1.employeeModel.findByPk(decoded.id);
+        if (employee.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account;
+            //return res.status(response.status).send(response);
+        }
+        else if (employee.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account;
+            //return res.status(response.status).send(response);
+        }
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
@@ -115,6 +127,17 @@ exports.validateEmployerToken = (req, res, next) => __awaiter(void 0, void 0, vo
         }
         const token = req.headers.authorization;
         const decoded = jsonwebtoken_1.default.verify(token, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY);
+        const employer = yield models_1.employersModel.findByPk(decoded.id);
+        if (employer.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account;
+            //return res.status(response.status).send(response);
+        }
+        else if (employer.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account;
+            //return res.status(response.status).send(response);
+        }
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
@@ -136,6 +159,17 @@ exports.validateCoachToken = (req, res, next) => __awaiter(void 0, void 0, void 
         }
         const token = req.headers.authorization;
         const decoded = jsonwebtoken_1.default.verify(token, process.env.COACH_SECRET_KEY || constants.COACH_SECRET_KEY);
+        const coach = yield models_1.coachManagementModel.findByPk(decoded.id);
+        if (coach.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account;
+            //return res.status(response.status).send(response);
+        }
+        else if (coach.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account;
+            //return res.status(response.status).send(response);
+        }
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
