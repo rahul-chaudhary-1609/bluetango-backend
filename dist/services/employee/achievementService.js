@@ -89,6 +89,17 @@ class AchievementServices {
                 if (achievement.employee && achievement.employee.id == parseInt(user.uid))
                     achievement.isSelf = true;
             }
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    type: [
+                        constants.NOTIFICATION_TYPE.achievement_post,
+                    ],
+                    status: 1,
+                    reciever_id: user.uid,
+                }
+            });
             return { achievements };
         });
     }
