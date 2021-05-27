@@ -70,12 +70,12 @@ export const validateEmployeeToken = async (req, res, next) => {
         if (employee.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
         else if (employee.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
 
         let payload = {
@@ -105,12 +105,12 @@ export const validateEmployerToken = async (req, res, next) => {
         if (employer.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
         else if (employer.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
 
         let payload = {
@@ -140,12 +140,12 @@ export const validateCoachToken = async (req, res, next) => {
         if (coach.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
         else if (coach.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
-            //return res.status(response.status).send(response);
+            return res.status(response.status).send(response);
         }
 
         let payload = {
