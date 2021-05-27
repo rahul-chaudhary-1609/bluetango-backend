@@ -552,17 +552,28 @@ class AchievementServices {
                 ],
                 order: [["createdAt", "DESC"]]
             }));
+            let isLiked = false;
+            let isHighFived = false;
             for (let like of achievementLikes) {
                 like.isSelf = false;
                 if (like.employee && like.employee.id == parseInt(user.uid)) {
                     like.isSelf = true;
+                    isLiked = true;
                     break;
                 }
             }
-            // achievementLikes.likeCount = achievement.like_count;
-            // achievementLikes.highFiveCount = achievement.high_five_count;
+            let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                where: {
+                    achievement_id: parseInt(params.achievement_id),
+                    high_fived_by_employee_id: parseInt(user.uid),
+                }
+            });
+            if (achievementHighFive)
+                isHighFived = true;
             return {
                 achievementLikes,
+                isLiked,
+                isHighFived,
                 likeCount: achievement.like_count,
                 highFiveCount: achievement.high_five_count,
             };
@@ -588,17 +599,28 @@ class AchievementServices {
                 ],
                 order: [["createdAt", "DESC"]]
             }));
+            let isLiked = false;
+            let isHighFived = false;
             for (let highFive of achievementHighFives) {
                 highFive.isSelf = false;
                 if (highFive.employee && highFive.employee.id == parseInt(user.uid)) {
                     highFive.isSelf = true;
+                    isHighFived = true;
                     break;
                 }
             }
-            // achievementHighFives.likeCount = achievement.like_count;
-            // achievementHighFives.highFiveCount = achievement.high_five_count;
+            let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
+                where: {
+                    achievement_id: parseInt(params.achievement_id),
+                    liked_by_employee_id: parseInt(user.uid),
+                }
+            });
+            if (achievementLike)
+                isLiked = true;
             return {
                 achievementHighFives,
+                isLiked,
+                isHighFived,
                 likeCount: achievement.like_count,
                 highFiveCount: achievement.high_five_count,
             };

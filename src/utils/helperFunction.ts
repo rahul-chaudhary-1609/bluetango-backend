@@ -118,7 +118,8 @@ export const sendFcmNotification = async (tokens: any, notification: any) => {
         registration_ids: tokens,
         notification: {
             title: notification.title,
-            body: notification.body
+            body: notification.body,
+            image: notification.image || null,
         },
         data: notification.data
     };

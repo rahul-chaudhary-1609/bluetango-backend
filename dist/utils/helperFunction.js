@@ -138,7 +138,8 @@ exports.sendFcmNotification = (tokens, notification) => __awaiter(void 0, void 0
         registration_ids: tokens,
         notification: {
             title: notification.title,
-            body: notification.body
+            body: notification.body,
+            image: notification.image || null,
         },
         data: notification.data
     };
