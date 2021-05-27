@@ -328,7 +328,7 @@ export class EmployeeController {
  */
     public async markNotificationsAsViewed(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.markNotificationsAsViewed(req.query, req.user);
+            const responseFromService = await employeeServices.markNotificationsAsViewed(req.body, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {
