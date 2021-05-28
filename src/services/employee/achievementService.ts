@@ -267,6 +267,8 @@ export class AchievementServices {
 
         if (achievement) {
 
+            let isLiked = true;
+
             let employee = await helperFunction.convertPromiseToObject(
                 await employeeModel.findOne({
                     attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
@@ -287,6 +289,7 @@ export class AchievementServices {
                 await achievementLike.destroy();
                 achievement.like_count = parseInt(achievement.like_count) - 1
                 achievement.save();
+                isLiked = false;
             }
             else {
 
@@ -299,6 +302,7 @@ export class AchievementServices {
                 //achievement.last_action_on = new Date();
                 achievement.like_count = parseInt(achievement.like_count)+1
                 achievement.save();
+                isLiked = true;
 
                 let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
                 let recieverData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(achievement.employee_id)));
@@ -340,6 +344,21 @@ export class AchievementServices {
 
             achievement = await helperFunction.convertPromiseToObject(achievement);
             achievement.employee = employee;
+            achievement.isHighFived = false;
+            let achievementHighFive = await achievementHighFiveModel.findOne({
+                where: {
+                    achievement_id: parseInt(params.achievement_id),
+                    high_fived_by_employee_id: parseInt(user.uid),
+                }
+            })
+
+            if (achievementHighFive) achievement.isHighFived = true;
+
+            achievement.likeCount = achievement.like_count;
+            achievement.highFiveCount = achievement.high_five_count;
+            achievement.isLiked = isLiked;
+
+
             return achievement;
         }
         else {
@@ -357,6 +376,8 @@ export class AchievementServices {
 
         if (achievement) {
 
+            let isHighFived = true;
+
             let employee = await helperFunction.convertPromiseToObject(
                 await employeeModel.findOne({
                     attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
@@ -367,17 +388,18 @@ export class AchievementServices {
             )
 
 
-            let achievementhighFive = await achievementHighFiveModel.findOne({
+            let achievementHighFive = await achievementHighFiveModel.findOne({
                 where: {
                     high_fived_by_employee_id: user.uid,
                     achievement_id: parseInt(params.achievement_id)
                 }
             })
 
-            if (achievementhighFive) {
-                await achievementhighFive.destroy()
+            if (achievementHighFive) {
+                await achievementHighFive.destroy()
                 achievement.high_five_count = parseInt(achievement.high_five_count) - 1
                 achievement.save();
+                isHighFived = false;
             }
             else {
 
@@ -390,6 +412,7 @@ export class AchievementServices {
                 //achievement.last_action_on = new Date();
                 achievement.high_five_count = parseInt(achievement.high_five_count) + 1
                 achievement.save();
+                isHighFived = true;
 
                 let senderData = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
                 let recieverData = await helperFunction.convertPromiseToObject( await employeeModel.findByPk(parseInt(achievement.employee_id)));
@@ -432,6 +455,21 @@ export class AchievementServices {
 
             achievement = await helperFunction.convertPromiseToObject(achievement);
             achievement.employee = employee;
+            achievement.isLiked = false;
+
+            let achievementLike = await achievementLikeModel.findOne({
+                where: {
+                    achievement_id: parseInt(params.achievement_id),
+                    liked_by_employee_id: parseInt(user.uid),
+                }
+            })
+
+            if (achievementLike) achievement.isLiked = true;
+
+            achievement.likeCount = achievement.like_count;
+            achievement.highFiveCount = achievement.high_five_count;
+            achievement.isHighFived = isHighFived;            
+
             return achievement;
         }
         else {

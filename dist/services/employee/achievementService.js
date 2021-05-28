@@ -254,6 +254,7 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
+                let isLiked = true;
                 let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                     attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                     where: {
@@ -270,6 +271,7 @@ class AchievementServices {
                     yield achievementLike.destroy();
                     achievement.like_count = parseInt(achievement.like_count) - 1;
                     achievement.save();
+                    isLiked = false;
                 }
                 else {
                     let achievementLikeObj = {
@@ -280,6 +282,7 @@ class AchievementServices {
                     //achievement.last_action_on = new Date();
                     achievement.like_count = parseInt(achievement.like_count) + 1;
                     achievement.save();
+                    isLiked = true;
                     let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
                     let recieverData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id)));
                     delete recieverData.password;
@@ -317,6 +320,18 @@ class AchievementServices {
                 }
                 achievement = yield helperFunction.convertPromiseToObject(achievement);
                 achievement.employee = employee;
+                achievement.isHighFived = false;
+                let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                    where: {
+                        achievement_id: parseInt(params.achievement_id),
+                        high_fived_by_employee_id: parseInt(user.uid),
+                    }
+                });
+                if (achievementHighFive)
+                    achievement.isHighFived = true;
+                achievement.likeCount = achievement.like_count;
+                achievement.highFiveCount = achievement.high_five_count;
+                achievement.isLiked = isLiked;
                 return achievement;
             }
             else {
@@ -331,22 +346,24 @@ class AchievementServices {
         return __awaiter(this, void 0, void 0, function* () {
             let achievement = yield achievement_1.achievementModel.findByPk(parseInt(params.achievement_id));
             if (achievement) {
+                let isHighFived = true;
                 let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                     attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id', 'status', 'createdAt', 'updatedAt'],
                     where: {
                         id: parseInt(achievement.employee_id),
                     }
                 }));
-                let achievementhighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
+                let achievementHighFive = yield achievementHighFive_1.achievementHighFiveModel.findOne({
                     where: {
                         high_fived_by_employee_id: user.uid,
                         achievement_id: parseInt(params.achievement_id)
                     }
                 });
-                if (achievementhighFive) {
-                    yield achievementhighFive.destroy();
+                if (achievementHighFive) {
+                    yield achievementHighFive.destroy();
                     achievement.high_five_count = parseInt(achievement.high_five_count) - 1;
                     achievement.save();
+                    isHighFived = false;
                 }
                 else {
                     let achievementHighFiveObj = {
@@ -357,6 +374,7 @@ class AchievementServices {
                     //achievement.last_action_on = new Date();
                     achievement.high_five_count = parseInt(achievement.high_five_count) + 1;
                     achievement.save();
+                    isHighFived = true;
                     let senderData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
                     let recieverData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(achievement.employee_id)));
                     delete recieverData.password;
@@ -394,6 +412,18 @@ class AchievementServices {
                 }
                 achievement = yield helperFunction.convertPromiseToObject(achievement);
                 achievement.employee = employee;
+                achievement.isLiked = false;
+                let achievementLike = yield achievementLike_1.achievementLikeModel.findOne({
+                    where: {
+                        achievement_id: parseInt(params.achievement_id),
+                        liked_by_employee_id: parseInt(user.uid),
+                    }
+                });
+                if (achievementLike)
+                    achievement.isLiked = true;
+                achievement.likeCount = achievement.like_count;
+                achievement.highFiveCount = achievement.high_five_count;
+                achievement.isHighFived = isHighFived;
                 return achievement;
             }
             else {
