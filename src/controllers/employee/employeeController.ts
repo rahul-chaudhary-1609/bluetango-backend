@@ -335,4 +335,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+* to refer Friend
+* @param req :[]
+* @param res 
+*/
+    public async referFriend(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.referFriend(req.body);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

@@ -316,3 +316,9 @@ export const viewGoalAssignCompletionAsManager = Joi.object({
 export const getQuantitativeStatsOfGoalsAsManager= Joi.object({
   employee_id: Joi.number().required(),
 });
+
+export const referFriend = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().max(10).min(10).optional(),
+});
