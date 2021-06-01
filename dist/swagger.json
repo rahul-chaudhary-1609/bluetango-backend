@@ -3695,6 +3695,41 @@
                 "responses": {}
             }
         },
+        "/employee/feedback": {
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "api to employee feedback",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "rating",
+                        "in": "formData",
+                        "description": "rating (1 to 5)",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "message",
+                        "in": "formData",
+                        "description": "message",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/getAchievements": {
             "get": {
                 "tags": [

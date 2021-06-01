@@ -47,6 +47,7 @@ const emoji_1 = require("../../models/emoji");
 const coachManagement_1 = require("../../models/coachManagement");
 const contactUs_1 = require("../../models/contactUs");
 const notification_1 = require("../../models/notification");
+const feedback_1 = require("../../models/feedback");
 const authService_1 = require("./authService");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -704,6 +705,22 @@ class EmployeeServices {
             mailParams.subject = "BluXinga Friend Referral";
             yield helperFunction.sendEmail(mailParams);
             return true;
+        });
+    }
+    /**
+     * function to feedback
+     * @param params
+     * @param user
+     */
+    feedback(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let feedbackObj = {
+                user_id: parseInt(user.uid),
+                rating: parseInt(params.rating),
+                message: params.message || null,
+                feedback_type: constants.FEEDBACK_TYPE.employee,
+            };
+            return yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.create(feedbackObj));
         });
     }
 }

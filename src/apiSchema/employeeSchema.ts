@@ -322,3 +322,8 @@ export const referFriend = Joi.object({
   email: Joi.string().email().required(),
   phone: Joi.string().max(10).min(10).optional(),
 });
+
+export const feedback = Joi.object({
+  rating: Joi.number().required(),
+  message: Joi.string().optional(),
+});

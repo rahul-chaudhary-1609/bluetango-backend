@@ -350,4 +350,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+* to feedback
+* @param req :[]
+* @param res 
+*/
+    public async feedback(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.feedback(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

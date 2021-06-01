@@ -15,6 +15,7 @@ import { emojiModel } from "../../models/emoji";
 import { coachManagementModel } from "../../models/coachManagement";
 import { contactUsModel } from "../../models/contactUs";
 import { notificationModel } from "../../models/notification";
+import { feedbackModel } from "../../models/feedback";
 import { AuthService } from "./authService";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -783,5 +784,21 @@ export class EmployeeServices {
         await helperFunction.sendEmail(mailParams);
 
         return true;
+    }
+
+    /**
+     * function to feedback
+     * @param params 
+     * @param user 
+     */
+    public async feedback(params: any,user:any) {
+        let feedbackObj = <any>{
+            user_id: parseInt(user.uid),
+            rating: parseInt(params.rating),
+            message: params.message || null,
+            feedback_type:constants.FEEDBACK_TYPE.employee,
+        }
+
+        return await helperFunction.convertPromiseToObject(await feedbackModel.create(feedbackObj));
     }
 }

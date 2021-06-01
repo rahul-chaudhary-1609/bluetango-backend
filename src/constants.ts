@@ -229,3 +229,10 @@ export const CHAT_DISCONNECT_TYPE= {
   disconnected: 1,
   missed: 2,
 }
+
+export const FEEDBACK_TYPE = {
+  employee: 1,
+  employer: 2,
+  coach: 3,
+  other: 4,
+}

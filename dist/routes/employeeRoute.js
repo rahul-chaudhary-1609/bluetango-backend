@@ -135,8 +135,10 @@ employeeRoute.get("/getNotifications", validators.trimmer, tokenValidator.valida
 employeeRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getUnseenNotificationCount);
 /* contact us for employee */
 employeeRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.markNotificationsAsViewed), employeeController.markNotificationsAsViewed);
-/* contact us for employee */
+/* refer friend for employee */
 employeeRoute.post("/referFriend", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.referFriend), employeeController.referFriend);
+/* feedback from employee */
+employeeRoute.post("/feedback", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feedback), employeeController.feedback);
 // Chat routes
 /* get chat for employee */
 employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopUpListAsEmployee);
