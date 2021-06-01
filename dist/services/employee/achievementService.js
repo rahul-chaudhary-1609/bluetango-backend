@@ -331,6 +331,7 @@ class AchievementServices {
                     achievement.isHighFived = true;
                 achievement.likeCount = achievement.like_count;
                 achievement.highFiveCount = achievement.high_five_count;
+                achievement.commentCount = achievement.comment_count;
                 achievement.isLiked = isLiked;
                 return achievement;
             }
@@ -423,6 +424,7 @@ class AchievementServices {
                     achievement.isLiked = true;
                 achievement.likeCount = achievement.like_count;
                 achievement.highFiveCount = achievement.high_five_count;
+                achievement.commentCount = achievement.comment_count;
                 achievement.isHighFived = isHighFived;
                 return achievement;
             }

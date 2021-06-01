@@ -356,6 +356,7 @@ export class AchievementServices {
 
             achievement.likeCount = achievement.like_count;
             achievement.highFiveCount = achievement.high_five_count;
+            achievement.commentCount = achievement.comment_count;
             achievement.isLiked = isLiked;
 
 
@@ -468,6 +469,7 @@ export class AchievementServices {
 
             achievement.likeCount = achievement.like_count;
             achievement.highFiveCount = achievement.high_five_count;
+            achievement.commentCount = achievement.comment_count;
             achievement.isHighFived = isHighFived;            
 
             return achievement;
