@@ -419,6 +419,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+* list library video
+* @param req :[body data]
+* @param res : [library data object]
+*/
+    listVideo(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.listVideo(req.query);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

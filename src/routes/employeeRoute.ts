@@ -179,6 +179,9 @@ employeeRoute.post("/referFriend", validators.trimmer, tokenValidator.validateEm
 /* feedback from employee */
 employeeRoute.post("/feedback", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feedback), employeeController.feedback);
 
+/* list library management */
+employeeRoute.get("/listVideo", tokenValidator.validateEmployeeToken, employeeController.listVideo);
+
 
 // Chat routes
 /* get chat for employee */

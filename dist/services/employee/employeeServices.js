@@ -49,6 +49,7 @@ const contactUs_1 = require("../../models/contactUs");
 const notification_1 = require("../../models/notification");
 const feedback_1 = require("../../models/feedback");
 const authService_1 = require("./authService");
+const libraryManagement_1 = require("../../models/libraryManagement");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const authService = new authService_1.AuthService();
@@ -721,6 +722,21 @@ class EmployeeServices {
                 feedback_type: constants.FEEDBACK_TYPE.employee,
             };
             return yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.create(feedbackObj));
+        });
+    }
+    /**
+*
+* @param {} params pass all parameters from request
+*/
+    listVideo(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            return yield libraryManagement_1.libraryManagementModel.findAndCountAll({
+                where: { status: 1 },
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            });
         });
     }
 }

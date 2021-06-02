@@ -365,4 +365,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+    /**
+* list library video
+* @param req :[body data]
+* @param res : [library data object]
+*/
+    public async listVideo(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.listVideo(req.query);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

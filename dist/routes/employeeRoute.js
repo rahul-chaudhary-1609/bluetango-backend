@@ -139,6 +139,8 @@ employeeRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidat
 employeeRoute.post("/referFriend", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.referFriend), employeeController.referFriend);
 /* feedback from employee */
 employeeRoute.post("/feedback", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.feedback), employeeController.feedback);
+/* list library management */
+employeeRoute.get("/listVideo", tokenValidator.validateEmployeeToken, employeeController.listVideo);
 // Chat routes
 /* get chat for employee */
 employeeRoute.get("/getChatPopUpListAsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, chatController.getChatPopUpListAsEmployee);

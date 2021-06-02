@@ -17,6 +17,7 @@ import { contactUsModel } from "../../models/contactUs";
 import { notificationModel } from "../../models/notification";
 import { feedbackModel } from "../../models/feedback";
 import { AuthService } from "./authService";
+import { libraryManagementModel } from "../../models/libraryManagement";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -800,5 +801,21 @@ export class EmployeeServices {
         }
 
         return await helperFunction.convertPromiseToObject(await feedbackModel.create(feedbackObj));
+    }
+
+    /**
+* 
+* @param {} params pass all parameters from request
+*/
+    public async listVideo(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        return await libraryManagementModel.findAndCountAll({
+            where: { status: 1 },
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        })
+
     }
 }
