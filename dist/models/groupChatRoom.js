@@ -12,6 +12,8 @@ exports.groupChatRoomModel = connection_1.sequelize.define("group_chat_rooms", {
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Team Group",
     },
     manager_id: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -36,5 +38,5 @@ exports.groupChatRoomModel = connection_1.sequelize.define("group_chat_rooms", {
 }, {
     tableName: "group_chat_rooms"
 });
-exports.groupChatRoomModel.sync({ alter: true });
+exports.groupChatRoomModel.sync({ alter: false });
 //# sourceMappingURL=groupChatRoom.js.map

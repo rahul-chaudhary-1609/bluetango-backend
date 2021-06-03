@@ -34,6 +34,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
+const groupChatRoom_1 = require("../../models/groupChatRoom");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
@@ -174,6 +175,54 @@ class ChatServices {
         });
     }
     /*
+    * function to handle group chat
+    */
+    groupChatHandler(manager) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let managerGroupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
+                where: {
+                    manager_id: parseInt(manager.id),
+                }
+            });
+            let managerTeamMembers = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findAll({
+                attributes: ['team_member_id'],
+                where: {
+                    manager_id: parseInt(manager.id),
+                }
+            }));
+            if (!managerGroupChatRoom) {
+                let groupChatRoomObj = {
+                    manager_id: parseInt(manager.id),
+                    member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
+                    room_id: yield helperFunction.randomStringEightDigit(),
+                };
+                managerGroupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+            }
+            else {
+                let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
+                managerGroupChatRoom.member_ids = [...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
+                managerGroupChatRoom.save();
+                managerGroupChatRoom = yield helperFunction.convertPromiseToObject(managerGroupChatRoom);
+            }
+            let groupMembers = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
+                where: {
+                    id: managerGroupChatRoom.member_ids,
+                }
+            }));
+            return {
+                id: managerGroupChatRoom.id,
+                room_id: managerGroupChatRoom.room_id,
+                members: groupMembers,
+                status: managerGroupChatRoom.status,
+                type: constants.CHAT_ROOM_TYPE.group,
+                is_disabled: false,
+                createdAt: managerGroupChatRoom.createdAt,
+                updatedAt: managerGroupChatRoom.updatedAt
+            };
+        });
+    }
+    /*
     * function to get chat  list
     */
     getChatList(user) {
@@ -191,7 +240,7 @@ class ChatServices {
             });
             let chatRoomData = [...chatRoomDataUser, ...chatRoomDataOtherUser];
             let currentUser = yield employee_1.employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                 where: {
                     id: user.uid
                 }
@@ -203,7 +252,7 @@ class ChatServices {
                 if (chat.other_user_id == user.uid)
                     id = chat.user_id;
                 let employee = yield employee_1.employeeModel.findOne({
-                    attributes: ['id', 'name', 'profile_pic_url', 'is_manager'],
+                    attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                     where: {
                         id
                     }
@@ -267,6 +316,50 @@ class ChatServices {
                         is_disabled,
                         createdAt: chat.createdAt,
                         updatedAt: chat.updatedAt
+                    });
+                }
+            }
+            let groupChatIds = [];
+            if (currentUser.is_manager) {
+                let groupChat = yield this.groupChatHandler({ id: user.uid });
+                groupChatIds.push(groupChat.id);
+                chats.push(groupChat);
+            }
+            let manager = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                attributes: ['manager_id'],
+                where: {
+                    team_member_id: parseInt(user.uid),
+                }
+            }));
+            if (manager) {
+                let groupChat = yield this.groupChatHandler({ id: manager.manager_id });
+                groupChatIds.push(groupChat.id);
+                chats.push(groupChat);
+            }
+            let groupChatRooms = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.findAll({
+                where: {
+                    member_ids: {
+                        [Op.contains]: [parseInt(user.uid)],
+                    }
+                }
+            }));
+            for (let groupChatRoom of groupChatRooms) {
+                if (!groupChatIds.includes(groupChatRoom.id)) {
+                    let groupMembers = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
+                        where: {
+                            id: groupChatRoom.member_ids,
+                        }
+                    }));
+                    chats.push({
+                        id: groupChatRoom.id,
+                        room_id: groupChatRoom.room_id,
+                        members: groupMembers,
+                        status: groupChatRoom.status,
+                        type: constants.CHAT_ROOM_TYPE.group,
+                        is_disabled: true,
+                        createdAt: groupChatRoom.createdAt,
+                        updatedAt: groupChatRoom.updatedAt
                     });
                 }
             }
@@ -399,8 +492,16 @@ class ChatServices {
                     room_id: params.chat_room_id,
                 }
             });
-            if (!chatRoomData)
-                throw new Error(constants.MESSAGES.chat_room_notFound);
+            let groupChatRoomData = null;
+            if (!chatRoomData) {
+                groupChatRoomData = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.findOne({
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                }));
+                if (!groupChatRoomData)
+                    throw new Error(constants.MESSAGES.chat_room_notFound);
+            }
             let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
             let recieverEmployeeData = yield employee_1.employeeModel.findOne({
                 where: { id: recieverId, }
@@ -416,34 +517,73 @@ class ChatServices {
             delete senderEmployeeData.password;
             let newNotification = null;
             if (params.chat_type == 'text') {
-                //add notification 
-                let notificationObj = {
-                    type_id: params.chat_room_id,
-                    sender_id: user.uid,
-                    reciever_id: recieverId,
-                    type: constants.NOTIFICATION_TYPE.message,
-                    data: {
+                if (groupChatRoomData) {
+                    let recieverEmployees = yield employee_1.employeeModel.findOne({
+                        where: { id: groupChatRoomData.member_ids, }
+                    });
+                    for (let recieverEmployee of recieverEmployees) {
+                        if (senderEmployeeData.id != recieverEmployee.id) {
+                            //add notification 
+                            let notificationObj = {
+                                type_id: params.chat_room_id,
+                                sender_id: user.uid,
+                                reciever_id: recieverEmployee.id,
+                                type: constants.NOTIFICATION_TYPE.message,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.message,
+                                    title: 'Message',
+                                    message: params.message || `Message from ${senderEmployeeData.name}`,
+                                    chat_room_id: params.chat_room_id,
+                                    senderEmployeeData
+                                },
+                            };
+                            newNotification = yield notification_1.notificationModel.create(notificationObj);
+                            //send push notification
+                            let notificationData = {
+                                title: 'Message',
+                                body: `Message from ${senderEmployeeData.name}`,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.message,
+                                    title: 'Message',
+                                    message: params.message || `Message from ${senderEmployeeData.name}`,
+                                    chat_room_id: params.chat_room_id,
+                                    senderEmployeeData
+                                },
+                            };
+                            yield helperFunction.sendFcmNotification([recieverEmployee.device_token], notificationData);
+                        }
+                    }
+                }
+                else {
+                    //add notification 
+                    let notificationObj = {
+                        type_id: params.chat_room_id,
+                        sender_id: user.uid,
+                        reciever_id: recieverId,
                         type: constants.NOTIFICATION_TYPE.message,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.message,
+                            title: 'Message',
+                            message: params.message || `Message from ${senderEmployeeData.name}`,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    };
+                    newNotification = yield notification_1.notificationModel.create(notificationObj);
+                    //send push notification
+                    let notificationData = {
                         title: 'Message',
-                        message: params.message || `Message from ${senderEmployeeData.name}`,
-                        chat_room_id: params.chat_room_id,
-                        senderEmployeeData
-                    },
-                };
-                newNotification = yield notification_1.notificationModel.create(notificationObj);
-                //send push notification
-                let notificationData = {
-                    title: 'Message',
-                    body: `Message from ${senderEmployeeData.name}`,
-                    data: {
-                        type: constants.NOTIFICATION_TYPE.message,
-                        title: 'Message',
-                        message: params.message || `Message from ${senderEmployeeData.name}`,
-                        chat_room_id: params.chat_room_id,
-                        senderEmployeeData
-                    },
-                };
-                yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                        body: `Message from ${senderEmployeeData.name}`,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.message,
+                            title: 'Message',
+                            message: params.message || `Message from ${senderEmployeeData.name}`,
+                            chat_room_id: params.chat_room_id,
+                            senderEmployeeData
+                        },
+                    };
+                    yield helperFunction.sendFcmNotification([recieverEmployeeData.device_token], notificationData);
+                }
             }
             else if (params.chat_type == 'audio') {
                 //add notification 

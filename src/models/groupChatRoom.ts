@@ -11,6 +11,8 @@ export const groupChatRoomModel: any = sequelize.define("group_chat_rooms", {
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Team Group",
     },
     manager_id: {
         type: DataTypes.INTEGER,
@@ -37,4 +39,4 @@ export const groupChatRoomModel: any = sequelize.define("group_chat_rooms", {
         tableName: "group_chat_rooms"
     }
 );
-groupChatRoomModel.sync({ alter: true });
+groupChatRoomModel.sync({ alter: false });
