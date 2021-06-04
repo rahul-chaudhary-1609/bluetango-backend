@@ -213,9 +213,12 @@ class ChatServices {
             return {
                 id: managerGroupChatRoom.id,
                 room_id: managerGroupChatRoom.room_id,
-                members: groupMembers,
+                group_name: managerGroupChatRoom.name,
+                group_icon_url: managerGroupChatRoom.icon_image_url,
+                group_members: groupMembers,
                 status: managerGroupChatRoom.status,
                 type: constants.CHAT_ROOM_TYPE.group,
+                isAmIGroupManager: manager.is_manager,
                 is_disabled: false,
                 createdAt: managerGroupChatRoom.createdAt,
                 updatedAt: managerGroupChatRoom.updatedAt
@@ -321,7 +324,7 @@ class ChatServices {
             }
             let groupChatIds = [];
             if (currentUser.is_manager) {
-                let groupChat = yield this.groupChatHandler({ id: user.uid });
+                let groupChat = yield this.groupChatHandler({ id: user.uid, is_manager: true });
                 groupChatIds.push(groupChat.id);
                 chats.push(groupChat);
             }
@@ -332,7 +335,7 @@ class ChatServices {
                 }
             }));
             if (manager) {
-                let groupChat = yield this.groupChatHandler({ id: manager.manager_id });
+                let groupChat = yield this.groupChatHandler({ id: manager.manager_id, is_manager: false });
                 groupChatIds.push(groupChat.id);
                 chats.push(groupChat);
             }
@@ -354,9 +357,12 @@ class ChatServices {
                     chats.push({
                         id: groupChatRoom.id,
                         room_id: groupChatRoom.room_id,
-                        members: groupMembers,
+                        group_name: groupChatRoom.name,
+                        group_icon_url: groupChatRoom.icon_image_url,
+                        group_members: groupMembers,
                         status: groupChatRoom.status,
                         type: constants.CHAT_ROOM_TYPE.group,
+                        isAmIGroupManager: false,
                         is_disabled: true,
                         createdAt: groupChatRoom.createdAt,
                         updatedAt: groupChatRoom.updatedAt
