@@ -55,6 +55,34 @@ export class ChatServices {
         return employeeGoalData.concat(getQuantitativeData);
     }
 
+    /**
+     * function to generate unique room id
+     */
+    public async getUniqueChatRoomId() {
+        let isUniqueFound = false;
+        let room_id = null;
+        while (!isUniqueFound) {
+            room_id = await helperFunction.randomStringEightDigit();
+            let chatRoom = await chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id
+                }
+            });
+
+            if (!chatRoom) {
+                let groupChatRoom = await groupChatRoomModel.findOne({
+                    where: {
+                        room_id
+                    }
+                });
+
+                if (!groupChatRoom) isUniqueFound = true;
+            }            
+        }
+
+        return room_id;
+    }
+
     /*
     * function to get chat room id
     */
@@ -91,7 +119,7 @@ export class ChatServices {
                 let chatRoomObj = <any>{
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
-                    room_id: await helperFunction.randomStringEightDigit(),
+                    room_id: await this.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
                     type: constants.CHAT_ROOM_TYPE.coach
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
@@ -144,7 +172,7 @@ export class ChatServices {
                 let chatRoomObj = <any>{
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
-                    room_id: await helperFunction.randomStringEightDigit()
+                    room_id: await this.getUniqueChatRoomId(),//await helperFunction.randomStringEightDigit()
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
@@ -199,7 +227,7 @@ export class ChatServices {
             let groupChatRoomObj = <any>{
                 manager_id: parseInt(manager.id),
                 member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
-                room_id: await helperFunction.randomStringEightDigit(),
+                room_id: await this.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
             };
 
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(
@@ -230,7 +258,7 @@ export class ChatServices {
             group_members: groupMembers,
             status: managerGroupChatRoom.status,
             type: constants.CHAT_ROOM_TYPE.group,
-            isAmIGroupManager: manager.is_manager,
+            amIGroupManager: manager.is_manager,
             is_disabled: false,
             createdAt: managerGroupChatRoom.createdAt,
             updatedAt: managerGroupChatRoom.updatedAt
@@ -405,7 +433,7 @@ export class ChatServices {
                     group_members: groupMembers,
                     status: groupChatRoom.status,
                     type: constants.CHAT_ROOM_TYPE.group,
-                    isAmIGroupManager: false,
+                    amIGroupManager: false,
                     is_disabled: true,
                     createdAt: groupChatRoom.createdAt,
                     updatedAt: groupChatRoom.updatedAt

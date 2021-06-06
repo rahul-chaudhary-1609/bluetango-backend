@@ -184,14 +184,14 @@ exports.checkPermission = (req, re, next) => __awaiter(void 0, void 0, void 0, f
 */
 exports.randomStringEightDigit = () => {
     // Generate Random Number
-    const otp = randomstring.generate({
+    const uniqueID = randomstring.generate({
         charset: 'numeric',
-        length: 8,
+        length: 15,
         numeric: true,
         letters: false,
         special: false,
         exclude: ["0"],
     });
-    return otp;
+    return uniqueID;
 };
 //# sourceMappingURL=helperFunction.js.map

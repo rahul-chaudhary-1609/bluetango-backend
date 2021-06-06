@@ -162,13 +162,13 @@ export const checkPermission = async (req, re, next) => {
 */
 export const randomStringEightDigit = () => {
     // Generate Random Number
-    const otp = randomstring.generate({
+    const uniqueID = randomstring.generate({
         charset: 'numeric',
-        length: 8,
+        length: 15,
         numeric: true,
         letters: false,
         special: false,
         exclude: ["0"],
     });
-    return otp;
+    return uniqueID;
 };
