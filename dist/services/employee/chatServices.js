@@ -237,7 +237,7 @@ class ChatServices {
                     id: managerGroupChatRoom.member_ids,
                 }
             }));
-            let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+            let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                 where: {
                     id: managerGroupChatRoom.manager_id,
@@ -388,7 +388,7 @@ class ChatServices {
                             id: groupChatRoom.member_ids,
                         }
                     }));
-                    let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                    let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                         attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                         where: {
                             id: groupChatRoom.manager_id,

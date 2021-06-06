@@ -251,7 +251,7 @@ export class ChatServices {
         )
 
         let groupManager = await helperFunction.convertPromiseToObject(
-            await employeeModel.findAll({
+            await employeeModel.findOne({
                 attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                 where: {
                     id: managerGroupChatRoom.manager_id,
@@ -436,7 +436,7 @@ export class ChatServices {
                 )
 
                 let groupManager = await helperFunction.convertPromiseToObject(
-                    await employeeModel.findAll({
+                    await employeeModel.findOne({
                         attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
                         where: {
                             id: groupChatRoom.manager_id,
