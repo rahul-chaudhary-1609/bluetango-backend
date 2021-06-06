@@ -237,12 +237,19 @@ class ChatServices {
                     id: managerGroupChatRoom.member_ids,
                 }
             }));
+            let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
+                where: {
+                    id: managerGroupChatRoom.manager_id,
+                }
+            }));
             return {
                 id: managerGroupChatRoom.id,
                 room_id: managerGroupChatRoom.room_id,
                 group_name: managerGroupChatRoom.name,
                 group_icon_url: managerGroupChatRoom.icon_image_url,
                 group_members: groupMembers,
+                group_manager: groupManager,
                 status: managerGroupChatRoom.status,
                 type: constants.CHAT_ROOM_TYPE.group,
                 amIGroupManager: manager.is_manager,
@@ -381,12 +388,19 @@ class ChatServices {
                             id: groupChatRoom.member_ids,
                         }
                     }));
+                    let groupManager = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
+                        where: {
+                            id: groupChatRoom.manager_id,
+                        }
+                    }));
                     chats.push({
                         id: groupChatRoom.id,
                         room_id: groupChatRoom.room_id,
                         group_name: groupChatRoom.name,
                         group_icon_url: groupChatRoom.icon_image_url,
                         group_members: groupMembers,
+                        group_manager: groupManager,
                         status: groupChatRoom.status,
                         type: constants.CHAT_ROOM_TYPE.group,
                         amIGroupManager: false,
