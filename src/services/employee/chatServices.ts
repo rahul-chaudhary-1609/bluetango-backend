@@ -205,7 +205,7 @@ export class ChatServices {
     /*
     * function to handle group chat
     */
-    public async groupChatHandler(manager: any) {
+    public async groupChatHandler(manager: any,currentUser:any) {
         
         let managerGroupChatRoom = await groupChatRoomModel.findOne({
             where: {
@@ -265,7 +265,8 @@ export class ChatServices {
             group_name: managerGroupChatRoom.name,
             group_icon_url: managerGroupChatRoom.icon_image_url,
             group_members: groupMembers,
-            group_manager:groupManager,
+            group_manager: groupManager,
+            current_user: await helperFunction.convertPromiseToObject(currentUser),
             status: managerGroupChatRoom.status,
             type: constants.CHAT_ROOM_TYPE.group,
             amIGroupManager: manager.is_manager,
@@ -393,7 +394,7 @@ export class ChatServices {
         let groupChatIds = [];
 
         if (currentUser.is_manager) {
-            let groupChat =await this.groupChatHandler({ id: user.uid,is_manager:true });
+            let groupChat = await this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser );
             groupChatIds.push(groupChat.id)
             chats.push(groupChat)
         }
@@ -408,7 +409,7 @@ export class ChatServices {
         );
 
         if (manager) {
-            let groupChat = await this.groupChatHandler({ id: manager.manager_id, is_manager: false })
+            let groupChat = await this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser )
             groupChatIds.push(groupChat.id)
             chats.push(groupChat)
         }
@@ -451,6 +452,7 @@ export class ChatServices {
                     group_icon_url: groupChatRoom.icon_image_url,
                     group_members: groupMembers,
                     group_manager: groupManager,
+                    current_user: await helperFunction.convertPromiseToObject(currentUser),
                     status: groupChatRoom.status,
                     type: constants.CHAT_ROOM_TYPE.group,
                     amIGroupManager: false,

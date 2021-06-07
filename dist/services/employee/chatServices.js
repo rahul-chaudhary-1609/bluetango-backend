@@ -204,7 +204,7 @@ class ChatServices {
     /*
     * function to handle group chat
     */
-    groupChatHandler(manager) {
+    groupChatHandler(manager, currentUser) {
         return __awaiter(this, void 0, void 0, function* () {
             let managerGroupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
                 where: {
@@ -250,6 +250,7 @@ class ChatServices {
                 group_icon_url: managerGroupChatRoom.icon_image_url,
                 group_members: groupMembers,
                 group_manager: groupManager,
+                current_user: yield helperFunction.convertPromiseToObject(currentUser),
                 status: managerGroupChatRoom.status,
                 type: constants.CHAT_ROOM_TYPE.group,
                 amIGroupManager: manager.is_manager,
@@ -358,7 +359,7 @@ class ChatServices {
             }
             let groupChatIds = [];
             if (currentUser.is_manager) {
-                let groupChat = yield this.groupChatHandler({ id: user.uid, is_manager: true });
+                let groupChat = yield this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser);
                 groupChatIds.push(groupChat.id);
                 chats.push(groupChat);
             }
@@ -369,7 +370,7 @@ class ChatServices {
                 }
             }));
             if (manager) {
-                let groupChat = yield this.groupChatHandler({ id: manager.manager_id, is_manager: false });
+                let groupChat = yield this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser);
                 groupChatIds.push(groupChat.id);
                 chats.push(groupChat);
             }
@@ -401,6 +402,7 @@ class ChatServices {
                         group_icon_url: groupChatRoom.icon_image_url,
                         group_members: groupMembers,
                         group_manager: groupManager,
+                        current_user: yield helperFunction.convertPromiseToObject(currentUser),
                         status: groupChatRoom.status,
                         type: constants.CHAT_ROOM_TYPE.group,
                         amIGroupManager: false,
