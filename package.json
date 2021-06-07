@@ -31,6 +31,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fcm-node": "^1.5.2",
+    "firebase-admin": "^9.9.0",
     "fs": "0.0.1-security",
     "joi": "^17.2.1",
     "json2csv": "^5.0.6",

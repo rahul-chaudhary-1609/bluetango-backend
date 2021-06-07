@@ -130,6 +130,8 @@ exports.MESSAGES = {
     no_plan: "Subscription does not exist",
     not_manager: "manager token is required",
     chat_room_required: "Chat room id is required in case of chat message only type",
+    firebase_firestore_doc_not_created: `Firebase doc with chat room not created`,
+    firebase_firestore_doc_not_updated: `Firebase doc with chat room not updated`,
 };
 exports.code = {
     error_code: 400

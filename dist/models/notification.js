@@ -11,7 +11,7 @@ exports.notificationModel = connection_1.sequelize.define("notification", {
         autoIncrement: true
     },
     type_id: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,
         defaultValue: 0
     },

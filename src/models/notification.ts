@@ -10,7 +10,7 @@ export const notificationModel: any = sequelize.define("notification", {
         autoIncrement: true
     },
     type_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
         defaultValue: 0
     },

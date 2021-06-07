@@ -40,10 +40,15 @@ const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const notification_1 = require("../../models/notification");
 const coachManagement_1 = require("../../models/coachManagement");
+const admin = __importStar(require("firebase-admin"));
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
 var Op = Sequelize.Op;
+const serviceAccount = require('../../../bluetango3-77c2f-firebase-adminsdk-kfu3h-18ee9f4654.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 class ChatServices {
     constructor() { }
     /*
@@ -206,6 +211,7 @@ class ChatServices {
     */
     groupChatHandler(manager, currentUser) {
         return __awaiter(this, void 0, void 0, function* () {
+            const db = admin.firestore();
             let managerGroupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
                 where: {
                     manager_id: parseInt(manager.id),
@@ -223,6 +229,12 @@ class ChatServices {
                     member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     room_id: yield this.getUniqueChatRoomId(),
                 };
+                const newDoc = yield db.collection('chats_dev').doc(groupChatRoomObj.room_id).set({
+                    id: groupChatRoomObj.room_id,
+                });
+                if (!newDoc) {
+                    throw new Error(constants.MESSAGES.firebase_firestore_doc_not_created);
+                }
                 managerGroupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
             }
             else {
@@ -243,6 +255,12 @@ class ChatServices {
                     id: managerGroupChatRoom.manager_id,
                 }
             }));
+            const updateDoc = yield db.collection('chats_dev').doc(managerGroupChatRoom.room_id).update({
+                member: [groupManager, ...groupMembers],
+            });
+            if (!updateDoc) {
+                throw new Error(constants.MESSAGES.firebase_firestore_doc_not_updated);
+            }
             return {
                 id: managerGroupChatRoom.id,
                 room_id: managerGroupChatRoom.room_id,
