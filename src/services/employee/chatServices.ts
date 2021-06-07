@@ -662,10 +662,10 @@ export class ChatServices {
         if (params.chat_type == 'text') {
             if (groupChatRoomData) {
 
-                let recieverEmployees = await employeeModel.findOne({
-                    where: { id: groupChatRoomData.member_ids, }
-                })
-
+                let recieverEmployees = await helperFunction.convertPromiseToObject( await employeeModel.findAll({
+                        where: { id: groupChatRoomData.member_ids, }
+                    })
+                )
                 for (let recieverEmployee of recieverEmployees) {
                     if (senderEmployeeData.id != recieverEmployee.id) {
                         //add notification 

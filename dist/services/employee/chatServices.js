@@ -570,9 +570,9 @@ class ChatServices {
             let newNotification = null;
             if (params.chat_type == 'text') {
                 if (groupChatRoomData) {
-                    let recieverEmployees = yield employee_1.employeeModel.findOne({
+                    let recieverEmployees = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
                         where: { id: groupChatRoomData.member_ids, }
-                    });
+                    }));
                     for (let recieverEmployee of recieverEmployees) {
                         if (senderEmployeeData.id != recieverEmployee.id) {
                             //add notification 
