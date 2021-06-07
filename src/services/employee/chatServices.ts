@@ -634,15 +634,18 @@ export class ChatServices {
             if (!groupChatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
         }
 
-        
+        let recieverId = null;
 
-        let recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+        if (chatRoomData) {
+
+            recieverId = user.uid == chatRoomData.other_user_id ? chatRoomData.user_id : chatRoomData.other_user_id;
+        }
 
         let recieverEmployeeData = await employeeModel.findOne({
             where: { id: recieverId, }
         })
 
-        if (chatRoomData.type == constants.CHAT_ROOM_TYPE.coach) {
+        if (chatRoomData && chatRoomData.type == constants.CHAT_ROOM_TYPE.coach) {
             recieverEmployeeData = await coachManagementModel.findOne({
                 where: { id: recieverId, }
             })
