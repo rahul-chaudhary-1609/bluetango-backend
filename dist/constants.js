@@ -200,7 +200,8 @@ exports.NOTIFICATION_TYPE = {
     achievement_like: 13,
     achievement_highfive: 14,
     achievement_comment: 15,
-    expiration_of_free_trial: 16,
+    group_chat: 16,
+    expiration_of_free_trial: 17,
 };
 exports.STATUS = {
     inactive: 0,

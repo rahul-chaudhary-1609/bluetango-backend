@@ -704,9 +704,9 @@ export class ChatServices {
                             type_id: params.chat_room_id,
                             sender_id: user.uid,
                             reciever_id: recieverEmployee.id,
-                            type: constants.NOTIFICATION_TYPE.message,
+                            type: constants.NOTIFICATION_TYPE.group_chat,
                             data: {
-                                type: constants.NOTIFICATION_TYPE.message,
+                                type: constants.NOTIFICATION_TYPE.group_chat,
                                 title: 'Message',
                                 message: params.message || `Message from ${senderEmployeeData.name}`,
                                 chat_room_id: params.chat_room_id,
@@ -720,7 +720,7 @@ export class ChatServices {
                             title: 'Message',
                             body: `Message from ${senderEmployeeData.name}`,
                             data: {
-                                type: constants.NOTIFICATION_TYPE.message,
+                                type: constants.NOTIFICATION_TYPE.group_chat,
                                 title: 'Message',
                                 message: params.message || `Message from ${senderEmployeeData.name}`,
                                 chat_room_id: params.chat_room_id,

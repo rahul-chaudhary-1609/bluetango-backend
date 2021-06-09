@@ -543,7 +543,8 @@ export class EmployeeServices {
                 type: {
                     [Op.notIn]: [
                         constants.NOTIFICATION_TYPE.achievement_post,
-                        constants.NOTIFICATION_TYPE.message
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.group_chat,
                     ]
                 },
                 status:[0,1]
@@ -559,7 +560,8 @@ export class EmployeeServices {
                 type: {
                     [Op.notIn]: [
                         constants.NOTIFICATION_TYPE.achievement_post,
-                        constants.NOTIFICATION_TYPE.message
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.group_chat,
                     ]
                 },
                 reciever_id: user.uid,
@@ -582,7 +584,8 @@ export class EmployeeServices {
                     type: {
                         [Op.notIn]: [
                             constants.NOTIFICATION_TYPE.achievement_post,
-                            constants.NOTIFICATION_TYPE.message
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.group_chat,
                         ]
                     },
                     status: 1,
@@ -632,6 +635,7 @@ export class EmployeeServices {
                     reciever_id: user.uid,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.group_chat,
                     ],
                     status: 1,
                 },
@@ -715,6 +719,7 @@ export class EmployeeServices {
                     ...whereCondition,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.group_chat,
                     ],
                     type_id:parseInt(params.chat_room_id),
                 }
