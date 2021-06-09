@@ -508,6 +508,7 @@ class EmployeeServices {
             let notifications = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: {
                         [Op.notIn]: [
                             constants.NOTIFICATION_TYPE.achievement_post,
@@ -532,6 +533,7 @@ class EmployeeServices {
                         ]
                     },
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 }
             });
             return notifications;
@@ -546,6 +548,7 @@ class EmployeeServices {
                 all: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: {
                             [Op.notIn]: [
                                 constants.NOTIFICATION_TYPE.achievement_post,
@@ -559,6 +562,7 @@ class EmployeeServices {
                 achievement: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.achievement_like,
@@ -571,6 +575,7 @@ class EmployeeServices {
                 achievement_post_only: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.achievement_post,
                         ],
@@ -580,6 +585,7 @@ class EmployeeServices {
                 chat: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.audio_chat,
@@ -594,6 +600,7 @@ class EmployeeServices {
                 chat_message_only: (yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.group_chat,
@@ -605,6 +612,7 @@ class EmployeeServices {
                 goal: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.assign_new_goal,
                             constants.NOTIFICATION_TYPE.goal_complete_request,
@@ -617,6 +625,7 @@ class EmployeeServices {
                 rating: yield notification_1.notificationModel.count({
                     where: {
                         reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: [
                             constants.NOTIFICATION_TYPE.rating
                         ],
@@ -689,7 +698,7 @@ class EmployeeServices {
             let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({
                 status: 0,
             }, {
-                where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid })
+                where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid, reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee })
             }));
             return notification;
         });

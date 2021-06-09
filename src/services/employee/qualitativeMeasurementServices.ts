@@ -57,6 +57,7 @@ export class QualitativeMeasuremetServices {
                 type_id: resData.id,
                 sender_id: user.uid,
                 reciever_id: params.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 type: constants.NOTIFICATION_TYPE.rating,
                 data: {
                     type: constants.NOTIFICATION_TYPE.rating,

@@ -38,7 +38,6 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const tokenResponse = __importStar(require("../../utils/tokenResponse"));
 const models_1 = require("../../models");
-const notification_1 = require("../../models/notification");
 const paymentManagement_1 = require("../../models/paymentManagement");
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
@@ -74,12 +73,11 @@ class AuthService {
                     if (existingUser.first_time_login == 1) {
                         existingUser.isFirstTimeLogin = true;
                         updateObj = Object.assign(Object.assign({}, updateObj), { first_time_login_datetime: new Date() });
-                        this.scheduleFreeTrialExpirationNotificationJob(existingUser);
                     }
                     if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
                         let firstLoginDate = new Date(existingUser.first_time_login_datetime);
                         let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
-                        if ((new Date()) < endTime) {
+                        if ((new Date()) > endTime) {
                             updateObj = Object.assign(Object.assign({}, updateObj), { subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan });
                         }
                     }
@@ -124,49 +122,6 @@ class AuthService {
             else {
                 throw new Error(constants.MESSAGES.invalid_email);
             }
-        });
-    }
-    /*
-    * function to schedule notification for free trial expiration
-    */
-    scheduleFreeTrialExpirationNotificationJob(existingUser) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let firstLoginDate = new Date(existingUser.first_time_login_datetime);
-            let trialExpiryDate = new Date(existingUser.first_time_login_datetime);
-            trialExpiryDate.setDate(trialExpiryDate.getDate() + 14);
-            let startTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 11));
-            let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
-            const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '* * */24 * * *' }, function () {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const timeDiff = Math.floor((trialExpiryDate.getTime() - (new Date()).getTime()) / 1000);
-                    //add notification 
-                    let notificationObj = {
-                        type_id: existingUser.id,
-                        sender_id: existingUser.id,
-                        reciever_id: existingUser.id,
-                        type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                        data: {
-                            type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                            title: 'Reminder Free Trial Expiration',
-                            message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                            existingUser
-                        },
-                    };
-                    yield notification_1.notificationModel.create(notificationObj);
-                    //send push notification
-                    let notificationData = {
-                        title: 'Reminder Free Trial Expiration',
-                        body: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                        data: {
-                            type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                            title: 'Reminder Free Trial Expiration',
-                            message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                            existingUser
-                        },
-                    };
-                    yield helperFunction.sendFcmNotification([existingUser.device_token], notificationData);
-                });
-            });
         });
     }
     /*

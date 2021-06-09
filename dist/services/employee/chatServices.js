@@ -598,6 +598,7 @@ class ChatServices {
                                 type_id: params.chat_room_id,
                                 sender_id: user.uid,
                                 reciever_id: recieverEmployee.id,
+                                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                                 type: constants.NOTIFICATION_TYPE.group_chat,
                                 data: {
                                     type: constants.NOTIFICATION_TYPE.group_chat,
@@ -630,6 +631,7 @@ class ChatServices {
                         type_id: params.chat_room_id,
                         sender_id: user.uid,
                         reciever_id: recieverId,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.message,
                         data: {
                             type: constants.NOTIFICATION_TYPE.message,
@@ -661,6 +663,7 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.audio_chat,
                     data: {
                         type: constants.NOTIFICATION_TYPE.audio_chat,
@@ -695,6 +698,7 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.video_chat,
                     data: {
                         type: constants.NOTIFICATION_TYPE.video_chat,
@@ -759,6 +763,7 @@ class ChatServices {
                         type_id: params.chat_room_id,
                         sender_id: user.uid,
                         reciever_id: recieverId,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.audio_chat_missed,
                         data: {
                             type: constants.NOTIFICATION_TYPE.audio_chat_missed,
@@ -793,6 +798,7 @@ class ChatServices {
                         type_id: params.chat_room_id,
                         sender_id: user.uid,
                         reciever_id: recieverId,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.video_chat_missed,
                         data: {
                             type: constants.NOTIFICATION_TYPE.video_chat_missed,

@@ -18,6 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -31,6 +40,7 @@ const port = process.env.PORT || 3000;
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express")); // import swagger package for documentation
 const swagger_json_1 = __importDefault(require("./swagger.json"));
 const cors_1 = __importDefault(require("cors"));
+const cronJob_1 = require("./utils/cronJob");
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
 //options for cors midddleware
@@ -100,9 +110,10 @@ app.use('/api-swagger', swagger_ui_express_1.default.serve, swagger_ui_express_1
 require("./routes")(app);
 // app.use(cors()); 
 /*Initialize Listner*/
-var server = app.listen(port, () => {
+var server = app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Listening on port: ', port);
-}).on('error', (e) => {
+    yield cronJob_1.scheduleFreeTrialExpirationNotificationJob();
+})).on('error', (e) => {
     console.log('Error happened: ', e.message);
 });
 //# sourceMappingURL=app.js.map

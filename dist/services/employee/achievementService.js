@@ -218,6 +218,7 @@ class AchievementServices {
                             type_id: parseInt(achievement.id),
                             sender_id: senderData.id,
                             reciever_id: recieverData.id,
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                             type: constants.NOTIFICATION_TYPE.achievement_post,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.achievement_post,
@@ -293,6 +294,7 @@ class AchievementServices {
                             type_id: parseInt(params.achievement_id),
                             sender_id: senderData.id,
                             reciever_id: recieverData.id,
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                             type: constants.NOTIFICATION_TYPE.achievement_like,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.achievement_like,
@@ -386,6 +388,7 @@ class AchievementServices {
                             type_id: parseInt(params.achievement_id),
                             sender_id: senderData.id,
                             reciever_id: recieverData.id,
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                             type: constants.NOTIFICATION_TYPE.achievement_highfive,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.achievement_highfive,
@@ -475,6 +478,7 @@ class AchievementServices {
                             type_id: parseInt(params.achievement_id),
                             sender_id: senderData.id,
                             reciever_id: recieverData.id,
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                             type: constants.NOTIFICATION_TYPE.achievement_comment,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.achievement_comment,

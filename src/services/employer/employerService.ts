@@ -2,13 +2,12 @@ import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
-import * as tokenResponse from "../../utils/tokenResponse";
 import { employeeModel, employersModel } from "../../models";
-import { notificationModel } from "../../models/notification";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
 import { industryTypeModel } from "../../models/industryType";
 import { contactUsModel } from "../../models/contactUs";
+import { notificationModel } from "../../models/notification";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -234,6 +233,51 @@ export class EmployerService {
         return await contactUsModel.create(contactObj);
     }
 
-   
+    /*
+* function to get notification
+*/
+    public async getNotifications( user: any) {
+
+        let notifications = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
+            where: {
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+                status: [0, 1]
+            },
+            order: [["createdAt", "DESC"]]
+        }));
+
+        await notificationModel.update({
+            status: 0,
+        }, {
+            where: {
+                status: 1,
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+            }
+        })
+
+
+        return notifications;
+    }
+
+    /*
+* function to get unseen notification count
+*/
+    public async getUnseenNotificationCount(user: any) {
+
+        return {
+            all: await notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+                    status: 1,
+                }
+            }),
+        }
+
+
+
+    }
 
 }

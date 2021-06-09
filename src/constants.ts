@@ -210,6 +210,13 @@ export const NOTIFICATION_TYPE = {
   
 }
 
+export const NOTIFICATION_RECIEVER_TYPE = {
+  employee: 1,
+  employer: 2,
+  coach: 3,
+  admin:4,
+}
+
 export const STATUS = {
   inactive: 0,
   active: 1,

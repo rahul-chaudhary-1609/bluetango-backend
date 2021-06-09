@@ -71,5 +71,9 @@ employerRoute.post("/cancelPlan", tokenValidator.validateEmployerToken, joiSchem
 employerRoute.get("/myPayments", validators.trimmer, tokenValidator.validateEmployerToken, employerController.myPayments);
 /* contact us for employee */
 employerRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.contactUs), employerController.contactUs);
+/* contact us for employee */
+employerRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getNotifications);
+/* to get unseen notification count */
+employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getUnseenNotificationCount);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

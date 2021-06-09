@@ -7,6 +7,7 @@ const port: any = process.env.PORT || 3000;
 import swaggerUi from "swagger-ui-express";   // import swagger package for documentation
 import swaggerDocument from "./swagger.json";
 import cors from 'cors';
+import { scheduleFreeTrialExpirationNotificationJob} from "./utils/cronJob"
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
 
@@ -96,8 +97,10 @@ require("./routes")(app);
 
 
 /*Initialize Listner*/
-var server = app.listen(port, () => {
+var server = app.listen(port, async () => {
     console.log('Listening on port: ', port);
+    await scheduleFreeTrialExpirationNotificationJob();
+
 }).on('error', (e) => {
     console.log('Error happened: ', e.message)
 });

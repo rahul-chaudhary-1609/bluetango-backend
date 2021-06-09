@@ -37,6 +37,7 @@ const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
 const industryType_1 = require("../../models/industryType");
 const contactUs_1 = require("../../models/contactUs");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployerService {
@@ -224,6 +225,47 @@ class EmployerService {
                 message: params.message,
             };
             return yield contactUs_1.contactUsModel.create(contactObj);
+        });
+    }
+    /*
+* function to get notification
+*/
+    getNotifications(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notifications = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
+                where: {
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+                    status: [0, 1]
+                },
+                order: [["createdAt", "DESC"]]
+            }));
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    status: 1,
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+                }
+            });
+            return notifications;
+        });
+    }
+    /*
+* function to get unseen notification count
+*/
+    getUnseenNotificationCount(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return {
+                all: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employer,
+                        status: 1,
+                    }
+                }),
+            };
         });
     }
 }

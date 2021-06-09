@@ -5127,6 +5127,48 @@
         "responses": {}
       }
     },
+    "/employer/getNotifications": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "api to get notifiactions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getUnseenNotificationCount": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "api to get Unseen Notification Count",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/login": {
       "post": {
         "tags": [

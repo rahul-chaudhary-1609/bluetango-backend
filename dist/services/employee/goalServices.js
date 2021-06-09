@@ -76,6 +76,7 @@ class GoalServices {
                             type_id: teamGoaRes.id,
                             sender_id: user.uid,
                             reciever_id: params[i].employee_ids[j],
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                             type: constants.NOTIFICATION_TYPE.assign_new_goal,
                             data: {
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal,
@@ -160,6 +161,7 @@ class GoalServices {
                                 type_id: params.id,
                                 sender_id: user.uid,
                                 reciever_id: params.employee_ids[j],
+                                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                                 type: constants.NOTIFICATION_TYPE.assign_new_goal,
                                 data: {
                                     type: constants.NOTIFICATION_TYPE.assign_new_goal,
@@ -398,6 +400,7 @@ class GoalServices {
                 team_goal_assign_completion_by_employee_id: teamGoalAssignRequestRes.id,
                 sender_id: user.uid,
                 reciever_id: getGoalData.manager_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 type: constants.NOTIFICATION_TYPE.goal_complete_request,
                 data: {
                     type: constants.NOTIFICATION_TYPE.goal_complete_request,
@@ -510,6 +513,7 @@ class GoalServices {
                         type_id: params.goal_id,
                         sender_id: user.uid,
                         reciever_id: getEmployeeId.employee_id,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.goal_accept,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_accept,
@@ -559,6 +563,7 @@ class GoalServices {
                         type_id: params.goal_id,
                         sender_id: user.uid,
                         reciever_id: getEmployeeId.employee_id,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.goal_reject,
                         data: {
                             type: constants.NOTIFICATION_TYPE.goal_reject,

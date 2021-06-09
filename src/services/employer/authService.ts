@@ -4,7 +4,6 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { employersModel, industryTypeModel, employeeModel, } from "../../models";
-import { notificationModel } from "../../models/notification";
 import { paymentManagementModel } from "../../models/paymentManagement";
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
@@ -46,15 +45,13 @@ export class AuthService {
                     ...updateObj,
                     first_time_login_datetime: new Date(),
                 }
-
-                this.scheduleFreeTrialExpirationNotificationJob(existingUser)
                 
             }
             if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
                 let firstLoginDate = new Date(existingUser.first_time_login_datetime);
                 let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
 
-                if ((new Date()) < endTime) {
+                if ((new Date()) > endTime) {
                     updateObj = {
                         ...updateObj,
                         subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan,
@@ -117,50 +114,6 @@ export class AuthService {
     }
     }
 
-    /*
-    * function to schedule notification for free trial expiration
-    */
-
-    public async scheduleFreeTrialExpirationNotificationJob(existingUser: any) {
-        let firstLoginDate = new Date(existingUser.first_time_login_datetime);
-        let trialExpiryDate = new Date(existingUser.first_time_login_datetime);
-        trialExpiryDate.setDate(trialExpiryDate.getDate() + 14)
-
-        let startTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 11));
-        let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
-        
-        const job = schedule.scheduleJob({ start: startTime, end: endTime, rule: '* * */24 * * *' }, async function () {
-            
-            const timeDiff = Math.floor((trialExpiryDate.getTime() - (new Date()).getTime()) / 1000)
-            //add notification 
-            let notificationObj = <any>{
-                type_id: existingUser.id,
-                sender_id: existingUser.id,
-                reciever_id: existingUser.id,
-                type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                data: {
-                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                    title: 'Reminder Free Trial Expiration',
-                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                    existingUser
-                },
-            }
-            await notificationModel.create(notificationObj);
-
-            //send push notification
-            let notificationData = <any>{
-                title: 'Reminder Free Trial Expiration',
-                body: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                data: {
-                    type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
-                    title: 'Reminder Free Trial Expiration',
-                    message: `Your free trial of 14 days is going to expire in ${Math.floor(timeDiff / 3600)} hour(s)`,
-                    existingUser
-                },
-            }
-            await helperFunction.sendFcmNotification([existingUser.device_token], notificationData);
-        });
-    }
     
     /*
     * function to set new pass 

@@ -540,6 +540,7 @@ export class EmployeeServices {
         let notifications = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
             where: {
                 reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 type: {
                     [Op.notIn]: [
                         constants.NOTIFICATION_TYPE.achievement_post,
@@ -565,6 +566,7 @@ export class EmployeeServices {
                     ]
                 },
                 reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
             }
         })
 
@@ -581,6 +583,7 @@ export class EmployeeServices {
             all : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: {
                         [Op.notIn]: [
                             constants.NOTIFICATION_TYPE.achievement_post,
@@ -595,6 +598,7 @@ export class EmployeeServices {
             achievement : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.achievement_like,
@@ -608,6 +612,7 @@ export class EmployeeServices {
             achievement_post_only : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.achievement_post,
                     ],
@@ -618,6 +623,7 @@ export class EmployeeServices {
             chat : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.audio_chat,
@@ -633,6 +639,7 @@ export class EmployeeServices {
             chat_message_only : (await helperFunction.convertPromiseToObject( await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
@@ -645,6 +652,7 @@ export class EmployeeServices {
             goal : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.assign_new_goal,
                         constants.NOTIFICATION_TYPE.goal_complete_request,
@@ -658,6 +666,7 @@ export class EmployeeServices {
             rating : await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: [
                         constants.NOTIFICATION_TYPE.rating
                     ],
@@ -766,6 +775,7 @@ export class EmployeeServices {
                 ...whereCondition,
                 status: 1,
                 reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
             }
         }));
 

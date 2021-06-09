@@ -123,6 +123,36 @@ export class EmployerController {
             next(e)
         }
     }
+
+    /**
+* to get notifiaction
+* @param req :[]
+* @param res 
+*/
+    public async getNotifications(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.getNotifications(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+*  to get unseen notification count
+* @param req :[]
+* @param res 
+*/
+    public async getUnseenNotificationCount(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.getUnseenNotificationCount(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
     
 
 }
