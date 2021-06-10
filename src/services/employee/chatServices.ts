@@ -711,6 +711,7 @@ export class ChatServices {
                                 title: 'Message',
                                 message: params.message || `Message from ${senderEmployeeData.name}`,
                                 chat_room_id: params.chat_room_id,
+                                group_name: groupChatRoomData.name,
                                 senderEmployeeData
                             },
                         }
@@ -725,6 +726,7 @@ export class ChatServices {
                                 title: 'Message',
                                 message: params.message || `Message from ${senderEmployeeData.name}`,
                                 chat_room_id: params.chat_room_id,
+                                group_name: groupChatRoomData.name,
                                 senderEmployeeData
                             },
                         }
