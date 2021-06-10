@@ -11,7 +11,7 @@ var Op = Sequelize.Op;
 * function to schedule job
 */
 export const scheduleFreeTrialExpirationNotificationJob = async()=> {
-    schedule.scheduleJob('0 */2 * * *', async function () {
+    schedule.scheduleJob('0 15 * * *', async ()=> {
 
         let employers = await helperFunction.convertPromiseToObject(
             await employersModel.findAll({
