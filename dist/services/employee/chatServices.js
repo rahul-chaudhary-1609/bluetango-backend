@@ -227,6 +227,7 @@ class ChatServices {
                 let groupChatRoomObj = {
                     manager_id: parseInt(manager.id),
                     member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
+                    live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     room_id: yield this.getUniqueChatRoomId(),
                 };
                 const newDoc = yield db.collection('chats_dev').doc(groupChatRoomObj.room_id).set({
@@ -240,6 +241,7 @@ class ChatServices {
             else {
                 let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
                 managerGroupChatRoom.member_ids = [...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
+                managerGroupChatRoom.live_member_ids = teamMemberIds;
                 managerGroupChatRoom.save();
                 managerGroupChatRoom = yield helperFunction.convertPromiseToObject(managerGroupChatRoom);
             }
@@ -589,7 +591,7 @@ class ChatServices {
             if (params.chat_type == 'text') {
                 if (groupChatRoomData) {
                     let recieverEmployees = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
-                        where: { id: groupChatRoomData.member_ids, }
+                        where: { id: [...groupChatRoomData.live_member_ids, groupChatRoomData.manager_id], }
                     }));
                     for (let recieverEmployee of recieverEmployees) {
                         if (senderEmployeeData.id != recieverEmployee.id) {

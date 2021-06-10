@@ -22,6 +22,9 @@ exports.groupChatRoomModel = connection_1.sequelize.define("group_chat_rooms", {
     member_ids: {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
     },
+    live_member_ids: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
+    },
     room_id: {
         type: sequelize_1.DataTypes.BIGINT,
         allowNull: false,

@@ -238,6 +238,7 @@ export class ChatServices {
             let groupChatRoomObj = <any>{
                 manager_id: parseInt(manager.id),
                 member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
+                live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 room_id: await this.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
             };
 
@@ -257,7 +258,8 @@ export class ChatServices {
         }
         else {
             let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
-            managerGroupChatRoom.member_ids = [...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])]
+            managerGroupChatRoom.member_ids = [...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
+            managerGroupChatRoom.live_member_ids = teamMemberIds;
             managerGroupChatRoom.save();
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(managerGroupChatRoom);
         }
@@ -694,7 +696,7 @@ export class ChatServices {
             if (groupChatRoomData) {
 
                 let recieverEmployees = await helperFunction.convertPromiseToObject( await employeeModel.findAll({
-                        where: { id: groupChatRoomData.member_ids, }
+                        where: { id: [...groupChatRoomData.live_member_ids,groupChatRoomData.manager_id], }
                     })
                 )
                 for (let recieverEmployee of recieverEmployees) {

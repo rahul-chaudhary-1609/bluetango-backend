@@ -21,6 +21,9 @@ export const groupChatRoomModel: any = sequelize.define("group_chat_rooms", {
     member_ids: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
     },
+    live_member_ids: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+    },
     room_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
