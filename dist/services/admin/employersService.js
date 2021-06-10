@@ -461,7 +461,6 @@ class EmployersService {
                     {
                         model: subscriptionManagement_1.subscriptionManagementModel,
                         required: true,
-                        where: where,
                         attributes: ["id", "plan_name"]
                     }
                 ],
@@ -507,7 +506,6 @@ class EmployersService {
                     {
                         model: subscriptionManagement_1.subscriptionManagementModel,
                         required: false,
-                        where: where,
                         attributes: ["id", "plan_name"]
                     }
                 ],
@@ -546,7 +544,6 @@ class EmployersService {
                     {
                         model: subscriptionManagement_1.subscriptionManagementModel,
                         required: true,
-                        where: where,
                         attributes: ["id", "plan_name"]
                     }
                 ],

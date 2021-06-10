@@ -460,7 +460,6 @@ export class EmployersService {
                 {
                     model: subscriptionManagementModel,
                     required: true,
-                    where: where,
                     attributes: ["id", "plan_name"]
                 }
             ],
@@ -506,7 +505,6 @@ export class EmployersService {
                 {
                     model: subscriptionManagementModel,
                     required: false,
-                    where: where,
                     attributes: ["id", "plan_name"]
                 }
             ],
@@ -546,7 +544,6 @@ export class EmployersService {
                 {
                     model: subscriptionManagementModel,
                     required: true,
-                    where: where,
                     attributes: ["id", "plan_name"]
                 }
             ],
