@@ -37,7 +37,14 @@ export class EmployeeManagement {
         params.email = (params.email).toLowerCase();
         // check employee is exist or not
         if (params.manager_id=='0') {
-            let checkEmployeeFirst = await employeeModel.findOne();
+            
+            let checkEmployeeFirst = await employeeModel.findOne({
+                where: {
+                    current_employer_id: parseInt(user.uid),
+                    status:constants.STATUS.active,
+                }
+            });
+            console.log(params,checkEmployeeFirst)
             if (!_.isEmpty(checkEmployeeFirst) ) {
                 throw new Error(constants.MESSAGES.manager_id_required);
             } 

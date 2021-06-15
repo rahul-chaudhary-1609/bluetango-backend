@@ -68,7 +68,13 @@ class EmployeeManagement {
             params.email = (params.email).toLowerCase();
             // check employee is exist or not
             if (params.manager_id == '0') {
-                let checkEmployeeFirst = yield models_1.employeeModel.findOne();
+                let checkEmployeeFirst = yield models_1.employeeModel.findOne({
+                    where: {
+                        current_employer_id: parseInt(user.uid),
+                        status: constants.STATUS.active,
+                    }
+                });
+                console.log(params, checkEmployeeFirst);
                 if (!lodash_1.default.isEmpty(checkEmployeeFirst)) {
                     throw new Error(constants.MESSAGES.manager_id_required);
                 }
