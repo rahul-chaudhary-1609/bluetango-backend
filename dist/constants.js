@@ -162,6 +162,11 @@ exports.CUSTOM_JOI_MESSAGE = {
         base: "Password must be string",
         required: "Password is required",
         pattern: "Password must have 8-15 characters comprising one caps, one small, one number and one special character"
+    },
+    email_msg: {
+        base: "email must be string",
+        required: "email is required",
+        pattern: "Please enter valid email"
     }
 };
 exports.notificationmsg = {};
