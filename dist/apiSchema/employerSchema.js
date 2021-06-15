@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getManagerList = exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -122,8 +122,10 @@ exports.addEditEmployee = joi_1.default.object({
     prev_date_of_joining: joi_1.default.string().optional(),
     prev_exit: joi_1.default.string().optional(),
     current_date_of_joining: joi_1.default.string().required(),
-    manager_id: joi_1.default.string().required(),
-    is_manager: joi_1.default.number().valid(0, 1).optional(),
+    manager_id: joi_1.default.number().optional(),
+    is_manager: joi_1.default.number().valid(0, 1).required(),
+    manager_team_name: joi_1.default.string().optional(),
+    manager_team_icon_url: joi_1.default.string().optional(),
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
@@ -173,5 +175,8 @@ exports.cancelPlan = joi_1.default.object({
 });
 exports.contactUs = joi_1.default.object({
     message: joi_1.default.string().required(),
+});
+exports.getManagerList = joi_1.default.object({
+    department_id: joi_1.default.number().optional(),
 });
 //# sourceMappingURL=employerSchema.js.map

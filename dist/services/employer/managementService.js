@@ -42,6 +42,7 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoal_1 = require("../../models/teamGoal");
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
+const groupChatRoom_1 = require("../../models/groupChatRoom");
 var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
@@ -66,19 +67,6 @@ class EmployeeManagement {
             if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
                 throw new Error(constants.MESSAGES.employer_no_plan);
             params.email = (params.email).toLowerCase();
-            // check employee is exist or not
-            if (params.manager_id == '0') {
-                let checkEmployeeFirst = yield models_1.employeeModel.findOne({
-                    where: {
-                        current_employer_id: parseInt(user.uid),
-                        status: constants.STATUS.active,
-                    }
-                });
-                console.log(params, checkEmployeeFirst);
-                if (!lodash_1.default.isEmpty(checkEmployeeFirst)) {
-                    throw new Error(constants.MESSAGES.manager_id_required);
-                }
-            }
             if (params.current_department_id) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: params.current_department_id } });
                 if (!departmentExists)
@@ -116,6 +104,14 @@ class EmployeeManagement {
             }
             params.current_employer_id = user.uid;
             if (lodash_1.default.isEmpty(existingUser)) {
+                if (params.is_manager) {
+                    if (!params.manager_team_name) {
+                        throw new Error(constants.MESSAGES.manager_team_name_required);
+                    }
+                    if (!params.manager_team_icon_url) {
+                        throw new Error(constants.MESSAGES.manager_team_icon_url_required);
+                    }
+                }
                 if (params.id) {
                     delete params.password;
                     let updateData = yield models_1.employeeModel.update(params, {
@@ -125,7 +121,7 @@ class EmployeeManagement {
                         let managerData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
                             where: { team_member_id: params.id }
                         }));
-                        if (managerData) {
+                        if (managerData && params.manager_id) {
                             if (managerData.manager_id != parseInt(params.manager_id)) {
                                 yield managerTeamMember_1.managerTeamMemberModel.update({
                                     manager_id: params.manager_id
@@ -134,24 +130,48 @@ class EmployeeManagement {
                                 });
                             }
                         }
-                        else {
+                        else if (params.manager_id) {
                             let teamMemberObj = {
                                 team_member_id: params.id,
                                 manager_id: params.manager_id
                             };
-                            console.log(teamMemberObj);
                             yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
                         }
-                        // update employee as manager
-                        let employeeUpdate = {
-                            is_manager: 1
-                        };
-                        yield models_1.employeeModel.update(employeeUpdate, {
-                            where: { id: params.manager_id }
-                        });
-                        return yield models_1.employeeModel.findOne({
+                        else if (managerData) {
+                            let where = {
+                                team_member_id: params.id,
+                                manager_id: managerData.manager_id
+                            };
+                            yield managerTeamMember_1.managerTeamMemberModel.destroy({ where });
+                        }
+                        let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                             where: { id: params.id }
-                        });
+                        }));
+                        if (params.is_manager) {
+                            let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
+                                where: {
+                                    manager_id: parseInt(params.id),
+                                }
+                            });
+                            if (groupChatRoom) {
+                                groupChatRoom.name = params.manager_team_name;
+                                groupChatRoom.icon_image_url = params.manager_team_icon_url;
+                                groupChatRoom.save();
+                            }
+                            else {
+                                let groupChatRoomObj = {
+                                    name: params.manager_team_name,
+                                    manager_id: parseInt(params.id),
+                                    member_ids: [],
+                                    live_member_ids: [],
+                                    room_id: yield helperFunction.getUniqueChatRoomId(),
+                                    icon_image_url: params.manager_team_icon_url
+                                };
+                                groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                            }
+                            employeeRes.groupChatRoom = groupChatRoom;
+                        }
+                        return employeeRes;
                     }
                     else {
                         return false;
@@ -160,17 +180,25 @@ class EmployeeManagement {
                 else {
                     params.password = yield appUtils.bcryptPassword(params.password);
                     let employeeRes = yield models_1.employeeModel.create(params);
-                    let employeeUpdate = {
-                        is_manager: 1
-                    };
-                    yield models_1.employeeModel.update(employeeUpdate, {
-                        where: { id: params.manager_id }
-                    });
-                    let teamMemberObj = {
-                        team_member_id: employeeRes.id,
-                        manager_id: params.manager_id
-                    };
-                    yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
+                    if (params.manager_id) {
+                        let teamMemberObj = {
+                            team_member_id: employeeRes.id,
+                            manager_id: params.manager_id
+                        };
+                        yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
+                    }
+                    if (params.is_manager) {
+                        let groupChatRoomObj = {
+                            name: params.manager_team_name,
+                            manager_id: parseInt(employeeRes.id),
+                            member_ids: [],
+                            live_member_ids: [],
+                            room_id: yield helperFunction.getUniqueChatRoomId(),
+                            icon_image_url: params.manager_team_icon_url
+                        };
+                        let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                        employeeRes.groupChatRoom = groupChatRoom;
+                    }
                     return employeeRes;
                 }
             }
@@ -182,14 +210,18 @@ class EmployeeManagement {
     /**
      * get managers list
      */
-    getManagerList() {
+    getManagerList(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                is_manager: 1,
+                status: constants.STATUS.active
+            };
+            if (params.department_id) {
+                where = Object.assign(Object.assign({}, where), { current_department_id: parseInt(params.department_id) });
+            }
             return yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findAll({
                 attributes: ['id', 'name', 'is_manager'],
-                where: {
-                    is_manager: 1,
-                    status: constants.STATUS.active
-                }
+                where
             }));
         });
     }
@@ -280,6 +312,14 @@ class EmployeeManagement {
                 ],
             }));
             delete employeeDetails.password;
+            if (employeeDetails.is_manager) {
+                let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.findOne({
+                    where: {
+                        manager_id: parseInt(employeeDetails.id),
+                    }
+                }));
+                employeeDetails.groupChatRoom = groupChatRoom;
+            }
             teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
             let quantitativeStatsOfGoals = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
                 where: { employee_id: parseInt(params.employee_id) },

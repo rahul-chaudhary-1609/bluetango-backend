@@ -40,7 +40,7 @@ var Op = Sequelize.Op;
 * function to schedule job
 */
 exports.scheduleFreeTrialExpirationNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
-    schedule.scheduleJob('0 15 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('0 7 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
         let employers = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findAll({
             where: {
                 status: constants.STATUS.active,

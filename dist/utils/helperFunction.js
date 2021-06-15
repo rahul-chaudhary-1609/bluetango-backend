@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -41,6 +41,8 @@ const randomstring = __importStar(require("randomstring"));
 const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 const employersService_1 = require("../services/admin/employersService");
+const chatRelationMappingInRoom_1 = require("../models/chatRelationMappingInRoom");
+const groupChatRoom_1 = require("../models/groupChatRoom");
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 const s3Client = new AWS.S3({
@@ -194,4 +196,29 @@ exports.randomStringEightDigit = () => {
     });
     return uniqueID;
 };
+/**
+     * function to generate unique room id
+     */
+exports.getUniqueChatRoomId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let room_id = null;
+    while (!isUniqueFound) {
+        room_id = exports.randomStringEightDigit();
+        let chatRoom = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id
+            }
+        });
+        if (!chatRoom) {
+            let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
+                where: {
+                    room_id
+                }
+            });
+            if (!groupChatRoom)
+                isUniqueFound = true;
+        }
+    }
+    return room_id;
+});
 //# sourceMappingURL=helperFunction.js.map

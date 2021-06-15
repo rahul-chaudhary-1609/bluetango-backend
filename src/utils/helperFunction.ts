@@ -7,6 +7,8 @@ import * as randomstring from 'randomstring';
 const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 import { EmployersService } from '../services/admin/employersService'
+import { chatRealtionMappingInRoomModel } from "../models/chatRelationMappingInRoom";
+import { groupChatRoomModel } from "../models/groupChatRoom";
 
 //Instantiates a Home services  
 const employersService = new EmployersService();
@@ -172,3 +174,32 @@ export const randomStringEightDigit = () => {
     });
     return uniqueID;
 };
+
+/**
+     * function to generate unique room id
+     */
+export const getUniqueChatRoomId = async ()=> {
+    let isUniqueFound = false;
+    let room_id = null;
+    while (!isUniqueFound) {
+        room_id = randomStringEightDigit();
+        let chatRoom = await chatRealtionMappingInRoomModel.findOne({
+            where: {
+                room_id
+            }
+        });
+
+        if (!chatRoom) {
+            let groupChatRoom = await groupChatRoomModel.findOne({
+                where: {
+                    room_id
+                }
+            });
+
+            if (!groupChatRoom) isUniqueFound = true;
+        }
+    }
+
+    return room_id;
+}
+

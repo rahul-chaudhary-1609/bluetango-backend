@@ -65,7 +65,7 @@ class EmployeeController {
     getManagerList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeService.getManagerList();
+                const responseFromService = yield employeeService.getManagerList(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {

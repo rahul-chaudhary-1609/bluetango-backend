@@ -9,6 +9,7 @@ import { teamGoalModel } from "../../models/teamGoal"
 import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
 import { teamGoalAssignModel } from "../../models/teamGoalAssign"
 import { emojiModel } from "../../models/emoji";
+import { groupChatRoomModel } from "../../models/groupChatRoom";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -35,20 +36,6 @@ export class EmployeeManagement {
 
         if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
         params.email = (params.email).toLowerCase();
-        // check employee is exist or not
-        if (params.manager_id=='0') {
-            
-            let checkEmployeeFirst = await employeeModel.findOne({
-                where: {
-                    current_employer_id: parseInt(user.uid),
-                    status:constants.STATUS.active,
-                }
-            });
-            console.log(params,checkEmployeeFirst)
-            if (!_.isEmpty(checkEmployeeFirst) ) {
-                throw new Error(constants.MESSAGES.manager_id_required);
-            } 
-        }
 
         if(params.current_department_id) {
             let departmentExists = await departmentModel.findOne({where:{id: params.current_department_id}});
@@ -88,6 +75,15 @@ export class EmployeeManagement {
         params.current_employer_id = user.uid;
         if (_.isEmpty(existingUser)) {
 
+            if(params.is_manager){
+                if (!params.manager_team_name) {
+                    throw new Error(constants.MESSAGES.manager_team_name_required)
+                }
+                if (!params.manager_team_icon_url) {
+                    throw new Error(constants.MESSAGES.manager_team_icon_url_required)
+                }
+            }
+
             if (params.id) {
                 delete params.password;
                 let updateData =  await employeeModel.update( params, {
@@ -97,7 +93,7 @@ export class EmployeeManagement {
                     let managerData = await helperFunction.convertPromiseToObject ( await managerTeamMemberModel.findOne({
                         where: { team_member_id: params.id}
                     }) );
-                    if (managerData) {
+                    if (managerData && params.manager_id) {
                         if(managerData.manager_id != parseInt(params.manager_id)) {
                             await managerTeamMemberModel.update( 
                                  { 
@@ -108,27 +104,58 @@ export class EmployeeManagement {
                             });
                             
                         }
-                    } else {
+                    } else if (params.manager_id) {
                         let teamMemberObj = <any> {
                             team_member_id: params.id,
                             manager_id: params.manager_id
-                        }
-                        console.log(teamMemberObj);
-        
+                        }        
                         await managerTeamMemberModel.create(teamMemberObj);
+
+                    } else if (managerData) {
+                        let where = <any>{
+                            team_member_id: params.id,
+                            manager_id: managerData.manager_id
+                        }
+
+                        await managerTeamMemberModel.destroy({where});
                     }
 
-                    // update employee as manager
-                    let employeeUpdate = <any> {
-                        is_manager: 1
-                    }
-                    await employeeModel.update(employeeUpdate, {
-                        where: {id: params.manager_id}
-                    })
+                    let employeeRes = await helperFunction.convertPromiseToObject(
+                        await employeeModel.findOne({
+                            where: { id: params.id }
+                        })
+                    )
 
-                    return await employeeModel.findOne({
-                        where: {id: params.id}
-                    })
+                    if (params.is_manager) {
+                        let groupChatRoom = await groupChatRoomModel.findOne({
+                            where: {
+                                manager_id: parseInt(params.id),
+                            }
+                        });
+
+                        if (groupChatRoom) {
+                            groupChatRoom.name = params.manager_team_name;
+                            groupChatRoom.icon_image_url = params.manager_team_icon_url;
+                            groupChatRoom.save();
+                        } else {
+                            let groupChatRoomObj = <any>{
+                                name: params.manager_team_name,
+                                manager_id: parseInt(params.id),
+                                member_ids: [],
+                                live_member_ids: [],
+                                room_id: await helperFunction.getUniqueChatRoomId(),
+                                icon_image_url: params.manager_team_icon_url
+                            };
+                        
+                            groupChatRoom = await helperFunction.convertPromiseToObject(
+                                await groupChatRoomModel.create(groupChatRoomObj)
+                            );
+                        }
+                        employeeRes.groupChatRoom = groupChatRoom;
+                        
+                    }
+
+                    return employeeRes;
                 } else {
                     return false;
                 }
@@ -137,19 +164,28 @@ export class EmployeeManagement {
                 params.password = await appUtils.bcryptPassword(params.password);
                 let employeeRes = await employeeModel.create(params);
 
-                let employeeUpdate = <any> {
-                    is_manager: 1
-                }
-                await employeeModel.update(employeeUpdate, {
-                    where: {id: params.manager_id}
-                })
+                if (params.manager_id) {
+                    let teamMemberObj = <any>{
+                        team_member_id: employeeRes.id,
+                        manager_id: params.manager_id
+                    }
 
-                let teamMemberObj = <any> {
-                    team_member_id: employeeRes.id,
-                    manager_id: params.manager_id
+                    await managerTeamMemberModel.create(teamMemberObj);
                 }
-
-                await managerTeamMemberModel.create(teamMemberObj);
+                if (params.is_manager) {
+                    let groupChatRoomObj = <any>{
+                        name:params.manager_team_name,
+                        manager_id: parseInt(employeeRes.id),
+                        member_ids: [],
+                        live_member_ids: [],
+                        room_id: await helperFunction.getUniqueChatRoomId(),
+                        icon_image_url: params.manager_team_icon_url
+                    };
+                    let groupChatRoom = await helperFunction.convertPromiseToObject(
+                        await groupChatRoomModel.create(groupChatRoomObj)
+                    );
+                    employeeRes.groupChatRoom = groupChatRoom;
+                }
                 
 
                 return employeeRes;
@@ -164,14 +200,23 @@ export class EmployeeManagement {
      * get managers list 
      */
 
-    public async getManagerList() {
+    public async getManagerList(params) {
+        let where=<any> {
+            is_manager: 1,
+            status: constants.STATUS.active
+        }
+
+        if (params.department_id) {
+            where = {
+                ...where,
+                current_department_id: parseInt(params.department_id),
+            }
+        }
+        
         return await helperFunction.convertPromiseToObject(
             await employeeModel.findAll({
                 attributes:['id','name','is_manager'],
-                where: {
-                    is_manager: 1,
-                    status:constants.STATUS.active
-                }
+                where
             })
         )
     }
@@ -278,6 +323,18 @@ export class EmployeeManagement {
         )
 
         delete employeeDetails.password
+
+        if (employeeDetails.is_manager) {
+            let groupChatRoom = await helperFunction.convertPromiseToObject(
+                await groupChatRoomModel.findOne({
+                    where: {
+                            manager_id: parseInt(employeeDetails.id),
+                    }
+                })
+            );
+
+            employeeDetails.groupChatRoom = groupChatRoom
+        }
 
         teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         let quantitativeStatsOfGoals = await helperFunction.convertPromiseToObject(await teamGoalAssignModel.findAll({

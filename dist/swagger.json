@@ -4453,8 +4453,8 @@
                     {
                         "name": "manager_id",
                         "in": "formData",
-                        "description": "manager_id, If is_manager=0 then manger_id will pass",
-                        "required": true,
+                        "description": "manager id",
+                        "required": false,
                         "type": "number"
                     },
                     {
@@ -4554,6 +4554,28 @@
                         "description": "prev_exit YYYY-MM-DD",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "is_manager",
+                        "in": "formData",
+                        "description": "0=> false, 1=>true ",
+                        "required": true,
+                        "type": "number",
+                        "enum": [0, 1]
+                    },
+                    {
+                        "name": "manager_team_name",
+                        "in": "formData",
+                        "description": "manager team name is required if is_manager==1",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "manager_team_icon_url",
+                        "in": "formData",
+                        "description": "manager team icon url is required if is_manager==1",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -4596,6 +4618,13 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "description": "department id",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}

@@ -83,33 +83,6 @@ class ChatServices {
             return employeeGoalData.concat(getQuantitativeData);
         });
     }
-    /**
-     * function to generate unique room id
-     */
-    getUniqueChatRoomId() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let isUniqueFound = false;
-            let room_id = null;
-            while (!isUniqueFound) {
-                room_id = yield helperFunction.randomStringEightDigit();
-                let chatRoom = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
-                    where: {
-                        room_id
-                    }
-                });
-                if (!chatRoom) {
-                    let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
-                        where: {
-                            room_id
-                        }
-                    });
-                    if (!groupChatRoom)
-                        isUniqueFound = true;
-                }
-            }
-            return room_id;
-        });
-    }
     /*
     * function to get chat room id
     */
@@ -140,7 +113,7 @@ class ChatServices {
                     let chatRoomObj = {
                         user_id: user.uid,
                         other_user_id: params.other_user_id,
-                        room_id: yield this.getUniqueChatRoomId(),
+                        room_id: yield helperFunction.getUniqueChatRoomId(),
                         type: constants.CHAT_ROOM_TYPE.coach
                     };
                     chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
@@ -183,7 +156,7 @@ class ChatServices {
                     let chatRoomObj = {
                         user_id: user.uid,
                         other_user_id: params.other_user_id,
-                        room_id: yield this.getUniqueChatRoomId(),
+                        room_id: yield helperFunction.getUniqueChatRoomId(),
                     };
                     chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
                 }
@@ -228,7 +201,7 @@ class ChatServices {
                     manager_id: parseInt(manager.id),
                     member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
-                    room_id: yield this.getUniqueChatRoomId(),
+                    room_id: yield helperFunction.getUniqueChatRoomId(),
                 };
                 const newDoc = yield db.collection('chats_dev').doc(groupChatRoomObj.room_id).set({
                     id: groupChatRoomObj.room_id,
@@ -257,9 +230,9 @@ class ChatServices {
                     id: managerGroupChatRoom.manager_id,
                 }
             }));
-            const updateDoc = yield db.collection('chats_dev').doc(managerGroupChatRoom.room_id).update({
+            const updateDoc = yield db.collection('chats_dev').doc(managerGroupChatRoom.room_id).set({
                 member: [groupManager, ...groupMembers],
-            });
+            }, { merge: true });
             if (!updateDoc) {
                 throw new Error(constants.MESSAGES.firebase_firestore_doc_not_updated);
             }

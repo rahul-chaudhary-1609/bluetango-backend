@@ -35,7 +35,7 @@ export class EmployeeController {
   */
     public async getManagerList(req: any, res: any) {
         try {
-            const responseFromService = await employeeService.getManagerList();
+            const responseFromService = await employeeService.getManagerList(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {

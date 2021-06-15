@@ -78,33 +78,35 @@ export const changePassword = Joi.object({
 });
 
 export const addEditEmployee = Joi.object ({
-    id: Joi.string().optional(),
-    name: Joi.string().required(),
-    email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: Joi.string().min(8)
-    .max(15)
-    .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-    .messages({
-      "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-      "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-      "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-      "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-      "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-      "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }).optional(),
-    country_code: Joi.string().required(),
-    phone_number: Joi.string().required(),
-    current_department_id: Joi.string().required(), 
-    current_designation: Joi.string().optional(),
-    employee_code: Joi.string().required(),
-    prev_employer: Joi.string().optional(),
-    prev_department: Joi.string().optional(),
-    prev_designation: Joi.string().optional(),
-    prev_date_of_joining: Joi.string().optional(),
-    prev_exit: Joi.string().optional(),
-    current_date_of_joining: Joi.string().required(),
-    manager_id: Joi.string().required(),
-    is_manager: Joi.number().valid(0,1).optional(),
+  id: Joi.string().optional(),
+  name: Joi.string().required(),
+  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+  password: Joi.string().min(8)
+  .max(15)
+  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  .messages({
+    "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+  }).optional(),
+  country_code: Joi.string().required(),
+  phone_number: Joi.string().required(),
+  current_department_id: Joi.string().required(), 
+  current_designation: Joi.string().optional(),
+  employee_code: Joi.string().required(),
+  prev_employer: Joi.string().optional(),
+  prev_department: Joi.string().optional(),
+  prev_designation: Joi.string().optional(),
+  prev_date_of_joining: Joi.string().optional(),
+  prev_exit: Joi.string().optional(),
+  current_date_of_joining: Joi.string().required(),
+  manager_id: Joi.number().optional(),
+  is_manager: Joi.number().valid(0, 1).required(),
+  manager_team_name: Joi.string().optional(),
+  manager_team_icon_url: Joi.string().optional(),
   
   })
   
@@ -163,4 +165,8 @@ export const cancelPlan = Joi.object({
 
 export const contactUs = Joi.object({
   message: Joi.string().required(),
+})
+
+export const getManagerList = Joi.object({
+  department_id: Joi.number().optional(),
 })

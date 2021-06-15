@@ -64,34 +64,6 @@ export class ChatServices {
         return employeeGoalData.concat(getQuantitativeData);
     }
 
-    /**
-     * function to generate unique room id
-     */
-    public async getUniqueChatRoomId() {
-        let isUniqueFound = false;
-        let room_id = null;
-        while (!isUniqueFound) {
-            room_id = await helperFunction.randomStringEightDigit();
-            let chatRoom = await chatRealtionMappingInRoomModel.findOne({
-                where: {
-                    room_id
-                }
-            });
-
-            if (!chatRoom) {
-                let groupChatRoom = await groupChatRoomModel.findOne({
-                    where: {
-                        room_id
-                    }
-                });
-
-                if (!groupChatRoom) isUniqueFound = true;
-            }            
-        }
-
-        return room_id;
-    }
-
     /*
     * function to get chat room id
     */
@@ -128,7 +100,7 @@ export class ChatServices {
                 let chatRoomObj = <any>{
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
-                    room_id: await this.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
+                    room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
                     type: constants.CHAT_ROOM_TYPE.coach
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
@@ -181,7 +153,7 @@ export class ChatServices {
                 let chatRoomObj = <any>{
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
-                    room_id: await this.getUniqueChatRoomId(),//await helperFunction.randomStringEightDigit()
+                    room_id: await helperFunction.getUniqueChatRoomId(),//await helperFunction.randomStringEightDigit()
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
@@ -239,7 +211,7 @@ export class ChatServices {
                 manager_id: parseInt(manager.id),
                 member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
-                room_id: await this.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
+                room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
             };
 
             const newDoc = await db.collection('chats_dev').doc(groupChatRoomObj.room_id).set(
@@ -282,10 +254,11 @@ export class ChatServices {
             })
         )
 
-        const updateDoc = await db.collection('chats_dev').doc(managerGroupChatRoom.room_id).update(
+        const updateDoc = await db.collection('chats_dev').doc(managerGroupChatRoom.room_id).set(
             {
                 member: [groupManager, ...groupMembers],
-            }
+            },
+            { merge: true }
         )
 
         if (!updateDoc) {
