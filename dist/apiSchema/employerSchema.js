@@ -26,7 +26,13 @@ exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile =
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
-    username: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    username: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
+        .messages({
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
     password: joi_1.default.string().min(8)
         .max(15)
         .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
@@ -41,7 +47,13 @@ exports.login = joi_1.default.object({
     })
 });
 exports.forgotPassword = joi_1.default.object({
-    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
+        .messages({
+        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    }),
     user_role: joi_1.default.string().regex(new RegExp("^(?=.*[1-5])")).required(),
 });
 exports.resetPassword = joi_1.default.object({
