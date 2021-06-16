@@ -75,7 +75,7 @@ export class EmployeeManagement {
         params.current_employer_id = user.uid;
         if (_.isEmpty(existingUser)) {
 
-            if(params.is_manager){
+            if(params.is_manager==1){
                 if (!params.manager_team_name) {
                     throw new Error(constants.MESSAGES.manager_team_name_required)
                 }
@@ -126,7 +126,7 @@ export class EmployeeManagement {
                         })
                     )
 
-                    if (params.is_manager) {
+                    if (params.is_manager==1) {
                         let groupChatRoom = await groupChatRoomModel.findOne({
                             where: {
                                 manager_id: parseInt(params.id),
@@ -172,7 +172,7 @@ export class EmployeeManagement {
 
                     await managerTeamMemberModel.create(teamMemberObj);
                 }
-                if (params.is_manager) {
+                if (params.is_manager==1) {
                     let groupChatRoomObj = <any>{
                         name:params.manager_team_name,
                         manager_id: parseInt(employeeRes.id),

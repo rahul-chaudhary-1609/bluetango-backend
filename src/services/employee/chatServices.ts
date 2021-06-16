@@ -230,7 +230,7 @@ export class ChatServices {
         }
         else {
             let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
-            managerGroupChatRoom.member_ids = [...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
+            managerGroupChatRoom.member_ids = teamMemberIds;//[...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
             managerGroupChatRoom.live_member_ids = teamMemberIds;
             managerGroupChatRoom.save();
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(managerGroupChatRoom);

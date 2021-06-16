@@ -104,7 +104,7 @@ class EmployeeManagement {
             }
             params.current_employer_id = user.uid;
             if (lodash_1.default.isEmpty(existingUser)) {
-                if (params.is_manager) {
+                if (params.is_manager == 1) {
                     if (!params.manager_team_name) {
                         throw new Error(constants.MESSAGES.manager_team_name_required);
                     }
@@ -147,7 +147,7 @@ class EmployeeManagement {
                         let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                             where: { id: params.id }
                         }));
-                        if (params.is_manager) {
+                        if (params.is_manager == 1) {
                             let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
                                 where: {
                                     manager_id: parseInt(params.id),
@@ -187,7 +187,7 @@ class EmployeeManagement {
                         };
                         yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
                     }
-                    if (params.is_manager) {
+                    if (params.is_manager == 1) {
                         let groupChatRoomObj = {
                             name: params.manager_team_name,
                             manager_id: parseInt(employeeRes.id),
