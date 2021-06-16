@@ -47,7 +47,8 @@ class HomepageServices {
                 attributes: ['id', 'name', 'image', 'fileName', 'description'],
                 where: {
                     status: constants.STATUS.active,
-                }
+                },
+                order: [["createdAt", "DESC"]]
             });
             return yield helperFunction.convertPromiseToObject(coachList);
         });
@@ -61,7 +62,8 @@ class HomepageServices {
                 attributes: ['id', 'title', 'image', 'description'],
                 where: {
                     status: constants.STATUS.active,
-                }
+                },
+                order: [["createdAt", "DESC"]]
             });
             return yield helperFunction.convertPromiseToObject(advisorList);
         });
@@ -75,7 +77,8 @@ class HomepageServices {
                 attributes: ['id', 'title', 'image', 'description'],
                 where: {
                     status: constants.STATUS.active,
-                }
+                },
+                order: [["createdAt", "DESC"]]
             });
             return yield helperFunction.convertPromiseToObject(articleList);
         });
@@ -89,7 +92,8 @@ class HomepageServices {
                 attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
                 where: {
                     status: constants.STATUS.active,
-                }
+                },
+                order: ["charge"]
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
         });

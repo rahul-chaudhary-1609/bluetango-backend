@@ -21,7 +21,8 @@ export class HomepageServices {
             attributes: ['id', 'name', 'image', 'fileName', 'description'],
             where: {
                 status: constants.STATUS.active,
-            }
+            },
+            order:[["createdAt","DESC"]]
         });
 
         return await helperFunction.convertPromiseToObject(coachList);
@@ -36,7 +37,8 @@ export class HomepageServices {
             attributes: ['id', 'title', 'image', 'description'],
             where: {
                 status: constants.STATUS.active,
-            }
+            },
+            order: [["createdAt", "DESC"]]
         });
 
         return await helperFunction.convertPromiseToObject(advisorList);
@@ -52,7 +54,8 @@ export class HomepageServices {
             attributes: ['id', 'title', 'image', 'description'],
             where: {
                 status: constants.STATUS.active,
-            }
+            },
+            order: [["createdAt", "DESC"]]
         });
 
         return await helperFunction.convertPromiseToObject(articleList);
@@ -67,7 +70,8 @@ export class HomepageServices {
             attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
             where: {
                 status: constants.STATUS.active,
-            }
+            },
+            order: ["charge"]
         });
 
         return await helperFunction.convertPromiseToObject(subscriptionList);
