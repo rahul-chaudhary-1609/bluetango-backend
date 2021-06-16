@@ -203,13 +203,13 @@ class ChatServices {
                     live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     room_id: yield helperFunction.getUniqueChatRoomId(),
                 };
-                const newDoc = yield db.collection('chats_dev').doc(groupChatRoomObj.room_id).set({
+                managerGroupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                const newDoc = yield db.collection('chats_dev').doc(managerGroupChatRoom.room_id).set({
                     id: groupChatRoomObj.room_id,
                 });
                 if (!newDoc) {
                     throw new Error(constants.MESSAGES.firebase_firestore_doc_not_created);
                 }
-                managerGroupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
             }
             else {
                 let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);

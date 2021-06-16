@@ -214,7 +214,11 @@ export class ChatServices {
                 room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
             };
 
-            const newDoc = await db.collection('chats_dev').doc(groupChatRoomObj.room_id).set(
+            managerGroupChatRoom = await helperFunction.convertPromiseToObject(
+                await groupChatRoomModel.create(groupChatRoomObj)
+            );
+
+            const newDoc = await db.collection('chats_dev').doc(managerGroupChatRoom.room_id).set(
                 {
                     id: groupChatRoomObj.room_id,
                 }
@@ -224,9 +228,7 @@ export class ChatServices {
                 throw new Error(constants.MESSAGES.firebase_firestore_doc_not_created)
             }
 
-            managerGroupChatRoom = await helperFunction.convertPromiseToObject(
-                await groupChatRoomModel.create(groupChatRoomObj)
-            );
+           
         }
         else {
             let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
