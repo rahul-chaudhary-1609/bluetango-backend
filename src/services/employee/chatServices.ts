@@ -422,54 +422,54 @@ export class ChatServices {
             chats.push(groupChat)
         }
 
-        let groupChatRooms = await helperFunction.convertPromiseToObject(
-            await groupChatRoomModel.findAll({
-                where: {
-                    member_ids: {
-                        [Op.contains]:[parseInt(user.uid)],
-                    }
-                }
-            })
-        )
+        // let groupChatRooms = await helperFunction.convertPromiseToObject(
+        //     await groupChatRoomModel.findAll({
+        //         where: {
+        //             member_ids: {
+        //                 [Op.contains]:[parseInt(user.uid)],
+        //             }
+        //         }
+        //     })
+        // )
 
-        for (let groupChatRoom of groupChatRooms) {
-            if (!groupChatIds.includes(groupChatRoom.id)) {
+        // for (let groupChatRoom of groupChatRooms) {
+        //     if (!groupChatIds.includes(groupChatRoom.id)) {
 
-                let groupMembers = await helperFunction.convertPromiseToObject(
-                    await employeeModel.findAll({
-                        attributes: ['id', 'name', 'profile_pic_url','status', 'is_manager'],
-                        where: {
-                            id: groupChatRoom.member_ids,
-                        }
-                    })
-                )
+        //         let groupMembers = await helperFunction.convertPromiseToObject(
+        //             await employeeModel.findAll({
+        //                 attributes: ['id', 'name', 'profile_pic_url','status', 'is_manager'],
+        //                 where: {
+        //                     id: groupChatRoom.member_ids,
+        //                 }
+        //             })
+        //         )
 
-                let groupManager = await helperFunction.convertPromiseToObject(
-                    await employeeModel.findOne({
-                        attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
-                        where: {
-                            id: groupChatRoom.manager_id,
-                        }
-                    })
-                )
+        //         let groupManager = await helperFunction.convertPromiseToObject(
+        //             await employeeModel.findOne({
+        //                 attributes: ['id', 'name', 'profile_pic_url', 'status', 'is_manager'],
+        //                 where: {
+        //                     id: groupChatRoom.manager_id,
+        //                 }
+        //             })
+        //         )
 
-                chats.push({
-                    id: groupChatRoom.id,
-                    room_id: groupChatRoom.room_id,
-                    group_name: groupChatRoom.name,
-                    group_icon_url: groupChatRoom.icon_image_url,
-                    group_members: groupMembers,
-                    group_manager: groupManager,
-                    current_user: await helperFunction.convertPromiseToObject(currentUser),
-                    status: groupChatRoom.status,
-                    type: constants.CHAT_ROOM_TYPE.group,
-                    amIGroupManager: false,
-                    is_disabled: true,
-                    createdAt: groupChatRoom.createdAt,
-                    updatedAt: groupChatRoom.updatedAt
-                })
-            }
-        }
+        //         chats.push({
+        //             id: groupChatRoom.id,
+        //             room_id: groupChatRoom.room_id,
+        //             group_name: groupChatRoom.name,
+        //             group_icon_url: groupChatRoom.icon_image_url,
+        //             group_members: groupMembers,
+        //             group_manager: groupManager,
+        //             current_user: await helperFunction.convertPromiseToObject(currentUser),
+        //             status: groupChatRoom.status,
+        //             type: constants.CHAT_ROOM_TYPE.group,
+        //             amIGroupManager: false,
+        //             is_disabled: true,
+        //             createdAt: groupChatRoom.createdAt,
+        //             updatedAt: groupChatRoom.updatedAt
+        //         })
+        //     }
+        // }
 
 
         return chats;
