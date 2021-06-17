@@ -715,7 +715,8 @@ class EmployeeServices {
             mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use your credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
-                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
+                <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL}
+                <br><b> Web URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
                 `;
             mailParams.subject = "BluXinga Friend Referral";
             yield helperFunction.sendEmail(mailParams);
