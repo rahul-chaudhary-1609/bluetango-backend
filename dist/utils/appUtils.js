@@ -87,7 +87,7 @@ exports.gererateOtp = () => {
 exports.CheckEmail = (req) => __awaiter(void 0, void 0, void 0, function* () {
     // check for email
     let result;
-    if (/\@/.test(req.username)) {
+    if (/\@/.test(req.email)) {
         result = true;
     }
     else {

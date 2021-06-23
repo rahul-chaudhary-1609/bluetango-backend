@@ -39,11 +39,12 @@ export class EmployersService {
     @param {} params pass all parameters from request
     */
     public async addEditEmployers(params: any, user: any) {
+        params.email = params.email.toLowerCase();
         var isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {
             qry.where = {
-                email: params.username,
+                email: params.email,
                 status: { [Op.in]: [0, 1] }
             };
         }
@@ -598,6 +599,7 @@ export class EmployersService {
     @param {} params pass all parameters from request
     */
     public async addEditCoach(params: any, user: any) {
+        params.email = params.email.toLowerCase();
         var isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {

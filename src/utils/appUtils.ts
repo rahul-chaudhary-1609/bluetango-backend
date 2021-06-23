@@ -55,7 +55,7 @@ export const gererateOtp = () => {
 export const CheckEmail = async (req: any) => {
     // check for email
     let result;
-    if (/\@/.test(req.username)) {
+    if (/\@/.test(req.email)) {
         result = true;
     } else {
         result = false;

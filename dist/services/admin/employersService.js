@@ -68,11 +68,12 @@ class EmployersService {
     */
     addEditEmployers(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            params.email = params.email.toLowerCase();
             var isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
                 qry.where = {
-                    email: params.username,
+                    email: params.email,
                     status: { [Op.in]: [0, 1] }
                 };
             }
@@ -595,6 +596,7 @@ class EmployersService {
     */
     addEditCoach(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            params.email = params.email.toLowerCase();
             var isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
