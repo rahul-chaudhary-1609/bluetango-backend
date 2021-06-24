@@ -258,7 +258,7 @@ class EmployeeManagement {
                     ] });
             }
             return yield models_1.employeeModel.findAndCountAll({
-                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
+                attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
                 where: whereCond,
                 include: [
                     {
