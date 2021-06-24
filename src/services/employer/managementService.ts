@@ -262,7 +262,7 @@ export class EmployeeManagement {
         }
 
         return await employeeModel.findAndCountAll({
-            attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager','energy_last_updated'],
+            attributes: ['id', 'name', 'email','country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager','energy_last_updated'],
             where: whereCond,
             include: [
                 {
