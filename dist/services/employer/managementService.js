@@ -42,6 +42,7 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const teamGoal_1 = require("../../models/teamGoal");
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
+const emoji_1 = require("../../models/emoji");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
 var Op = Sequelize.Op;
 class EmployeeManagement {
@@ -234,6 +235,7 @@ class EmployeeManagement {
             if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
                 throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
@@ -263,7 +265,13 @@ class EmployeeManagement {
                         model: models_1.departmentModel,
                         attributes: ['id', 'name'],
                         required: true,
-                    }
+                    },
+                    {
+                        model: emoji_1.emojiModel,
+                        required: false,
+                        as: 'energy_emoji_data',
+                        attributes: ['id', 'image_url', 'caption']
+                    },
                 ],
                 limit: limit,
                 offset: offset,

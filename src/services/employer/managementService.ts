@@ -231,6 +231,8 @@ export class EmployeeManagement {
         if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});
             if(!departmentExists)
@@ -267,7 +269,13 @@ export class EmployeeManagement {
                     model: departmentModel,
                     attributes: ['id', 'name'],
                     required:true,
-              }  
+                },
+                {
+                    model: emojiModel,
+                    required: false,
+                    as: 'energy_emoji_data',
+                    attributes: ['id', 'image_url', 'caption']
+                },
             ],
             limit: limit,
             offset: offset,
