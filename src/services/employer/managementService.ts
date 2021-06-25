@@ -390,11 +390,15 @@ export class EmployeeManagement {
 
         if (qualitativeMeasurement.length !== 0) {
             //throw new Error(constants.MESSAGES.no_qualitative_measure);
-
+            let startDate = new Date(qualitativeMeasurement[0].createdAt);
+            let endDate = new Date(qualitativeMeasurement[0].createdAt)
+            endDate.setMonth(startDate.getMonth() + 3);
             qualitativeMeasurements = {
                 id: qualitativeMeasurement[0].id,
                 manager_id: qualitativeMeasurement[0].manager_id,
                 employee_id: qualitativeMeasurement[0].employee_id,
+                startDate,
+                endDate,
                 createdAt: qualitativeMeasurement[0].createdAt,
                 updatedAt: qualitativeMeasurement[0].updatedAt,
                 qualitativeMeasures: [],
