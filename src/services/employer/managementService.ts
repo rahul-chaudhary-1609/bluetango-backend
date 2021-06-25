@@ -306,7 +306,7 @@ export class EmployeeManagement {
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
-
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employeeDetails = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
                 //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
@@ -319,6 +319,11 @@ export class EmployeeManagement {
                         model: managerTeamMemberModel,
                         attributes: ['id', 'manager_id','team_member_id'],
                         required: true,
+                        include: [{
+                            model: employeeModel,
+                            required: true,
+                            attributes: ['id', 'name', 'email', 'profile_pic_url']
+                        }]
                     },
                     {
                         model: departmentModel,
