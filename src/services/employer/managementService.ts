@@ -318,17 +318,17 @@ export class EmployeeManagement {
                     {
                         model: managerTeamMemberModel,
                         attributes: ['id', 'manager_id','team_member_id'],
-                        required: true,
+                        required: false,
                         include: [{
                             model: employeeModel,
-                            required: true,
+                            required: false,
                             attributes: ['id', 'name', 'email', 'profile_pic_url']
                         }]
                     },
                     {
                         model: departmentModel,
                         attributes: ['id', 'name'],
-                        required: true,
+                        required: false,
                     }
                 ],
                 

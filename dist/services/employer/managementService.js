@@ -311,17 +311,17 @@ class EmployeeManagement {
                     {
                         model: managerTeamMember_1.managerTeamMemberModel,
                         attributes: ['id', 'manager_id', 'team_member_id'],
-                        required: true,
+                        required: false,
                         include: [{
                                 model: models_1.employeeModel,
-                                required: true,
+                                required: false,
                                 attributes: ['id', 'name', 'email', 'profile_pic_url']
                             }]
                     },
                     {
                         model: models_1.departmentModel,
                         attributes: ['id', 'name'],
-                        required: true,
+                        required: false,
                     }
                 ],
             }));
