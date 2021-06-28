@@ -238,7 +238,7 @@ export class EmployeeManagement {
             if(!departmentExists)
                 throw new Error(constants.MESSAGES.invalid_department);
         }
-        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        
         let whereCond = <any>{
             status:[constants.STATUS.active,constants.STATUS.inactive]
         };
@@ -261,14 +261,14 @@ export class EmployeeManagement {
             };
         }
 
-        return await employeeModel.findAndCountAll({
-            attributes: ['id', 'name', 'email','country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager','energy_last_updated'],
+        let query =<any> {
+            attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
             where: whereCond,
             include: [
                 {
                     model: departmentModel,
                     attributes: ['id', 'name'],
-                    required:true,
+                    required: true,
                 },
                 {
                     model: emojiModel,
@@ -277,10 +277,19 @@ export class EmployeeManagement {
                     attributes: ['id', 'image_url', 'caption']
                 },
             ],
-            limit: limit,
-            offset: offset,
             order: [["createdAt", "DESC"]]
-        })
+        }
+
+        if (params.offset && params.limit) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query = {
+                ...query,
+                limit:limit,
+                offset: offset,
+            }
+        }
+
+        return await employeeModel.findAndCountAll(query);
 
     }
 

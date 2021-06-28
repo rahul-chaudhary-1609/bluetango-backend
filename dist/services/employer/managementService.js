@@ -241,7 +241,6 @@ class EmployeeManagement {
                 if (!departmentExists)
                     throw new Error(constants.MESSAGES.invalid_department);
             }
-            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let whereCond = {
                 status: [constants.STATUS.active, constants.STATUS.inactive]
             };
@@ -257,7 +256,7 @@ class EmployeeManagement {
                         { phone_number: { [Op.iLike]: `%${searchKey}%` } }
                     ] });
             }
-            return yield models_1.employeeModel.findAndCountAll({
+            let query = {
                 attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
                 where: whereCond,
                 include: [
@@ -273,10 +272,13 @@ class EmployeeManagement {
                         attributes: ['id', 'image_url', 'caption']
                     },
                 ],
-                limit: limit,
-                offset: offset,
                 order: [["createdAt", "DESC"]]
-            });
+            };
+            if (params.offset && params.limit) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query = Object.assign(Object.assign({}, query), { limit: limit, offset: offset });
+            }
+            return yield models_1.employeeModel.findAndCountAll(query);
         });
     }
     /**
