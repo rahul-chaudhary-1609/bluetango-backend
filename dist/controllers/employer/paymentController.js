@@ -44,14 +44,7 @@ class PaymentController {
     payment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield paymentService.payment(req.body);
-                if (responseFromService) {
-                    res.redirect(responseFromService.redirectURL);
-                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
-                }
-                else {
-                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
-                }
+                yield paymentService.payment(res, req.body);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

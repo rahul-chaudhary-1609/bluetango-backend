@@ -19,7 +19,7 @@ paypal.configure({
 let toPayAmount = 5;
 class Payment {
     constructor() { }
-    payment(params) {
+    payment(res, params) {
         return __awaiter(this, void 0, void 0, function* () {
             const PORT = process.env.PORT || 1203;
             const HOST = process.env.HOST || "http://localhost";
@@ -32,8 +32,8 @@ class Payment {
                     "payment_method": "paypal"
                 },
                 "redirect_urls": {
-                    "return_url": `${HOST}:${PORT}/success`,
-                    "cancel_url": `${HOST}:${PORT}/cancel`
+                    "return_url": `${HOST}:${PORT}/api/v1/employer/success`,
+                    "cancel_url": `${HOST}:${PORT}/api/v1/employer/cancel`
                 },
                 "transactions": [{
                         // "item_list": {
@@ -60,11 +60,9 @@ class Payment {
                     console.log("Create Payment Response");
                     console.log(payment);
                     let redirectURLObject = payment.links.find((link) => link.rel === 'approval_url');
-                    //res.redirect(redirectURLObject.href);
-                    return { redirectURL: redirectURLObject.href };
+                    res.redirect(redirectURLObject.href);
                 }
             });
-            return { redirectURL: true };
         });
     }
     success(params) {
@@ -84,13 +82,14 @@ class Payment {
                     }
                 ]
             };
+            let pay = null;
             paypal.payment.execute(paymentID, payment_execute_json, (error, payment) => {
                 if (error) {
                     console.log("Error", error);
                     return error;
                 }
                 console.log(payment.transactions[0].related_resources[0].sale);
-                return payment;
+                pay = payment;
             });
             return true;
         });
