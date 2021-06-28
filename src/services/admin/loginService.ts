@@ -19,6 +19,8 @@ export class LoginService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
+        console.log("login",params)
+        params.email=params.username
         var isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {

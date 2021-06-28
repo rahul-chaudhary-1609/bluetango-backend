@@ -50,6 +50,8 @@ class LoginService {
     */
     login(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("login", params);
+            params.email = params.username;
             var isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
