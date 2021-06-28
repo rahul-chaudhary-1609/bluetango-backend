@@ -31,6 +31,7 @@ const employerRoute = express_1.default.Router();
 const authController = new EmployerController.AuthController();
 const managementController = new EmployerController.EmployeeController();
 const employerController = new EmployerController.EmployerController();
+const paymentController = new EmployerController.PaymentController();
 /* login route for employer login */
 employerRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.login), authController.login);
 /* forget pass route for employee */
@@ -75,5 +76,11 @@ employerRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmpl
 employerRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getNotifications);
 /* to get unseen notification count */
 employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getUnseenNotificationCount);
+/* payment */
+employerRoute.post("/payment", paymentController.payment);
+/* to get unseen notification count */
+employerRoute.get("/success", paymentController.success);
+/* to get unseen notification count */
+employerRoute.get("/cancel", paymentController.cancel);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map
