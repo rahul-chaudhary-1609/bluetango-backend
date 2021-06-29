@@ -20,6 +20,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.2",
     "@sendgrid/mail": "^7.1.1",
     "@types/cors": "^2.8.9",
     "@types/dotenv": "^8.2.0",
@@ -45,6 +46,7 @@
     "paypal-rest-sdk": "^1.8.1",
     "pg": "^8.5.1",
     "randomstring": "^1.1.5",
+    "request": "^2.88.2",
     "sendgrid": "^5.2.3",
     "sequelize": "^5.22.3",
     "sequelize-transforms": "^2.0.0",

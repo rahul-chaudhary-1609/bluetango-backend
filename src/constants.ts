@@ -253,3 +253,11 @@ export const FEEDBACK_TYPE = {
   coach: 3,
   other: 4,
 }
+
+export const SECRETS = {
+  PAYPAL_SECRETS: {
+    client_id:process.env.PAYPAL_CLIENT_ID,
+    client_secret: process.env.PAYPAL_CLIENT_SECRET,
+    environment: process.env.PAYPAL_ENVIRONMENT,
+  }
+}

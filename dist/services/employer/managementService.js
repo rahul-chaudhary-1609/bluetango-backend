@@ -328,6 +328,7 @@ class EmployeeManagement {
                 ],
             }));
             delete employeeDetails.password;
+            employeeDetails.groupChatRoom = null;
             if (employeeDetails.is_manager) {
                 let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.findOne({
                     where: {

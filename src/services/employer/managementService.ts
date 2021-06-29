@@ -346,6 +346,8 @@ export class EmployeeManagement {
 
         delete employeeDetails.password
 
+        employeeDetails.groupChatRoom = null;
+
         if (employeeDetails.is_manager) {
             let groupChatRoom = await helperFunction.convertPromiseToObject(
                 await groupChatRoomModel.findOne({

@@ -36,30 +36,65 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const paymentService = new paymentService_1.Payment();
 class PaymentController {
     constructor() { }
-    /**
-    * payment
-    * @param req :[Body data]
-    * @param res : [employers data object]
-    */
-    payment(req, res) {
+    createPaymentMethod1(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield paymentService.payment(res, req.body);
+                console.log('createPaymentMethod1 Controller req.body', req.body);
+                yield paymentService.createPaymentMethod1(req, res);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
             }
         });
     }
-    /**
-   * payment success
-   * @param req :[Body data]
-   * @param res : [employers data object]
-   */
-    success(req, res) {
+    capturePayment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield paymentService.success(req.query);
+                console.log('capturePayment Controller req.body', req.body);
+                yield paymentService.capturePayment(req, res);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getPaymentDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('getPaymentDetails Controller req.body', req.body);
+                yield paymentService.getPaymentDetails(req, res);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    createPaymentMethod2(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('createPaymentMethod2 Controller req.body', req.body);
+                yield paymentService.createPaymentMethod2(res);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    executePayment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('executePayment Controller req.body', req.body);
+                yield paymentService.executePayment(res, req.query);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    paymentSuccess1(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield paymentService.paymentSuccess1(req.query);
                 if (responseFromService) {
                     return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
                 }
@@ -72,15 +107,53 @@ class PaymentController {
             }
         });
     }
-    /**
-   * payment failed
-   * @param req :[Body data]
-   * @param res : [employers data object]
-   */
-    cancel(req, res) {
+    paymentFailed1(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield paymentService.cancel(req.query);
+                const responseFromService = yield paymentService.paymentFailed1(req.query);
+                if (responseFromService) {
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    payment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('payment Controller req.body', req.body);
+                yield paymentService.payment(res, req.body);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    paymentSuccess2(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield paymentService.paymentSuccess2(req.query);
+                if (responseFromService) {
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    paymentFailed2(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield paymentService.paymentFailed2(req.query);
                 if (responseFromService) {
                     return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
                 }
