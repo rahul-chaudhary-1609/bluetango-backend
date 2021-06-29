@@ -26,6 +26,7 @@ const employerSchema = __importStar(require("../apiSchema/employerSchema"));
 const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidation"));
 const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const validators = __importStar(require("../middleware/validators"));
+const multerParser_1 = require("../middleware/multerParser");
 const EmployerController = __importStar(require("../controllers/employer"));
 const employerRoute = express_1.default.Router();
 const authController = new EmployerController.AuthController();
@@ -96,5 +97,7 @@ employerRoute.post("/payment", paymentController.payment);
 employerRoute.get("/paymentSuccess2", paymentController.paymentSuccess2);
 /* to get unseen notification count */
 employerRoute.get("/paymentFailed2", paymentController.paymentFailed2);
+/* upload file route for employee */
+employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

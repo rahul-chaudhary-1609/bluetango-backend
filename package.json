@@ -25,6 +25,7 @@
     "@types/cors": "^2.8.9",
     "@types/dotenv": "^8.2.0",
     "@types/opentok": "^2.10.1",
+    "@types/paypal-rest-sdk": "^1.7.5",
     "aws-sdk": "^2.831.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",

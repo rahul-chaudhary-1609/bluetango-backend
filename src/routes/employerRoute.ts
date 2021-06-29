@@ -3,6 +3,7 @@ import * as employerSchema from '../apiSchema/employerSchema';
 import * as joiSchemaValidation from '../middleware/joiSchemaValidation';
 import * as tokenValidator from "../middleware/tokenValidator";
 import * as validators from "../middleware/validators";
+import { upload } from "../middleware/multerParser";
 
 import * as EmployerController from "../controllers/employer";
 
@@ -113,6 +114,10 @@ employerRoute.get("/paymentSuccess2", paymentController.paymentSuccess2);
 
 /* to get unseen notification count */
 employerRoute.get("/paymentFailed2", paymentController.paymentFailed2);
+
+/* upload file route for employee */
+employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, upload.single('file'), authController.uploadFile);
+
 
 
 export = employerRoute;

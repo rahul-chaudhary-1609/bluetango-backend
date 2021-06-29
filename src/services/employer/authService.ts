@@ -260,4 +260,11 @@ export class AuthService {
 
     }
 
+    /*
+   * function to upload file 
+   */
+    public async uploadFile(params: any, folderName) {
+        return await helperFunction.uploadFile(params, folderName);
+    }
+
 }

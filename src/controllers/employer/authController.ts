@@ -1,6 +1,7 @@
 import * as EmployerService from "../../services/employer";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
+import { deleteFile } from "../../middleware/multerParser"
 
 
 //Instantiates a Home services  
@@ -91,6 +92,21 @@ export class AuthController {
     public async changePassword(req: any, res: any, next: any) {
         try {
             const responseFromService = await authService.changePassword(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+   * update profile
+   * @param req :[]
+   * @param res 
+   */
+    public async uploadFile(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await authService.uploadFile(req.file, req.body.folderName);
+            await deleteFile(req.file.filename);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
