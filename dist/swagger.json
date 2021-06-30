@@ -4915,6 +4915,13 @@
                         "description": "thought_of_the_day",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "profile_pic_url",
+                        "in": "formData",
+                        "description": "profile_pic_url",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}

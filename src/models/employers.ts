@@ -29,6 +29,9 @@ export const employersModel: any = sequelize.define("employers", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    profile_pic_url: {
+        type: DataTypes.STRING,
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -90,4 +93,4 @@ export const employersModel: any = sequelize.define("employers", {
         tableName: "employers"
     }
 );
-employersModel.sync({ alter: false });
+employersModel.sync({ alter: true });

@@ -30,6 +30,9 @@ exports.employersModel = connection_1.sequelize.define("employers", {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    profile_pic_url: {
+        type: sequelize_1.DataTypes.STRING,
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -89,5 +92,5 @@ exports.employersModel = connection_1.sequelize.define("employers", {
 }, {
     tableName: "employers"
 });
-exports.employersModel.sync({ alter: false });
+exports.employersModel.sync({ alter: true });
 //# sourceMappingURL=employers.js.map

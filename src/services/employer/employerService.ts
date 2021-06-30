@@ -83,7 +83,7 @@ export class EmployerService {
 * function to get profile 
 */
     public async getProfile(user: any) {
-        employersModel.hasOne(industryTypeModel, { as:"industry_info",foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
+        employersModel.hasOne(industryTypeModel, { as: "industry_info", foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
         
         let profile = await helperFunction.convertPromiseToObject(
             await employersModel.findOne({
@@ -138,6 +138,7 @@ export class EmployerService {
         profile.industry_type = params.industry_type || currentProfile.industry_type;
         profile.address = params.address || currentProfile.address;
         profile.thought_of_the_day = params.thought_of_the_day || currentProfile.thought_of_the_day;
+        profile.profile_pic_url = params.profile_pic_url || currentProfile.profile_pic_url;
 
         profile.save();
 
