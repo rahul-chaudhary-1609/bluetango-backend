@@ -131,7 +131,11 @@ export const MESSAGES = {
   firebase_firestore_doc_not_updated: `Firebase doc with chat room not updated`,
   manager_team_name_required: `Manager team name is required if employee is a manager`,
   manager_team_icon_url_required: `Manager team icon url is required if employee is a manager`,
+  payment_success: `Payment Successfull!`,
+  payment_faliled: `Payment failed!`,
 }
+
+export const HOST_URL = process.env.HOST_URL
 
 export const code = {
   error_code: 400

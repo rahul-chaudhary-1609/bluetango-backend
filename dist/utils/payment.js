@@ -19,15 +19,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.client = void 0;
 const constants = __importStar(require("../constants"));
-const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
-exports.client = function client() {
-    return new checkoutNodeJssdk.core.PayPalHttpClient(environment());
-};
-function environment() {
-    let clientId = constants.SECRETS.PAYPAL_SECRETS.client_id;
-    let clientSecret = constants.SECRETS.PAYPAL_SECRETS.client_secret;
-    return new checkoutNodeJssdk.core.SandboxEnvironment(clientId, clientSecret);
-}
+const paypal = require("paypal-rest-sdk");
+paypal.configure({
+    'mode': constants.SECRETS.PAYPAL_SECRETS.environment,
+    'client_id': constants.SECRETS.PAYPAL_SECRETS.client_id,
+    'client_secret': constants.SECRETS.PAYPAL_SECRETS.client_secret
+});
+exports.default = paypal;
 //# sourceMappingURL=payment.js.map

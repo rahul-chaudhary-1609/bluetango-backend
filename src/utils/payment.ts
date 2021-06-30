@@ -2,19 +2,12 @@
 
 import * as constants from "../constants";
 
+const paypal = require("paypal-rest-sdk");
 
-const checkoutNodeJssdk = require('@paypal/checkout-server-sdk');
+paypal.configure({
+    'mode': constants.SECRETS.PAYPAL_SECRETS.environment, //sandbox or live
+    'client_id': constants.SECRETS.PAYPAL_SECRETS.client_id,
+    'client_secret': constants.SECRETS.PAYPAL_SECRETS.client_secret
+});
 
-
-export const client=function client() {
-    return new checkoutNodeJssdk.core.PayPalHttpClient(environment());
-}
-
-function environment() {
-    let clientId = constants.SECRETS.PAYPAL_SECRETS.client_id
-    let clientSecret = constants.SECRETS.PAYPAL_SECRETS.client_secret
-
-    return new checkoutNodeJssdk.core.SandboxEnvironment(
-        clientId, clientSecret
-    );
-}
+export default paypal;

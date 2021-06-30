@@ -77,27 +77,13 @@ employerRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmpl
 employerRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getNotifications);
 /* to get unseen notification count */
 employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getUnseenNotificationCount);
-// /* payment */
-// employerRoute.post("/createPaymentMethod1", paymentController.createPaymentMethod1);
-// /* payment */
-// employerRoute.post("/capturePayment", paymentController.capturePayment);
-// /* payment */
-// employerRoute.post("/getPaymentDetails", paymentController.getPaymentDetails);
-// /* payment */
-// employerRoute.post("/createPaymentMethod2", paymentController.createPaymentMethod2);
-// /* payment */
-// employerRoute.post("/executePayment", paymentController.executePayment);
-// /* to get unseen notification count */
-// employerRoute.get("/paymentSuccess1", paymentController.paymentSuccess1);
-// /* to get unseen notification count */
-// employerRoute.get("/paymentFailed1", paymentController.paymentFailed1);
 /* payment */
 employerRoute.post("/payment", paymentController.payment);
+/* payment success */
+employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
 /* to get unseen notification count */
-employerRoute.get("/paymentSuccess2", paymentController.paymentSuccess2);
-/* to get unseen notification count */
-employerRoute.get("/paymentFailed2", paymentController.paymentFailed2);
-/* upload file route for employee */
+employerRoute.get("/paymentFailed", paymentController.paymentFailed);
+/* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

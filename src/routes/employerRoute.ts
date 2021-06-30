@@ -86,36 +86,15 @@ employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValida
 
 
 /* payment */
-employerRoute.post("/createPaymentMethod1", paymentController.createPaymentMethod1);
-
-/* payment */
-employerRoute.post("/capturePayment", paymentController.capturePayment);
-
-/* payment */
-employerRoute.post("/getPaymentDetails", paymentController.getPaymentDetails);
-
-/* payment */
-employerRoute.post("/createPaymentMethod2", paymentController.createPaymentMethod2);
-
-/* payment */
-employerRoute.post("/executePayment", paymentController.executePayment);
-
-/* to get unseen notification count */
-employerRoute.get("/paymentSuccess1", paymentController.paymentSuccess1);
-
-/* to get unseen notification count */
-employerRoute.get("/paymentFailed1", paymentController.paymentFailed1);
-
-/* payment */
 employerRoute.post("/payment", paymentController.payment);
 
-/* to get unseen notification count */
-employerRoute.get("/paymentSuccess2", paymentController.paymentSuccess2);
+/* payment success */
+employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
 
 /* to get unseen notification count */
-employerRoute.get("/paymentFailed2", paymentController.paymentFailed2);
+employerRoute.get("/paymentFailed", paymentController.paymentFailed);
 
-/* upload file route for employee */
+/* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, upload.single('file'), authController.uploadFile);
 
 
