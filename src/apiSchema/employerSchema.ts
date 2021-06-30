@@ -149,7 +149,7 @@ export const editProfile = Joi.object({
   industry_type: Joi.number().optional(),
   address: Joi.string().optional(),
   thought_of_the_day: Joi.string().optional(),
-  profile_pic_url: Joi.string().optional(),
+  profile_pic_url: Joi.string().allow(null,'').optional(),
 })
 
 export const buyPlan = Joi.object({

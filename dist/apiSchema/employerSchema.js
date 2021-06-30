@@ -162,7 +162,7 @@ exports.editProfile = joi_1.default.object({
     industry_type: joi_1.default.number().optional(),
     address: joi_1.default.string().optional(),
     thought_of_the_day: joi_1.default.string().optional(),
-    profile_pic_url: joi_1.default.string().optional(),
+    profile_pic_url: joi_1.default.string().allow(null, '').optional(),
 });
 exports.buyPlan = joi_1.default.object({
     plan_id: joi_1.default.number().required(),
