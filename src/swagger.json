@@ -4898,7 +4898,7 @@
             "in": "formData",
             "description": "phone number",
             "required": false,
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "industry_type",

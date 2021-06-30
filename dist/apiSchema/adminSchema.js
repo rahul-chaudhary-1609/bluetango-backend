@@ -147,7 +147,7 @@ exports.addEditEmployers = joi_1.default.object({
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     }),
     country_code: joi_1.default.string().required(),
-    phone_number: joi_1.default.number().required(),
+    phone_number: joi_1.default.string().required(),
     industry_type: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
     thought_of_the_day: joi_1.default.string().optional()
