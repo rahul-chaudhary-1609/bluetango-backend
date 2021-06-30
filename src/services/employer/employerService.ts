@@ -83,21 +83,14 @@ export class EmployerService {
 * function to get profile 
 */
     public async getProfile(user: any) {
-        employersModel.hasOne(industryTypeModel, { as: "industry_info", foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
+        //employersModel.hasOne(industryTypeModel, { foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
         
         let profile = await helperFunction.convertPromiseToObject(
             await employersModel.findOne({
                 where: {
                     id: parseInt(user.uid),
                     status: { [Op.ne]: 2 }
-                },
-                include: [
-                    {
-                        model: industryTypeModel,
-                        as:"industry_info",
-                        required:true
-                    }
-                ]
+                }
             })
         )
 
