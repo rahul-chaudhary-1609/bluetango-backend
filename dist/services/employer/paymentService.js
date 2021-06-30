@@ -80,7 +80,6 @@ class Payment {
             console.log("params", params);
             let payerID = params.PayerID;
             let paymentID = params.paymentId;
-            let token = params.token;
             let payment_execute_json = {
                 payer_id: payerID,
                 transactions: [
@@ -99,9 +98,9 @@ class Payment {
                 }
                 console.log(payment.transactions[0].related_resources[0].sale);
                 pay = payment;
-                res.redirect("https://web-dev.bluxinga.com/freetrial");
+                //res.redirect("https://web-dev.bluxinga.com/freetrial");
             });
-            //return true;
+            return true;
         });
     }
     paymentFailed(params) {

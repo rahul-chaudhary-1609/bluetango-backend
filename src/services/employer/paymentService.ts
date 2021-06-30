@@ -52,7 +52,6 @@ export class Payment{
 
         let payerID = params.PayerID;
         let paymentID = params.paymentId;
-        let token = params.token;
 
         let payment_execute_json = {
             payer_id: payerID,
@@ -75,9 +74,9 @@ export class Payment{
             }
             console.log(payment.transactions[0].related_resources[0].sale)
             pay = payment;
-            res.redirect("https://web-dev.bluxinga.com/freetrial");
+            //res.redirect("https://web-dev.bluxinga.com/freetrial");
         })
-        //return true;
+        return true;
     }
 
     public async paymentFailed(params) {
