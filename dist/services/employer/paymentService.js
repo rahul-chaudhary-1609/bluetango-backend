@@ -75,7 +75,7 @@ class Payment {
             });
         });
     }
-    paymentSuccess(params) {
+    paymentSuccess(params, res) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("params", params);
             let payerID = params.PayerID;
@@ -99,8 +99,9 @@ class Payment {
                 }
                 console.log(payment.transactions[0].related_resources[0].sale);
                 pay = payment;
+                res.redirect("https://web-dev.bluxinga.com/freetrial");
             });
-            return true;
+            //return true;
         });
     }
     paymentFailed(params) {

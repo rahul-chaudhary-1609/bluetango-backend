@@ -49,13 +49,12 @@ class PaymentController {
     paymentSuccess(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield paymentService.paymentSuccess(req.query);
-                if (responseFromService) {
-                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.payment_success);
-                }
-                else {
-                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
-                }
+                yield paymentService.paymentSuccess(req.query, res);
+                // if (responseFromService) {
+                //     return appUtils.successResponse(res, responseFromService, constants.MESSAGES.payment_success);
+                // } else {
+                //     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                // }
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

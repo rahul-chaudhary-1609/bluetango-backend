@@ -22,12 +22,12 @@ export class PaymentController {
 
     public async paymentSuccess(req: any, res: any) {
         try {
-            const responseFromService = await paymentService.paymentSuccess(req.query);
-            if (responseFromService) {
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.payment_success);
-            } else {
-                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
-            }
+            await paymentService.paymentSuccess(req.query,res);
+            // if (responseFromService) {
+            //     return appUtils.successResponse(res, responseFromService, constants.MESSAGES.payment_success);
+            // } else {
+            //     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            // }
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }

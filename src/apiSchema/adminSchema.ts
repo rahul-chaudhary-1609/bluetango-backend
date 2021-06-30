@@ -128,7 +128,7 @@ export const addEditEmployers = Joi.object ({
     "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
   }),
   country_code: Joi.string().required(),
-  phone_number: Joi.string().required(),
+  phone_number: Joi.number().required(),
   industry_type: Joi.string().required(),
   address: Joi.string().required(),
   thought_of_the_day: Joi.string().optional()
