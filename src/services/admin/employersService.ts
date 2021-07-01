@@ -144,7 +144,16 @@ export class EmployersService {
         }
 
         const employer = await employersModel.findAll({
-            include: [{ model: employeeModel, required: false, attributes: ["id"] }],
+            include: [
+                {
+                    model: employeeModel,
+                    required: false,
+                    attributes: ["id"],
+                    where: {
+                        status:[0,1]
+                    }
+                }
+            ],
             where: whereCond,
             limit: limit,
             offset: offset,

@@ -173,7 +173,16 @@ class EmployersService {
                 });
             }
             const employer = yield models_1.employersModel.findAll({
-                include: [{ model: models_1.employeeModel, required: false, attributes: ["id"] }],
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        required: false,
+                        attributes: ["id"],
+                        where: {
+                            status: [0, 1]
+                        }
+                    }
+                ],
                 where: whereCond,
                 limit: limit,
                 offset: offset,
