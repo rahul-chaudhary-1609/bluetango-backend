@@ -179,6 +179,7 @@ class EmployeeManagement {
                     }
                 }
                 else {
+                    let password = params.password;
                     params.password = yield appUtils.bcryptPassword(params.password);
                     let employeeRes = yield models_1.employeeModel.create(params);
                     if (params.manager_id) {
@@ -200,6 +201,18 @@ class EmployeeManagement {
                         let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
                         employeeRes.groupChatRoom = groupChatRoom;
                     }
+                    const mailParams = {};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYEE_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYEE_IOS_URL} <br>
+                <br><b> Web URL</b>: ${process.env.EMPLOYEE_WEB_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                    mailParams.subject = "Employee Login Credentials";
+                    yield helperFunction.sendEmail(mailParams);
                     return employeeRes;
                 }
             }

@@ -104,6 +104,7 @@ export class EmployersService {
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYER_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYER_IOS_URL} <br>
+                <br><b> Web URL</b>: ${process.env.EMPLOYER_WEB_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;

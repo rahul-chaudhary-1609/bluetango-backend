@@ -160,7 +160,7 @@ export class EmployeeManagement {
                     return false;
                 }
             } else {
-
+                let password = params.password;
                 params.password = await appUtils.bcryptPassword(params.password);
                 let employeeRes = await employeeModel.create(params);
 
@@ -186,6 +186,19 @@ export class EmployeeManagement {
                     );
                     employeeRes.groupChatRoom = groupChatRoom;
                 }
+
+                const mailParams = <any>{};
+                mailParams.to = params.email;
+                mailParams.html = `Hi  ${params.name}
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.EMPLOYEE_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.EMPLOYEE_IOS_URL} <br>
+                <br><b> Web URL</b>: ${process.env.EMPLOYEE_WEB_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                `;
+                mailParams.subject = "Employee Login Credentials";
+                await helperFunction.sendEmail(mailParams);
                 
 
                 return employeeRes;
