@@ -105,8 +105,14 @@ export const addEditEmployee = Joi.object ({
   current_date_of_joining: Joi.string().required(),
   manager_id: Joi.number().optional(),
   is_manager: Joi.number().valid(0, 1).required(),
-  manager_team_name: Joi.string().optional(),
-  manager_team_icon_url: Joi.string().optional(),
+  manager_team_name: Joi.string().messages({
+    "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_name_msg.base,
+    "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_name_msg.required,
+  }).optional(),
+  manager_team_icon_url: Joi.string().messages({
+    "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.base,
+    "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.required,
+  }).optional(),
   
   })
   

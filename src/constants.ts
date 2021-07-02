@@ -173,6 +173,14 @@ export const CUSTOM_JOI_MESSAGE = {
     base: "email must be string",
     required: "email is required",
     pattern: "Please enter valid email"
+  },
+   manager_team_icon_url_msg: {
+     base: "Manager team icon URL must be string",
+     required: "Manager team icon URL is required",
+  },
+  manager_team_name_msg: {
+    base: "Manager team name must be string",
+    required: "Manager team name is required",
   }
 }
 export const notificationmsg = {

@@ -124,8 +124,14 @@ exports.addEditEmployee = joi_1.default.object({
     current_date_of_joining: joi_1.default.string().required(),
     manager_id: joi_1.default.number().optional(),
     is_manager: joi_1.default.number().valid(0, 1).required(),
-    manager_team_name: joi_1.default.string().optional(),
-    manager_team_icon_url: joi_1.default.string().optional(),
+    manager_team_name: joi_1.default.string().messages({
+        "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_name_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_name_msg.required,
+    }).optional(),
+    manager_team_icon_url: joi_1.default.string().messages({
+        "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.base,
+        "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.required,
+    }).optional(),
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
