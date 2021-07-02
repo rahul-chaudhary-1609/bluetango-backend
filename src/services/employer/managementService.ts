@@ -200,10 +200,11 @@ export class EmployeeManagement {
      * get managers list 
      */
 
-    public async getManagerList(params) {
+    public async getManagerList(params,user) {
         let where=<any> {
             is_manager: 1,
-            status: constants.STATUS.active
+            status: constants.STATUS.active,
+            current_employer_id: parseInt(user.uid),
         }
 
         if (params.department_id) {

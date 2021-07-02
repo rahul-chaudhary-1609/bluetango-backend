@@ -211,11 +211,12 @@ class EmployeeManagement {
     /**
      * get managers list
      */
-    getManagerList(params) {
+    getManagerList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {
                 is_manager: 1,
-                status: constants.STATUS.active
+                status: constants.STATUS.active,
+                current_employer_id: parseInt(user.uid),
             };
             if (params.department_id) {
                 where = Object.assign(Object.assign({}, where), { current_department_id: parseInt(params.department_id) });
