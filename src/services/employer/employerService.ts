@@ -94,6 +94,14 @@ export class EmployerService {
             })
         )
 
+        profile.industry_info = await helperFunction.convertPromiseToObject(
+            await industryTypeModel.findOne({
+                where: {
+                    id: parseInt(profile.industry_type)
+                }
+            })
+        )
+
         profile.no_of_employee = await helperFunction.convertPromiseToObject(
             await employeeModel.count({
                 where: {

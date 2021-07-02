@@ -35,6 +35,7 @@ const helperFunction = __importStar(require("../../utils/helperFunction"));
 const models_1 = require("../../models");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
+const industryType_1 = require("../../models/industryType");
 const contactUs_1 = require("../../models/contactUs");
 const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
@@ -106,6 +107,11 @@ class EmployerService {
                 where: {
                     id: parseInt(user.uid),
                     status: { [Op.ne]: 2 }
+                }
+            }));
+            profile.industry_info = yield helperFunction.convertPromiseToObject(yield industryType_1.industryTypeModel.findOne({
+                where: {
+                    id: parseInt(profile.industry_type)
                 }
             }));
             profile.no_of_employee = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.count({
