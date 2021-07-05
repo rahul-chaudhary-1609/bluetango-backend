@@ -105,105 +105,132 @@ class EmployeeManagement {
             }
             params.current_employer_id = user.uid;
             if (lodash_1.default.isEmpty(existingUser)) {
-                if (params.is_manager == 1) {
-                    if (!params.manager_team_name) {
-                        throw new Error(constants.MESSAGES.manager_team_name_required);
-                    }
-                    if (!params.manager_team_icon_url) {
-                        throw new Error(constants.MESSAGES.manager_team_icon_url_required);
-                    }
-                }
+                let isEmployeeCodeExist = null;
                 if (params.id) {
-                    delete params.password;
-                    let updateData = yield models_1.employeeModel.update(params, {
-                        where: { id: params.id }
-                    });
-                    if (updateData) {
-                        let managerData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
-                            where: { team_member_id: params.id }
-                        }));
-                        if (managerData && params.manager_id) {
-                            if (managerData.manager_id != parseInt(params.manager_id)) {
-                                yield managerTeamMember_1.managerTeamMemberModel.update({
-                                    manager_id: params.manager_id
-                                }, {
-                                    where: { team_member_id: params.id }
-                                });
+                    isEmployeeCodeExist = yield models_1.employeeModel.findOne({
+                        where: {
+                            employee_code: params.employee_code,
+                            current_employer_id: params.current_employer_id,
+                            status: {
+                                [Op.in]: [0, 1]
+                            },
+                            id: {
+                                [Op.ne]: params.id
                             }
                         }
-                        else if (params.manager_id) {
+                    });
+                }
+                else {
+                    isEmployeeCodeExist = yield models_1.employeeModel.findOne({
+                        where: {
+                            employee_code: params.employee_code,
+                            current_employer_id: params.current_employer_id,
+                            status: {
+                                [Op.in]: [0, 1]
+                            }
+                        }
+                    });
+                }
+                if (!isEmployeeCodeExist) {
+                    if (params.is_manager == 1) {
+                        if (!params.manager_team_name) {
+                            throw new Error(constants.MESSAGES.manager_team_name_required);
+                        }
+                        if (!params.manager_team_icon_url) {
+                            throw new Error(constants.MESSAGES.manager_team_icon_url_required);
+                        }
+                    }
+                    if (params.id) {
+                        delete params.password;
+                        let updateData = yield models_1.employeeModel.update(params, {
+                            where: { id: params.id }
+                        });
+                        if (updateData) {
+                            let managerData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                                where: { team_member_id: params.id }
+                            }));
+                            if (managerData && params.manager_id) {
+                                if (managerData.manager_id != parseInt(params.manager_id)) {
+                                    yield managerTeamMember_1.managerTeamMemberModel.update({
+                                        manager_id: params.manager_id
+                                    }, {
+                                        where: { team_member_id: params.id }
+                                    });
+                                }
+                            }
+                            else if (params.manager_id) {
+                                let teamMemberObj = {
+                                    team_member_id: params.id,
+                                    manager_id: params.manager_id
+                                };
+                                yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
+                            }
+                            else if (managerData) {
+                                let where = {
+                                    team_member_id: params.id,
+                                    manager_id: managerData.manager_id
+                                };
+                                yield managerTeamMember_1.managerTeamMemberModel.destroy({ where });
+                            }
+                            let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                                where: { id: params.id }
+                            }));
+                            if (params.is_manager == 1) {
+                                let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
+                                    where: {
+                                        manager_id: parseInt(params.id),
+                                    }
+                                });
+                                if (groupChatRoom) {
+                                    groupChatRoom.name = params.manager_team_name;
+                                    groupChatRoom.icon_image_url = params.manager_team_icon_url;
+                                    groupChatRoom.save();
+                                }
+                                else {
+                                    let groupChatRoomObj = {
+                                        name: params.manager_team_name,
+                                        manager_id: parseInt(params.id),
+                                        member_ids: [],
+                                        live_member_ids: [],
+                                        room_id: yield helperFunction.getUniqueChatRoomId(),
+                                        icon_image_url: params.manager_team_icon_url
+                                    };
+                                    groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                                }
+                                employeeRes.groupChatRoom = groupChatRoom;
+                            }
+                            return employeeRes;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        let password = params.password;
+                        params.password = yield appUtils.bcryptPassword(params.password);
+                        let employeeRes = yield models_1.employeeModel.create(params);
+                        if (params.manager_id) {
                             let teamMemberObj = {
-                                team_member_id: params.id,
+                                team_member_id: employeeRes.id,
                                 manager_id: params.manager_id
                             };
                             yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
                         }
-                        else if (managerData) {
-                            let where = {
-                                team_member_id: params.id,
-                                manager_id: managerData.manager_id
-                            };
-                            yield managerTeamMember_1.managerTeamMemberModel.destroy({ where });
-                        }
-                        let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
-                            where: { id: params.id }
-                        }));
                         if (params.is_manager == 1) {
-                            let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
-                                where: {
-                                    manager_id: parseInt(params.id),
-                                }
-                            });
-                            if (groupChatRoom) {
-                                groupChatRoom.name = params.manager_team_name;
-                                groupChatRoom.icon_image_url = params.manager_team_icon_url;
-                                groupChatRoom.save();
-                            }
-                            else {
-                                let groupChatRoomObj = {
-                                    name: params.manager_team_name,
-                                    manager_id: parseInt(params.id),
-                                    member_ids: [],
-                                    live_member_ids: [],
-                                    room_id: yield helperFunction.getUniqueChatRoomId(),
-                                    icon_image_url: params.manager_team_icon_url
-                                };
-                                groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
-                            }
+                            let groupChatRoomObj = {
+                                name: params.manager_team_name,
+                                manager_id: parseInt(employeeRes.id),
+                                member_ids: [],
+                                live_member_ids: [],
+                                room_id: yield helperFunction.getUniqueChatRoomId(),
+                                icon_image_url: params.manager_team_icon_url
+                            };
+                            let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
                             employeeRes.groupChatRoom = groupChatRoom;
                         }
-                        return employeeRes;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                else {
-                    let password = params.password;
-                    params.password = yield appUtils.bcryptPassword(params.password);
-                    let employeeRes = yield models_1.employeeModel.create(params);
-                    if (params.manager_id) {
-                        let teamMemberObj = {
-                            team_member_id: employeeRes.id,
-                            manager_id: params.manager_id
-                        };
-                        yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
-                    }
-                    if (params.is_manager == 1) {
-                        let groupChatRoomObj = {
-                            name: params.manager_team_name,
-                            manager_id: parseInt(employeeRes.id),
-                            member_ids: [],
-                            live_member_ids: [],
-                            room_id: yield helperFunction.getUniqueChatRoomId(),
-                            icon_image_url: params.manager_team_icon_url
-                        };
-                        let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
-                        employeeRes.groupChatRoom = groupChatRoom;
-                    }
-                    const mailParams = {};
-                    mailParams.to = params.email;
-                    mailParams.html = `Hi  ${params.name}
+                        const mailParams = {};
+                        mailParams.to = params.email;
+                        mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYEE_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYEE_IOS_URL} <br>
@@ -211,9 +238,13 @@ class EmployeeManagement {
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
-                    mailParams.subject = "Employee Login Credentials";
-                    yield helperFunction.sendEmail(mailParams);
-                    return employeeRes;
+                        mailParams.subject = "Employee Login Credentials";
+                        yield helperFunction.sendEmail(mailParams);
+                        return employeeRes;
+                    }
+                }
+                else {
+                    throw new Error(constants.MESSAGES.employee_code_already_registered);
                 }
             }
             else {

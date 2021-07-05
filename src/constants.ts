@@ -2,6 +2,7 @@ export const MESSAGES = {
   phone_already_registered: "An account with given phone number already exists",
   email_already_registered: "An account with given email already exists",
   email_phone_already_registered: "An account with given email or phone already exists",
+  employee_code_already_registered:"An account with given employee code already exists",
   invalid_password: "Incorrect Password",
   invalid_old_password: "Incorrect old password",
   invalid_email: "Incorrect Email",

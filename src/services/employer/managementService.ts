@@ -74,122 +74,149 @@ export class EmployeeManagement {
         
         params.current_employer_id = user.uid;
         if (_.isEmpty(existingUser)) {
-
-            if(params.is_manager==1){
-                if (!params.manager_team_name) {
-                    throw new Error(constants.MESSAGES.manager_team_name_required)
-                }
-                if (!params.manager_team_icon_url) {
-                    throw new Error(constants.MESSAGES.manager_team_icon_url_required)
-                }
+            let isEmployeeCodeExist = null;
+            if (params.id) {
+                isEmployeeCodeExist = await employeeModel.findOne({
+                    where: {
+                        employee_code: params.employee_code,
+                        current_employer_id: params.current_employer_id,
+                        status: {
+                            [Op.in]: [0, 1]
+                        },
+                        id: {
+                            [Op.ne]: params.id
+                        }
+                    }
+                });
+            } else {
+                isEmployeeCodeExist = await employeeModel.findOne({
+                    where: {
+                        employee_code: params.employee_code,
+                        current_employer_id: params.current_employer_id,
+                        status: {
+                            [Op.in]: [0, 1]
+                        }
+                    }
+                });
             }
 
-            if (params.id) {
-                delete params.password;
-                let updateData =  await employeeModel.update( params, {
-                    where: { id: params.id}
-                });
-                if (updateData) {
-                    let managerData = await helperFunction.convertPromiseToObject ( await managerTeamMemberModel.findOne({
-                        where: { team_member_id: params.id}
-                    }) );
-                    if (managerData && params.manager_id) {
-                        if(managerData.manager_id != parseInt(params.manager_id)) {
-                            await managerTeamMemberModel.update( 
-                                 { 
-                                     manager_id: params.manager_id
-                                 }
-                                , {
-                                    where: { team_member_id: params.id}
-                            });
+            if (!isEmployeeCodeExist) {
+
+                if (params.is_manager == 1) {
+                    if (!params.manager_team_name) {
+                        throw new Error(constants.MESSAGES.manager_team_name_required)
+                    }
+                    if (!params.manager_team_icon_url) {
+                        throw new Error(constants.MESSAGES.manager_team_icon_url_required)
+                    }
+                }
+
+                if (params.id) {
+                    delete params.password;
+                    let updateData = await employeeModel.update(params, {
+                        where: { id: params.id }
+                    });
+                    if (updateData) {
+                        let managerData = await helperFunction.convertPromiseToObject(await managerTeamMemberModel.findOne({
+                            where: { team_member_id: params.id }
+                        }));
+                        if (managerData && params.manager_id) {
+                            if (managerData.manager_id != parseInt(params.manager_id)) {
+                                await managerTeamMemberModel.update(
+                                    {
+                                        manager_id: params.manager_id
+                                    }
+                                    , {
+                                        where: { team_member_id: params.id }
+                                    });
                             
-                        }
-                    } else if (params.manager_id) {
-                        let teamMemberObj = <any> {
-                            team_member_id: params.id,
-                            manager_id: params.manager_id
-                        }        
-                        await managerTeamMemberModel.create(teamMemberObj);
-
-                    } else if (managerData) {
-                        let where = <any>{
-                            team_member_id: params.id,
-                            manager_id: managerData.manager_id
-                        }
-
-                        await managerTeamMemberModel.destroy({where});
-                    }
-
-                    let employeeRes = await helperFunction.convertPromiseToObject(
-                        await employeeModel.findOne({
-                            where: { id: params.id }
-                        })
-                    )
-
-                    if (params.is_manager==1) {
-                        let groupChatRoom = await groupChatRoomModel.findOne({
-                            where: {
-                                manager_id: parseInt(params.id),
                             }
-                        });
+                        } else if (params.manager_id) {
+                            let teamMemberObj = <any>{
+                                team_member_id: params.id,
+                                manager_id: params.manager_id
+                            }
+                            await managerTeamMemberModel.create(teamMemberObj);
 
-                        if (groupChatRoom) {
-                            groupChatRoom.name = params.manager_team_name;
-                            groupChatRoom.icon_image_url = params.manager_team_icon_url;
-                            groupChatRoom.save();
-                        } else {
-                            let groupChatRoomObj = <any>{
-                                name: params.manager_team_name,
-                                manager_id: parseInt(params.id),
-                                member_ids: [],
-                                live_member_ids: [],
-                                room_id: await helperFunction.getUniqueChatRoomId(),
-                                icon_image_url: params.manager_team_icon_url
-                            };
-                        
-                            groupChatRoom = await helperFunction.convertPromiseToObject(
-                                await groupChatRoomModel.create(groupChatRoomObj)
-                            );
+                        } else if (managerData) {
+                            let where = <any>{
+                                team_member_id: params.id,
+                                manager_id: managerData.manager_id
+                            }
+
+                            await managerTeamMemberModel.destroy({ where });
                         }
-                        employeeRes.groupChatRoom = groupChatRoom;
+
+                        let employeeRes = await helperFunction.convertPromiseToObject(
+                            await employeeModel.findOne({
+                                where: { id: params.id }
+                            })
+                        )
+
+                        if (params.is_manager == 1) {
+                            let groupChatRoom = await groupChatRoomModel.findOne({
+                                where: {
+                                    manager_id: parseInt(params.id),
+                                }
+                            });
+
+                            if (groupChatRoom) {
+                                groupChatRoom.name = params.manager_team_name;
+                                groupChatRoom.icon_image_url = params.manager_team_icon_url;
+                                groupChatRoom.save();
+                            } else {
+                                let groupChatRoomObj = <any>{
+                                    name: params.manager_team_name,
+                                    manager_id: parseInt(params.id),
+                                    member_ids: [],
+                                    live_member_ids: [],
+                                    room_id: await helperFunction.getUniqueChatRoomId(),
+                                    icon_image_url: params.manager_team_icon_url
+                                };
                         
-                    }
+                                groupChatRoom = await helperFunction.convertPromiseToObject(
+                                    await groupChatRoomModel.create(groupChatRoomObj)
+                                );
+                            }
+                            employeeRes.groupChatRoom = groupChatRoom;
+                        
+                        }
 
-                    return employeeRes;
+                        return employeeRes;
+                    } else {
+                        return false;
+                    }
                 } else {
-                    return false;
-                }
-            } else {
-                let password = params.password;
-                params.password = await appUtils.bcryptPassword(params.password);
-                let employeeRes = await employeeModel.create(params);
+                    let password = params.password;
+                    params.password = await appUtils.bcryptPassword(params.password);
+                    let employeeRes = await employeeModel.create(params);
 
-                if (params.manager_id) {
-                    let teamMemberObj = <any>{
-                        team_member_id: employeeRes.id,
-                        manager_id: params.manager_id
+                    if (params.manager_id) {
+                        let teamMemberObj = <any>{
+                            team_member_id: employeeRes.id,
+                            manager_id: params.manager_id
+                        }
+
+                        await managerTeamMemberModel.create(teamMemberObj);
+                    }
+                    if (params.is_manager == 1) {
+                        let groupChatRoomObj = <any>{
+                            name: params.manager_team_name,
+                            manager_id: parseInt(employeeRes.id),
+                            member_ids: [],
+                            live_member_ids: [],
+                            room_id: await helperFunction.getUniqueChatRoomId(),
+                            icon_image_url: params.manager_team_icon_url
+                        };
+                        let groupChatRoom = await helperFunction.convertPromiseToObject(
+                            await groupChatRoomModel.create(groupChatRoomObj)
+                        );
+                        employeeRes.groupChatRoom = groupChatRoom;
                     }
 
-                    await managerTeamMemberModel.create(teamMemberObj);
-                }
-                if (params.is_manager==1) {
-                    let groupChatRoomObj = <any>{
-                        name:params.manager_team_name,
-                        manager_id: parseInt(employeeRes.id),
-                        member_ids: [],
-                        live_member_ids: [],
-                        room_id: await helperFunction.getUniqueChatRoomId(),
-                        icon_image_url: params.manager_team_icon_url
-                    };
-                    let groupChatRoom = await helperFunction.convertPromiseToObject(
-                        await groupChatRoomModel.create(groupChatRoomObj)
-                    );
-                    employeeRes.groupChatRoom = groupChatRoom;
-                }
-
-                const mailParams = <any>{};
-                mailParams.to = params.email;
-                mailParams.html = `Hi  ${params.name}
+                    const mailParams = <any>{};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYEE_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYEE_IOS_URL} <br>
@@ -197,11 +224,14 @@ export class EmployeeManagement {
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
-                mailParams.subject = "Employee Login Credentials";
-                await helperFunction.sendEmail(mailParams);
+                    mailParams.subject = "Employee Login Credentials";
+                    await helperFunction.sendEmail(mailParams);
                 
 
-                return employeeRes;
+                    return employeeRes;
+                }
+            } else {
+                throw new Error(constants.MESSAGES.employee_code_already_registered);
             }
 
         } else {
