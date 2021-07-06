@@ -531,10 +531,10 @@ export class EmployeeManagement {
         let managerTeam = await helperFunction.convertPromiseToObject(
             await managerTeamMemberModel.update(
                 {
-                    manager_id: params.current_manager_id,
+                    manager_id: params.new_manager_id,
                 },
                 {
-                    where: { manager_id: params.new_manager_id, },
+                    where: { manager_id: params.current_manager_id, },
                     returning: true
                 }
             )
