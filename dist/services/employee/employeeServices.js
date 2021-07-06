@@ -70,6 +70,7 @@ class EmployeeServices {
                         model: employee_1.employeeModel,
                         required: false,
                         attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                        where: { status: 1 },
                         include: [
                             {
                                 model: emoji_1.emojiModel,

@@ -40,7 +40,8 @@ export class EmployeeServices {
                     {
                         model: employeeModel, 
                         required: false,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated','profile_pic_url'],
+                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                        where:{status:1},
                         include: [
                             {
                                 model: emojiModel,
