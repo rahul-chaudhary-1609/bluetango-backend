@@ -103,6 +103,21 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * delete employee
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    public async updateManager(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.updateManager(req.body, req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     
 
 }

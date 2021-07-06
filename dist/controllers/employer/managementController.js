@@ -137,6 +137,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * delete employee
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    updateManager(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.updateManager(req.body, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=managementController.js.map

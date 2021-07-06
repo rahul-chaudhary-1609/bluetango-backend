@@ -61,6 +61,8 @@ employerRoute.post("/buyPlan", tokenValidator.validateEmployerToken, joiSchemaVa
 employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails), managementController.viewEmployeeDetails);
 /* delete Employee */
 employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
+/* update Employee manager */
+employerRoute.put("/updateManager", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.updateManager), managementController.updateManager);
 /* route to get profile */
 employerRoute.get("/getProfile", tokenValidator.validateEmployerToken, employerController.getProfile);
 /* edit profile */

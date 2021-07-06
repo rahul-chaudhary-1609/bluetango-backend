@@ -470,6 +470,22 @@ class EmployeeManagement {
             return true;
         });
     }
+    /**
+     * function to updater an employee manager
+     */
+    updateManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
+                throw new Error(constants.MESSAGES.employer_no_plan);
+            let managerTeam = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
+                manager_id: params.current_manager_id,
+            }, {
+                where: { manager_id: params.new_manager_id, },
+                returning: true
+            }));
+            return managerTeam;
+        });
+    }
 }
 exports.EmployeeManagement = EmployeeManagement;
 //# sourceMappingURL=managementService.js.map

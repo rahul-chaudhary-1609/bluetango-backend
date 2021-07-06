@@ -177,3 +177,8 @@ export const contactUs = Joi.object({
 export const getManagerList = Joi.object({
   department_id: Joi.number().optional(),
 })
+
+export const updateManager = Joi.object({
+  current_manager_id: Joi.number().required(),
+  new_manager_id: Joi.number().required(),
+})

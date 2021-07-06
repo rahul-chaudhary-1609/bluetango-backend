@@ -520,4 +520,27 @@ export class EmployeeManagement {
         return true;
     }
 
+    /**
+     * function to updater an employee manager
+     */
+
+    public async updateManager(params: any, user: any) {
+
+        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+
+        let managerTeam = await helperFunction.convertPromiseToObject(
+            await managerTeamMemberModel.update(
+                {
+                    manager_id: params.current_manager_id,
+                },
+                {
+                    where: { manager_id: params.new_manager_id, },
+                    returning: true
+                }
+            )
+        )
+
+        return managerTeam;
+    }
+
 }

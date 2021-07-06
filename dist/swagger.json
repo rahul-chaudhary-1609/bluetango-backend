@@ -5064,6 +5064,41 @@
                 "responses": {}
             }
         },
+        "/employer/updateManager": {
+            "put": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to update Employee manager",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "current_manager_id",
+                        "in": "formData",
+                        "description": "current manager id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "new_manager_id",
+                        "in": "formData",
+                        "description": "current manager id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/mySubscription": {
             "get": {
                 "tags": [
