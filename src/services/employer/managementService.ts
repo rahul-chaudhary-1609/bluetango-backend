@@ -540,7 +540,7 @@ export class EmployeeManagement {
             )
         )
 
-        return managerTeam;
+        return true;
     }
 
 }

@@ -483,7 +483,7 @@ class EmployeeManagement {
                 where: { manager_id: params.current_manager_id, },
                 returning: true
             }));
-            return managerTeam;
+            return true;
         });
     }
 }
