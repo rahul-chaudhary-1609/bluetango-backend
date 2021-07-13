@@ -53,8 +53,8 @@ class AuthService {
             let existingUser = yield models_1.employersModel.findOne({
                 where: {
                     email: params.username.toLowerCase(),
-                    status: { [Op.in]: [0, 1] }
-                }
+                },
+                order: [["createdAt", "DESC"]]
             });
             if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
                 throw new Error(constants.MESSAGES.deactivate_account);

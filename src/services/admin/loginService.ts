@@ -31,6 +31,7 @@ export class LoginService {
         }
         qry.raw = true;
         qry.attributes = ['id', 'name', 'email', 'password', 'admin_role'];
+        qry.order= [["createdAt", "DESC"]]
         let existingUser = await adminModel.findOne(qry);
         if (!_.isEmpty(existingUser)) {
             let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);

@@ -21,8 +21,9 @@ export class AuthService {
     let existingUser = await employersModel.findOne({
         where: {
             email: params.username.toLowerCase(),
-            status: {[Op.in]: [0,1]}
-        }
+            //status: {[Op.in]: [0,1]}
+        },
+        order: [["createdAt", "DESC"]]
     });
 
 

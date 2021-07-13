@@ -69,8 +69,9 @@ class AuthService {
                         model: employers_1.employersModel,
                         required: false,
                         attributes: ['id', 'name', 'email', 'status']
-                    }
+                    },
                 ],
+                order: [["createdAt", "DESC"]]
             });
             if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
                 throw new Error(constants.MESSAGES.deactivate_account);

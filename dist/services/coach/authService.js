@@ -52,6 +52,7 @@ class AuthService {
                 where: {
                     email: params.username.toLowerCase()
                 },
+                order: [["createdAt", "DESC"]]
             });
             if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
                 throw new Error(constants.MESSAGES.deactivate_account);

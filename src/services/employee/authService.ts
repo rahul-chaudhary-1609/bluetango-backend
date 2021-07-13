@@ -30,16 +30,16 @@ export class AuthService {
             },
             include: [
                 {
-                    model: departmentModel, 
+                    model: departmentModel,
                     required: false,
                 },
                 {
-                    model: employersModel, 
+                    model: employersModel,
                     required: false,
-                    attributes: ['id', 'name', 'email','status']
-                }
+                    attributes: ['id', 'name', 'email', 'status']
+                },
             ],
-            
+            order: [["createdAt","DESC"]]
         });
         if (!_.isEmpty(existingUser) && existingUser.status == 0) {
             throw new Error(constants.MESSAGES.deactivate_account);

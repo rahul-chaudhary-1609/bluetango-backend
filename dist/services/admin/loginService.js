@@ -62,6 +62,7 @@ class LoginService {
             }
             qry.raw = true;
             qry.attributes = ['id', 'name', 'email', 'password', 'admin_role'];
+            qry.order = [["createdAt", "DESC"]];
             let existingUser = yield admin_1.adminModel.findOne(qry);
             if (!lodash_1.default.isEmpty(existingUser)) {
                 let comparePassword = yield appUtils.comparePassword(params.password, existingUser.password);
