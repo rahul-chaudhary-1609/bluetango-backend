@@ -15,7 +15,7 @@ exports.subscriptionManagementModel = connection_1.sequelize.define("subscriptio
         allowNull: true,
     },
     description: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
         allowNull: true,
     },
     charge: {

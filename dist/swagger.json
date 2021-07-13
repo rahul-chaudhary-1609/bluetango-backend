@@ -803,7 +803,10 @@
                         "in": "formData",
                         "description": "description",
                         "required": true,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "charge",

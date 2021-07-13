@@ -399,6 +399,9 @@ class EmployersService {
      */
     addSubscriptionPlan(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (params.description && !Array.isArray(params.description)) {
+                params.description = JSON.parse(`[${params.description}]`);
+            }
             return yield subscriptionManagement_1.subscriptionManagementModel.create(params);
         });
     }

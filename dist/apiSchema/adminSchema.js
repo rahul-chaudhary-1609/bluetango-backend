@@ -154,7 +154,7 @@ exports.addEditEmployers = joi_1.default.object({
 });
 exports.addSubscriptionPlan = joi_1.default.object({
     plan_name: joi_1.default.string().required(),
-    description: joi_1.default.string().required(),
+    description: joi_1.default.array().required(),
     charge: joi_1.default.string().required(),
     duration: joi_1.default.string().required()
 });

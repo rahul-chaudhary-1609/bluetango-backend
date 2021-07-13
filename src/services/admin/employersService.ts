@@ -396,6 +396,9 @@ export class EmployersService {
      */
     public async addSubscriptionPlan(params: any) {
 
+        if (params.description && !Array.isArray(params.description)) {
+            params.description = JSON.parse(`[${params.description}]`);
+        }
         return await subscriptionManagementModel.create(params);
 
     }

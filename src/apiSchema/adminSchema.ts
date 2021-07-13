@@ -136,7 +136,7 @@ export const addEditEmployers = Joi.object ({
 
 export const addSubscriptionPlan = Joi.object ({
   plan_name: Joi.string().required(),
-  description: Joi.string().required(),
+  description: Joi.array().required(),
   charge: Joi.string().required(),
   duration: Joi.string().required()
 })

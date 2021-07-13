@@ -14,7 +14,7 @@ export const subscriptionManagementModel: any = sequelize.define("subscription_m
         allowNull: true,
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
     },
     charge: {
