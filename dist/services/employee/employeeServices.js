@@ -68,7 +68,7 @@ class EmployeeServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        required: false,
+                        required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
                         where: { status: 1 },
                         include: [
@@ -85,10 +85,12 @@ class EmployeeServices {
                 order: [["createdAt", "DESC"]]
             }));
             for (let obj of teamMembersData.rows) {
-                obj.isEmployeeEnergyUpdatedInLast24Hour = true;
-                const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000);
-                if (timeDiff > 86400)
-                    obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+                if (obj.employee) {
+                    obj.isEmployeeEnergyUpdatedInLast24Hour = true;
+                    const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000);
+                    if (timeDiff > 86400)
+                        obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+                }
             }
             let date = new Date();
             date.setMonth(date.getMonth() - 3);

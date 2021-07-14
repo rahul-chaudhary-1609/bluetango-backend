@@ -39,7 +39,7 @@ export class EmployeeServices {
                 include: [
                     {
                         model: employeeModel, 
-                        required: false,
+                        required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
                         where:{status:1},
                         include: [
@@ -59,11 +59,14 @@ export class EmployeeServices {
         );
 
         for (let obj of teamMembersData.rows) {
-            obj.isEmployeeEnergyUpdatedInLast24Hour = true;
-
-            const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000)
-
-            if (timeDiff > 86400) obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+            if (obj.employee) {
+                obj.isEmployeeEnergyUpdatedInLast24Hour = true;
+            
+                const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000)
+                
+                if (timeDiff > 86400) obj.isEmployeeEnergyUpdatedInLast24Hour = false;
+            }
+            
 
         }
         
