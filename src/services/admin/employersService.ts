@@ -409,6 +409,10 @@ export class EmployersService {
      */
     public async updateSubscriptionPlan(params: any) {
 
+        if (params.description && !Array.isArray(params.description)) {
+            params.description = JSON.parse(`[${params.description}]`);
+        }
+
         const plans = await subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true })
 
         if (plans && plans[1][0]) {

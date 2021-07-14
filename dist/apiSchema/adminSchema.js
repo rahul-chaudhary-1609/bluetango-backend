@@ -161,7 +161,7 @@ exports.addSubscriptionPlan = joi_1.default.object({
 exports.updateSubscriptionPlan = joi_1.default.object({
     id: joi_1.default.string().required(),
     plan_name: joi_1.default.string().allow(),
-    description: joi_1.default.string().allow(),
+    description: joi_1.default.array().allow(),
     charge: joi_1.default.string().allow(),
     duration: joi_1.default.string().allow(),
     status: joi_1.default.number().allow()

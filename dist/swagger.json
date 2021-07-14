@@ -862,7 +862,10 @@
                         "in": "formData",
                         "description": "description",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "charge",

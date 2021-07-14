@@ -411,6 +411,9 @@ class EmployersService {
      */
     updateSubscriptionPlan(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (params.description && !Array.isArray(params.description)) {
+                params.description = JSON.parse(`[${params.description}]`);
+            }
             const plans = yield subscriptionManagement_1.subscriptionManagementModel.update(params, { where: { id: params.id }, returning: true });
             if (plans && plans[1][0]) {
                 return plans[1][0];

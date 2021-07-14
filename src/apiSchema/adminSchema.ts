@@ -144,7 +144,7 @@ export const addSubscriptionPlan = Joi.object ({
 export const updateSubscriptionPlan = Joi.object ({
   id: Joi.string().required(),
   plan_name: Joi.string().allow(),
-  description: Joi.string().allow(),
+  description: Joi.array().allow(),
   charge: Joi.string().allow(),
   duration: Joi.string().allow(),
   status: Joi.number().allow()
