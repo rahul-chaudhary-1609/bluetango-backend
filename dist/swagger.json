@@ -5287,6 +5287,34 @@
                 "responses": {}
             }
         },
+        "/employer/payment": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer payment",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "amount",
+                        "in": "formData",
+                        "description": "amount",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/login": {
             "post": {
                 "tags": [

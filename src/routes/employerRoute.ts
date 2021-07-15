@@ -89,12 +89,12 @@ employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValida
 
 
 /* payment */
-employerRoute.post("/payment", paymentController.payment);
+employerRoute.post("/payment", tokenValidator.validateEmployerToken,  paymentController.payment);
 
 /* payment success */
 employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
 
-/* to get unseen notification count */
+/* payment failed */
 employerRoute.get("/paymentFailed", paymentController.paymentFailed);
 
 /* payment failed */

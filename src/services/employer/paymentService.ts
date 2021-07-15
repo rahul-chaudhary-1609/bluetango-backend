@@ -47,7 +47,7 @@ export class Payment{
         });
     }
 
-    public async paymentSuccess(params,res) {
+    public async paymentSuccess(params) {
         console.log("params", params)
 
         let payerID = params.PayerID;

@@ -75,7 +75,7 @@ class Payment {
             });
         });
     }
-    paymentSuccess(params, res) {
+    paymentSuccess(params) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("params", params);
             let payerID = params.PayerID;

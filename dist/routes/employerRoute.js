@@ -80,10 +80,10 @@ employerRoute.get("/getNotifications", validators.trimmer, tokenValidator.valida
 /* to get unseen notification count */
 employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateEmployerToken, employerController.getUnseenNotificationCount);
 /* payment */
-employerRoute.post("/payment", paymentController.payment);
+employerRoute.post("/payment", tokenValidator.validateEmployerToken, paymentController.payment);
 /* payment success */
 employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
-/* to get unseen notification count */
+/* payment failed */
 employerRoute.get("/paymentFailed", paymentController.paymentFailed);
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
