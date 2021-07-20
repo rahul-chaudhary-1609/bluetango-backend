@@ -5562,6 +5562,45 @@
         "responses": {}
       }
     },
+    "/coach/uploadFile": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "upload media files for coach",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "folderName",
+            "in": "formData",
+            "description": "folderName",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "coach_profile_pic",
+              "other"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/getChatList": {
       "get": {
         "tags": [

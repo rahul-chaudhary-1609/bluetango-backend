@@ -3,6 +3,7 @@ import * as coachSchema from '../apiSchema/coachSchema';
 import * as joiSchemaValidation from '../middleware/joiSchemaValidation';
 import * as tokenValidator from "../middleware/tokenValidator";
 import * as validators from "../middleware/validators";
+import { upload } from "../middleware/multerParser"
 
 import { AuthController } from "../controllers/coach/authController";
 import { ChatController } from "../controllers/coach/chatController";
@@ -60,5 +61,8 @@ coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.vali
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
+
+/* upload media files */
+coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, upload.single('file'), authController.uploadFile);
 
 export = coachRoute;

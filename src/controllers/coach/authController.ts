@@ -1,6 +1,7 @@
 import { AuthService } from "../../services/coach/authService";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
+import { deleteFile } from "../../middleware/multerParser";
 
 
 //Instantiates a coach auth services  
@@ -106,6 +107,22 @@ export class AuthController {
             const responseFromService = await authService.clearEmployerDeviceToken(req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+   * update profile
+   * @param req :[]
+   * @param res 
+   */
+    public async uploadFile(req: any, res: any, next: any) {
+        try {
+            let folderName = "admin_video_files"
+            const responseFromService = await authService.uploadFile(req.file, folderName);
+            await deleteFile(req.file.filename);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)
         }

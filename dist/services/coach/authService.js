@@ -209,6 +209,14 @@ class AuthService {
             });
         });
     }
+    /*
+  * function to upload file
+  */
+    uploadFile(params, folderName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield helperFunction.uploadFile(params, folderName);
+        });
+    }
 }
 exports.AuthService = AuthService;
 //# sourceMappingURL=authService.js.map

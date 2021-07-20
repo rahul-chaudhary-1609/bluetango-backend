@@ -26,6 +26,7 @@ const coachSchema = __importStar(require("../apiSchema/coachSchema"));
 const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidation"));
 const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const validators = __importStar(require("../middleware/validators"));
+const multerParser_1 = require("../middleware/multerParser");
 const authController_1 = require("../controllers/coach/authController");
 const chatController_1 = require("../controllers/coach/chatController");
 const coachRoute = express_1.default.Router();
@@ -61,5 +62,7 @@ coachRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenValid
 coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+/* upload media files */
+coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, multerParser_1.upload.single('file'), authController.uploadFile);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map

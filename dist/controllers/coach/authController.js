@@ -32,6 +32,7 @@ exports.AuthController = void 0;
 const authService_1 = require("../../services/coach/authService");
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
+const multerParser_1 = require("../../middleware/multerParser");
 //Instantiates a coach auth services  
 const authService = new authService_1.AuthService();
 class AuthController {
@@ -142,6 +143,24 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield authService.clearEmployerDeviceToken(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+   * update profile
+   * @param req :[]
+   * @param res
+   */
+    uploadFile(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let folderName = "admin_video_files";
+                const responseFromService = yield authService.uploadFile(req.file, folderName);
+                yield multerParser_1.deleteFile(req.file.filename);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {
