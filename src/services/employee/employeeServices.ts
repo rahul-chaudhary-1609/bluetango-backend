@@ -506,7 +506,7 @@ export class EmployeeServices {
     public async getCoachList(user: any) {
 
         let coachList = await coachManagementModel.findAndCountAll({
-            attributes: ['id', 'name', 'description'],
+            attributes: ['id', 'name', 'description', ['image', 'profile_pic_url']],
             where: {
                 status: constants.STATUS.active,
             }
@@ -830,12 +830,28 @@ export class EmployeeServices {
     public async listVideo(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
-        return await libraryManagementModel.findAndCountAll({
+        let videos= await helperFunction.convertPromiseToObject( await libraryManagementModel.findAndCountAll({
             where: { status: 1 },
             limit: limit,
             offset: offset,
             order: [["id", "DESC"]]
         })
+        )
+
+        let thumbnailList = [
+            "https://bluexinga-dev.s3.amazonaws.com/other/1626778872396_%20employee-training-programs-that-work.jpg",
+            "https://bluexinga-dev.s3.amazonaws.com/other/1626778915570_%20corporate-training.jpg",
+            "https://bluexinga-dev.s3.amazonaws.com/other/1626778937655_%20images%20%283%29.jpg",
+            "https://bluexinga-dev.s3.amazonaws.com/other/1626778960089_%20the-value-of-employee-training.jpg",
+            "https://bluexinga-dev.s3.amazonaws.com/other/1626779024160_%205a0965f54a5b3.jpg",
+        ]
+        let index = 0;
+        videos.rows = videos.rows.map((video) => {
+            if (index > 4) index = 0;
+            return {...video, thumbnail_url:thumbnailList[index++]}
+        })
+
+        return videos
 
     }
 }

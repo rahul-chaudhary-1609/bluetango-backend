@@ -331,7 +331,7 @@ export class ChatServices {
                 attributes: ['id', 'name', ['image', 'profile_pic_url']],
                 where: {
                     id,
-                    status: constants.STATUS.active,
+                    //status: constants.STATUS.active,
                 }
             });
 
