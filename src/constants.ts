@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 export const MESSAGES = {
   phone_already_registered: "An account with given phone number already exists",
   email_already_registered: "An account with given email already exists",
@@ -272,5 +275,10 @@ export const SECRETS = {
     client_id:process.env.PAYPAL_CLIENT_ID,
     client_secret: process.env.PAYPAL_CLIENT_SECRET,
     environment: process.env.PAYPAL_ENVIRONMENT,
+  },
+  BRAINTREE_SECRETS: {
+    merchant_id: process.env.BRAINTREE_MERCHANT_ID,
+    public_key: process.env.BRAINTREE_PUBLIC_KEY,
+    private_key: process.env.BRAINTREE_PRIVATE_KEY,
   }
 }

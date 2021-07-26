@@ -47,4 +47,17 @@ export class PaymentController {
         }
     }
 
+    public async getBraintreeClientToken(req: any, res: any) {
+        try {
+            const responseFromService = await paymentService.getBraintreeClientToken(req.user);
+            if (responseFromService) {
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 }

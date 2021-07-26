@@ -19,12 +19,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.braintreeGateway = exports.paypal = void 0;
 const constants = __importStar(require("../constants"));
 const paypal = require("paypal-rest-sdk");
+exports.paypal = paypal;
+var braintree = require('braintree');
 paypal.configure({
     'mode': constants.SECRETS.PAYPAL_SECRETS.environment,
     'client_id': constants.SECRETS.PAYPAL_SECRETS.client_id,
     'client_secret': constants.SECRETS.PAYPAL_SECRETS.client_secret
 });
-exports.default = paypal;
+var braintreeGateway = new braintree.BraintreeGateway({
+    environment: braintree.Environment.Sandbox,
+    merchantId: constants.SECRETS.BRAINTREE_SECRETS.merchant_id,
+    publicKey: constants.SECRETS.BRAINTREE_SECRETS.public_key,
+    privateKey: constants.SECRETS.BRAINTREE_SECRETS.private_key
+});
+exports.braintreeGateway = braintreeGateway;
 //# sourceMappingURL=payment.js.map

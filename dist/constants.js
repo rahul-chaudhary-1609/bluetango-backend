@@ -1,6 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 exports.MESSAGES = {
     phone_already_registered: "An account with given phone number already exists",
     email_already_registered: "An account with given email already exists",
@@ -258,6 +279,11 @@ exports.SECRETS = {
         client_id: process.env.PAYPAL_CLIENT_ID,
         client_secret: process.env.PAYPAL_CLIENT_SECRET,
         environment: process.env.PAYPAL_ENVIRONMENT,
+    },
+    BRAINTREE_SECRETS: {
+        merchant_id: process.env.BRAINTREE_MERCHANT_ID,
+        public_key: process.env.BRAINTREE_PUBLIC_KEY,
+        private_key: process.env.BRAINTREE_PRIVATE_KEY,
     }
 };
 //# sourceMappingURL=constants.js.map

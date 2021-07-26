@@ -85,6 +85,8 @@ employerRoute.post("/payment", tokenValidator.validateEmployerToken, paymentCont
 employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
 /* payment failed */
 employerRoute.get("/paymentFailed", paymentController.paymentFailed);
+/* payment */
+employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerToken, paymentController.getBraintreeClientToken);
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
 module.exports = employerRoute;

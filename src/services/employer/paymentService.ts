@@ -1,5 +1,5 @@
 
-import paypal from '../../utils/payment';
+import { paypal, braintreeGateway} from '../../utils/payment';
 
 import * as appUtils from '../../utils/appUtils';
 import * as constants from "../../constants";
@@ -81,6 +81,12 @@ export class Payment{
 
     public async paymentFailed(params) {
         return constants.MESSAGES.payment_faliled;
+    }
+
+    public async getBraintreeClientToken(user) {
+        let clientToken = await braintreeGateway.clientToken.generate();
+
+        return clientToken
     }
 
 }

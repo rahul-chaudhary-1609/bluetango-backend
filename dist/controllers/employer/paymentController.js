@@ -78,6 +78,22 @@ class PaymentController {
             }
         });
     }
+    getBraintreeClientToken(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield paymentService.getBraintreeClientToken(req.user);
+                if (responseFromService) {
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.PaymentController = PaymentController;
 //# sourceMappingURL=paymentController.js.map

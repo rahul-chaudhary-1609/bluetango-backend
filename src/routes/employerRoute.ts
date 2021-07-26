@@ -97,6 +97,9 @@ employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
 /* payment failed */
 employerRoute.get("/paymentFailed", paymentController.paymentFailed);
 
+/* payment */
+employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerToken, paymentController.getBraintreeClientToken);
+
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, upload.single('file'), authController.uploadFile);
 

@@ -27,12 +27,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Payment = void 0;
-const payment_1 = __importDefault(require("../../utils/payment"));
+const payment_1 = require("../../utils/payment");
 const appUtils = __importStar(require("../../utils/appUtils"));
 const constants = __importStar(require("../../constants"));
 let amount = 5.00;
@@ -60,7 +57,7 @@ class Payment {
                         "description": "This is the payment description."
                     }]
             };
-            payment_1.default.payment.create(create_payment_json, function (error, payment) {
+            payment_1.paypal.payment.create(create_payment_json, function (error, payment) {
                 if (error) {
                     console.log("Payment error", error);
                     console.log("Payment Details", error.response.details);
@@ -92,7 +89,7 @@ class Payment {
                 ]
             };
             let pay = null;
-            payment_1.default.payment.execute(paymentID, payment_execute_json, (error, payment) => {
+            payment_1.paypal.payment.execute(paymentID, payment_execute_json, (error, payment) => {
                 if (error) {
                     console.log("Error", error);
                 }
@@ -106,6 +103,12 @@ class Payment {
     paymentFailed(params) {
         return __awaiter(this, void 0, void 0, function* () {
             return constants.MESSAGES.payment_faliled;
+        });
+    }
+    getBraintreeClientToken(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let clientToken = yield payment_1.braintreeGateway.clientToken.generate();
+            return clientToken;
         });
     }
 }
