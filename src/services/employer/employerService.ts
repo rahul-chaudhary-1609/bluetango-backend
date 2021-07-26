@@ -19,14 +19,22 @@ export class EmployerService {
     @param {} params pass all parameters from request
     */
     public async getSubscriptionPlanList(user:any) {
-        let subscriptionList = await subscriptionManagementModel.findAndCountAll({
+        let subscriptionList = await helperFunction.convertPromiseToObject( await subscriptionManagementModel.findAndCountAll({
             attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
             where: {
                 status: constants.STATUS.active,
             }
-        });
+        }));
 
-        return await helperFunction.convertPromiseToObject(subscriptionList);
+        for (let plan of subscriptionList.rows) {
+            let expiry_date = new Date();
+            console.log("expiry_date", expiry_date)
+            expiry_date.setDate(expiry_date.getDate() + parseInt(plan.duration));
+            console.log("expiry_date", expiry_date)
+            plan.expiry_date = expiry_date;
+        }
+
+        return subscriptionList;
     }
 
     /**
@@ -153,26 +161,60 @@ export class EmployerService {
     */
     public async mySubscription( user: any) {
 
-        paymentManagementModel.hasOne(subscriptionManagementModel,{foreignKey:"id",sourceKey:"plan_id",targetKey:"id"})
-
-        let subscription= await helperFunction.convertPromiseToObject(
-            await paymentManagementModel.findOne({
-                where: {
-                    employer_id: parseInt(user.uid),
-                    status:constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
-                },
-                include: [
-                    {
-                        model: subscriptionManagementModel,
-                        required:true                        
-                    }
-                ]
-            })
+        paymentManagementModel.hasOne(subscriptionManagementModel, { foreignKey: "id", sourceKey: "plan_id", targetKey: "id" })
+        
+        let employer = await helperFunction.convertPromiseToObject( await employersModel.findOne({
+            where: {
+                id: parseInt(user.uid),
+                status: { [Op.ne]: 2 }
+            }
+        })
         )
 
-        if (!subscription) throw new Error(constants.MESSAGES.employer_no_plan);
+        let trialExpiryDate = new Date(employer.first_time_login_datetime);
+        trialExpiryDate.setDate(trialExpiryDate.getDate() + 14)
 
-        return subscription
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) {
+            return {
+                subscription_type: employer.subscription_type,
+                message: constants.MESSAGES.employer_have_no_plan,
+                subscription: null,
+                expiry_date:null,
+            }
+        } else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
+            return {
+                subscription_type: employer.subscription_type,
+                message: constants.MESSAGES.employer_have_free_plan,
+                subscription: null,
+                expiry_date: trialExpiryDate,
+            }
+        } else {
+
+
+            let subscription = await helperFunction.convertPromiseToObject(
+                await paymentManagementModel.findOne({
+                    where: {
+                        employer_id: parseInt(user.uid),
+                        status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                    },
+                    include: [
+                        {
+                            model: subscriptionManagementModel,
+                            required: true
+                        }
+                    ]
+                })
+            )
+
+            //if (!subscription) throw new Error(constants.MESSAGES.employer_have_no_plan);
+
+            return {
+                subscription_type: employer.subscription_type,
+                message: constants.MESSAGES.employer_have_paid_plan,
+                subscription: subscription,
+                expiry_date: subscription?.expiry_date,
+            }
+        }
     }
 
     /*

@@ -48,13 +48,20 @@ class EmployerService {
     */
     getSubscriptionPlanList(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let subscriptionList = yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
+            let subscriptionList = yield helperFunction.convertPromiseToObject(yield subscriptionManagement_1.subscriptionManagementModel.findAndCountAll({
                 attributes: ['id', 'plan_name', 'description', 'charge', 'duration'],
                 where: {
                     status: constants.STATUS.active,
                 }
-            });
-            return yield helperFunction.convertPromiseToObject(subscriptionList);
+            }));
+            for (let plan of subscriptionList.rows) {
+                let expiry_date = new Date();
+                console.log("expiry_date", expiry_date);
+                expiry_date.setDate(expiry_date.getDate() + parseInt(plan.duration));
+                console.log("expiry_date", expiry_date);
+                plan.expiry_date = expiry_date;
+            }
+            return subscriptionList;
         });
     }
     /**
@@ -155,21 +162,51 @@ class EmployerService {
     mySubscription(user) {
         return __awaiter(this, void 0, void 0, function* () {
             paymentManagement_1.paymentManagementModel.hasOne(subscriptionManagement_1.subscriptionManagementModel, { foreignKey: "id", sourceKey: "plan_id", targetKey: "id" });
-            let subscription = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
+            let employer = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
                 where: {
-                    employer_id: parseInt(user.uid),
-                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
-                },
-                include: [
-                    {
-                        model: subscriptionManagement_1.subscriptionManagementModel,
-                        required: true
-                    }
-                ]
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
             }));
-            if (!subscription)
-                throw new Error(constants.MESSAGES.employer_no_plan);
-            return subscription;
+            let trialExpiryDate = new Date(employer.first_time_login_datetime);
+            trialExpiryDate.setDate(trialExpiryDate.getDate() + 14);
+            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) {
+                return {
+                    subscription_type: employer.subscription_type,
+                    message: constants.MESSAGES.employer_have_no_plan,
+                    subscription: null,
+                    expiry_date: null,
+                };
+            }
+            else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
+                return {
+                    subscription_type: employer.subscription_type,
+                    message: constants.MESSAGES.employer_have_free_plan,
+                    subscription: null,
+                    expiry_date: trialExpiryDate,
+                };
+            }
+            else {
+                let subscription = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
+                    where: {
+                        employer_id: parseInt(user.uid),
+                        status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                    },
+                    include: [
+                        {
+                            model: subscriptionManagement_1.subscriptionManagementModel,
+                            required: true
+                        }
+                    ]
+                }));
+                //if (!subscription) throw new Error(constants.MESSAGES.employer_have_no_plan);
+                return {
+                    subscription_type: employer.subscription_type,
+                    message: constants.MESSAGES.employer_have_paid_plan,
+                    subscription: subscription,
+                    expiry_date: subscription === null || subscription === void 0 ? void 0 : subscription.expiry_date,
+                };
+            }
         });
     }
     /*

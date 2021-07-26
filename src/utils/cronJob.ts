@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { update } from "lodash";
 import * as constants from "../constants";
 import * as helperFunction from "../utils/helperFunction";
 import { employersModel } from "../models";
@@ -57,6 +57,14 @@ export const scheduleFreeTrialExpirationNotificationJob = async()=> {
                     },
                 }
                 await helperFunction.sendFcmNotification([employer.device_token], notificationData);
+            } else if(Math.floor(timeRemaining / 3600) < 0) {
+                await employersModel.update({
+                    subscription_type:constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan
+                }, {
+                    where: {
+                        id:parseInt(employer.id),
+                    }
+                })
             }
         }
     });

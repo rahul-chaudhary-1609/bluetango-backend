@@ -81,6 +81,15 @@ exports.scheduleFreeTrialExpirationNotificationJob = () => __awaiter(void 0, voi
                 };
                 yield helperFunction.sendFcmNotification([employer.device_token], notificationData);
             }
+            else if (Math.floor(timeRemaining / 3600) < 0) {
+                yield models_1.employersModel.update({
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan
+                }, {
+                    where: {
+                        id: parseInt(employer.id),
+                    }
+                });
+            }
         }
     }));
     console.log("Free trial expiration notification cron job started!");
