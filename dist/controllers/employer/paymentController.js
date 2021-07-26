@@ -67,7 +67,7 @@ class PaymentController {
             try {
                 const responseFromService = yield paymentService.paymentFailed(req.query);
                 if (responseFromService) {
-                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
@@ -83,7 +83,7 @@ class PaymentController {
             try {
                 const responseFromService = yield paymentService.getBraintreeClientToken(req.user);
                 if (responseFromService) {
-                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                    return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
                 }
                 else {
                     appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);

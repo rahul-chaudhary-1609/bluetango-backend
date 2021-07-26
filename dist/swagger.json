@@ -5331,13 +5331,6 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "amount",
-                        "in": "formData",
-                        "description": "amount",
-                        "required": false,
-                        "type": "integer"
                     }
                 ],
                 "responses": {}
