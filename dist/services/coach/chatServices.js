@@ -220,7 +220,7 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.message,
                     data: {
                         type: constants.NOTIFICATION_TYPE.message,
@@ -251,7 +251,7 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.audio_chat,
                     data: {
                         type: constants.NOTIFICATION_TYPE.audio_chat,
@@ -286,7 +286,7 @@ class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.video_chat,
                     data: {
                         type: constants.NOTIFICATION_TYPE.video_chat,
@@ -346,7 +346,7 @@ class ChatServices {
                         type_id: params.chat_room_id,
                         sender_id: user.uid,
                         reciever_id: recieverId,
-                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.audio_chat_missed,
                         data: {
                             type: constants.NOTIFICATION_TYPE.audio_chat_missed,
@@ -381,7 +381,7 @@ class ChatServices {
                         type_id: params.chat_room_id,
                         sender_id: user.uid,
                         reciever_id: recieverId,
-                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                         type: constants.NOTIFICATION_TYPE.video_chat_missed,
                         data: {
                             type: constants.NOTIFICATION_TYPE.video_chat_missed,
@@ -484,6 +484,189 @@ class ChatServices {
                 }
             }
             return notificationData;
+        });
+    }
+    /*
+* function to get notification
+*/
+    getNotifications(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notifications = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
+                where: {
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    type: {
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ]
+                    },
+                    status: [0, 1]
+                },
+                order: [["createdAt", "DESC"]]
+            }));
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    status: 1,
+                    type: {
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ]
+                    },
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                }
+            });
+            return notifications;
+        });
+    }
+    /*
+* function to get unseen notification count
+*/
+    getUnseenNotificationCount(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return {
+                all: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        type: {
+                            [Op.notIn]: [
+                                constants.NOTIFICATION_TYPE.message,
+                            ]
+                        },
+                        status: 1,
+                    }
+                }),
+                // achievement: await notificationModel.count({
+                //     where: {
+                //         reciever_id: user.uid,
+                //         reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.achievement_post,
+                //             constants.NOTIFICATION_TYPE.achievement_like,
+                //             constants.NOTIFICATION_TYPE.achievement_highfive,
+                //             constants.NOTIFICATION_TYPE.achievement_comment,
+                //         ],
+                //         status: 1,
+                //     }
+                // }),
+                // achievement_post_only: await notificationModel.count({
+                //     where: {
+                //         reciever_id: user.uid,
+                //         reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.achievement_post,
+                //         ],
+                //         status: 1,
+                //     }
+                // }),
+                chat: yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        type: [
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.audio_chat,
+                            constants.NOTIFICATION_TYPE.video_chat,
+                            constants.NOTIFICATION_TYPE.audio_chat_missed,
+                            constants.NOTIFICATION_TYPE.video_chat_missed,
+                            constants.NOTIFICATION_TYPE.chat_disconnect,
+                        ],
+                        status: 1,
+                    }
+                }),
+                chat_message_only: (yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
+                    where: {
+                        reciever_id: user.uid,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        type: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ],
+                        status: 1,
+                    },
+                    group: ['type_id']
+                }))).length,
+            };
+        });
+    }
+    /*
+* function to mark as viewed notification
+*/
+    markNotificationsAsViewed(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let whereCondition = null;
+            if (params && params.type) {
+                // if (params.type == "achievement") {
+                //     whereCondition = {
+                //         ...whereCondition,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.achievement_post,
+                //             constants.NOTIFICATION_TYPE.achievement_like,
+                //             constants.NOTIFICATION_TYPE.achievement_highfive,
+                //             constants.NOTIFICATION_TYPE.achievement_comment,
+                //         ]
+                //     }
+                // }
+                // else if (params.type == "achievement_post_only") {
+                //     whereCondition = {
+                //         ...whereCondition,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.achievement_post,
+                //         ]
+                //     }
+                // }
+                if (params.type == "chat") {
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.audio_chat,
+                            constants.NOTIFICATION_TYPE.video_chat,
+                            constants.NOTIFICATION_TYPE.audio_chat_missed,
+                            constants.NOTIFICATION_TYPE.video_chat_missed,
+                            constants.NOTIFICATION_TYPE.chat_disconnect,
+                        ] });
+                }
+                else if (params.type == "chat_message_only") {
+                    if (!params.chat_room_id)
+                        throw new Error(constants.MESSAGES.chat_room_required);
+                    whereCondition = Object.assign(Object.assign({}, whereCondition), { type: [
+                            constants.NOTIFICATION_TYPE.message,
+                        ], type_id: parseInt(params.chat_room_id) });
+                }
+                // else if (params.type == "goal") {
+                //     whereCondition = {
+                //         ...whereCondition,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.assign_new_goal,
+                //             constants.NOTIFICATION_TYPE.goal_complete_request,
+                //             constants.NOTIFICATION_TYPE.goal_accept,
+                //             constants.NOTIFICATION_TYPE.goal_reject,
+                //         ]
+                //     }
+                // }
+                // else if (params.type == "rating") {
+                //     whereCondition = {
+                //         ...whereCondition,
+                //         type: [
+                //             constants.NOTIFICATION_TYPE.rating
+                //         ]
+                //     }
+                // }
+            }
+            else {
+                whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
+                        [Op.notIn]: [
+                            constants.NOTIFICATION_TYPE.message
+                        ]
+                    } });
+            }
+            let notification = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid, reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach })
+            }));
+            return notification;
         });
     }
 }

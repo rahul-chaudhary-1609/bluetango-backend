@@ -148,6 +148,54 @@ class ChatController {
             }
         });
     }
+    /**
+* to get notifiaction
+* @param req :[]
+* @param res
+*/
+    getNotifications(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getNotifications(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+*  to get unseen notification count
+* @param req :[]
+* @param res
+*/
+    getUnseenNotificationCount(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getUnseenNotificationCount(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+ * to mark as viewed notification
+ * @param req :[]
+ * @param res
+ */
+    markNotificationsAsViewed(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.markNotificationsAsViewed(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.ChatController = ChatController;
 //# sourceMappingURL=chatController.js.map

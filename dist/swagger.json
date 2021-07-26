@@ -5595,6 +5595,87 @@
                 "responses": {}
             }
         },
+        "/coach/getNotifications": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "api to get notifiactions",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/getUnseenNotificationCount": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "api to get Unseen Notification Count",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/markNotificationsAsViewed": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "api to get notifiactions",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "in": "formData",
+                        "description": "type",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "chat",
+                            "chat_message_only"
+                        ]
+                    },
+                    {
+                        "name": "chat_room_id",
+                        "in": "formData",
+                        "description": "chat room id (required only in case of chat_message_only type)",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/getChatList": {
             "get": {
                 "tags": [

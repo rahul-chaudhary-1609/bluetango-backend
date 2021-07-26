@@ -104,6 +104,11 @@ export const sendChatDisconnectNotification = Joi.object({
     token: Joi.string(),
 })
 
+export const markNotificationsAsViewed = Joi.object({
+    type: Joi.string().optional(),
+    chat_room_id: Joi.number().optional(),
+})
+
 
 export const updateEmployerDeviceToken = Joi.object({
     device_token: Joi.string().required()

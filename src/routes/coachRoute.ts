@@ -61,6 +61,15 @@ coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.vali
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
+/* contact us for employee */
+coachRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateCoachToken, chatController.getNotifications);
+
+/* to get unseen notification count */
+coachRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateCoachToken, chatController.getUnseenNotificationCount);
+
+/* contact us for employee */
+coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.markNotificationsAsViewed), chatController.markNotificationsAsViewed);
+
 
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, upload.single('file'), authController.uploadFile);

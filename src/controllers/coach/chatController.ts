@@ -108,6 +108,52 @@ export class ChatController {
             next(e)
         }
     }
+
+    /**
+* to get notifiaction
+* @param req :[]
+* @param res 
+*/
+    public async getNotifications(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getNotifications(req.params, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+*  to get unseen notification count
+* @param req :[]
+* @param res 
+*/
+    public async getUnseenNotificationCount(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.getUnseenNotificationCount(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+ * to mark as viewed notification 
+ * @param req :[]
+ * @param res 
+ */
+    public async markNotificationsAsViewed(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.markNotificationsAsViewed(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
     
 }

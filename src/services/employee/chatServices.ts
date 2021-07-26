@@ -717,7 +717,7 @@ export class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.message,
                     data: {
                         type: constants.NOTIFICATION_TYPE.message,
@@ -750,7 +750,7 @@ export class ChatServices {
                 type_id: params.chat_room_id,
                 sender_id: user.uid,
                 reciever_id: recieverId,
-                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 type: constants.NOTIFICATION_TYPE.audio_chat,
                 data: {
                     type: constants.NOTIFICATION_TYPE.audio_chat,
@@ -786,7 +786,7 @@ export class ChatServices {
                 type_id: params.chat_room_id,
                 sender_id: user.uid,
                 reciever_id: recieverId,
-                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 type: constants.NOTIFICATION_TYPE.video_chat,
                 data: {
                     type: constants.NOTIFICATION_TYPE.video_chat,
@@ -865,7 +865,7 @@ export class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.audio_chat_missed,
                     data: {
                         type: constants.NOTIFICATION_TYPE.audio_chat_missed,
@@ -902,7 +902,7 @@ export class ChatServices {
                     type_id: params.chat_room_id,
                     sender_id: user.uid,
                     reciever_id: recieverId,
-                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
                     type: constants.NOTIFICATION_TYPE.video_chat_missed,
                     data: {
                         type: constants.NOTIFICATION_TYPE.video_chat_missed,

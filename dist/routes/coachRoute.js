@@ -62,6 +62,12 @@ coachRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenValid
 coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+/* contact us for employee */
+coachRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateCoachToken, chatController.getNotifications);
+/* to get unseen notification count */
+coachRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator.validateCoachToken, chatController.getUnseenNotificationCount);
+/* contact us for employee */
+coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.markNotificationsAsViewed), chatController.markNotificationsAsViewed);
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, multerParser_1.upload.single('file'), authController.uploadFile);
 module.exports = coachRoute;
