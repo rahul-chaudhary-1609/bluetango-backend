@@ -75,9 +75,9 @@ class AuthService {
                         updateObj = Object.assign(Object.assign({}, updateObj), { first_time_login_datetime: new Date() });
                     }
                     if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
-                        let firstLoginDate = new Date(existingUser.first_time_login_datetime);
-                        let endTime = new Date((new Date(existingUser.first_time_login_datetime)).setDate(firstLoginDate.getDate() + 14));
-                        if ((new Date()) > endTime) {
+                        let expiryDate = new Date(existingUser.first_time_login_datetime);
+                        expiryDate.setDate(expiryDate.getDate() + 14);
+                        if ((new Date()) > expiryDate) {
                             updateObj = Object.assign(Object.assign({}, updateObj), { subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan });
                         }
                     }
@@ -89,7 +89,7 @@ class AuthService {
                             }
                         });
                         if (plan) {
-                            if ((new Date()) < (new Date(plan.expiry_date))) {
+                            if ((new Date()) > (new Date(plan.expiry_date))) {
                                 updateObj = Object.assign(Object.assign({}, updateObj), { subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan });
                                 plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.exhausted;
                                 plan.save();

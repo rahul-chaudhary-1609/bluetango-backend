@@ -20,6 +20,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@paypal/checkout-server-sdk": "^1.0.2",
     "@sendgrid/mail": "^7.1.1",
     "@types/cors": "^2.8.9",
@@ -35,6 +36,7 @@
     "express": "^4.17.1",
     "fcm-node": "^1.5.2",
     "firebase-admin": "^9.9.0",
+    "fluent-ffmpeg": "^2.1.2",
     "fs": "0.0.1-security",
     "joi": "^17.2.1",
     "json2csv": "^5.0.6",
