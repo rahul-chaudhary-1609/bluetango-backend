@@ -15,7 +15,12 @@ import { now } from "sequelize/types/lib/utils";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { articleManagementModel } from "../../models/articleManagement";
-import { advisorManagementModel } from "../../models/advisorManagement"
+import { advisorManagementModel } from "../../models/advisorManagement";
+import { deleteFile } from "../../middleware/multerParser";
+import * as path from 'path';
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -97,6 +102,7 @@ export class EmployersService {
                 }
                 const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
+                params.first_time_login_datetime = new Date();
                 const employer = await employersModel.create(params);
                 const mailParams = <any>{};
                 mailParams.to = params.email;
@@ -1035,11 +1041,57 @@ export class EmployersService {
         return await helperFunction.uploadFile(params, folderName);
     }
 
+    public async createThumbnail(params: any) {
+        return new Promise((resolve, reject) => {
+            ffmpeg({ source: params.video })
+                .on('filenames', (filenames) => {
+                    console.log("Created file names", filenames)
+                })
+                .on('end', () => {
+                    console.log("File Created")
+                    resolve(1)
+                })
+                .on('error', (err) => {
+                    console.log("Error", err)
+                    reject(err)
+                })
+                .takeScreenshots(
+                    {
+                        filename: params.filename,
+                        timemarks: [5],
+                        folder: params.folderUploadPath,
+                    }, '.'
+                );
+        })
+    }
+
+
     /**
   * 
   * @param {} params pass all parameters from request
   */
     public async addVideo(params: any) {
+
+        let folderUploadPath = `src/upload`;
+        let filename = `${params.title.split(" ")[0]}.png`
+        //'https://bluexinga-dev.s3.amazonaws.com/other/1627306681317_+Pdfs+to+AWS+S3+Bucket+with+NodeJs%2C+AWS-SDK%2C+and+express-fileupload._360P.mp4'
+       
+
+        await this.createThumbnail({ ...params, filename, folderUploadPath })
+        
+        let fileParams = {
+            path: path.join(__dirname, `../../../${folderUploadPath}/${filename}`),
+            originalname: filename,
+            mimetype: `image/png`
+        }
+
+        console.log("fileParams", fileParams)
+
+        params.thumbnail_url = await helperFunction.uploadFile(fileParams, "thumbnails");
+        
+        await deleteFile(filename);
+
+        console.log("params",params)
 
         return await libraryManagementModel.create(params)
 

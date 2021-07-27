@@ -26,6 +26,10 @@ exports.libraryManagementModel = connection_1.sequelize.define("library_manageme
         type: sequelize_1.DataTypes.TEXT,
         allowNull: false
     },
+    thumbnail_url: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

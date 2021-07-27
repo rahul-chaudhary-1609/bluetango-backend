@@ -46,6 +46,11 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const articleManagement_1 = require("../../models/articleManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
+const multerParser_1 = require("../../middleware/multerParser");
+const path = __importStar(require("path"));
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployersService {
@@ -129,6 +134,7 @@ class EmployersService {
                     }
                     const password = params.password;
                     params.password = yield appUtils.bcryptPassword(params.password);
+                    params.first_time_login_datetime = new Date();
                     const employer = yield models_1.employersModel.create(params);
                     const mailParams = {};
                     mailParams.to = params.email;
@@ -1016,12 +1022,48 @@ class EmployersService {
             return yield helperFunction.uploadFile(params, folderName);
         });
     }
+    createThumbnail(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                ffmpeg({ source: params.video })
+                    .on('filenames', (filenames) => {
+                    console.log("Created file names", filenames);
+                })
+                    .on('end', () => {
+                    console.log("File Created");
+                    resolve(1);
+                })
+                    .on('error', (err) => {
+                    console.log("Error", err);
+                    reject(err);
+                })
+                    .takeScreenshots({
+                    filename: params.filename,
+                    timemarks: [5],
+                    folder: params.folderUploadPath,
+                }, '.');
+            });
+        });
+    }
     /**
   *
   * @param {} params pass all parameters from request
   */
     addVideo(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            let folderUploadPath = `src/upload`;
+            let filename = `${params.title.split(" ")[0]}.png`;
+            //'https://bluexinga-dev.s3.amazonaws.com/other/1627306681317_+Pdfs+to+AWS+S3+Bucket+with+NodeJs%2C+AWS-SDK%2C+and+express-fileupload._360P.mp4'
+            yield this.createThumbnail(Object.assign(Object.assign({}, params), { filename, folderUploadPath }));
+            let fileParams = {
+                path: path.join(__dirname, `../../../${folderUploadPath}/${filename}`),
+                originalname: filename,
+                mimetype: `image/png`
+            };
+            console.log("fileParams", fileParams);
+            params.thumbnail_url = yield helperFunction.uploadFile(fileParams, "thumbnails");
+            yield multerParser_1.deleteFile(filename);
+            console.log("params", params);
             return yield libraryManagement_1.libraryManagementModel.create(params);
         });
     }

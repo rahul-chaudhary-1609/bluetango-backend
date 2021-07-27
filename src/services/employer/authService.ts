@@ -42,10 +42,10 @@ export class AuthService {
             if (existingUser.first_time_login == 1) {
                 existingUser.isFirstTimeLogin = true;
 
-                updateObj = {
-                    ...updateObj,
-                    first_time_login_datetime: new Date(),
-                }
+                // updateObj = {
+                //     ...updateObj,
+                //     first_time_login_datetime: new Date(),
+                // }
                 
             }
             if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {

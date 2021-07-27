@@ -25,6 +25,10 @@ export const libraryManagementModel: any = sequelize.define("library_management"
         type: DataTypes.TEXT,
         allowNull: false
     },
+    thumbnail_url: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,

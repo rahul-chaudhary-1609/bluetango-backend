@@ -50,10 +50,6 @@ const notification_1 = require("../../models/notification");
 const feedback_1 = require("../../models/feedback");
 const authService_1 = require("./authService");
 const libraryManagement_1 = require("../../models/libraryManagement");
-//import { deleteFile } from "../../middleware/multerParser"
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const authService = new authService_1.AuthService();
@@ -759,22 +755,6 @@ class EmployeeServices {
                 offset: offset,
                 order: [["id", "DESC"]]
             }));
-            // let folderUploadPath = `../../upload`;
-            // ffmpeg({ source: 'https://bluexinga-dev.s3.amazonaws.com/other/1627306681317_+Pdfs+to+AWS+S3+Bucket+with+NodeJs%2C+AWS-SDK%2C+and+express-fileupload._360P.mp4' })
-            //     .on('filenames', (filenames) => {
-            //         console.log("Created file names", filenames)
-            //     })
-            //     .on('error', (err) => {
-            //         console.log("Error", err)
-            //     })
-            //     .screenshots(
-            //     {
-            //         filename: "example.jpg",
-            //         timestamps: ['50%'],
-            //         folder: folderUploadPath
-            //     }, '.'
-            // );
-            // console.log("ffmpegPath",ffmpegPath)
             let thumbnailList = [
                 "https://bluexinga-dev.s3.amazonaws.com/other/1626778872396_%20employee-training-programs-that-work.jpg",
                 "https://bluexinga-dev.s3.amazonaws.com/other/1626778915570_%20corporate-training.jpg",
@@ -786,7 +766,7 @@ class EmployeeServices {
             videos.rows = videos.rows.map((video) => {
                 if (index > 4)
                     index = 0;
-                return Object.assign(Object.assign({}, video), { thumbnail_url: thumbnailList[index++] });
+                return Object.assign(Object.assign({}, video), { thumbnail_url: video.thumbnail_url || thumbnailList[index++] });
             });
             return videos;
         });
