@@ -54,11 +54,18 @@ class EmployerService {
                     status: constants.STATUS.active,
                 }
             }));
+            let subscription = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.findOne({
+                where: {
+                    employer_id: parseInt(user.uid),
+                    status: constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.active,
+                }
+            }));
+            if (subscription) {
+                subscriptionList.rows = subscriptionList.rows.filter((row) => row.id != subscription.plan_id);
+            }
             for (let plan of subscriptionList.rows) {
                 let expiry_date = new Date();
-                console.log("expiry_date", expiry_date);
                 expiry_date.setDate(expiry_date.getDate() + parseInt(plan.duration));
-                console.log("expiry_date", expiry_date);
                 plan.expiry_date = expiry_date;
             }
             return subscriptionList;
