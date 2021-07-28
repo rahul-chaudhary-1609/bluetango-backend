@@ -2,6 +2,7 @@ import * as constants from '../constants'
 import jwt from 'jsonwebtoken';
 import { EmployersService } from '../services/admin/employersService'
 import { adminModel, employersModel, employeeModel, coachManagementModel } from '../models';
+import * as helperFunction from "../utils/helperFunction";
 
 //Instantiates a Home services  
 const employersService = new EmployersService();
@@ -117,10 +118,6 @@ export const validateEmployerToken = async (req, res, next) => {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
             return res.status(response.status).send(response);
-        } else if (employer.subscription_type== constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status==constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
-            response.status = 402;
-            response.message = constants.MESSAGES.employer_have_no_plan
-            return res.status(response.status).send(response);
         }
 
         let payload = {
@@ -169,4 +166,26 @@ export const validateCoachToken = async (req, res, next) => {
         response.status = 401;
     }
     return res.status(response.status).send(response);
+}
+
+export const checkEmployerHaveActivePlan = async (req, res, next) => {
+    let response = { ...constants.defaultServerResponse };
+    try {
+        let employer = await helperFunction.convertPromiseToObject(
+            await employersModel.findByPk(parseInt(req.user.uid))
+        );
+
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            response.status = 402;
+            response.message = constants.MESSAGES.employer_have_no_plan
+            return res.status(response.status).send(response);
+        }else {
+            return next();
+        }
+    } catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+    
 }

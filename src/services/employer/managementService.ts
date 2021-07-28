@@ -24,8 +24,8 @@ export class EmployeeManagement {
             await employersModel.findByPk(parseInt(user.uid))
         );
 
-        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free || employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.paid) return false
-        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) return true
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) return false
+        else return true
     }
 
     /**
@@ -34,7 +34,7 @@ export class EmployeeManagement {
     */
     public async addEditEmployee(params: any, user: any) {
 
-        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
         params.email = (params.email).toLowerCase();
 
         if(params.current_department_id) {
@@ -272,7 +272,7 @@ export class EmployeeManagement {
     */
     public async getEmployeeList(params: any, user: any) {
 
-        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
@@ -355,7 +355,7 @@ export class EmployeeManagement {
 
     public async viewEmployeeDetails(params: any, user: any) {
         
-        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
@@ -500,7 +500,7 @@ export class EmployeeManagement {
 
     public async deleteEmployee(params: any, user: any) {
         
-        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
         
         let employee = await employeeModel.findOne({
             where:{
@@ -526,7 +526,7 @@ export class EmployeeManagement {
 
     public async updateManager(params: any, user: any) {
 
-        if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON")) throw new Error(constants.MESSAGES.employer_no_plan);
+        
 
         let managerTeam = await helperFunction.convertPromiseToObject(
             await managerTeamMemberModel.update(

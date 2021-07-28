@@ -53,9 +53,9 @@ class EmployeeManagement {
     haveActivePlan(user) {
         return __awaiter(this, void 0, void 0, function* () {
             let employer = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findByPk(parseInt(user.uid)));
-            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free || employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.paid)
+            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over)
                 return false;
-            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan)
+            else
                 return true;
         });
     }
@@ -65,8 +65,6 @@ class EmployeeManagement {
     */
     addEditEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
-                throw new Error(constants.MESSAGES.employer_no_plan);
             params.email = (params.email).toLowerCase();
             if (params.current_department_id) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: params.current_department_id } });
@@ -277,8 +275,6 @@ class EmployeeManagement {
     */
     getEmployeeList(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
-                throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
             if (params.departmentId) {
@@ -343,8 +339,6 @@ class EmployeeManagement {
      */
     viewEmployeeDetails(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
-                throw new Error(constants.MESSAGES.employer_no_plan);
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
@@ -452,8 +446,6 @@ class EmployeeManagement {
      */
     deleteEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
-                throw new Error(constants.MESSAGES.employer_no_plan);
             let employee = yield models_1.employeeModel.findOne({
                 where: {
                     id: parseInt(params.employee_id),
@@ -475,8 +467,6 @@ class EmployeeManagement {
      */
     updateManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.haveActivePlan(user) && !(process.env.DEV_MODE == "ON"))
-                throw new Error(constants.MESSAGES.employer_no_plan);
             let managerTeam = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
                 manager_id: params.new_manager_id,
             }, {

@@ -85,6 +85,9 @@ class AuthService {
             else if (!lodash_1.default.isEmpty(existingUser) && existingUser.employer.status == 2) {
                 throw new Error(constants.MESSAGES.delete_employer_account);
             }
+            else if (!lodash_1.default.isEmpty(existingUser) && existingUser.employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && existingUser.employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+                throw new Error(constants.MESSAGES.employee_employer_have_no_plan);
+            }
             else if (!lodash_1.default.isEmpty(existingUser)) {
                 existingUser = yield helperFunction.convertPromiseToObject(existingUser);
                 let comparePassword = yield appUtils.comparePassword(params.password, existingUser.password);

@@ -31,11 +31,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateCoachToken = exports.validateEmployerToken = exports.validateEmployeeToken = exports.validateForgotPasswordToken = exports.validateAdminToken = void 0;
+exports.checkEmployerHaveActivePlan = exports.validateCoachToken = exports.validateEmployerToken = exports.validateEmployeeToken = exports.validateForgotPasswordToken = exports.validateAdminToken = void 0;
 const constants = __importStar(require("../constants"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const employersService_1 = require("../services/admin/employersService");
 const models_1 = require("../models");
+const helperFunction = __importStar(require("../utils/helperFunction"));
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,6 +97,7 @@ exports.validateEmployeeToken = (req, res, next) => __awaiter(void 0, void 0, vo
         const token = req.headers.authorization;
         const decoded = jsonwebtoken_1.default.verify(token, process.env.EMPLOYEE_SECRET_KEY || constants.EMPLOYEE_SECRET_KEY);
         const employee = yield models_1.employeeModel.findByPk(decoded.id);
+        const employer = yield models_1.employersModel.findByPk(employee.current_employer_id);
         if (employee.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account;
@@ -104,6 +106,11 @@ exports.validateEmployeeToken = (req, res, next) => __awaiter(void 0, void 0, vo
         else if (employee.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account;
+            return res.status(response.status).send(response);
+        }
+        else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            response.status = 402;
+            response.message = constants.MESSAGES.employee_employer_have_no_plan;
             return res.status(response.status).send(response);
         }
         let payload = {
@@ -176,6 +183,25 @@ exports.validateCoachToken = (req, res, next) => __awaiter(void 0, void 0, void 
         };
         req.user = payload;
         return next();
+    }
+    catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+});
+exports.checkEmployerHaveActivePlan = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let response = Object.assign({}, constants.defaultServerResponse);
+    try {
+        let employer = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findByPk(parseInt(req.user.uid)));
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            response.status = 402;
+            response.message = constants.MESSAGES.employer_have_no_plan;
+            return res.status(response.status).send(response);
+        }
+        else {
+            return next();
+        }
     }
     catch (error) {
         response.message = error.message;

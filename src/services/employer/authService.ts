@@ -31,9 +31,7 @@ export class AuthService {
            throw new Error(constants.MESSAGES.deactivate_account);
        } else if (!_.isEmpty(existingUser) && existingUser.status == 2) {
            throw new Error(constants.MESSAGES.delete_account);
-       } else if (!_.isEmpty(existingUser) && existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && existingUser.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
-           throw new Error(constants.MESSAGES.employer_have_no_plan);
-       }else if (!_.isEmpty(existingUser)) {
+       } else if (!_.isEmpty(existingUser)) {
         existingUser = await helperFunction.convertPromiseToObject(existingUser);
         let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);
            if (comparePassword) {
