@@ -150,7 +150,7 @@ exports.MESSAGES = {
     team_goal_complete_request_pending: "You already have a pending request for approval",
     employer_no_plan: "You do not have any active plan to avail this service",
     employer_have_no_plan: "You do not have any active plan.",
-    employee_employer_have_no_plan: "We are facing some issue your account. Please contact your employer.",
+    employee_employer_have_no_plan: "We are facing some issue with your account. Please contact your employer.",
     employer_have_free_plan: "You are in 14 days of free trial",
     employer_have_paid_plan: "You have an active plan",
     no_plan: "Subscription does not exist",

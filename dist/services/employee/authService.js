@@ -68,7 +68,7 @@ class AuthService {
                     {
                         model: employers_1.employersModel,
                         required: false,
-                        attributes: ['id', 'name', 'email', 'status']
+                        attributes: ['id', 'name', 'email', 'status', 'subscription_type', 'free_trial_status']
                     },
                 ],
                 order: [["createdAt", "DESC"]]
