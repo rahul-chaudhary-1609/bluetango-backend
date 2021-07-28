@@ -50,6 +50,8 @@ export class AuthService {
             throw new Error(constants.MESSAGES.deactivate_employer_account);
         } else if (!_.isEmpty(existingUser) && existingUser.employer.status == 2) {
             throw new Error(constants.MESSAGES.delete_employer_account);
+        } else if (!_.isEmpty(existingUser) && existingUser.employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && existingUser.employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            throw new Error(constants.MESSAGES.employee_employer_have_no_plan);
         }else if (!_.isEmpty(existingUser)) {
             existingUser = await helperFunction.convertPromiseToObject(existingUser);
             let comparePassword = await appUtils.comparePassword(params.password, existingUser.password);

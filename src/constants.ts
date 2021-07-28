@@ -129,6 +129,7 @@ export const MESSAGES = {
   team_goal_complete_request_pending: "You already have a pending request for approval",
   employer_no_plan: "You do not have any active plan to avail this service",
   employer_have_no_plan: "You do not have any active plan.",
+  employee_employer_have_no_plan: "We are facing some issue your account. Please contact your employer.",
   employer_have_free_plan: "You are in 14 days of free trial",
   employer_have_paid_plan: "You have an active plan",
   no_plan: "Subscription does not exist",
@@ -143,6 +144,7 @@ export const MESSAGES = {
   employer_free_trial_already_started: `Free trial already started`,
   employer_free_trial_already_exhausted: `Free trial already exhausted`,
 }
+
 
 export const HOST_URL = process.env.HOST_URL
 

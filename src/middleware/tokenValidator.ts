@@ -67,6 +67,8 @@ export const validateEmployeeToken = async (req, res, next) => {
 
         const employee = await employeeModel.findByPk(decoded.id);
 
+        const employer = await employersModel.findByPk(employee.current_employer_id);
+
         if (employee.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account
@@ -75,6 +77,10 @@ export const validateEmployeeToken = async (req, res, next) => {
         else if (employee.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
+            return res.status(response.status).send(response);
+        } else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            response.status = 402;
+            response.message = constants.MESSAGES.employee_employer_have_no_plan
             return res.status(response.status).send(response);
         }
 
@@ -110,6 +116,10 @@ export const validateEmployerToken = async (req, res, next) => {
         else if (employer.status == constants.STATUS.deleted) {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
+            return res.status(response.status).send(response);
+        } else if (employer.subscription_type== constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status==constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+            response.status = 402;
+            response.message = constants.MESSAGES.employer_have_no_plan
             return res.status(response.status).send(response);
         }
 
