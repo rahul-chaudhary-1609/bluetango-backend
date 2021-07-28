@@ -42,6 +42,34 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class EmployerService {
     constructor() { }
+    startFreeTrial(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employer = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                where: {
+                    id: parseInt(user.uid),
+                    status: { [Op.ne]: 2 }
+                }
+            }));
+            if (employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.on_going) {
+                throw new Error(constants.MESSAGES.employer_free_trial_already_started);
+            }
+            else if (employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+                throw new Error(constants.MESSAGES.employer_free_trial_already_exhausted);
+            }
+            else {
+                yield models_1.employersModel.update({
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.free,
+                    free_trial_status: constants.EMPLOYER_FREE_TRIAL_STATUS.on_going,
+                    free_trial_start_datetime: new Date(),
+                }, {
+                    where: {
+                        id: parseInt(user.uid)
+                    }
+                });
+                return true;
+            }
+        });
+    }
     /**
     * function to get Subscription Plan List
     @param {} params pass all parameters from request
@@ -101,7 +129,8 @@ class EmployerService {
             let newPlan = yield helperFunction.convertPromiseToObject(yield paymentManagement_1.paymentManagementModel.create(paymentObj));
             if (newPlan) {
                 yield models_1.employersModel.update({
-                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.paid
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.paid,
+                    free_trial_status: constants.EMPLOYER_FREE_TRIAL_STATUS.over,
                 }, {
                     where: {
                         id: parseInt(user.uid)
@@ -175,7 +204,7 @@ class EmployerService {
                     status: { [Op.ne]: 2 }
                 }
             }));
-            let trialExpiryDate = new Date(employer.first_time_login_datetime);
+            let trialExpiryDate = new Date(employer.free_trial_start_datetime || employer.first_time_login_datetime);
             trialExpiryDate.setDate(trialExpiryDate.getDate() + 14);
             if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) {
                 return {
@@ -232,7 +261,8 @@ class EmployerService {
                 plan.status = constants.EMPLOYER_SUBSCRIPTION_PLAN_STATUS.cancelled;
                 plan.save();
                 yield models_1.employersModel.update({
-                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan
+                    subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan,
+                    free_trial_status: constants.EMPLOYER_FREE_TRIAL_STATUS.over,
                 }, {
                     where: {
                         id: parseInt(user.uid)

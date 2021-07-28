@@ -11,6 +11,20 @@ export class EmployerController {
     constructor() { }
 
     /**
+    * start FreeTrial
+    * @param req 
+    * @param res 
+    */
+    public async startFreeTrial(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employerService.startFreeTrial(req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
     * get Subscription Plan List
     * @param req 
     * @param res 

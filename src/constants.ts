@@ -140,6 +140,8 @@ export const MESSAGES = {
   manager_team_icon_url_required: `Manager team icon url is required if employee is a manager`,
   payment_success: `Payment Successfull!`,
   payment_faliled: `Payment failed!`,
+  employer_free_trial_already_started: `Free trial already started`,
+  employer_free_trial_already_exhausted: `Free trial already exhausted`,
 }
 
 export const HOST_URL = process.env.HOST_URL
@@ -259,6 +261,12 @@ export const EMPLOYER_SUBSCRIPTION_TYPE = {
   free: 0,
   paid: 1,
   no_plan:2,
+}
+
+export const EMPLOYER_FREE_TRIAL_STATUS = {
+  yet_to_start: 0,
+  on_going: 1,
+  over: 2,
 }
 
 export const CHAT_DISCONNECT_TYPE= {

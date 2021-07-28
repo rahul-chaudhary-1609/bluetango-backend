@@ -44,6 +44,9 @@ employerRoute.put("/updateEmployerDeviceToken", joiSchemaValidation.validateBody
 /* clear employer device token */
 employerRoute.put("/clearEmployerDeviceToken", tokenValidator.validateEmployerToken, authController.clearEmployerDeviceToken);
 
+/* start Free Trial */
+employerRoute.get("/startFreeTrial", tokenValidator.validateEmployerToken, employerController.startFreeTrial);
+
 
 /* get Subscription Plan List */
 employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerToken, employerController.getSubscriptionPlanList);

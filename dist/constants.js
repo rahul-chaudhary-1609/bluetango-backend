@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.MESSAGES = {
@@ -161,6 +161,8 @@ exports.MESSAGES = {
     manager_team_icon_url_required: `Manager team icon url is required if employee is a manager`,
     payment_success: `Payment Successfull!`,
     payment_faliled: `Payment failed!`,
+    employer_free_trial_already_started: `Free trial already started`,
+    employer_free_trial_already_exhausted: `Free trial already exhausted`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
@@ -266,6 +268,11 @@ exports.EMPLOYER_SUBSCRIPTION_TYPE = {
     free: 0,
     paid: 1,
     no_plan: 2,
+};
+exports.EMPLOYER_FREE_TRIAL_STATUS = {
+    yet_to_start: 0,
+    on_going: 1,
+    over: 2,
 };
 exports.CHAT_DISCONNECT_TYPE = {
     disconnected: 1,

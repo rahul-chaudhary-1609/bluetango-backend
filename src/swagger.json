@@ -5342,6 +5342,27 @@
         "responses": {}
       }
     },
+    "/employer/startFreeTrial": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to start Free Trial",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/login": {
       "post": {
         "tags": [

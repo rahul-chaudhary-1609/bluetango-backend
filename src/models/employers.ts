@@ -60,6 +60,15 @@ export const employersModel: any = sequelize.define("employers", {
         defaultValue: 0,
         comment: '0=>free,1=>paid,2=>no plan'
     },
+    free_trial_start_datetime: {//applicable for all type of users
+        type: DataTypes.DATE,
+    },
+    free_trial_status: {//applicable for all type of users
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: '0=>yet_to_start,1=>on_going,2=>over'
+    },
     reset_pass_otp: {
         type: DataTypes.JSONB,
         allowNull: true,

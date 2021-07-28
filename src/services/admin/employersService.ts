@@ -102,7 +102,7 @@ export class EmployersService {
                 }
                 const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
-                params.first_time_login_datetime = new Date();
+                //params.first_time_login_datetime = new Date();
                 const employer = await employersModel.create(params);
                 const mailParams = <any>{};
                 mailParams.to = params.email;

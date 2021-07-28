@@ -37,6 +37,22 @@ const employerService = new employerService_1.EmployerService();
 class EmployerController {
     constructor() { }
     /**
+    * start FreeTrial
+    * @param req
+    * @param res
+    */
+    startFreeTrial(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employerService.startFreeTrial(req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
     * get Subscription Plan List
     * @param req
     * @param res

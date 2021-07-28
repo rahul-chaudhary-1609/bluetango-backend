@@ -134,7 +134,7 @@ class EmployersService {
                     }
                     const password = params.password;
                     params.password = yield appUtils.bcryptPassword(params.password);
-                    params.first_time_login_datetime = new Date();
+                    //params.first_time_login_datetime = new Date();
                     const employer = yield models_1.employersModel.create(params);
                     const mailParams = {};
                     mailParams.to = params.email;

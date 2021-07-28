@@ -72,13 +72,10 @@ class AuthService {
                     existingUser.isFirstTimeLogin = false;
                     if (existingUser.first_time_login == 1) {
                         existingUser.isFirstTimeLogin = true;
-                        // updateObj = {
-                        //     ...updateObj,
-                        //     first_time_login_datetime: new Date(),
-                        // }
+                        updateObj = Object.assign(Object.assign({}, updateObj), { first_time_login_datetime: new Date() });
                     }
-                    if (existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
-                        let expiryDate = new Date(existingUser.first_time_login_datetime);
+                    if (existingUser.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.on_going && existingUser.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
+                        let expiryDate = new Date(existingUser.free_trial_start_datetime);
                         expiryDate.setDate(expiryDate.getDate() + 14);
                         if ((new Date()) > expiryDate) {
                             updateObj = Object.assign(Object.assign({}, updateObj), { subscription_type: constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan });
