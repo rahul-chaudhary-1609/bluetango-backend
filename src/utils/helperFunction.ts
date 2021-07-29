@@ -122,6 +122,7 @@ export const sendFcmNotification = async (tokens: any, notification: any) => {
             title: notification.title,
             body: notification.body,
             image: notification.image || null,
+            sound:"sound",
         },
         data: notification.data
     };

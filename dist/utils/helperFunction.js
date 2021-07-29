@@ -142,6 +142,7 @@ exports.sendFcmNotification = (tokens, notification) => __awaiter(void 0, void 0
             title: notification.title,
             body: notification.body,
             image: notification.image || null,
+            sound: "sound",
         },
         data: notification.data
     };
