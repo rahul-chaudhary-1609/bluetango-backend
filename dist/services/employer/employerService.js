@@ -206,7 +206,7 @@ class EmployerService {
             }));
             let trialExpiryDate = new Date(employer.free_trial_start_datetime || employer.first_time_login_datetime);
             trialExpiryDate.setDate(trialExpiryDate.getDate() + 14);
-            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan) {
+            if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan || employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.yet_to_start) {
                 return {
                     subscription_type: employer.subscription_type,
                     message: constants.MESSAGES.employer_have_no_plan,
@@ -214,7 +214,7 @@ class EmployerService {
                     expiry_date: null,
                 };
             }
-            else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free) {
+            else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.free && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.on_going) {
                 return {
                     subscription_type: employer.subscription_type,
                     message: constants.MESSAGES.employer_have_free_plan,
