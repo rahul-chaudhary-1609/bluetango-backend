@@ -134,7 +134,14 @@ export class AuthService {
         if (user.user_role == constants.USER_ROLE.employer) {
             update.first_time_reset_password = 0;
             update.first_time_login = 0;
-            return await employersModel.update(update, qry);
+            await employersModel.update(update, qry);
+            return await helperFunction.convertPromiseToObject(
+                await employersModel.findOne({
+                    where: {
+                        id: parseInt(user.uid)
+                    }
+                })
+            )
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }

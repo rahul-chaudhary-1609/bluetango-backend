@@ -142,7 +142,12 @@ class AuthService {
             if (user.user_role == constants.USER_ROLE.employer) {
                 update.first_time_reset_password = 0;
                 update.first_time_login = 0;
-                return yield models_1.employersModel.update(update, qry);
+                yield models_1.employersModel.update(update, qry);
+                return yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                    where: {
+                        id: parseInt(user.uid)
+                    }
+                }));
             }
             else {
                 throw new Error(constants.MESSAGES.user_not_found);
