@@ -79,7 +79,7 @@ export const validateEmployeeToken = async (req, res, next) => {
             response.status = 401;
             response.message = constants.MESSAGES.delete_account
             return res.status(response.status).send(response);
-        } else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+        } else if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status != constants.EMPLOYER_FREE_TRIAL_STATUS.on_going) {
             response.status = 402;
             response.message = constants.MESSAGES.employee_employer_have_no_plan
             return res.status(response.status).send(response);
@@ -175,7 +175,7 @@ export const checkEmployerHaveActivePlan = async (req, res, next) => {
             await employersModel.findByPk(parseInt(req.user.uid))
         );
 
-        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) {
+        if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status != constants.EMPLOYER_FREE_TRIAL_STATUS.on_going) {
             response.status = 402;
             response.message = constants.MESSAGES.employer_have_no_plan
             return res.status(response.status).send(response);
