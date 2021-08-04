@@ -229,7 +229,7 @@ export class EmployerService {
 
         if(employer.free_trial_start_datetime){
 
-            let trialExpiryDate=new Date(employer.free_trial_start_datetime);
+            trialExpiryDate=new Date(employer.free_trial_start_datetime);
             trialExpiryDate.setDate(trialExpiryDate.getDate()+constants.EMPLOYER_FREE_TRIAL_DURATION)
             
         }
