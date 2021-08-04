@@ -113,6 +113,12 @@ class AuthService {
                         }
                     }));
                     existingUser.token = token.token;
+                    existingUser.free_trial_expiry_date = null;
+                    if (existingUser.free_trial_start_datetime) {
+                        let free_trial_expiry_date = new Date(existingUser.free_trial_start_datetime);
+                        free_trial_expiry_date.setDate(free_trial_expiry_date.getDate() + constants.EMPLOYER_FREE_TRIAL_DURATION);
+                        existingUser.free_trial_expiry_date = free_trial_expiry_date;
+                    }
                     return existingUser;
                 }
                 else {

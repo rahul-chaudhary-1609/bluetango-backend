@@ -152,6 +152,12 @@ class EmployerService {
                     status: { [Op.ne]: 2 }
                 }
             }));
+            profile.free_trial_expiry_date = null;
+            if (profile.free_trial_start_datetime) {
+                let free_trial_expiry_date = new Date(profile.free_trial_start_datetime);
+                free_trial_expiry_date.setDate(free_trial_expiry_date.getDate() + constants.EMPLOYER_FREE_TRIAL_DURATION);
+                profile.free_trial_expiry_date = free_trial_expiry_date;
+            }
             profile.industry_info = yield helperFunction.convertPromiseToObject(yield industryType_1.industryTypeModel.findOne({
                 where: {
                     id: parseInt(profile.industry_type)
@@ -204,8 +210,11 @@ class EmployerService {
                     status: { [Op.ne]: 2 }
                 }
             }));
-            let trialExpiryDate = new Date(employer.free_trial_start_datetime || employer.first_time_login_datetime);
-            trialExpiryDate.setDate(trialExpiryDate.getDate() + 14);
+            let trialExpiryDate = null;
+            if (employer.free_trial_start_datetime) {
+                let trialExpiryDate = new Date(employer.free_trial_start_datetime);
+                trialExpiryDate.setDate(trialExpiryDate.getDate() + constants.EMPLOYER_FREE_TRIAL_DURATION);
+            }
             if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan || employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.yet_to_start) {
                 return {
                     subscription_type: employer.subscription_type,

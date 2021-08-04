@@ -197,6 +197,8 @@ export const CUSTOM_JOI_MESSAGE = {
 export const notificationmsg = {
 };
 
+export const EMPLOYER_FREE_TRIAL_DURATION= parseInt(process.env.EMPLOYER_FREE_TRIAL_DURATION) || 14;
+
 export const USER_ROLE = {
   super_admin: 1,
   sub_admin: 2,
