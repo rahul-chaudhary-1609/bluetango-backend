@@ -30,10 +30,11 @@ paypal.configure({
     'client_secret': constants.SECRETS.PAYPAL_SECRETS.client_secret
 });
 var braintreeGateway = new braintree.BraintreeGateway({
-    environment: braintree.Environment.Sandbox,
-    merchantId: constants.SECRETS.BRAINTREE_SECRETS.merchant_id,
-    publicKey: constants.SECRETS.BRAINTREE_SECRETS.public_key,
-    privateKey: constants.SECRETS.BRAINTREE_SECRETS.private_key
+    // environment: braintree.Environment.Sandbox,
+    // merchantId: constants.SECRETS.BRAINTREE_SECRETS.merchant_id,
+    // publicKey: constants.SECRETS.BRAINTREE_SECRETS.public_key,
+    // privateKey: constants.SECRETS.BRAINTREE_SECRETS.private_key
+    accessToken: constants.SECRETS.BRAINTREE_SECRETS.access_token
 });
 exports.braintreeGateway = braintreeGateway;
 //# sourceMappingURL=payment.js.map

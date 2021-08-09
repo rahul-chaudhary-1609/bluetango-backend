@@ -14,10 +14,7 @@ paypal.configure({
 
 
 var braintreeGateway = new braintree.BraintreeGateway({
-    environment: braintree.Environment.Sandbox,
-    merchantId: constants.SECRETS.BRAINTREE_SECRETS.merchant_id,
-    publicKey: constants.SECRETS.BRAINTREE_SECRETS.public_key,
-    privateKey: constants.SECRETS.BRAINTREE_SECRETS.private_key
+    accessToken: constants.SECRETS.BRAINTREE_SECRETS.access_token
 });
 
 export {

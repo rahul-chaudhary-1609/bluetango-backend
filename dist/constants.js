@@ -296,6 +296,7 @@ exports.SECRETS = {
         merchant_id: process.env.BRAINTREE_MERCHANT_ID,
         public_key: process.env.BRAINTREE_PUBLIC_KEY,
         private_key: process.env.BRAINTREE_PRIVATE_KEY,
+        access_token: process.env.BRAINTREE_ACCESS_TOKEN
     }
 };
 //# sourceMappingURL=constants.js.map
