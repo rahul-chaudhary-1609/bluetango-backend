@@ -2,7 +2,11 @@ import _, { update } from "lodash";
 import * as constants from "../constants";
 import * as helperFunction from "../utils/helperFunction";
 import { employersModel } from "../models";
+import { employeeModel } from  "../models/employee"
 import { notificationModel } from "../models/notification";
+import { teamGoalModel } from  "../models/teamGoal"
+import { teamGoalAssignModel } from  "../models/teamGoalAssign"
+import { teamGoalAssignCompletionByEmployeeModel } from  "../models/teamGoalAssignCompletionByEmployee"
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -73,6 +77,117 @@ export const scheduleFreeTrialExpirationNotificationJob = async()=> {
     });
 
     console.log("Free trial expiration notification cron job started!")
+
+    return true;
+}
+
+/*
+* function to schedule job
+*/
+export const scheduleGoalSubmitReminderNotificationJob = async()=> {
+    schedule.scheduleJob('*/2 * * * *', async ()=> {
+
+        teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        teamGoalModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+        teamGoalAssignModel.hasMany(teamGoalAssignCompletionByEmployeeModel,{ foreignKey: "team_goal_assign_id", sourceKey: "id", targetKey: "team_goal_assign_id" });
+
+        let employees = await helperFunction.convertPromiseToObject(
+            await employeeModel.findAll({
+                where: {
+                    status: constants.STATUS.active,
+                }
+            })
+        )
+
+        for (let employee of employees) 
+        {
+            let goals =  await teamGoalAssignModel.findAll({
+                where: {employee_id: employee.id },
+                include: [
+                    {
+                        model: teamGoalModel,
+                        required: false,
+                    },
+                    {
+                        model:teamGoalAssignCompletionByEmployeeModel,
+                        required: false,
+                        order: [["createdAt", "DESC"]]
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            })
+
+            for (let goal of goals){
+                let goalEndDate=new Date(goal.team_goal.end_date);
+                let employeeLastSubmitReminderDate=new Date(goal.last_submit_reminder_datetime);
+                let employeeLastActivityDate=new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
+                let currentDate=new Date();
+
+                let timeDiff = Math.floor((new Date()).getTime() - (goalEndDate.getTime()) / 1000)
+
+                if(timeDiff>0){
+
+                    timeDiff = Math.floor((new Date()).getTime() - (employeeLastActivityDate.getTime()) / 1000)
+                    
+                    if(timeDiff > 120){
+                        timeDiff = Math.floor((new Date()).getTime() - (employeeLastSubmitReminderDate.getTime()) / 1000)
+
+                        if(timeDiff > 604800){
+
+                            let notificationObj = <any>{
+                                type_id: employee.id,
+                                sender_id: employee.id,
+                                reciever_id: employee.id,
+                                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                                type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                    title: 'Reminder',
+                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                    senderEmplyeeData: employee
+                                },
+                            }
+                            await notificationModel.create(notificationObj);
+        
+                            if (!employee.device_token) continue;
+        
+                            //send push notification
+                            let notificationData = <any>{
+                                title: 'Reminder',
+                                body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                data: {
+                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                    title: 'Reminder',
+                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                    senderEmplyeeData: employee
+                                },
+                            }
+                            await helperFunction.sendFcmNotification([employee.device_token], notificationData);
+
+                            // teamGoalAssignModel.update(
+                            //     {
+                            //         last_submit_reminder_datetime:new Date(),
+                            //     },
+                            //     {
+                            //         where:{
+                            //             id:goal.id
+                            //         }
+                            //     }
+                            // )
+                        
+                        }
+                    }
+                }
+
+
+                
+            }
+        }
+
+    });
+
+    console.log("Goal submit reminder notification cron job started!")
 
     return true;
 }

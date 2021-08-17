@@ -249,6 +249,7 @@ exports.NOTIFICATION_TYPE = {
     achievement_comment: 15,
     group_chat: 16,
     expiration_of_free_trial: 17,
+    goal_submit_reminder: 18,
 };
 exports.NOTIFICATION_RECIEVER_TYPE = {
     employee: 1,

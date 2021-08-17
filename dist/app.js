@@ -113,6 +113,7 @@ require("./routes")(app);
 var server = app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Listening on port: ', port);
     yield cronJob_1.scheduleFreeTrialExpirationNotificationJob();
+    yield cronJob_1.scheduleGoalSubmitReminderNotificationJob();
 })).on('error', (e) => {
     console.log('Error happened: ', e.message);
 });
