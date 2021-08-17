@@ -320,6 +320,7 @@ export class GoalServices {
                 },
                 {
                     model:teamGoalAssignCompletionByEmployeeModel,
+                    attributes: ['id','goal_id','team_goal_assign_id',['description','employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status','createdAt', 'updatedAt'],
                     required: false,
                     where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested, },
                     order: [["createdAt", "DESC"]]
@@ -468,6 +469,7 @@ export class GoalServices {
                     include: [
                         {
                             model: teamGoalAssignCompletionByEmployeeModel,
+                            attributes: ['id','goal_id','team_goal_assign_id',['description','employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status','createdAt', 'updatedAt'],
                             where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                             required: true,
                         },
