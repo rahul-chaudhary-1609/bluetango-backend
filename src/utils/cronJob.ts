@@ -85,7 +85,7 @@ export const scheduleFreeTrialExpirationNotificationJob = async()=> {
 * function to schedule job
 */
 export const scheduleGoalSubmitReminderNotificationJob = async()=> {
-    schedule.scheduleJob('*/2 * * * *', async ()=> {
+    schedule.scheduleJob('0 */6 * * *', async ()=> {
 
         teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
@@ -121,19 +121,22 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
             for (let goal of goals){
                 let goalEndDate=new Date(goal.team_goal.end_date);
                 let employeeLastSubmitReminderDate=new Date(goal.last_submit_reminder_datetime);
-                let employeeLastActivityDate=new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
-                let currentDate=new Date();
+                let employeeLastActivityDate=goal.team_goal_assign_completion_by_employees[0]?.updatedAt && new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
+                
 
-                let timeDiff = Math.floor((new Date()).getTime() - (goalEndDate.getTime()) / 1000)
+                let timeDiff = Math.floor((goalEndDate.getTime()-(new Date()).getTime()) / 1000)
 
                 if(timeDiff>0){
 
-                    timeDiff = Math.floor((new Date()).getTime() - (employeeLastActivityDate.getTime()) / 1000)
-                    
-                    if(timeDiff > 120){
-                        timeDiff = Math.floor((new Date()).getTime() - (employeeLastSubmitReminderDate.getTime()) / 1000)
+                    if(employeeLastActivityDate){
+                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000)
+                    }
 
-                        if(timeDiff > 604800){
+                    if(!employeeLastActivityDate || timeDiff > 28800){
+                        
+                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000)
+
+                        if(timeDiff > 25200){
 
                             let notificationObj = <any>{
                                 type_id: employee.id,
@@ -165,23 +168,20 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
                             }
                             await helperFunction.sendFcmNotification([employee.device_token], notificationData);
 
-                            // teamGoalAssignModel.update(
-                            //     {
-                            //         last_submit_reminder_datetime:new Date(),
-                            //     },
-                            //     {
-                            //         where:{
-                            //             id:goal.id
-                            //         }
-                            //     }
-                            // )
+                            await teamGoalAssignModel.update(
+                                    {
+                                        last_submit_reminder_datetime:new Date(),
+                                    },
+                                    {
+                                        where:{
+                                            id:goal.id
+                                        }
+                                    }
+                            )
                         
                         }
                     }
-                }
-
-
-                
+                }                
             }
         }
 

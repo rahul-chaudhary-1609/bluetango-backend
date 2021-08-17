@@ -106,7 +106,8 @@ exports.scheduleFreeTrialExpirationNotificationJob = () => __awaiter(void 0, voi
 * function to schedule job
 */
 exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
-    schedule.scheduleJob('*/2 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('0 */6 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
         teamGoal_1.teamGoalModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
@@ -135,14 +136,15 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
             for (let goal of goals) {
                 let goalEndDate = new Date(goal.team_goal.end_date);
                 let employeeLastSubmitReminderDate = new Date(goal.last_submit_reminder_datetime);
-                let employeeLastActivityDate = new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
-                let currentDate = new Date();
-                let timeDiff = Math.floor((new Date()).getTime() - (goalEndDate.getTime()) / 1000);
+                let employeeLastActivityDate = ((_a = goal.team_goal_assign_completion_by_employees[0]) === null || _a === void 0 ? void 0 : _a.updatedAt) && new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
+                let timeDiff = Math.floor((goalEndDate.getTime() - (new Date()).getTime()) / 1000);
                 if (timeDiff > 0) {
-                    timeDiff = Math.floor((new Date()).getTime() - (employeeLastActivityDate.getTime()) / 1000);
-                    if (timeDiff > 120) {
-                        timeDiff = Math.floor((new Date()).getTime() - (employeeLastSubmitReminderDate.getTime()) / 1000);
-                        if (timeDiff > 604800) {
+                    if (employeeLastActivityDate) {
+                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000);
+                    }
+                    if (!employeeLastActivityDate || timeDiff > 28800) {
+                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000);
+                        if (timeDiff > 25200) {
                             let notificationObj = {
                                 type_id: employee.id,
                                 sender_id: employee.id,
@@ -171,16 +173,13 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                                 },
                             };
                             yield helperFunction.sendFcmNotification([employee.device_token], notificationData);
-                            // teamGoalAssignModel.update(
-                            //     {
-                            //         last_submit_reminder_datetime:new Date(),
-                            //     },
-                            //     {
-                            //         where:{
-                            //             id:goal.id
-                            //         }
-                            //     }
-                            // )
+                            yield teamGoalAssign_1.teamGoalAssignModel.update({
+                                last_submit_reminder_datetime: new Date(),
+                            }, {
+                                where: {
+                                    id: goal.id
+                                }
+                            });
                         }
                     }
                 }
