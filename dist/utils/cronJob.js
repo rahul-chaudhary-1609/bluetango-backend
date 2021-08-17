@@ -138,48 +138,50 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                 let employeeLastSubmitReminderDate = new Date(goal.last_submit_reminder_datetime);
                 let employeeLastActivityDate = ((_a = goal.team_goal_assign_completion_by_employees[0]) === null || _a === void 0 ? void 0 : _a.updatedAt) && new Date(goal.team_goal_assign_completion_by_employees[0].updatedAt);
                 let timeDiff = Math.floor((goalEndDate.getTime() - (new Date()).getTime()) / 1000);
-                if (timeDiff > 0) {
-                    if (employeeLastActivityDate) {
-                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000);
-                    }
-                    if (!employeeLastActivityDate || timeDiff > 28800) {
-                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000);
-                        if (timeDiff > 25200) {
-                            let notificationObj = {
-                                type_id: employee.id,
-                                sender_id: employee.id,
-                                reciever_id: employee.id,
-                                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
-                                type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
-                                data: {
+                if (parseInt(goal.team_goal.enter_measure) > parseInt(goal.complete_measure)) {
+                    if (timeDiff > 0) {
+                        if (employeeLastActivityDate) {
+                            timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000);
+                        }
+                        if (!employeeLastActivityDate || timeDiff > 28800) {
+                            timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000);
+                            if (timeDiff > 25200) {
+                                let notificationObj = {
+                                    type_id: employee.id,
+                                    sender_id: employee.id,
+                                    reciever_id: employee.id,
+                                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                                     type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                    data: {
+                                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                        title: 'Reminder',
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        senderEmplyeeData: employee
+                                    },
+                                };
+                                yield notification_1.notificationModel.create(notificationObj);
+                                if (!employee.device_token)
+                                    continue;
+                                //send push notification
+                                let notificationData = {
                                     title: 'Reminder',
-                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                    senderEmplyeeData: employee
-                                },
-                            };
-                            yield notification_1.notificationModel.create(notificationObj);
-                            if (!employee.device_token)
-                                continue;
-                            //send push notification
-                            let notificationData = {
-                                title: 'Reminder',
-                                body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                data: {
-                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
-                                    title: 'Reminder',
-                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                    senderEmplyeeData: employee
-                                },
-                            };
-                            yield helperFunction.sendFcmNotification([employee.device_token], notificationData);
-                            yield teamGoalAssign_1.teamGoalAssignModel.update({
-                                last_submit_reminder_datetime: new Date(),
-                            }, {
-                                where: {
-                                    id: goal.id
-                                }
-                            });
+                                    body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                    data: {
+                                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                        title: 'Reminder',
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        senderEmplyeeData: employee
+                                    },
+                                };
+                                yield helperFunction.sendFcmNotification([employee.device_token], notificationData);
+                                yield teamGoalAssign_1.teamGoalAssignModel.update({
+                                    last_submit_reminder_datetime: new Date(),
+                                }, {
+                                    where: {
+                                        id: goal.id
+                                    }
+                                });
+                            }
                         }
                     }
                 }

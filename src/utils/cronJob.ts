@@ -126,62 +126,65 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
 
                 let timeDiff = Math.floor((goalEndDate.getTime()-(new Date()).getTime()) / 1000)
 
-                if(timeDiff>0){
+                if(parseInt(goal.team_goal.enter_measure)>parseInt(goal.complete_measure)){
 
-                    if(employeeLastActivityDate){
-                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000)
-                    }
+                    if(timeDiff>0){
 
-                    if(!employeeLastActivityDate || timeDiff > 28800){
-                        
-                        timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000)
-
-                        if(timeDiff > 25200){
-
-                            let notificationObj = <any>{
-                                type_id: employee.id,
-                                sender_id: employee.id,
-                                reciever_id: employee.id,
-                                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
-                                type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
-                                data: {
-                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
-                                    title: 'Reminder',
-                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                    senderEmplyeeData: employee
-                                },
-                            }
-                            await notificationModel.create(notificationObj);
-        
-                            if (!employee.device_token) continue;
-        
-                            //send push notification
-                            let notificationData = <any>{
-                                title: 'Reminder',
-                                body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                data: {
-                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
-                                    title: 'Reminder',
-                                    message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
-                                    senderEmplyeeData: employee
-                                },
-                            }
-                            await helperFunction.sendFcmNotification([employee.device_token], notificationData);
-
-                            await teamGoalAssignModel.update(
-                                    {
-                                        last_submit_reminder_datetime:new Date(),
-                                    },
-                                    {
-                                        where:{
-                                            id:goal.id
-                                        }
-                                    }
-                            )
-                        
+                        if(employeeLastActivityDate){
+                            timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000)
                         }
-                    }
-                }                
+
+                        if(!employeeLastActivityDate || timeDiff > 28800){
+                            
+                            timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000)
+
+                            if(timeDiff > 25200){
+
+                                let notificationObj = <any>{
+                                    type_id: employee.id,
+                                    sender_id: employee.id,
+                                    reciever_id: employee.id,
+                                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                    data: {
+                                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                        title: 'Reminder',
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        senderEmplyeeData: employee
+                                    },
+                                }
+                                await notificationModel.create(notificationObj);
+            
+                                if (!employee.device_token) continue;
+            
+                                //send push notification
+                                let notificationData = <any>{
+                                    title: 'Reminder',
+                                    body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                    data: {
+                                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                                        title: 'Reminder',
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        senderEmplyeeData: employee
+                                    },
+                                }
+                                await helperFunction.sendFcmNotification([employee.device_token], notificationData);
+
+                                await teamGoalAssignModel.update(
+                                        {
+                                            last_submit_reminder_datetime:new Date(),
+                                        },
+                                        {
+                                            where:{
+                                                id:goal.id
+                                            }
+                                        }
+                                )
+                            
+                            }
+                        }
+                    }   
+                }             
             }
         }
 
