@@ -121,6 +121,11 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
+    last_goal_reminder_datetime: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
+        defaultValue: "2021-08-01"
+    },
 }, {
     tableName: "employee"
 });

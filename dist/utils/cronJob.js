@@ -106,7 +106,7 @@ exports.scheduleFreeTrialExpirationNotificationJob = () => __awaiter(void 0, voi
 * function to schedule job
 */
 exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
-    schedule.scheduleJob('*/3 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('0 */6 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
@@ -118,7 +118,7 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
             }
         }));
         for (let employee of employees) {
-            let goals = yield teamGoalAssign_1.teamGoalAssignModel.findAll({
+            let goals = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
                 where: { employee_id: employee.id },
                 include: [
                     {
@@ -132,7 +132,9 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                     }
                 ],
                 order: [["createdAt", "DESC"]]
-            });
+            }));
+            let isActiveInPastTenDays = true;
+            let employeeLastGoalReminderDate = new Date(employee.last_goal_reminder_datetime);
             for (let goal of goals) {
                 let goalEndDate = new Date(goal.team_goal.end_date);
                 let employeeLastSubmitReminderDate = new Date(goal.last_submit_reminder_datetime);
@@ -143,9 +145,12 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                         if (employeeLastActivityDate) {
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000);
                         }
-                        if (!employeeLastActivityDate || timeDiff > 600) {
+                        if (!employeeLastActivityDate || timeDiff > 86400) {
+                            isActiveInPastTenDays = false;
+                        }
+                        if (!employeeLastActivityDate || timeDiff > 36000) {
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000);
-                            if (timeDiff > 420) {
+                            if (timeDiff > 25200) {
                                 let notificationObj = {
                                     type_id: employee.id,
                                     sender_id: employee.id,
@@ -155,7 +160,7 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                                     data: {
                                         type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
                                         title: 'Reminder',
-                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 7 days.`,
                                         senderEmplyeeData: employee
                                     },
                                 };
@@ -165,11 +170,11 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                                 //send push notification
                                 let notificationData = {
                                     title: 'Reminder',
-                                    body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                    body: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 7 days.`,
                                     data: {
                                         type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
                                         title: 'Reminder',
-                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 10 days.`,
+                                        message: `You have not filled anything in respect of goal ${goal.team_goal.title} in past 7 days.`,
                                         senderEmplyeeData: employee
                                     },
                                 };
@@ -185,6 +190,50 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                         }
                     }
                 }
+            }
+            let timeDiff = Math.floor(((new Date()).getTime() - employeeLastGoalReminderDate.getTime()) / 1000);
+            if (timeDiff > 86400) {
+                isActiveInPastTenDays = false;
+            }
+            else {
+                isActiveInPastTenDays = true;
+            }
+            if (!isActiveInPastTenDays) {
+                let notificationObj = {
+                    type_id: employee.id,
+                    sender_id: employee.id,
+                    reciever_id: employee.id,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                        title: 'Reminder',
+                        message: `You have not filled anything in respect of any goal in past 10 days.`,
+                        senderEmplyeeData: employee
+                    },
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                if (!employee.device_token)
+                    continue;
+                //send push notification
+                let notificationData = {
+                    title: 'Reminder',
+                    body: `You have not filled anything in respect of any goal in past 10 days.`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                        title: 'Reminder',
+                        message: `You have not filled anything in respect of any goal in past 10 days.`,
+                        senderEmplyeeData: employee
+                    },
+                };
+                yield helperFunction.sendFcmNotification([employee.device_token], notificationData);
+                yield employee_1.employeeModel.update({
+                    last_goal_reminder_datetime: new Date(),
+                }, {
+                    where: {
+                        id: employee.id
+                    }
+                });
             }
         }
     }));

@@ -120,6 +120,11 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    last_goal_reminder_datetime: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: "2021-08-01"
+    },
 },
     {
         tableName: "employee"

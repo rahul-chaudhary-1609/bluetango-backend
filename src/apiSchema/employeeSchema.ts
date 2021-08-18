@@ -327,3 +327,7 @@ export const feedback = Joi.object({
   rating: Joi.number().required(),
   message: Joi.string().optional(),
 });
+
+export const getGoalCompletionAverageAsManager=Joi.object({
+  goal_id: Joi.number().optional(),
+});

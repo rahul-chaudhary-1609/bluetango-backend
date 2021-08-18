@@ -183,5 +183,7 @@ employeeRoute.delete("/deleteAchievementComment/:achievement_comment_id", valida
 employeeRoute.get("/getAchievementLikesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementLikesList), achievementController.getAchievementLikesList);
 /* get achievement high fives list*/
 employeeRoute.get("/getAchievementHighFivesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementHighFivesList), achievementController.getAchievementHighFivesList);
+/* get Goal Completion Average As Manager*/
+employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getGoalCompletionAverageAsManager), goalController.getGoalCompletionAverageAsManager);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

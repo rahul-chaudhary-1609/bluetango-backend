@@ -193,5 +193,19 @@ export class GoalController {
         }
     }
 
+     /**
+    * get Goal Completion Average As Manager
+    * @param req :[]
+    * @param res 
+    */
+      public async getGoalCompletionAverageAsManager(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.getGoalCompletionAverageAsManager(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
 }

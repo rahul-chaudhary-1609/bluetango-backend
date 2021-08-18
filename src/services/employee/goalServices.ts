@@ -814,5 +814,57 @@ export class GoalServices {
 
     }
 
+    public async getGoalCompletionAverageAsManager(params: any, user: any){
+        teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+        teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        teamGoalModel.hasMany(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+
+        let whereCondition=<any>{
+            manager_id: user.uid,
+        }
+
+        if(params.goal_id){
+            whereCondition=<any>{
+                id: params.goal_id 
+            }
+        }
+    
+        let goals= await helperFunction.convertPromiseToObject(  
+            await teamGoalModel.findAll({
+                attributes:['id','manager_id','title','select_measure','enter_measure'],
+                where: whereCondition,
+                include: [
+                    {
+                        model: teamGoalAssignModel,
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+                
+            })
+        )
+
+        for(let goal of goals){
+
+            let totalGoalMeasure=parseFloat(goal.enter_measure);
+            let goalAssignCount=goal.team_goal_assigns.length;
+            for(let goal_asssign of goal.team_goal_assigns){
+                goal_asssign.completionAverageValue=parseFloat(goal_asssign.complete_measure);
+                //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
+            }
+
+            let comepletedGoalMeasureValue=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAverageValue),0);
+            //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
+            goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
+            goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
+
+            delete goal.team_goal_assigns;
+
+        }
+
+        
+        return goals
+
+    }
+
 
 }

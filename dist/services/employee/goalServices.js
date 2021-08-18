@@ -741,6 +741,45 @@ class GoalServices {
             // return teamGoalAssignCompletion;
         });
     }
+    getGoalCompletionAverageAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            let whereCondition = {
+                manager_id: user.uid,
+            };
+            if (params.goal_id) {
+                whereCondition = {
+                    id: params.goal_id
+                };
+            }
+            let goals = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findAll({
+                attributes: ['id', 'manager_id', 'title', 'select_measure', 'enter_measure'],
+                where: whereCondition,
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let goal of goals) {
+                let totalGoalMeasure = parseFloat(goal.enter_measure);
+                let goalAssignCount = goal.team_goal_assigns.length;
+                for (let goal_asssign of goal.team_goal_assigns) {
+                    goal_asssign.completionAverageValue = parseFloat(goal_asssign.complete_measure);
+                    //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
+                }
+                let comepletedGoalMeasureValue = goal.team_goal_assigns.reduce((result, teamGoalAssign) => result + parseFloat(teamGoalAssign.completionAverageValue), 0);
+                //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
+                goal.completionTeamAverageValue = (comepletedGoalMeasureValue / goalAssignCount).toFixed(2);
+                goal.completionTeamAveragePercentage = ((comepletedGoalMeasureValue * 100) / (totalGoalMeasure * goalAssignCount)).toFixed(2) + "%";
+                delete goal.team_goal_assigns;
+            }
+            return goals;
+        });
+    }
 }
 exports.GoalServices = GoalServices;
 //# sourceMappingURL=goalServices.js.map
