@@ -380,4 +380,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+      /**
+    * get Employee CV
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+    public async getEmployeeCV(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getEmployeeCV(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

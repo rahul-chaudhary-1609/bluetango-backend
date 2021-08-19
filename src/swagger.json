@@ -3808,6 +3808,27 @@
         "responses": {}
       }
     },
+    "/employee/getEmployeeCV": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get Employee CV",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getAchievements": {
       "get": {
         "tags": [

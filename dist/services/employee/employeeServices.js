@@ -50,8 +50,12 @@ const notification_1 = require("../../models/notification");
 const feedback_1 = require("../../models/feedback");
 const authService_1 = require("./authService");
 const libraryManagement_1 = require("../../models/libraryManagement");
+const multerParser_1 = require("../../middleware/multerParser");
+const path = __importStar(require("path"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 const authService = new authService_1.AuthService();
 class EmployeeServices {
     constructor() { }
@@ -769,6 +773,68 @@ class EmployeeServices {
                 return Object.assign(Object.assign({}, video), { thumbnail_url: video.thumbnail_url || thumbnailList[index++] });
             });
             return videos;
+        });
+    }
+    getEmployeeCV(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                }
+            }));
+            const doc = new PDFDocument();
+            let folderPath = `./src/upload`;
+            let filename = `${employee.name}.pdf`;
+            if (fs.existsSync(folderPath + "/" + filename)) {
+                yield multerParser_1.deleteFile(filename);
+            }
+            doc.pipe(fs.createWriteStream(folderPath + "/" + filename));
+            console.log("doc", employee.name);
+            // Embed a font, set the font size, and render some text
+            doc
+                .fontSize(25)
+                .text('Some text with an embedded font!', 100, 100);
+            // // Add an image, constrain it to a given size, and center it vertically and horizontally
+            // doc.image('path/to/image.png', {
+            // fit: [250, 300],
+            // align: 'center',
+            // valign: 'center'
+            // });
+            // // Add another page
+            // doc
+            // .addPage()
+            // .fontSize(25)
+            // .text('Here is some vector graphics...', 100, 100);
+            // Draw a triangle
+            // doc
+            // .save()
+            // .moveTo(100, 150)
+            // .lineTo(100, 250)
+            // .lineTo(200, 250)
+            // .fill('#FF3300');
+            // // Apply some transforms and render an SVG path with the 'even-odd' fill rule
+            // doc
+            // .scale(0.6)
+            // .translate(470, -380)
+            // .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
+            // .fill('red', 'even-odd')
+            // .restore();
+            // // Add some text with annotations
+            // doc
+            // .addPage()
+            // .fillColor('blue')
+            // .text('Here is a link!', 100, 100)
+            // .underline(100, 100, 160, 27, { color: '#0000FF' })
+            // .link(100, 100, 160, 27, 'http://google.com/');
+            // Finalize PDF file
+            doc.end();
+            let fileParams = {
+                path: path.join(__dirname, `../../../${folderPath}/${filename}`),
+                originalname: filename,
+                mimetype: `application/pdf`
+            };
+            console.log("fileParams", fileParams);
+            return yield helperFunction.uploadFile(fileParams, "thumbnails");
         });
     }
 }
