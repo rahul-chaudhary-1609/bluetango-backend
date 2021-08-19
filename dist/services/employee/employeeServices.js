@@ -869,7 +869,7 @@ class EmployeeServices {
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
                 }
             });
-            for (let goalSubmitReminder of goalSubmitReminders) {
+            for (let goalSubmitReminder of goalSubmitReminders.rows) {
                 delete goalSubmitReminder.data.senderEmplyeeData;
             }
             return goalSubmitReminders;
