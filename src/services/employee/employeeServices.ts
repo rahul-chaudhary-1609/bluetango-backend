@@ -976,6 +976,10 @@ export class EmployeeServices {
             }
         })
 
+        for(let goalSubmitReminder of goalSubmitReminders){
+            delete goalSubmitReminder.data.senderEmplyeeData;
+        }
+
         
         return goalSubmitReminders;
     }
