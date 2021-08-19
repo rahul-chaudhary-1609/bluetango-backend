@@ -106,7 +106,7 @@ exports.scheduleFreeTrialExpirationNotificationJob = () => __awaiter(void 0, voi
 * function to schedule job
 */
 exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
-    schedule.scheduleJob('0 */6 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('*/4 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
@@ -145,12 +145,12 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                         if (employeeLastActivityDate) {
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000);
                         }
-                        if (!employeeLastActivityDate || timeDiff > 86400) {
+                        if (!employeeLastActivityDate || timeDiff > 600) {
                             isActiveInPastTenDays = false;
                         }
-                        if (!employeeLastActivityDate || timeDiff > 36000) {
+                        if (!employeeLastActivityDate || timeDiff > 420) {
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000);
-                            if (timeDiff > 25200) {
+                            if (timeDiff > 420) {
                                 let notificationObj = {
                                     type_id: employee.id,
                                     sender_id: employee.id,
@@ -192,7 +192,7 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                 }
             }
             let timeDiff = Math.floor(((new Date()).getTime() - employeeLastGoalReminderDate.getTime()) / 1000);
-            if (timeDiff > 86400) {
+            if (timeDiff > 600) {
                 isActiveInPastTenDays = false;
             }
             else {

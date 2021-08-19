@@ -85,7 +85,7 @@ export const scheduleFreeTrialExpirationNotificationJob = async()=> {
 * function to schedule job
 */
 export const scheduleGoalSubmitReminderNotificationJob = async()=> {
-    schedule.scheduleJob('0 */6 * * *', async ()=> {
+    schedule.scheduleJob('*/4 * * * *', async ()=> {
 
         teamGoalAssignModel.hasOne(teamGoalModel,{ foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
@@ -139,15 +139,15 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastActivityDate.getTime()) / 1000)
                         }
 
-                        if(!employeeLastActivityDate || timeDiff > 86400){
+                        if(!employeeLastActivityDate || timeDiff > 600){
                             isActiveInPastTenDays=false;
                         }
 
-                        if(!employeeLastActivityDate || timeDiff > 36000){
+                        if(!employeeLastActivityDate || timeDiff > 420){
                             
                             timeDiff = Math.floor(((new Date()).getTime() - employeeLastSubmitReminderDate.getTime()) / 1000)
 
-                            if(timeDiff > 25200){
+                            if(timeDiff > 420){
 
                                 let notificationObj = <any>{
                                     type_id: employee.id,
@@ -198,7 +198,7 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
 
             let timeDiff = Math.floor(((new Date()).getTime() - employeeLastGoalReminderDate.getTime()) / 1000)
 
-            if(timeDiff > 86400){
+            if(timeDiff > 600){
                 isActiveInPastTenDays=false;
             }else{
                 isActiveInPastTenDays=true;
