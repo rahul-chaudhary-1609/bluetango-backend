@@ -451,6 +451,22 @@ class EmployeeController {
             }
         });
     }
+    /**
+  * get Popup Reminders
+  * @param req :[body data]
+  * @param res : [data object]
+  */
+    getGoalSubmitReminders(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getGoalSubmitReminders(req.params, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=employeeController.js.map

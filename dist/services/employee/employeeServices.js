@@ -521,6 +521,7 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.group_chat,
+                            constants.NOTIFICATION_TYPE.goal_submit_reminder,
                         ]
                     },
                     status: [0, 1]
@@ -537,6 +538,7 @@ class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.group_chat,
+                            constants.NOTIFICATION_TYPE.goal_submit_reminder,
                         ]
                     },
                     reciever_id: user.uid,
@@ -561,6 +563,7 @@ class EmployeeServices {
                                 constants.NOTIFICATION_TYPE.achievement_post,
                                 constants.NOTIFICATION_TYPE.message,
                                 constants.NOTIFICATION_TYPE.group_chat,
+                                constants.NOTIFICATION_TYPE.goal_submit_reminder,
                             ]
                         },
                         status: 1,
@@ -698,7 +701,8 @@ class EmployeeServices {
                 whereCondition = Object.assign(Object.assign({}, whereCondition), { type: {
                         [Op.notIn]: [
                             constants.NOTIFICATION_TYPE.achievement_post,
-                            constants.NOTIFICATION_TYPE.message
+                            constants.NOTIFICATION_TYPE.message,
+                            constants.NOTIFICATION_TYPE.goal_submit_reminder,
                         ]
                     } });
             }
@@ -835,6 +839,37 @@ class EmployeeServices {
             };
             console.log("fileParams", fileParams);
             return yield helperFunction.uploadFile(fileParams, "thumbnails");
+        });
+    }
+    /*
+* function to get notification
+*/
+    getGoalSubmitReminders(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let goalSubmitReminders = yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.findAndCountAll({
+                where: {
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    type: [
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                    ],
+                    status: 1,
+                },
+                order: [["createdAt", "DESC"]]
+            }));
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    status: 1,
+                    type: [
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                    ],
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                }
+            });
+            return goalSubmitReminders;
         });
     }
 }

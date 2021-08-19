@@ -554,6 +554,7 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
                 status:[0,1]
@@ -571,6 +572,7 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
                 reciever_id: user.uid,
@@ -597,6 +599,7 @@ export class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.group_chat,
+                            constants.NOTIFICATION_TYPE.goal_submit_reminder,
                         ]
                     },
                     status: 1,
@@ -768,7 +771,8 @@ export class EmployeeServices {
                 type: {
                     [Op.notIn]: [
                         constants.NOTIFICATION_TYPE.achievement_post,
-                        constants.NOTIFICATION_TYPE.message
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
             }
@@ -941,5 +945,40 @@ export class EmployeeServices {
 
          
     }
+
+        /*
+    * function to get notification
+    */
+    public async getGoalSubmitReminders(params: any, user: any) {
+
+        let goalSubmitReminders = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
+            where: {
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: [
+                    constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                ],
+                status:1,
+            },
+            order: [["createdAt", "DESC"]]
+        }));
+
+        await notificationModel.update({
+            status: 0,
+        }, {
+            where: {
+                status: 1,
+                type: [
+                    constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                ],
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+            }
+        })
+
+        
+        return goalSubmitReminders;
+    }
+
 }
 

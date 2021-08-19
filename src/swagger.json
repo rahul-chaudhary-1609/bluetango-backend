@@ -3829,6 +3829,27 @@
         "responses": {}
       }
     },
+    "/employee/getGoalSubmitReminders": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get Goal Submit Reminders",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getAchievements": {
       "get": {
         "tags": [

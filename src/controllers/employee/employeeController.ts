@@ -395,4 +395,19 @@ export class EmployeeController {
             next(e)
         }
     }
+
+      /**
+    * get Popup Reminders
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+       public async getGoalSubmitReminders(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getGoalSubmitReminders(req.params,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }

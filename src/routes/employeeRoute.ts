@@ -253,5 +253,8 @@ employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, toke
 /* get Goal Completion Average As Manager*/
 employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken,  employeeController.getEmployeeCV);
 
+/* contact us for employee */
+employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
+
 
 export = employeeRoute;
