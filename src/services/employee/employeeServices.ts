@@ -864,7 +864,7 @@ export class EmployeeServices {
 
     }
 
-    public async getEmployeeCV(params:any,user:any){
+    public async shareEmployeeCV(params:any,user:any){
         let employee = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
                 where:{
@@ -873,77 +873,109 @@ export class EmployeeServices {
             })
         )
 
-        const doc = new PDFDocument();
+        //const doc = new PDFDocument();
 
         let folderPath=`./src/upload`;
-        let filename=`${employee.name}.pdf`;
+        let fileNames=[`/${employee.name}_${employee.id}.html`,`/${employee.name}_${employee.id}.pdf`];
 
-        if (fs.existsSync(folderPath+"/"+filename)) {
-            await deleteFile(filename);
+        fileNames.forEach(async (fileName)=>{
+            if (fs.existsSync(folderPath+fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        let htmlHeader=`<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='utf-8'>
+                <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                <title>PDF Title</title>
+                <meta name='viewport' content='width=device-width, initial-scale=1'>
+                
+            </head>`;
+
+        let htmlBody=`<body>
+                <h1 style="text-align: center;">${employee.name} CV</h1>
+                <table style="padding:0px 10px 10px 10px;">`
+
+        for (let key in employee) {
+        
+            htmlBody+= `<tr style="text-align: left;">
+                    <th style="opacity: 0.9;">${key.split("_").map((ele) => {
+                        if (ele == "of" || ele == "in") return ele
+                        else return ele.charAt(0).toUpperCase() + ele.slice(1)
+                    }).join(" ")}</th>
+                    <td style="opacity: 0.8;">:</td>
+                    <td style="opacity: 0.8;">${employee[key]}</td>
+                </tr>`
         }
+
+        let htmlFooter=`</table></body>
+            </html>`;
         
 
-        doc.pipe(fs.createWriteStream(folderPath+"/"+filename));
+        fs.writeFileSync(folderPath+fileNames[0],htmlHeader+htmlBody+htmlFooter);
+        
 
-        console.log("doc",employee.name)
+        // let fileParams = {
+        //     path: path.join(__dirname, `../../../${folderPath}/${filename}`),
+        //     originalname: filename,
+        //     mimetype: `application/pdf`
+        // }
 
-        // Embed a font, set the font size, and render some text
-        doc
-        .fontSize(25)
-        .text('Some text with an embedded font!', 100, 100);
+        // console.log("fileParams", fileParams)
 
-        // // Add an image, constrain it to a given size, and center it vertically and horizontally
-        // doc.image('path/to/image.png', {
-        // fit: [250, 300],
-        // align: 'center',
-        // valign: 'center'
-        // });
+        // return await helperFunction.uploadFile(fileParams, "thumbnails");
 
-        // // Add another page
-        // doc
-        // .addPage()
-        // .fontSize(25)
-        // .text('Here is some vector graphics...', 100, 100);
-
-        // Draw a triangle
-        // doc
-        // .save()
-        // .moveTo(100, 150)
-        // .lineTo(100, 250)
-        // .lineTo(200, 250)
-        // .fill('#FF3300');
-
-        // // Apply some transforms and render an SVG path with the 'even-odd' fill rule
-        // doc
-        // .scale(0.6)
-        // .translate(470, -380)
-        // .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
-        // .fill('red', 'even-odd')
-        // .restore();
-
-        // // Add some text with annotations
-        // doc
-        // .addPage()
-        // .fillColor('blue')
-        // .text('Here is a link!', 100, 100)
-        // .underline(100, 100, 160, 27, { color: '#0000FF' })
-        // .link(100, 100, 160, 27, 'http://google.com/');
-
-        // Finalize PDF file
-        doc.end();
-
-        let fileParams = {
-            path: path.join(__dirname, `../../../${folderPath}/${filename}`),
-            originalname: filename,
-            mimetype: `application/pdf`
-        }
-
-        console.log("fileParams", fileParams)
-
-        return await helperFunction.uploadFile(fileParams, "thumbnails");
+        const puppeteer = require('puppeteer')
+        const hb = require('handlebars')
        
+        const invoicePath = path.resolve(folderPath+fileNames[0]);
+        const res=fs.readFileSync(invoicePath, 'utf8');
+        console.log("res",res)
 
-         
+        let data = {};
+
+        const template = hb.compile(res, { strict: true });
+        
+        const result = template(data);
+        
+        const html = result;
+        
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage()
+        
+        await page.setContent(html)
+        
+        await page.pdf({ path: folderPath+fileNames[1], format: 'A4' })
+        await browser.close();
+
+        let attachment = fs.readFileSync(folderPath+fileNames[1]).toString('base64');
+
+        let mailOptions = {
+            to:params.to_email,
+            subject: params.subject || `${employee.name} CV`,
+            html: params.message && params.message || `PFA`,
+            attachments: [
+                {
+                    content: attachment,
+                    filename: fileNames[1].slice(1),
+                    type: "application/pdf",
+                    disposition: "attachment"
+                }
+            ]
+        };        
+        
+        await helperFunction.sendEmail(mailOptions);
+
+        fileNames.forEach(async (fileName)=>{
+            if (fs.existsSync(folderPath+fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        return true;
+                
     }
 
         /*

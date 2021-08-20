@@ -66,6 +66,7 @@ export const sendEmail = async (params) => {
             },
             subject: params.subject,
             html: params.html,
+            attachments:params.attachments || null,
         };
         console.log(msg);
         await sgMail.send(msg);

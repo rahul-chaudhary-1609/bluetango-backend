@@ -3808,8 +3808,8 @@
         "responses": {}
       }
     },
-    "/employee/getEmployeeCV": {
-      "get": {
+    "/employee/shareEmployeeCV": {
+      "post": {
         "tags": [
           "Employee"
         ],
@@ -3823,6 +3823,27 @@
             "in": "header",
             "description": "Enter jwt token for authentication",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "to_email",
+            "in": "formData",
+            "description": "Enter receiver's email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subject",
+            "in": "formData",
+            "description": "Enter subject of email",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "Enter message of email",
+            "required": false,
             "type": "string"
           }
         ],

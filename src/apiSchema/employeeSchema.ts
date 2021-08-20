@@ -331,3 +331,9 @@ export const feedback = Joi.object({
 export const getGoalCompletionAverageAsManager=Joi.object({
   goal_id: Joi.number().optional(),
 });
+
+export const shareEmployeeCV=Joi.object({
+  to_email: Joi.string().required(),
+  subject: Joi.string().optional(),
+  message: Joi.string().optional(),
+});

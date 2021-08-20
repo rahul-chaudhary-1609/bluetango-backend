@@ -91,6 +91,7 @@ exports.sendEmail = (params) => __awaiter(void 0, void 0, void 0, function* () {
             },
             subject: params.subject,
             html: params.html,
+            attachments: params.attachments || null,
         };
         console.log(msg);
         yield sgMail.send(msg);
