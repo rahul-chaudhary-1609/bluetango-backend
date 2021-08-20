@@ -838,7 +838,8 @@ class EmployeeServices {
             const result = template(data);
             const html = result;
             const browser = yield puppeteer.launch({
-                executablePath: '/usr/bin/chromium-browser'
+                executablePath: '/usr/bin/chromium-browser',
+                args: ["--no-sandbox"]
             });
             const page = yield browser.newPage();
             yield page.setContent(html);

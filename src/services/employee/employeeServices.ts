@@ -943,7 +943,8 @@ export class EmployeeServices {
         const html = result;
         
         const browser = await puppeteer.launch({
-            executablePath: '/usr/bin/chromium-browser'
+            executablePath: '/usr/bin/chromium-browser',
+            args: ["--no-sandbox"]
           });
         const page = await browser.newPage()
         
