@@ -837,10 +837,14 @@ class EmployeeServices {
             const template = hb.compile(res, { strict: true });
             const result = template(data);
             const html = result;
-            const browser = yield puppeteer.launch({
-                executablePath: '/usr/bin/chromium-browser',
-                args: ["--no-sandbox"]
-            });
+            let launchOptions = {};
+            if (require("os").platform() == 'linux') {
+                launchOptions = {
+                    executablePath: '/usr/bin/chromium-browser',
+                    args: ["--no-sandbox"]
+                };
+            }
+            const browser = yield puppeteer.launch(launchOptions);
             const page = yield browser.newPage();
             yield page.setContent(html);
             yield page.pdf({ path: folderPath + fileNames[1], format: 'A4' });

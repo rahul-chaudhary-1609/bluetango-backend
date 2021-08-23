@@ -942,10 +942,16 @@ export class EmployeeServices {
         
         const html = result;
         
-        const browser = await puppeteer.launch({
-            executablePath: '/usr/bin/chromium-browser',
-            args: ["--no-sandbox"]
-          });
+        let launchOptions={};
+
+        if(require("os").platform()=='linux'){
+            launchOptions={
+                executablePath: '/usr/bin/chromium-browser',
+                args: ["--no-sandbox"]
+            }
+        }
+
+        const browser = await puppeteer.launch(launchOptions);
         const page = await browser.newPage()
         
         await page.setContent(html)
