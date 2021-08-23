@@ -185,8 +185,10 @@ employeeRoute.get("/getAchievementLikesList/:achievement_id", validators.trimmer
 employeeRoute.get("/getAchievementHighFivesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementHighFivesList), achievementController.getAchievementHighFivesList);
 /* get Goal Completion Average As Manager*/
 employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getGoalCompletionAverageAsManager), goalController.getGoalCompletionAverageAsManager);
-/* get Goal Completion Average As Manager*/
+/* share Employee CV*/
 employeeRoute.post("/shareEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.shareEmployeeCV), employeeController.shareEmployeeCV);
+/* get Employee CV*/
+employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCV);
 /* contact us for employee */
 employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
 module.exports = employeeRoute;

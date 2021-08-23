@@ -3813,7 +3813,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "Api to get Employee CV",
+        "description": "Api to share Employee CV",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -3844,6 +3844,27 @@
             "in": "formData",
             "description": "Enter message of email",
             "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getEmployeeCV": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get Employee CV",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
             "type": "string"
           }
         ],

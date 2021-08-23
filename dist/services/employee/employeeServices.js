@@ -779,27 +779,15 @@ class EmployeeServices {
             return videos;
         });
     }
-    shareEmployeeCV(params, user) {
+    generateHTML(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
-                where: {
-                    id: user.uid,
-                }
-            }));
-            //const doc = new PDFDocument();
-            let folderPath = `./src/upload`;
-            let fileNames = [`/${employee.name}_${employee.id}.html`, `/${employee.name}_${employee.id}.pdf`];
-            fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
-                if (fs.existsSync(folderPath + fileName)) {
-                    yield multerParser_1.deleteFile(fileName);
-                }
-            }));
+            let { employee, folderPath, fileNames } = params;
             let htmlHeader = `<!DOCTYPE html>
             <html>
             <head>
                 <meta charset='utf-8'>
                 <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-                <title>PDF Title</title>
+                <title>${employee.name}</title>
                 <meta name='viewport' content='width=device-width, initial-scale=1'>
                 
             </head>`;
@@ -815,24 +803,37 @@ class EmployeeServices {
                         return ele.charAt(0).toUpperCase() + ele.slice(1);
                 }).join(" ")}</th>
                     <td style="opacity: 0.8;">:</td>
-                    <td style="opacity: 0.8;">${employee[key]}</td>
+                    <td style="opacity: 0.8;">${key == 'profile_pic_url' ? `<img src='${employee[key]}' />` : employee[key]}</td>
                 </tr>`;
             }
             let htmlFooter = `</table></body>
             </html>`;
             fs.writeFileSync(folderPath + fileNames[0], htmlHeader + htmlBody + htmlFooter);
-            // let fileParams = {
-            //     path: path.join(__dirname, `../../../${folderPath}/${filename}`),
-            //     originalname: filename,
-            //     mimetype: `application/pdf`
-            // }
-            // console.log("fileParams", fileParams)
-            // return await helperFunction.uploadFile(fileParams, "thumbnails");
+        });
+    }
+    shareEmployeeCV(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                }
+            }));
+            let folderPath = `./src/upload`;
+            let fileNames = [
+                `/${employee.name}_${employee.id}.html`,
+                `/${employee.name}_${employee.id}.pdf`,
+            ];
+            fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
+                if (fs.existsSync(folderPath + fileName)) {
+                    yield multerParser_1.deleteFile(fileName);
+                }
+            }));
+            yield this.generateHTML({ employee, folderPath, fileNames });
             const puppeteer = require('puppeteer');
             const hb = require('handlebars');
             const invoicePath = path.resolve(folderPath + fileNames[0]);
             const res = fs.readFileSync(invoicePath, 'utf8');
-            console.log("res", res);
+            //console.log("res",res)
             let data = {};
             const template = hb.compile(res, { strict: true });
             const result = template(data);
@@ -870,6 +871,43 @@ class EmployeeServices {
                 }
             }));
             return true;
+        });
+    }
+    getEmployeeCV(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                }
+            }));
+            let folderPath = `./src/upload`;
+            let fileNames = [
+                `/${employee.name}_${employee.id}.html`,
+                `/${employee.name}_${employee.id}.docx`,
+            ];
+            fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
+                if (fs.existsSync(folderPath + fileName)) {
+                    yield multerParser_1.deleteFile(fileName);
+                }
+            }));
+            yield this.generateHTML({ employee, folderPath, fileNames });
+            const util = require('util');
+            const exec = util.promisify(require('child_process').exec);
+            let panDocCMD = `pandoc -f html ${folderPath + fileNames[0]} -o ${folderPath + fileNames[1]}`;
+            console.log("pandoc ", yield exec(panDocCMD));
+            let fileParams = {
+                path: path.join(__dirname, `../../../${folderPath}${fileNames[1]}`),
+                originalname: fileNames[1],
+                mimetype: `application/pdfapplication/vnd.openxmlformats-officedocument.wordprocessingml.document`
+            };
+            let docURL = yield helperFunction.uploadFile(fileParams, "thumbnails");
+            console.log("fileParams", fileParams);
+            fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
+                if (fs.existsSync(folderPath + fileName)) {
+                    yield multerParser_1.deleteFile(fileName);
+                }
+            }));
+            return docURL;
         });
     }
     /*

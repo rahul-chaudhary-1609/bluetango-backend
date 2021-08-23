@@ -397,6 +397,21 @@ export class EmployeeController {
     }
 
       /**
+    * get Employee CV
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+       public async getEmployeeCV(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getEmployeeCV(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+      /**
     * get Popup Reminders
     * @param req :[body data]
     * @param res : [data object]

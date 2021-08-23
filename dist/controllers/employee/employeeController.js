@@ -452,6 +452,22 @@ class EmployeeController {
         });
     }
     /**
+  * get Employee CV
+  * @param req :[body data]
+  * @param res : [data object]
+  */
+    getEmployeeCV(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getEmployeeCV(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
   * get Popup Reminders
   * @param req :[body data]
   * @param res : [data object]
