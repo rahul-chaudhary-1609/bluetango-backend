@@ -83,7 +83,7 @@ exports.uploadFile = (params, folderName) => __awaiter(void 0, void 0, void 0, f
  */
 exports.sendEmail = (params) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const msg = {
+        let msg = {
             to: params.to,
             from: {
                 email: process.env.SENDGRID_FROM_EMAIL,
@@ -91,8 +91,19 @@ exports.sendEmail = (params) => __awaiter(void 0, void 0, void 0, function* () {
             },
             subject: params.subject,
             html: params.html,
-            attachments: params.attachments || null,
         };
+        if (params.attachments) {
+            msg = {
+                to: params.to,
+                from: {
+                    email: process.env.SENDGRID_FROM_EMAIL,
+                    name: 'BluXinga'
+                },
+                subject: params.subject,
+                html: params.html,
+                attachments: params.attachments,
+            };
+        }
         console.log(msg);
         yield sgMail.send(msg);
     }

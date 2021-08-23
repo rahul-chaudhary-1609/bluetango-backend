@@ -58,7 +58,7 @@ export const uploadFile = async (params: any, folderName: any) => {
  */
 export const sendEmail = async (params) => {
     try {
-        const msg = {
+        let msg =<any> {
             to: params.to,
             from: {
                 email: process.env.SENDGRID_FROM_EMAIL,
@@ -66,8 +66,20 @@ export const sendEmail = async (params) => {
             },
             subject: params.subject,
             html: params.html,
-            attachments:params.attachments || null,
         };
+
+        if(params.attachments){
+            msg =<any> {
+                to: params.to,
+                from: {
+                    email: process.env.SENDGRID_FROM_EMAIL,
+                    name: 'BluXinga'
+                },
+                subject: params.subject,
+                html: params.html,
+                attachments:params.attachments,
+            };
+        }
         console.log(msg);
         await sgMail.send(msg);
     } catch (error) {
