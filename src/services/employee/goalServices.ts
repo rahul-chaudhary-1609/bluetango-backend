@@ -265,8 +265,6 @@ export class GoalServices {
             goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
             goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
 
-            delete goal.team_goal_assigns;
-
         }
 
         return { count, rows}
