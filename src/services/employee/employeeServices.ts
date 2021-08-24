@@ -913,8 +913,8 @@ export class EmployeeServices {
 
         let folderPath=`./src/upload`;
         let fileNames=[
-            `/${employee.name}_${employee.id}.html`,
-            `/${employee.name}_${employee.id}.pdf`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.pdf`,
         ];
 
         fileNames.forEach(async (fileName)=>{
@@ -996,8 +996,8 @@ export class EmployeeServices {
 
         let folderPath=`./src/upload`;
         let fileNames=[
-            `/${employee.name}_${employee.id}.html`,
-            `/${employee.name}_${employee.id}.docx`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.docx`,
         ];
 
         fileNames.forEach(async (fileName)=>{

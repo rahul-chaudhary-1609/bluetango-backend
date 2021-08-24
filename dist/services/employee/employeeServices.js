@@ -820,8 +820,8 @@ class EmployeeServices {
             }));
             let folderPath = `./src/upload`;
             let fileNames = [
-                `/${employee.name}_${employee.id}.html`,
-                `/${employee.name}_${employee.id}.pdf`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.pdf`,
             ];
             fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
                 if (fs.existsSync(folderPath + fileName)) {
@@ -882,8 +882,8 @@ class EmployeeServices {
             }));
             let folderPath = `./src/upload`;
             let fileNames = [
-                `/${employee.name}_${employee.id}.html`,
-                `/${employee.name}_${employee.id}.docx`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.docx`,
             ];
             fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
                 if (fs.existsSync(folderPath + fileName)) {
