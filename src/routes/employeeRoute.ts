@@ -263,7 +263,7 @@ employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.
 employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateBody(employeeSchema.toggleGoalAsPrimary), goalController.toggleGoalAsPrimary);
 
 /* mark Goals As Primary */
-employeeRoute.put("/markGoalsAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
+employeeRoute.put("/markGoalsAsPrimary", tokenValidator.validateEmployeeToken,joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
 
 
 export = employeeRoute;
