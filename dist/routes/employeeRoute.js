@@ -191,5 +191,7 @@ employeeRoute.post("/shareEmployeeCV", validators.trimmer, tokenValidator.valida
 employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCV);
 /* contact us for employee */
 employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
+/* contact us for employee */
+employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.toggleGoalAsPrimary), goalController.toggleGoalAsPrimary);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

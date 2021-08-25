@@ -143,6 +143,9 @@ export const MESSAGES = {
   payment_faliled: `Payment failed!`,
   employer_free_trial_already_started: `Free trial already started`,
   employer_free_trial_already_exhausted: `Free trial already exhausted`,
+  goal_not_assigned:`This goal is not assigned to you`,
+  goal_assign_not_found:`No goal assined found with this id`,
+  only_four_primary_goals_are_allowed:`Only 4 goals can be marked as primary at a time.`,
 }
 
 
@@ -254,6 +257,11 @@ export const STATUS = {
   inactive: 0,
   active: 1,
   deleted: 2,
+}
+
+export const PRIMARY_GOAL = {
+  no: 0,
+  yes: 1,
 }
 
 export const CHAT_ROOM_TYPE = {

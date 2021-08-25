@@ -337,3 +337,7 @@ export const shareEmployeeCV=Joi.object({
   subject: Joi.string().optional(),
   message: Joi.string().optional(),
 });
+
+export const toggleGoalAsPrimary=Joi.object({
+  team_goal_assign_id: Joi.number().required(),
+});

@@ -262,6 +262,22 @@ class GoalController {
             }
         });
     }
+    /**
+ * mark Goal As Primary
+ * @param req :[body data]
+ * @param res : [data object]
+ */
+    toggleGoalAsPrimary(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.toggleGoalAsPrimary(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.GoalController = GoalController;
 //# sourceMappingURL=goalController.js.map

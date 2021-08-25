@@ -207,5 +207,19 @@ export class GoalController {
         }
     }
 
+       /**
+    * mark Goal As Primary
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+        public async toggleGoalAsPrimary(req: any, res: any, next: any) {
+            try {
+                const responseFromService = await goalServices.toggleGoalAsPrimary(req.body,req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+    
+            } catch (e) {
+                next(e)
+            }
+        }
     
 }

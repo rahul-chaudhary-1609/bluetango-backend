@@ -412,7 +412,7 @@ export class EmployeeController {
     }
 
       /**
-    * get Popup Reminders
+    * get Goal Submit Reminders
     * @param req :[body data]
     * @param res : [data object]
     */

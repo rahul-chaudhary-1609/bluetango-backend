@@ -3892,6 +3892,34 @@
         "responses": {}
       }
     },
+    "/employee/toggleGoalAsPrimary": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to mark Goal As Primary",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "team_goal_assign_id",
+            "in": "formData",
+            "description": "Enter team goal assign id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getAchievements": {
       "get": {
         "tags": [

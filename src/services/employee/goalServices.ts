@@ -756,6 +756,7 @@ export class GoalServices {
 
         let teamGoalAssignCompletion = await helperFunction.convertPromiseToObject(
             await teamGoalAssignCompletionByEmployeeModel.findAll({
+                attributes: ['id','goal_id','team_goal_assign_id',['description','employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status','createdAt', 'updatedAt'],
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
@@ -881,6 +882,44 @@ export class GoalServices {
         
         return goals
 
+    }
+
+    public async toggleGoalAsPrimary(params:any,user:any){       
+
+        let teamGoalAssign= await teamGoalAssignModel.findByPk(parseInt(params.team_goal_assign_id));
+        
+        if(teamGoalAssign){
+            if(teamGoalAssign.employee_id==user.uid){
+
+                if(teamGoalAssign.is_primary==constants.PRIMARY_GOAL.no){
+                    let primaryGoalCount=await teamGoalAssignModel.count({
+                        where:{
+                            employee_id:parseInt(user.uid),
+                            is_primary:constants.PRIMARY_GOAL.yes
+                        }
+                    })
+
+                    if(primaryGoalCount<=4){
+                        teamGoalAssign.is_primary=constants.PRIMARY_GOAL.yes;
+                    }else{
+                        throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+                    }
+
+                }else{
+                    teamGoalAssign.is_primary=constants.PRIMARY_GOAL.no;
+                }
+
+                teamGoalAssign.save();            
+
+                return true;
+            }else{
+                throw new Error(constants.MESSAGES.goal_not_assigned);
+            }
+        }else{
+            throw new Error(constants.MESSAGES.goal_assign_not_found);
+        }
+
+        
     }
 
 

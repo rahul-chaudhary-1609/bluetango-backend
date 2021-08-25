@@ -696,6 +696,7 @@ class GoalServices {
                 order: [["createdAt", "DESC"]]
             }));
             let teamGoalAssignCompletion = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
+                attributes: ['id', 'goal_id', 'team_goal_assign_id', ['description', 'employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status', 'createdAt', 'updatedAt'],
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
@@ -790,6 +791,40 @@ class GoalServices {
                 delete goal.team_goal_assigns;
             }
             return goals;
+        });
+    }
+    toggleGoalAsPrimary(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let teamGoalAssign = yield teamGoalAssign_1.teamGoalAssignModel.findByPk(parseInt(params.team_goal_assign_id));
+            if (teamGoalAssign) {
+                if (teamGoalAssign.employee_id == user.uid) {
+                    if (teamGoalAssign.is_primary == constants.PRIMARY_GOAL.no) {
+                        let primaryGoalCount = yield teamGoalAssign_1.teamGoalAssignModel.count({
+                            where: {
+                                employee_id: parseInt(user.uid),
+                                is_primary: constants.PRIMARY_GOAL.yes
+                            }
+                        });
+                        if (primaryGoalCount <= 4) {
+                            teamGoalAssign.is_primary = constants.PRIMARY_GOAL.yes;
+                        }
+                        else {
+                            throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+                        }
+                    }
+                    else {
+                        teamGoalAssign.is_primary = constants.PRIMARY_GOAL.no;
+                    }
+                    teamGoalAssign.save();
+                    return true;
+                }
+                else {
+                    throw new Error(constants.MESSAGES.goal_not_assigned);
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.goal_assign_not_found);
+            }
         });
     }
 }
