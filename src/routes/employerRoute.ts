@@ -106,6 +106,15 @@ employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerTok
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, upload.single('file'), authController.uploadFile);
 
+/* add Edit Attributes */
+employerRoute.post("/addEditAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addEditAttributes), managementController.addEditAttributes);
+
+/* delete Attribute */
+employerRoute.delete("/deleteAttribute/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteAttribute), managementController.deleteAttribute);
+
+/* toggle Attribute Status */
+employerRoute.put("/toggleAttributeStatus/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.toggleAttributeStatus), managementController.toggleAttributeStatus);
+
 
 
 export = employerRoute;

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateManager = exports.getManagerList = exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.toggleAttributeStatus = exports.deleteAttribute = exports.addEditAttributes = exports.updateManager = exports.getManagerList = exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -189,5 +189,17 @@ exports.getManagerList = joi_1.default.object({
 exports.updateManager = joi_1.default.object({
     current_manager_id: joi_1.default.number().required(),
     new_manager_id: joi_1.default.number().required(),
+});
+exports.addEditAttributes = joi_1.default.object({
+    attribute_id: joi_1.default.number().optional(),
+    attribute_name: joi_1.default.string().required(),
+    attribute_label: joi_1.default.string().required(),
+    attribute_comment: joi_1.default.string().optional(),
+});
+exports.deleteAttribute = joi_1.default.object({
+    attribute_id: joi_1.default.number().required(),
+});
+exports.toggleAttributeStatus = joi_1.default.object({
+    attribute_id: joi_1.default.number().required(),
 });
 //# sourceMappingURL=employerSchema.js.map

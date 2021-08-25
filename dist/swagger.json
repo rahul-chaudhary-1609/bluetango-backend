@@ -5545,6 +5545,111 @@
                 "responses": {}
             }
         },
+        "/employer/addEditAttributes": {
+            "post": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer to add Edit Attributes",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "attribute_id",
+                        "in": "formData",
+                        "description": "Enter attribute id if you want to edit any attribute",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "attribute_name",
+                        "in": "formData",
+                        "description": "Enter attribute name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "attribute_label",
+                        "in": "formData",
+                        "description": "Enter attribute label",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "attribute_comment",
+                        "in": "formData",
+                        "description": "Enter attribute comment",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/deleteAttribute/{attribute_id}": {
+            "delete": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer to delete Attribute",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "attribute_id",
+                        "in": "path",
+                        "description": "Enter attribute id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/toggleAttributeStatus/{attribute_id}": {
+            "put": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Employer to toggle Attribute Status",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "attribute_id",
+                        "in": "path",
+                        "description": "Enter attribute id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/login": {
             "post": {
                 "tags": [

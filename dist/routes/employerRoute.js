@@ -91,5 +91,11 @@ employerRoute.get("/paymentFailed", paymentController.paymentFailed);
 employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerToken, paymentController.getBraintreeClientToken);
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
+/* add Edit Attributes */
+employerRoute.post("/addEditAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addEditAttributes), managementController.addEditAttributes);
+/* delete Attribute */
+employerRoute.delete("/deleteAttribute/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteAttribute), managementController.deleteAttribute);
+/* toggle Attribute Status */
+employerRoute.put("/toggleAttributeStatus/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.toggleAttributeStatus), managementController.toggleAttributeStatus);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map

@@ -10,6 +10,7 @@ import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement
 import { teamGoalAssignModel } from "../../models/teamGoalAssign"
 import { emojiModel } from "../../models/emoji";
 import { groupChatRoomModel } from "../../models/groupChatRoom";
+import { attributeModel } from "../../models/attributes";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -542,5 +543,128 @@ export class EmployeeManagement {
 
         return true;
     }
+
+    public async addEditAttributes(params:any, user:any){
+
+        let duplicateAttribute=null;
+
+        if(params.attribute_id){
+            duplicateAttribute=await attributeModel.findOne({
+                where:{
+                    employer_id:user.uid,
+                    [Op.or]:[
+                        {
+                            name:params.attribute_name,
+                        },
+                        {
+                            label:params.attribute_label,
+                        }
+                    ],
+                    status:[constants.STATUS.active,constants.STATUS.inactive],
+                    id:{
+                        [Op.notIn]:[params.attribute_id]
+                    }
+                }
+            })
+        }else{
+            duplicateAttribute=await attributeModel.findOne({
+                where:{
+                    employer_id:user.uid,
+                    [Op.or]:[
+                        {
+                            name:params.attribute_name,
+                        },
+                        {
+                            label:params.attribute_label,
+                        }
+                    ],
+                    status:[constants.STATUS.active,constants.STATUS.inactive],
+                }
+            })
+        }
+
+        if(!duplicateAttribute){
+
+            if(params.attribute_id){
+                let attribute=await attributeModel.findOne({
+                    where:{
+                        id:params.attribute_id,
+                        employer_id:user.uid,
+                    }
+                })
+
+                if(attribute){
+                    attribute.name=params.attribute_name;
+                    attribute.label=params.attribute_label;
+                    attribute.comment=params.attribute_comment || null;
+
+                    attribute.save();
+
+                    return await helperFunction.convertPromiseToObject(attribute);
+                }else{
+                    throw new Error(constants.MESSAGES.attribute_not_found)
+                }
+            }else{ 
+                
+                let attributeObj=<any>{
+                    employer_id:user.uid,
+                    name:params.attribute_name,
+                    label:params.attribute_label,
+                    comment:params.attribute_comment || null,
+                }
+
+                return await helperFunction.convertPromiseToObject(await attributeModel.create(attributeObj)); 
+        
+            }
+        }else{
+            throw new Error(constants.MESSAGES.attribute_already_added)
+        }
+    }
+
+    public async deleteAttribute(params:any,user:any){
+        let attribute=await attributeModel.findOne({
+            where:{
+                id:params.attribute_id,
+                employer_id:user.uid,
+                status:[constants.STATUS.active,constants.STATUS.inactive],
+            }
+        })
+
+        if(attribute){
+            
+            attribute.status=constants.STATUS.deleted;
+            attribute.save();
+
+            return true;
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
+    }
+
+    public async toggleAttributeStatus(params:any,user:any){
+        let attribute=await attributeModel.findOne({
+            where:{
+                id:params.attribute_id,
+                employer_id:user.uid,
+                status:[constants.STATUS.active,constants.STATUS.inactive],
+            }
+        })
+
+        if(attribute){
+            
+            if(attribute.status==constants.STATUS.active){
+                attribute.status=constants.STATUS.inactive;
+            }else{
+                attribute.status=constants.STATUS.active;
+            }
+
+            attribute.save();
+
+            return true;
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
+    }
+        
 
 }

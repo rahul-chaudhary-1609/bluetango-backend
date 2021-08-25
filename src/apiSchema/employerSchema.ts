@@ -182,3 +182,20 @@ export const updateManager = Joi.object({
   current_manager_id: Joi.number().required(),
   new_manager_id: Joi.number().required(),
 })
+
+export const addEditAttributes = Joi.object({
+  attribute_id:Joi.number().optional(),
+  attribute_name:Joi.string().required(),
+  attribute_label:Joi.string().required(),
+  attribute_comment:Joi.string().optional(),
+})
+
+export const deleteAttribute = Joi.object({
+  attribute_id:Joi.number().required(),
+})
+
+export const toggleAttributeStatus = Joi.object({
+  attribute_id:Joi.number().required(),
+})
+
+

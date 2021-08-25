@@ -153,6 +153,54 @@ class EmployeeController {
             }
         });
     }
+    /**
+    * add Edit Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    addEditAttributes(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.addEditAttributes(req.body, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * delete Attribute
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    deleteAttribute(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.deleteAttribute(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * toggle Attribute Status
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    toggleAttributeStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.toggleAttributeStatus(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployeeController = EmployeeController;
 //# sourceMappingURL=managementController.js.map

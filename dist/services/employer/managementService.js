@@ -44,6 +44,7 @@ const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const emoji_1 = require("../../models/emoji");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
+const attributes_1 = require("../../models/attributes");
 var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
@@ -474,6 +475,121 @@ class EmployeeManagement {
                 returning: true
             }));
             return true;
+        });
+    }
+    addEditAttributes(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let duplicateAttribute = null;
+            if (params.attribute_id) {
+                duplicateAttribute = yield attributes_1.attributeModel.findOne({
+                    where: {
+                        employer_id: user.uid,
+                        [Op.or]: [
+                            {
+                                name: params.attribute_name,
+                            },
+                            {
+                                label: params.attribute_label,
+                            }
+                        ],
+                        status: [constants.STATUS.active, constants.STATUS.inactive],
+                        id: {
+                            [Op.notIn]: [params.attribute_id]
+                        }
+                    }
+                });
+            }
+            else {
+                duplicateAttribute = yield attributes_1.attributeModel.findOne({
+                    where: {
+                        employer_id: user.uid,
+                        [Op.or]: [
+                            {
+                                name: params.attribute_name,
+                            },
+                            {
+                                label: params.attribute_label,
+                            }
+                        ],
+                        status: [constants.STATUS.active, constants.STATUS.inactive],
+                    }
+                });
+            }
+            if (!duplicateAttribute) {
+                if (params.attribute_id) {
+                    let attribute = yield attributes_1.attributeModel.findOne({
+                        where: {
+                            id: params.attribute_id,
+                            employer_id: user.uid,
+                        }
+                    });
+                    if (attribute) {
+                        attribute.name = params.attribute_name;
+                        attribute.label = params.attribute_label;
+                        attribute.comment = params.attribute_comment || null;
+                        attribute.save();
+                        return yield helperFunction.convertPromiseToObject(attribute);
+                    }
+                    else {
+                        throw new Error(constants.MESSAGES.attribute_not_found);
+                    }
+                }
+                else {
+                    let attributeObj = {
+                        employer_id: user.uid,
+                        name: params.attribute_name,
+                        label: params.attribute_label,
+                        comment: params.attribute_comment || null,
+                    };
+                    return yield helperFunction.convertPromiseToObject(yield attributes_1.attributeModel.create(attributeObj));
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_already_added);
+            }
+        });
+    }
+    deleteAttribute(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                attribute.status = constants.STATUS.deleted;
+                attribute.save();
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    toggleAttributeStatus(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                if (attribute.status == constants.STATUS.active) {
+                    attribute.status = constants.STATUS.inactive;
+                }
+                else {
+                    attribute.status = constants.STATUS.active;
+                }
+                attribute.save();
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
         });
     }
 }

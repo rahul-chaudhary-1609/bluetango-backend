@@ -118,6 +118,53 @@ export class EmployeeController {
         }
     }
 
+    /**
+    * add Edit Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+     public async addEditAttributes(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.addEditAttributes(req.body, req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+
+    /**
+    * delete Attribute
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+     public async deleteAttribute(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.deleteAttribute(req.params, req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+
+    /**
+    * toggle Attribute Status
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+     public async toggleAttributeStatus(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.toggleAttributeStatus(req.params, req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     
 
 }
