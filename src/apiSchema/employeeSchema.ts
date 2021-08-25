@@ -341,3 +341,10 @@ export const shareEmployeeCV=Joi.object({
 export const toggleGoalAsPrimary=Joi.object({
   team_goal_assign_id: Joi.number().required(),
 });
+
+export const markGoalsAsPrimary=Joi.object({
+  goals:Joi.array().items(Joi.object().keys({
+            team_goal_assign_id: Joi.number().required(),
+            is_primary: Joi.number().valid(0,1).required(),
+        })).required(),
+});

@@ -922,5 +922,45 @@ export class GoalServices {
         
     }
 
+    public async markGoalsAsPrimary(params:any,user:any){  
+        
+        let primaryGoals=params.goals.filter((goal)=>goal.is_primary==constants.PRIMARY_GOAL.yes);
+        
+        if(primaryGoals.length==4){
+            
+            await teamGoalAssignModel.update(
+                {
+                    is_primary:constants.PRIMARY_GOAL.yes,
+                },
+                {
+                    where:{
+                        id:primaryGoals.map((goal)=>goal.team_goal_assign_id),
+                        employee_id:user.uid,
+                    }
+                }
+            )
+
+            await teamGoalAssignModel.update(
+                {
+                    is_primary:constants.PRIMARY_GOAL.no,
+                },
+                {
+                    where:{
+                        id:{
+                            [Op.notIn]:primaryGoals.map((goal)=>goal.team_goal_assign_id)
+                        },
+                        employee_id:user.uid,
+                    }
+                }
+            )
+            
+        }else{
+            throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+        }
+
+    }
+
+    
+
 
 }

@@ -189,9 +189,11 @@ employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, toke
 employeeRoute.post("/shareEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.shareEmployeeCV), employeeController.shareEmployeeCV);
 /* get Employee CV*/
 employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCV);
-/* contact us for employee */
+/* /get Goal Submit Reminders */
 employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
-/* contact us for employee */
+/* toggle Goal As Primary */
 employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.toggleGoalAsPrimary), goalController.toggleGoalAsPrimary);
+/* mark Goals As Primary */
+employeeRoute.put("/markGoalsAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

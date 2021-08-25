@@ -166,7 +166,7 @@ exports.MESSAGES = {
     employer_free_trial_already_exhausted: `Free trial already exhausted`,
     goal_not_assigned: `This goal is not assigned to you`,
     goal_assign_not_found: `No goal assined found with this id`,
-    only_four_primary_goals_are_allowed: `Only 4 goals can be marked as primary at a time.`,
+    only_four_primary_goals_are_allowed: `Exactly 4 goals can be marked as primary at a time. No less no more`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {

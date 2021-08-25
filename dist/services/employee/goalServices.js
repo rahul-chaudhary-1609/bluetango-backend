@@ -827,6 +827,34 @@ class GoalServices {
             }
         });
     }
+    markGoalsAsPrimary(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let primaryGoals = params.goals.filter((goal) => goal.is_primary == constants.PRIMARY_GOAL.yes);
+            if (primaryGoals.length == 4) {
+                yield teamGoalAssign_1.teamGoalAssignModel.update({
+                    is_primary: constants.PRIMARY_GOAL.yes,
+                }, {
+                    where: {
+                        id: primaryGoals.map((goal) => goal.team_goal_assign_id),
+                        employee_id: user.uid,
+                    }
+                });
+                yield teamGoalAssign_1.teamGoalAssignModel.update({
+                    is_primary: constants.PRIMARY_GOAL.no,
+                }, {
+                    where: {
+                        id: {
+                            [Op.notIn]: primaryGoals.map((goal) => goal.team_goal_assign_id)
+                        },
+                        employee_id: user.uid,
+                    }
+                });
+            }
+            else {
+                throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+            }
+        });
+    }
 }
 exports.GoalServices = GoalServices;
 //# sourceMappingURL=goalServices.js.map
