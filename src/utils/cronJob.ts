@@ -204,7 +204,7 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
                 isActiveInPastTenDays=true;
             }
 
-            if(!isActiveInPastTenDays){
+            if(!isActiveInPastTenDays && goals && goals.length>0){
 
                 let notificationObj = <any>{
                     type_id: employee.id,

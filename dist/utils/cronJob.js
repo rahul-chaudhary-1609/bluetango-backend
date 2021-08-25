@@ -198,7 +198,7 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
             else {
                 isActiveInPastTenDays = true;
             }
-            if (!isActiveInPastTenDays) {
+            if (!isActiveInPastTenDays && goals && goals.length > 0) {
                 let notificationObj = {
                     type_id: employee.id,
                     sender_id: employee.id,
