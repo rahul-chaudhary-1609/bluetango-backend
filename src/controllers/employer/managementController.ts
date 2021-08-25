@@ -126,7 +126,37 @@ export class EmployeeController {
      public async addEditAttributes(req: any, res: any) {
         try {
             const responseFromService = await employeeService.addEditAttributes(req.body, req.user);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * get Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+     public async getAttributes(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.getAttributes( req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    /**
+    * get Attribute Details
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+     public async getAttributeDetails(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.getAttributeDetails(req.params, req.user);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
@@ -142,7 +172,7 @@ export class EmployeeController {
      public async deleteAttribute(req: any, res: any) {
         try {
             const responseFromService = await employeeService.deleteAttribute(req.params, req.user);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
@@ -158,7 +188,7 @@ export class EmployeeController {
      public async toggleAttributeStatus(req: any, res: any) {
         try {
             const responseFromService = await employeeService.toggleAttributeStatus(req.params, req.user);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);

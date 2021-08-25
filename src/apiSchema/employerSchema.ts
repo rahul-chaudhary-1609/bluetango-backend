@@ -190,6 +190,10 @@ export const addEditAttributes = Joi.object({
   attribute_comment:Joi.string().optional(),
 })
 
+export const getAttributeDetails = Joi.object({
+  attribute_id:Joi.number().required(),
+})
+
 export const deleteAttribute = Joi.object({
   attribute_id:Joi.number().required(),
 })

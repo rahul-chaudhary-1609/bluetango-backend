@@ -621,6 +621,38 @@ export class EmployeeManagement {
         }
     }
 
+    public async getAttributes(user:any){
+        let attribute=await attributeModel.findAndCountAll({
+            where:{
+                employer_id:user.uid,
+                status:[constants.STATUS.active,constants.STATUS.inactive],
+                order: [["createdAt", "DESC"]]
+            }
+        })
+
+        if(attribute){
+            return await helperFunction.convertPromiseToObject(attribute);
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
+    }
+
+    public async getAttributeDetails(params:any,user:any){
+        let attribute=await attributeModel.findOne({
+            where:{
+                id:params.attribute_id,
+                employer_id:user.uid,
+                status:[constants.STATUS.active,constants.STATUS.inactive],
+            }
+        })
+
+        if(attribute){
+            return await helperFunction.convertPromiseToObject(attribute);
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
+    }
+
     public async deleteAttribute(params:any,user:any){
         let attribute=await attributeModel.findOne({
             where:{

@@ -2,6 +2,7 @@ import _ from "lodash";
 import * as constants from "../../constants";
 import * as helperFunction from "../../utils/helperFunction";
 import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
+import { attributeRatingModel } from "../../models/attributeRatings"
 import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMeasurementComment"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
@@ -90,6 +91,82 @@ export class QualitativeMeasuremetServices {
             throw new Error(constants.MESSAGES.add_qualitative_measure_check);
         }
         
+    }
+
+    public async addAttributeRatings(params: any, user: any) {
+        let date = new Date();
+        date.setMonth(date.getMonth()-3);
+        //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        let checkManagerEmployee = await managerTeamMemberModel.findOne({
+            where: {
+                manager_id: user.uid,
+                team_member_id: params.employee_id
+            }
+        })
+        if (_.isEmpty(checkManagerEmployee)){
+            throw new Error(constants.MESSAGES.invalid_employee_id);
+        }
+
+        let attributeRating = await attributeRatingModel.findOne({
+            where: {
+                manager_id: user.uid,
+                employee_id: params.employee_id,
+                updatedAt:{[Op.gte]: dateCheck }
+            }
+        })
+        params.manager_id = user.uid;
+
+        let employeeData = await employeeModel.findOne({
+            where: { id: params.employee_id}
+        })
+
+        let managerData = await employeeModel.findOne({
+            where: { id: params.employee_id }
+        })
+
+        delete managerData.password
+
+        if (_.isEmpty(attributeRating)) {
+            let resData =  await  attributeRatingModel.create(params);
+
+             // add notification for employee
+             let notificationObj = <any> {
+                type_id: resData.id,
+                sender_id: user.uid,
+                reciever_id: params.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: constants.NOTIFICATION_TYPE.rating,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'New rating',
+                    //message: `your manager has given rating to you`,
+                    message: `Your rating has been updated`,
+                    id: resData.id,
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
+            }
+            await notificationModel.create(notificationObj);
+            // send push notification
+            let notificationData = <any> {
+                title: 'New rating',
+                body: `Your rating has been updated`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'New rating',
+                    message: `Your rating has been updated`,
+                    id: resData.id,
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
+            }
+            await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+
+            return resData;
+        } else {
+            throw new Error(constants.MESSAGES.add_qualitative_measure_check);
+        }
     }
    
     /*

@@ -162,7 +162,39 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeService.addEditAttributes(req.body, req.user);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * get Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    getAttributes(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getAttributes(req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * get Attribute Details
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    getAttributeDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getAttributeDetails(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
@@ -178,7 +210,7 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeService.deleteAttribute(req.params, req.user);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
@@ -194,7 +226,7 @@ class EmployeeController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield employeeService.toggleAttributeStatus(req.params, req.user);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.employee_deleted);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

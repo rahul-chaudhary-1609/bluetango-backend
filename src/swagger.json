@@ -5601,6 +5601,55 @@
         "responses": {}
       }
     },
+    "/employer/getAttributes": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to get Attributes",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getAttributeDetails/{attribute_id}": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to get Attribute details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/deleteAttribute/{attribute_id}": {
       "delete": {
         "tags": [

@@ -549,6 +549,40 @@ class EmployeeManagement {
             }
         });
     }
+    getAttributes(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findAndCountAll({
+                where: {
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                    order: [["createdAt", "DESC"]]
+                }
+            });
+            if (attribute) {
+                return yield helperFunction.convertPromiseToObject(attribute);
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    getAttributeDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                return yield helperFunction.convertPromiseToObject(attribute);
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
     deleteAttribute(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let attribute = yield attributes_1.attributeModel.findOne({

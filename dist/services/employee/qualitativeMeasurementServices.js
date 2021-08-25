@@ -36,6 +36,7 @@ const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
+const attributeRatings_1 = require("../../models/attributeRatings");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const employee_1 = require("../../models/employee");
@@ -79,6 +80,75 @@ class QualitativeMeasuremetServices {
             delete managerData.password;
             if (lodash_1.default.isEmpty(qualitativeMeasurementData)) {
                 let resData = yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
+                // add notification for employee
+                let notificationObj = {
+                    type_id: resData.id,
+                    sender_id: user.uid,
+                    reciever_id: params.employee_id,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'New rating',
+                        //message: `your manager has given rating to you`,
+                        message: `Your rating has been updated`,
+                        id: resData.id,
+                        senderEmplyeeData: managerData,
+                    },
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                let notificationData = {
+                    title: 'New rating',
+                    body: `Your rating has been updated`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'New rating',
+                        message: `Your rating has been updated`,
+                        id: resData.id,
+                        senderEmplyeeData: managerData,
+                    },
+                };
+                yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
+                return resData;
+            }
+            else {
+                throw new Error(constants.MESSAGES.add_qualitative_measure_check);
+            }
+        });
+    }
+    addAttributeRatings(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let date = new Date();
+            date.setMonth(date.getMonth() - 3);
+            //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+            let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            let checkManagerEmployee = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                where: {
+                    manager_id: user.uid,
+                    team_member_id: params.employee_id
+                }
+            });
+            if (lodash_1.default.isEmpty(checkManagerEmployee)) {
+                throw new Error(constants.MESSAGES.invalid_employee_id);
+            }
+            let attributeRating = yield attributeRatings_1.attributeRatingModel.findOne({
+                where: {
+                    manager_id: user.uid,
+                    employee_id: params.employee_id,
+                    updatedAt: { [Op.gte]: dateCheck }
+                }
+            });
+            params.manager_id = user.uid;
+            let employeeData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
+            let managerData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
+            delete managerData.password;
+            if (lodash_1.default.isEmpty(attributeRating)) {
+                let resData = yield attributeRatings_1.attributeRatingModel.create(params);
                 // add notification for employee
                 let notificationObj = {
                     type_id: resData.id,
