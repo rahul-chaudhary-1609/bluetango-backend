@@ -899,7 +899,7 @@ export class GoalServices {
                         }
                     })
 
-                    if(primaryGoalCount<=4){
+                    if(primaryGoalCount<4){
                         teamGoalAssign.is_primary=constants.PRIMARY_GOAL.yes;
                     }else{
                         throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);

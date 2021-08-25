@@ -805,7 +805,7 @@ class GoalServices {
                                 is_primary: constants.PRIMARY_GOAL.yes
                             }
                         });
-                        if (primaryGoalCount <= 4) {
+                        if (primaryGoalCount < 4) {
                             teamGoalAssign.is_primary = constants.PRIMARY_GOAL.yes;
                         }
                         else {
