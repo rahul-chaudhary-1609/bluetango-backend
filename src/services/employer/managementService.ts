@@ -625,9 +625,9 @@ export class EmployeeManagement {
         let attribute=await attributeModel.findAndCountAll({
             where:{
                 employer_id:user.uid,
-                status:[constants.STATUS.active,constants.STATUS.inactive],
-                order: [["createdAt", "DESC"]]
-            }
+                status:[constants.STATUS.active,constants.STATUS.inactive],                
+            },
+            order: [["createdAt", "DESC"]]
         })
 
         if(attribute){

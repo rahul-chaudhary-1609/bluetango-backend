@@ -555,8 +555,8 @@ class EmployeeManagement {
                 where: {
                     employer_id: user.uid,
                     status: [constants.STATUS.active, constants.STATUS.inactive],
-                    order: [["createdAt", "DESC"]]
-                }
+                },
+                order: [["createdAt", "DESC"]]
             });
             if (attribute) {
                 return yield helperFunction.convertPromiseToObject(attribute);

@@ -113,7 +113,7 @@ employerRoute.post("/addEditAttributes", tokenValidator.validateEmployerToken, j
 employerRoute.get("/getAttributes", tokenValidator.validateEmployerToken, managementController.getAttributes);
 
 /* get Attribute details */
-employerRoute.get("/getAttributeDetails/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.getAttributeDetails), managementController.getAttributeDetails);
+employerRoute.get("/getAttributeDetails/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.getAttributeDetails), managementController.getAttributeDetails);
 
 /* delete Attribute */
 employerRoute.delete("/deleteAttribute/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteAttribute), managementController.deleteAttribute);
