@@ -23,6 +23,20 @@ export class QualitativeMeasurementController {
             next(e)
         }
     }
+
+    /**
+    * add Attribute Ratings
+    * @param req :[]
+    * @param res 
+    */
+     public async addAttributeRatings(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await qualitativeMeasuremetServices.addAttributeRatings(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
     
      /**
     * get qualitative measurement
@@ -38,6 +52,20 @@ export class QualitativeMeasurementController {
         }
     }
 
+     /**
+    * get qualitative measurement
+    * @param req :[]
+    * @param res 
+    */
+      public async getAttributeRatings(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await qualitativeMeasuremetServices.getAttributeRatings(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
    * get qualitative measurement details
    * @param req :[]
@@ -46,6 +74,20 @@ export class QualitativeMeasurementController {
     public async getQualitativeMeasurementDetails(req: any, res: any, next: any) {
         try {
             const responseFromService = await qualitativeMeasuremetServices.getQualitativeMeasurementDetails(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    /**
+   * get Attributes
+   * @param req :[]
+   * @param res 
+   */
+     public async getAttributeList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await qualitativeMeasuremetServices.getAttributeList(req.params, req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

@@ -11,6 +11,7 @@ import { teamGoalAssignModel } from "../../models/teamGoalAssign"
 import { emojiModel } from "../../models/emoji";
 import { groupChatRoomModel } from "../../models/groupChatRoom";
 import { attributeModel } from "../../models/attributes";
+import { attributeRatingModel } from "../../models/attributeRatings"
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -493,7 +494,21 @@ export class EmployeeManagement {
             }
         }
 
-            return { employeeDetails, goalStats, qualitativeMeasurements }
+        attributeRatingModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        let attributeRatings =await helperFunction.convertPromiseToObject( await attributeRatingModel.findOne({
+            where: { employee_id: params.employee_id || user.uid },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit:1
+        })) 
+
+        return { employeeDetails, goalStats, qualitativeMeasurements, attributeRatings }
     }
     /**
      * function to delete an employee
@@ -552,14 +567,7 @@ export class EmployeeManagement {
             duplicateAttribute=await attributeModel.findOne({
                 where:{
                     employer_id:user.uid,
-                    [Op.or]:[
-                        {
-                            name:params.attribute_name,
-                        },
-                        {
-                            label:params.attribute_label,
-                        }
-                    ],
+                    name:params.attribute_name,
                     status:[constants.STATUS.active,constants.STATUS.inactive],
                     id:{
                         [Op.notIn]:[params.attribute_id]
@@ -570,14 +578,7 @@ export class EmployeeManagement {
             duplicateAttribute=await attributeModel.findOne({
                 where:{
                     employer_id:user.uid,
-                    [Op.or]:[
-                        {
-                            name:params.attribute_name,
-                        },
-                        {
-                            label:params.attribute_label,
-                        }
-                    ],
+                    name:params.attribute_name,
                     status:[constants.STATUS.active,constants.STATUS.inactive],
                 }
             })
@@ -595,7 +596,6 @@ export class EmployeeManagement {
 
                 if(attribute){
                     attribute.name=params.attribute_name;
-                    attribute.label=params.attribute_label;
                     attribute.comment=params.attribute_comment || null;
 
                     attribute.save();

@@ -193,7 +193,6 @@ exports.updateManager = joi_1.default.object({
 exports.addEditAttributes = joi_1.default.object({
     attribute_id: joi_1.default.number().optional(),
     attribute_name: joi_1.default.string().required(),
-    attribute_label: joi_1.default.string().required(),
     attribute_comment: joi_1.default.string().optional(),
 });
 exports.getAttributeDetails = joi_1.default.object({

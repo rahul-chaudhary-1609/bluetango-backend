@@ -119,8 +119,16 @@ employeeRoute.get("/viewGoalDetailsAsEmployee", validators.trimmer, tokenValidat
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
+/* add Attribute Ratings */
+employeeRoute.post("/addAttributeRatings", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addAttributeRatings), qualitativeMeasurementController.addAttributeRatings);
+/* add Attribute Ratings */
+employeeRoute.get("/getAttributeRatings", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getAttributeRatings), qualitativeMeasurementController.getAttributeRatings);
 /* get qualitative measurement for employee */
 employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
+/* get AttributeList */
+employeeRoute.get("/getAttributeList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getAttributeList);
+/* get Attribute by id*/
+employeeRoute.get("/getAttribute/:attribute_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAttributes), qualitativeMeasurementController.getAttributeList);
 /* get qualitative measurement for employee */
 employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurementDetails), qualitativeMeasurementController.getQualitativeMeasurementDetails);
 /* get qualitative measurement comment for employee */

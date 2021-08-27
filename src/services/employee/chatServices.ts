@@ -11,6 +11,7 @@ import { employeeModel } from "../../models/employee";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { notificationModel } from "../../models/notification";
 import { coachManagementModel } from "../../models/coachManagement";
+import { attributeModel } from "../../models/attributes";
 import * as admin from "firebase-admin";
 import e from "express";
 const Sequelize = require('sequelize');
@@ -53,6 +54,14 @@ export class ChatServices {
             where:{status:constants.STATUS.active}
         });
 
+        let attribute=await attributeModel.findAll({
+            where:{
+                employer_id:user.current_employer_id,
+                status:constants.STATUS.active,                
+            },
+            order: [["createdAt", "DESC"]]
+        })
+
         // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
         //     console.log("val",val)
         //     return {
@@ -61,7 +70,7 @@ export class ChatServices {
         //     }
         // })
 
-        return employeeGoalData.concat(getQuantitativeData);
+        return employeeGoalData.concat(getQuantitativeData).concat(attribute);
     }
 
     /*

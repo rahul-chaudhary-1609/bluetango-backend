@@ -17,6 +17,14 @@ export const attributeRatingModel: any = sequelize.define("attributeRatings", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    start_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    end_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
     ratings: {
         type: DataTypes.ARRAY(DataTypes.JSON),
         allowNull:false,

@@ -45,6 +45,7 @@ const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const emoji_1 = require("../../models/emoji");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
 const attributes_1 = require("../../models/attributes");
+const attributeRatings_1 = require("../../models/attributeRatings");
 var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
@@ -439,7 +440,20 @@ class EmployeeManagement {
                     }
                 }
             }
-            return { employeeDetails, goalStats, qualitativeMeasurements };
+            attributeRatings_1.attributeRatingModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let attributeRatings = yield helperFunction.convertPromiseToObject(yield attributeRatings_1.attributeRatingModel.findOne({
+                where: { employee_id: params.employee_id || user.uid },
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
+            return { employeeDetails, goalStats, qualitativeMeasurements, attributeRatings };
         });
     }
     /**
@@ -484,14 +498,7 @@ class EmployeeManagement {
                 duplicateAttribute = yield attributes_1.attributeModel.findOne({
                     where: {
                         employer_id: user.uid,
-                        [Op.or]: [
-                            {
-                                name: params.attribute_name,
-                            },
-                            {
-                                label: params.attribute_label,
-                            }
-                        ],
+                        name: params.attribute_name,
                         status: [constants.STATUS.active, constants.STATUS.inactive],
                         id: {
                             [Op.notIn]: [params.attribute_id]
@@ -503,14 +510,7 @@ class EmployeeManagement {
                 duplicateAttribute = yield attributes_1.attributeModel.findOne({
                     where: {
                         employer_id: user.uid,
-                        [Op.or]: [
-                            {
-                                name: params.attribute_name,
-                            },
-                            {
-                                label: params.attribute_label,
-                            }
-                        ],
+                        name: params.attribute_name,
                         status: [constants.STATUS.active, constants.STATUS.inactive],
                     }
                 });
@@ -525,7 +525,6 @@ class EmployeeManagement {
                     });
                     if (attribute) {
                         attribute.name = params.attribute_name;
-                        attribute.label = params.attribute_label;
                         attribute.comment = params.attribute_comment || null;
                         attribute.save();
                         return yield helperFunction.convertPromiseToObject(attribute);

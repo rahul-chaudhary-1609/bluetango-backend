@@ -87,7 +87,8 @@ export const validateEmployeeToken = async (req, res, next) => {
 
         let payload = {
             uid: decoded.id,
-            user_role: decoded.user_role
+            user_role: decoded.user_role,
+            current_employer_id:employee.current_employer_id
         }
         req.user = payload;
         return next();

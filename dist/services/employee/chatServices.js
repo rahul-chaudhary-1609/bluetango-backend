@@ -40,6 +40,7 @@ const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const notification_1 = require("../../models/notification");
 const coachManagement_1 = require("../../models/coachManagement");
+const attributes_1 = require("../../models/attributes");
 const admin = __importStar(require("firebase-admin"));
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
@@ -73,6 +74,13 @@ class ChatServices {
             let getQuantitativeData = yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
                 where: { status: constants.STATUS.active }
             });
+            let attribute = yield attributes_1.attributeModel.findAll({
+                where: {
+                    employer_id: user.current_employer_id,
+                    status: constants.STATUS.active,
+                },
+                order: [["createdAt", "DESC"]]
+            });
             // let formatEmployeeGoalData = employeeGoalData.map((val: any) => {
             //     console.log("val",val)
             //     return {
@@ -80,7 +88,7 @@ class ChatServices {
             //         label:val.team_goal,
             //     }
             // })
-            return employeeGoalData.concat(getQuantitativeData);
+            return employeeGoalData.concat(getQuantitativeData).concat(attribute);
         });
     }
     /*

@@ -18,10 +18,6 @@ exports.attributeModel = connection_1.sequelize.define("attributes", {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    label: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
     Comment: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,

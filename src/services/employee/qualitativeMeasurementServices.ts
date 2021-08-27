@@ -7,6 +7,7 @@ import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMea
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
 import { notificationModel } from "../../models/notification";
+import { attributeModel } from "../../models/attributes";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -116,6 +117,9 @@ export class QualitativeMeasuremetServices {
             }
         })
         params.manager_id = user.uid;
+        params.start_date = new Date();
+        params.end_date = new Date()
+        params.end_date.setMonth(params.start_date.getMonth() + 3);
 
         let employeeData = await employeeModel.findOne({
             where: { id: params.employee_id}
@@ -248,6 +252,28 @@ export class QualitativeMeasuremetServices {
        return result;
    }
 
+    /*
+    * get Employee Attributes
+    */
+    public async getAttributeRatings(params: any,user:any) {
+        attributeRatingModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        let attributeRatings =await helperFunction.convertPromiseToObject( await attributeRatingModel.findOne({
+            where: { employee_id: params.employee_id || user.uid },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit:1
+        })) 
+
+        if (!attributeRatings) throw new Error(constants.MESSAGES.no_qualitative_measure);                   
+
+        return attributeRatings;
+    }
     
     /*
     * get to add qualitative measurement details
@@ -264,6 +290,36 @@ export class QualitativeMeasuremetServices {
         return await qualitativeMeasurementCommentModel.findAll({
             where: where,
         })
+    }
+
+    public async getAttributeList(params:any,user:any){
+        let attribute=null;
+
+        if(params.attribute_id){
+
+            attribute=await attributeModel.findOne({
+                where:{
+                    id:params.attribute_id,
+                    employer_id:user.current_employer_id,
+                    status:constants.STATUS.active,
+                }
+            })
+        }else{
+
+            attribute=await attributeModel.findAndCountAll({
+                where:{
+                    employer_id:user.current_employer_id,
+                    status:constants.STATUS.active,                
+                },
+                order: [["createdAt", "DESC"]]
+            })
+        }
+
+        if(attribute){
+            return await helperFunction.convertPromiseToObject(attribute);
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
     }
 
 

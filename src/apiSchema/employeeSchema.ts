@@ -308,6 +308,24 @@ export const addQualitativeMeasurement = Joi.object({
   work_product_desc: Joi.string().optional()
 })
 
+export const addAttributeRatings=Joi.object({
+  employee_id: Joi.number().required(),
+  ratings:Joi.array().items(Joi.object().keys({
+              attribute_id:Joi.number().required(),
+              name: Joi.string().required(),
+              rating: Joi.number().valid(1,2,3,4,5).required(),
+              desc:Joi.string().optional(),
+          })).required(),
+});
+
+export const getAttributeRatings = Joi.object({
+  employee_id:Joi.number().optional(),
+})
+
+export const getAttributes = Joi.object({
+  attribute_id:Joi.number().optional(),
+})
+
 export const viewGoalAssignCompletionAsManager = Joi.object({
   goal_id: Joi.number().required(),
   team_goal_assign_id: Joi.number().required(),
@@ -348,3 +366,4 @@ export const markGoalsAsPrimary=Joi.object({
             is_primary: Joi.number().valid(0,1).required(),
         })).required(),
 });
+

@@ -27,6 +27,10 @@
       "description": "Employee related api's"
     },
     {
+      "name": "EmployeeAttributes",
+      "description": "Employee Attribute related api's"
+    },
+    {
       "name": "EmployeeChat",
       "description": "Employee Chat related api's"
     },
@@ -3897,7 +3901,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "Api to mark Goal As Primary",
+        "description": "Api to toggle Goal As Primary",
         "consumes": [
           "application/x-www-form-urlencoded"
         ],
@@ -3963,6 +3967,139 @@
                 }
               }              
             }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttributeList": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to all Attributes",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttribute/{attribute_id}": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to get an attribute by id",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/addAttributeRatings": {
+      "post": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to add Attribute Ratings",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Enter ratings array: [{attribute_id:number,name:number,rating:number //1,2,3,4,5, desc:string },]",
+            "required": true,
+            "schema":{
+              "type": "object",
+              "properties":{
+                "employee_id":{
+                  "type": "number"
+                },
+                "ratings":{
+                  "type":"array",
+                  "items": {
+                    "type": "object",
+                    "properties":{
+                      "attribute_id":{
+                        "type":"number"
+                      },
+                      "name":{
+                        "type":"string"
+                      },
+                      "rating":{
+                        "type":"number",
+                        "enum":[1,2,3,4,5]
+                      },
+                      "desc":{
+                        "type":"string"
+                      }
+                    }
+                  }
+                }
+              }              
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttributeRatings": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to get Attribute Ratings",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_id",
+            "in": "query",
+            "description": "Enter employee id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -5579,13 +5716,6 @@
             "name": "attribute_name",
             "in": "formData",
             "description": "Enter attribute name",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "attribute_label",
-            "in": "formData",
-            "description": "Enter attribute label",
             "required": true,
             "type": "string"
           },

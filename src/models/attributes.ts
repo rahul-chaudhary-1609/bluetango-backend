@@ -17,10 +17,6 @@ export const attributeModel: any = sequelize.define("attributes", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    label: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     Comment: {
         type: DataTypes.STRING,
         allowNull: true,

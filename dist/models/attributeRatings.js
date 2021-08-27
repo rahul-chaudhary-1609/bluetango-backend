@@ -18,6 +18,14 @@ exports.attributeRatingModel = connection_1.sequelize.define("attributeRatings",
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
+    start_date: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+    },
+    end_date: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+    },
     ratings: {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSON),
         allowNull: false,
