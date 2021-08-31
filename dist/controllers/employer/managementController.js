@@ -158,10 +158,10 @@ class EmployeeController {
     * @param req :[get data]
     * @param res : [employee data]
     */
-    addEditAttributes(req, res) {
+    addAttributes(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeService.addEditAttributes(req.body, req.user);
+                const responseFromService = yield employeeService.addAttributes(req.body, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {

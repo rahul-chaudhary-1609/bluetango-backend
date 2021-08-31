@@ -92,7 +92,7 @@ employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerTok
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerParser_1.upload.single('file'), authController.uploadFile);
 /* add Edit Attributes */
-employerRoute.post("/addEditAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addEditAttributes), managementController.addEditAttributes);
+employerRoute.post("/addAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addAttributes), managementController.addAttributes);
 /* get Attributes */
 employerRoute.get("/getAttributes", tokenValidator.validateEmployerToken, managementController.getAttributes);
 /* get Attribute details */

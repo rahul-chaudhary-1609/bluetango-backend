@@ -123,9 +123,9 @@ export class EmployeeController {
     * @param req :[get data]
     * @param res : [employee data]
     */
-     public async addEditAttributes(req: any, res: any) {
+     public async addAttributes(req: any, res: any) {
         try {
-            const responseFromService = await employeeService.addEditAttributes(req.body, req.user);
+            const responseFromService = await employeeService.addAttributes(req.body, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {

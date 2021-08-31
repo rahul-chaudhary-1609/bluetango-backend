@@ -559,63 +559,39 @@ export class EmployeeManagement {
         return true;
     }
 
-    public async addEditAttributes(params:any, user:any){
+    public async addAttributes(params:any, user:any){
 
+        console.log("params.attributes",params.attributes,params)
+        // params.attributes=JSON.parse(params.attributes);
+        // console.log("params.attributes",params.attributes,params)
         let duplicateAttribute=null;
+        let attributes=[];
 
-        if(params.attribute_id){
+        for(let attribute of params.attributes){
             duplicateAttribute=await attributeModel.findOne({
                 where:{
                     employer_id:user.uid,
-                    name:params.attribute_name,
-                    status:[constants.STATUS.active,constants.STATUS.inactive],
-                    id:{
-                        [Op.notIn]:[params.attribute_id]
-                    }
-                }
-            })
-        }else{
-            duplicateAttribute=await attributeModel.findOne({
-                where:{
-                    employer_id:user.uid,
-                    name:params.attribute_name,
+                    name:{
+                        [Op.iLike]:attribute.name.toLowerCase(),
+                    },
                     status:[constants.STATUS.active,constants.STATUS.inactive],
                 }
             })
-        }
+
+            if(duplicateAttribute){
+                break;
+            }
+
+            attributes.push({
+                employer_id:user.uid,
+                name:attribute.name,
+                comment:attribute.desc || null,
+            })
+        } 
+        
 
         if(!duplicateAttribute){
-
-            if(params.attribute_id){
-                let attribute=await attributeModel.findOne({
-                    where:{
-                        id:params.attribute_id,
-                        employer_id:user.uid,
-                    }
-                })
-
-                if(attribute){
-                    attribute.name=params.attribute_name;
-                    attribute.comment=params.attribute_comment || null;
-
-                    attribute.save();
-
-                    return await helperFunction.convertPromiseToObject(attribute);
-                }else{
-                    throw new Error(constants.MESSAGES.attribute_not_found)
-                }
-            }else{ 
-                
-                let attributeObj=<any>{
-                    employer_id:user.uid,
-                    name:params.attribute_name,
-                    label:params.attribute_label,
-                    comment:params.attribute_comment || null,
-                }
-
-                return await helperFunction.convertPromiseToObject(await attributeModel.create(attributeObj)); 
-        
-            }
+                return await helperFunction.convertPromiseToObject(await attributeModel.bulkCreate(attributes)); 
         }else{
             throw new Error(constants.MESSAGES.attribute_already_added)
         }

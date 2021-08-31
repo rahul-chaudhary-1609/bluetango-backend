@@ -4041,7 +4041,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "Enter ratings array: [{attribute_id:number,name:number,rating:number //1,2,3,4,5, desc:string },]",
+            "description": "Enter ratings array: [{attribute_id:number,name:string,rating:number //1,2,3,4,5, desc:string },]",
             "required": true,
             "schema":{
               "type": "object",
@@ -5688,14 +5688,14 @@
         "responses": {}
       }
     },
-    "/employer/addEditAttributes": {
+    "/employer/addAttributes": {
       "post": {
         "tags": [
           "Employer"
         ],
         "description": "Employer to add Edit Attributes",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -5706,25 +5706,29 @@
             "type": "string"
           },
           {
-            "name": "attribute_id",
-            "in": "formData",
-            "description": "Enter attribute id if you want to edit any attribute",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "attribute_name",
-            "in": "formData",
-            "description": "Enter attribute name",
+            "name": "body",
+            "in": "body",
+            "description": "Enter attributes array: [{name:string,desc:string },]",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "attribute_comment",
-            "in": "formData",
-            "description": "Enter attribute comment",
-            "required": false,
-            "type": "string"
+            "schema":{
+              "type": "object",
+              "properties":{
+                "attributes":{
+                  "type":"array",
+                  "items": {
+                    "type": "object",
+                    "properties":{
+                      "name":{
+                        "type":"string"
+                      },
+                      "desc":{
+                        "type":"string"
+                      }
+                    }
+                  }
+                }
+              }              
+            }
           }
           
         ],

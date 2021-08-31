@@ -491,57 +491,34 @@ class EmployeeManagement {
             return true;
         });
     }
-    addEditAttributes(params, user) {
+    addAttributes(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("params.attributes", params.attributes, params);
+            // params.attributes=JSON.parse(params.attributes);
+            // console.log("params.attributes",params.attributes,params)
             let duplicateAttribute = null;
-            if (params.attribute_id) {
+            let attributes = [];
+            for (let attribute of params.attributes) {
                 duplicateAttribute = yield attributes_1.attributeModel.findOne({
                     where: {
                         employer_id: user.uid,
-                        name: params.attribute_name,
+                        name: {
+                            [Op.iLike]: attribute.name.toLowerCase(),
+                        },
                         status: [constants.STATUS.active, constants.STATUS.inactive],
-                        id: {
-                            [Op.notIn]: [params.attribute_id]
-                        }
                     }
                 });
-            }
-            else {
-                duplicateAttribute = yield attributes_1.attributeModel.findOne({
-                    where: {
-                        employer_id: user.uid,
-                        name: params.attribute_name,
-                        status: [constants.STATUS.active, constants.STATUS.inactive],
-                    }
+                if (duplicateAttribute) {
+                    break;
+                }
+                attributes.push({
+                    employer_id: user.uid,
+                    name: attribute.name,
+                    comment: attribute.desc || null,
                 });
             }
             if (!duplicateAttribute) {
-                if (params.attribute_id) {
-                    let attribute = yield attributes_1.attributeModel.findOne({
-                        where: {
-                            id: params.attribute_id,
-                            employer_id: user.uid,
-                        }
-                    });
-                    if (attribute) {
-                        attribute.name = params.attribute_name;
-                        attribute.comment = params.attribute_comment || null;
-                        attribute.save();
-                        return yield helperFunction.convertPromiseToObject(attribute);
-                    }
-                    else {
-                        throw new Error(constants.MESSAGES.attribute_not_found);
-                    }
-                }
-                else {
-                    let attributeObj = {
-                        employer_id: user.uid,
-                        name: params.attribute_name,
-                        label: params.attribute_label,
-                        comment: params.attribute_comment || null,
-                    };
-                    return yield helperFunction.convertPromiseToObject(yield attributes_1.attributeModel.create(attributeObj));
-                }
+                return yield helperFunction.convertPromiseToObject(yield attributes_1.attributeModel.bulkCreate(attributes));
             }
             else {
                 throw new Error(constants.MESSAGES.attribute_already_added);

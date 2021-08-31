@@ -183,10 +183,11 @@ export const updateManager = Joi.object({
   new_manager_id: Joi.number().required(),
 })
 
-export const addEditAttributes = Joi.object({
-  attribute_id:Joi.number().optional(),
-  attribute_name:Joi.string().required(),
-  attribute_comment:Joi.string().optional(),
+export const addAttributes = Joi.object({
+  attributes:Joi.array().items(Joi.object().keys({
+                name: Joi.string().required(),
+                desc:Joi.string().optional(),
+            })).required(),
 })
 
 export const getAttributeDetails = Joi.object({
