@@ -35,35 +35,35 @@ exports.validateEmailToken = exports.verificationEmailToken = exports.forgotPass
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const constants = __importStar(require("../constants"));
 exports.tokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = jsonwebtoken_1.default.sign({ id: obj.user_id, role: obj.role }, process.env.SECRET_KEY || constants.SECRET_KEY, { expiresIn: '1d' });
+    const token = jsonwebtoken_1.default.sign({ id: obj.user_id, role: obj.role }, process.env.SECRET_KEY || constants.SECRET_KEY);
     return { token };
 });
 exports.adminTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: obj.admin_role
-    }, process.env.ADMIN_SECRET_KEY || constants.ADMIN_SECRET_KEY, { expiresIn: '1d' });
+    }, process.env.ADMIN_SECRET_KEY || constants.ADMIN_SECRET_KEY);
     return { token };
 });
 exports.employeeTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: constants.USER_ROLE.employee
-    }, process.env.EMPLOYEE_SECRET_KEY || constants.EMPLOYEE_SECRET_KEY, { expiresIn: '1d' });
+    }, process.env.EMPLOYEE_SECRET_KEY || constants.EMPLOYEE_SECRET_KEY);
     return { token };
 });
 exports.employerTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: constants.USER_ROLE.employer
-    }, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY, { expiresIn: '1d' });
+    }, process.env.EMPLOYER_SECRET_KEY || constants.EMPLOYER_SECRET_KEY);
     return { token };
 });
 exports.coachTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: constants.USER_ROLE.coach
-    }, process.env.COACH_SECRET_KEY || constants.COACH_SECRET_KEY, { expiresIn: '1d' });
+    }, process.env.COACH_SECRET_KEY || constants.COACH_SECRET_KEY);
     return { token };
 });
 exports.forgotPasswordTokenResponse = (obj, role) => __awaiter(void 0, void 0, void 0, function* () {
