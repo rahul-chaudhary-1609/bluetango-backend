@@ -51,6 +51,7 @@ const feedback_1 = require("../../models/feedback");
 const authService_1 = require("./authService");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const multerParser_1 = require("../../middleware/multerParser");
+const attributeRatings_1 = require("../../models/attributeRatings");
 const path = __importStar(require("path"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -101,7 +102,7 @@ class EmployeeServices {
             //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
             let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
             for (let i = 0; i < teamMembersData.rows.length; i++) {
-                let rateCheck = yield helperFunction.convertPromiseToObject(yield qualitativeMeasurement_1.qualitativeMeasurementModel.findOne({
+                let rateCheck = yield helperFunction.convertPromiseToObject(yield attributeRatings_1.attributeRatingModel.findOne({
                     where: {
                         manager_id: user.uid,
                         employee_id: teamMembersData.rows[i].team_member_id,
@@ -195,6 +196,19 @@ class EmployeeServices {
                 }
                 employeeDetails.qualitativeMeasurementDetails = result;
             }
+            attributeRatings_1.attributeRatingModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeDetails.attributeRatings = yield helperFunction.convertPromiseToObject(yield attributeRatings_1.attributeRatingModel.findOne({
+                where: { employee_id: params.id },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
             return employeeDetails;
         });
     }

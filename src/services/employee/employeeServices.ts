@@ -19,6 +19,7 @@ import { feedbackModel } from "../../models/feedback";
 import { AuthService } from "./authService";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { deleteFile } from "../../middleware/multerParser";
+import { attributeRatingModel } from "../../models/attributeRatings"
 import * as path from 'path';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -79,7 +80,7 @@ export class EmployeeServices {
         //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
         let dateCheck = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
         for (let i=0; i< teamMembersData.rows.length; i++ ) {
-            let rateCheck = await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findOne({
+            let rateCheck = await helperFunction.convertPromiseToObject( await attributeRatingModel.findOne({
                     where: {
                         manager_id: user.uid,
                         employee_id: teamMembersData.rows[i].team_member_id,
@@ -193,6 +194,20 @@ export class EmployeeServices {
             }
             employeeDetails.qualitativeMeasurementDetails = result;
         }
+
+        attributeRatingModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        employeeDetails.attributeRatings =await helperFunction.convertPromiseToObject( await attributeRatingModel.findOne({
+            where: { employee_id: params.id },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit:1
+        })) 
 
         
         return employeeDetails;
