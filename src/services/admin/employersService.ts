@@ -1412,6 +1412,8 @@ export class EmployersService {
 
         }
 
+        if(feedbacks.count==0) throw new Error(constants.MESSAGES.no_feedback);
+
         return feedbacks;
     }
 
@@ -1460,6 +1462,8 @@ export class EmployersService {
             }else{
                 feedback.user=null;
             }            
+        }else{
+            throw new Error(constants.MESSAGES.no_feedback)
         }
 
             

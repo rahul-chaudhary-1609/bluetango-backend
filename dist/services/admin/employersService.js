@@ -1357,6 +1357,8 @@ class EmployersService {
                     feedbacks.rows = filteredFeedbacks;
                 }
             }
+            if (feedbacks.count == 0)
+                throw new Error(constants.MESSAGES.no_feedback);
             return feedbacks;
         });
     }
@@ -1399,6 +1401,9 @@ class EmployersService {
                 else {
                     feedback.user = null;
                 }
+            }
+            else {
+                throw new Error(constants.MESSAGES.no_feedback);
             }
             return feedback;
         });

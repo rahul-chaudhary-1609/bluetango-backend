@@ -148,6 +148,7 @@ export const MESSAGES = {
   only_four_primary_goals_are_allowed:`Exactly 4 goals can be marked as primary at a time. No less no more`,
   attribute_already_added:`An attribute with the same name/label already exist.`,
   attribute_not_found:`Either no attribute exist with this id or it does not belogs to current employer`,
+  no_feedback:`No feedback found`,
 }
 
 
