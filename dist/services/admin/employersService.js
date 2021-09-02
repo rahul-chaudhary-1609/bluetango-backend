@@ -1347,7 +1347,7 @@ class EmployersService {
                         feedback.user = null;
                     }
                     if (params.searchKey && params.searchKey.trim() != "") {
-                        if (((_a = feedback.message) === null || _a === void 0 ? void 0 : _a.toLowerCase().include(params.searchKey.toLowerCase())) || ((_b = feedback.user) === null || _b === void 0 ? void 0 : _b.name.toLowerCase().include(params.searchKey.toLowerCase())) || ((_c = feedback.user) === null || _c === void 0 ? void 0 : _c.email.toLowerCase().include(params.searchKey.toLowerCase()))) {
+                        if (((_a = feedback.message) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes(params.searchKey.toLowerCase())) || ((_b = feedback.user) === null || _b === void 0 ? void 0 : _b.name.toLowerCase().includes(params.searchKey.toLowerCase())) || ((_c = feedback.user) === null || _c === void 0 ? void 0 : _c.email.toLowerCase().includes(params.searchKey.toLowerCase()))) {
                             filteredFeedbacks.push(feedback);
                         }
                     }

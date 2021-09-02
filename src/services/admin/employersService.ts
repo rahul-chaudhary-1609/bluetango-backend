@@ -1396,9 +1396,9 @@ export class EmployersService {
 
                 if(params.searchKey && params.searchKey.trim()!=""){
                     if(
-                        feedback.message?.toLowerCase().include(params.searchKey.toLowerCase()) ||
-                        feedback.user?.name.toLowerCase().include(params.searchKey.toLowerCase()) ||
-                        feedback.user?.email.toLowerCase().include(params.searchKey.toLowerCase())
+                        feedback.message?.toLowerCase().includes(params.searchKey.toLowerCase()) ||
+                        feedback.user?.name.toLowerCase().includes(params.searchKey.toLowerCase()) ||
+                        feedback.user?.email.toLowerCase().includes(params.searchKey.toLowerCase())
                     ){
                         filteredFeedbacks.push(feedback);
                     }
