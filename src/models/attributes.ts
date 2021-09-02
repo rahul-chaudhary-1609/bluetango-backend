@@ -18,7 +18,7 @@ export const attributeModel: any = sequelize.define("attributes", {
         allowNull: false,
     },
     comment: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     status: {

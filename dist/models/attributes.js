@@ -19,7 +19,7 @@ exports.attributeModel = connection_1.sequelize.define("attributes", {
         allowNull: false,
     },
     comment: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
     status: {
