@@ -915,6 +915,40 @@ class EmployersController {
             }
         });
     }
+    listFeedback(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const advisor = yield employersService.listFeedback(req.query);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getFeedbackDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.query.admin_id = req.user.uid;
+                const advisor = yield employersService.getFeedbackDetails(req.query);
+                if (advisor) {
+                    return appUtils.successResponse(res, advisor, constants.MESSAGES.success);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

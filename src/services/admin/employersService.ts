@@ -12,6 +12,7 @@ import { AnyAaaaRecord, AnyPtrRecord } from "dns";
 import { employeeTokenResponse } from "../../utils/tokenResponse";
 import { sequelize } from "../../connection";
 import { now } from "sequelize/types/lib/utils";
+import { feedbackModel } from "../../models/feedback";
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { articleManagementModel } from "../../models/articleManagement";
@@ -1318,6 +1319,154 @@ export class EmployersService {
         where.id = params.uid
         where.status = 2
         return await adminModel.findOne({where: where})
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+     public async listFeedback(params: any) {
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        let whereCondintion=<any>{
+            status:[constants.STATUS.active,constants.STATUS.inactive],
+        }
+
+        if(params.feedbackType){
+            whereCondintion={
+                ...whereCondintion,
+                feedback_type:params.feedbackType,
+            }
+        }
+
+        // if(params.searchKey){
+        //     whereCondintion={
+        //         ...whereCondintion,
+        //         message:{
+        //             [Op.iLike]:`%${params.searchKey}%`,
+        //         }
+        //     }
+        // }  
+
+        let feedbacks= await helperFunction.convertPromiseToObject(await feedbackModel.findAndCountAll({
+            where:whereCondintion,
+            limit: limit,
+            offset: offset,
+            order: [["id", "DESC"]]
+        }));
+
+        
+
+        if(feedbacks.count>0){
+
+            let filteredFeedbacks=[];
+
+            for(let feedback of feedbacks.rows){
+                if(feedback.feedback_type==constants.FEEDBACK_TYPE.employee){
+                    feedback.user=await helperFunction.convertPromiseToObject(
+                        await employeeModel.findOne({
+                            where:{
+                                id:feedback.user_id
+                            },
+                            attributes:['id', 'name', 'email', 'phone_number']
+                        })
+                    )
+                }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.employer){
+                    feedback.user=await helperFunction.convertPromiseToObject(
+                        await employersModel.findOne({
+                            where:{
+                                id:feedback.user_id
+                            },
+                            attributes:['id', 'name', 'email', 'phone_number']
+                        })
+                    )
+                }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.coach){
+                    feedback.user=await helperFunction.convertPromiseToObject(
+                        await coachManagementModel.findOne({
+                            where:{
+                                id:feedback.user_id
+                            },
+                            attributes:['id', 'name', 'email', 'phone_number']
+                        })
+                    )
+                }else{
+                    feedback.user=null;
+                }
+
+                if(params.searchKey && params.searchKey.trim()!=""){
+                    if(
+                        feedback.message?.toLowerCase().include(params.searchKey.toLowerCase()) ||
+                        feedback.user?.name.toLowerCase().include(params.searchKey.toLowerCase()) ||
+                        feedback.user?.email.toLowerCase().include(params.searchKey.toLowerCase())
+                    ){
+                        filteredFeedbacks.push(feedback);
+                    }
+                }
+            }
+
+            if(params.searchKey && params.searchKey.trim()!=""){
+                feedbacks.count=filteredFeedbacks.length;
+                feedbacks.rows=filteredFeedbacks;
+            }
+
+        }
+
+        return feedbacks;
+    }
+
+    /**
+    * 
+    * @param {} params pass all parameters from request
+    */
+     public async getFeedbackDetails(params: any) {
+
+        let feedback= await helperFunction.convertPromiseToObject(await feedbackModel.findOne({
+            where:{
+                id:params.feedback_id
+            }
+        }));
+
+        
+
+        if(feedback){
+            if(feedback.feedback_type==constants.FEEDBACK_TYPE.employee){
+                feedback.user=await helperFunction.convertPromiseToObject(
+                    await employeeModel.findOne({
+                        where:{
+                            id:feedback.user_id
+                        },
+                        attributes:['id', 'name', 'email', 'phone_number']
+                    })
+                )
+            }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.employer){
+                feedback.user=await helperFunction.convertPromiseToObject(
+                    await employersModel.findOne({
+                        where:{
+                            id:feedback.user_id
+                        },
+                        attributes:['id', 'name', 'email', 'phone_number']
+                    })
+                )
+            }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.coach){
+                feedback.user=await helperFunction.convertPromiseToObject(
+                    await coachManagementModel.findOne({
+                        where:{
+                            id:feedback.user_id
+                        },
+                        attributes:['id', 'name', 'email', 'phone_number']
+                    })
+                )
+            }else{
+                feedback.user=null;
+            }            
+        }
+
+            
+
+        return feedback;
+
+
     }
 
 }

@@ -42,6 +42,7 @@ const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const connection_1 = require("../../connection");
+const feedback_1 = require("../../models/feedback");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const articleManagement_1 = require("../../models/articleManagement");
@@ -1285,6 +1286,121 @@ class EmployersService {
             where.id = params.uid;
             where.status = 2;
             return yield models_1.adminModel.findOne({ where: where });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    listFeedback(params) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let whereCondintion = {
+                status: [constants.STATUS.active, constants.STATUS.inactive],
+            };
+            if (params.feedbackType) {
+                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { feedback_type: params.feedbackType });
+            }
+            // if(params.searchKey){
+            //     whereCondintion={
+            //         ...whereCondintion,
+            //         message:{
+            //             [Op.iLike]:`%${params.searchKey}%`,
+            //         }
+            //     }
+            // }  
+            let feedbacks = yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.findAndCountAll({
+                where: whereCondintion,
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            }));
+            if (feedbacks.count > 0) {
+                let filteredFeedbacks = [];
+                for (let feedback of feedbacks.rows) {
+                    if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else {
+                        feedback.user = null;
+                    }
+                    if (params.searchKey && params.searchKey.trim() != "") {
+                        if (((_a = feedback.message) === null || _a === void 0 ? void 0 : _a.toLowerCase().include(params.searchKey.toLowerCase())) || ((_b = feedback.user) === null || _b === void 0 ? void 0 : _b.name.toLowerCase().include(params.searchKey.toLowerCase())) || ((_c = feedback.user) === null || _c === void 0 ? void 0 : _c.email.toLowerCase().include(params.searchKey.toLowerCase()))) {
+                            filteredFeedbacks.push(feedback);
+                        }
+                    }
+                }
+                if (params.searchKey && params.searchKey.trim() != "") {
+                    feedbacks.count = filteredFeedbacks.length;
+                    feedbacks.rows = filteredFeedbacks;
+                }
+            }
+            return feedbacks;
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    getFeedbackDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let feedback = yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.findOne({
+                where: {
+                    id: params.feedback_id
+                }
+            }));
+            if (feedback) {
+                if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else {
+                    feedback.user = null;
+                }
+            }
+            return feedback;
         });
     }
 }

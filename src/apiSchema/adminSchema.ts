@@ -180,3 +180,14 @@ export const addEditCoach = Joi.object ({
   image: Joi.string().optional(),
   fileName: Joi.string().optional()
 })
+
+export const listFeedback = Joi.object ({
+  feedbackType: Joi.string().valid(1,2,3,4).optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+  searchKey: Joi.string().optional()
+})
+
+export const getFeedbackDetails = Joi.object ({
+  feedback_id: Joi.number().required(),
+})

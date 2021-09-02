@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
+exports.getFeedbackDetails = exports.listFeedback = exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -194,5 +194,14 @@ exports.addEditCoach = joi_1.default.object({
     description: joi_1.default.string().required(),
     image: joi_1.default.string().optional(),
     fileName: joi_1.default.string().optional()
+});
+exports.listFeedback = joi_1.default.object({
+    feedbackType: joi_1.default.string().valid(1, 2, 3, 4).optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+    searchKey: joi_1.default.string().optional()
+});
+exports.getFeedbackDetails = joi_1.default.object({
+    feedback_id: joi_1.default.number().required(),
 });
 //# sourceMappingURL=adminSchema.js.map

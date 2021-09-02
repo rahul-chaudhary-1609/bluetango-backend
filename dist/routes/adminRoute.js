@@ -131,5 +131,9 @@ adminRoute.get("/listAdvisor", tokenValidator.validateAdminToken, employersContr
 adminRoute.put("/deleteAdvisor", tokenValidator.validateAdminToken, employersController.deleteAdvisor);
 /* advisor details */
 adminRoute.get("/detailsAdvisor", tokenValidator.validateAdminToken, employersController.detailsAdvisor);
+/* list Feedback */
+adminRoute.get("/listFeedback", joiSchemaValidation.validateQueryParams(adminSchema.listFeedback), tokenValidator.validateAdminToken, employersController.listFeedback);
+/* get Feedback Details */
+adminRoute.get("/getFeedbackDetails", joiSchemaValidation.validateQueryParams(adminSchema.getFeedbackDetails), tokenValidator.validateAdminToken, employersController.getFeedbackDetails);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

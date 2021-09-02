@@ -780,5 +780,33 @@ export class EmployersController {
         }
     }
 
+    public async listFeedback(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const advisor: any = await employersService.listFeedback(req.query);
+            if (advisor) {
+                return appUtils.successResponse(res, advisor, constants.MESSAGES.success);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    public async getFeedbackDetails(req: any, res: any) {
+        try {
+            req.query.admin_id = req.user.uid;
+            const advisor: any = await employersService.getFeedbackDetails(req.query);
+            if (advisor) {
+                return appUtils.successResponse(res, advisor, constants.MESSAGES.success);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
 
 }
