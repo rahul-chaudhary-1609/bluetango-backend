@@ -196,7 +196,7 @@ exports.addEditCoach = joi_1.default.object({
     fileName: joi_1.default.string().optional()
 });
 exports.listFeedback = joi_1.default.object({
-    feedbackType: joi_1.default.string().valid(1, 2, 3, 4).optional(),
+    feedbackType: joi_1.default.number().valid(1, 2, 3, 4).optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
     searchKey: joi_1.default.string().optional()

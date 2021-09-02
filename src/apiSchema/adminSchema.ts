@@ -182,7 +182,7 @@ export const addEditCoach = Joi.object ({
 })
 
 export const listFeedback = Joi.object ({
-  feedbackType: Joi.string().valid(1,2,3,4).optional(),
+  feedbackType: Joi.number().valid(1,2,3,4).optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
   searchKey: Joi.string().optional()
