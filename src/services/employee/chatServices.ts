@@ -50,9 +50,9 @@ export class ChatServices {
             ]
         });
 
-        let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll({
-            where:{status:constants.STATUS.active}
-        });
+        // let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll({
+        //     where:{status:constants.STATUS.active}
+        // });
 
         let attribute=await attributeModel.findAll({
             where:{
@@ -70,7 +70,7 @@ export class ChatServices {
         //     }
         // })
 
-        return employeeGoalData.concat(getQuantitativeData).concat(attribute);
+        return employeeGoalData.concat(attribute);
     }
 
     /*

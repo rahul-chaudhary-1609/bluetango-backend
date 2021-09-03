@@ -35,7 +35,6 @@ const teamGoal_1 = require("../../models/teamGoal");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
-const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const employee_1 = require("../../models/employee");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const notification_1 = require("../../models/notification");
@@ -71,9 +70,9 @@ class ChatServices {
                     }
                 ]
             });
-            let getQuantitativeData = yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
-                where: { status: constants.STATUS.active }
-            });
+            // let getQuantitativeData = await qualitativeMeasurementCommentModel.findAll({
+            //     where:{status:constants.STATUS.active}
+            // });
             let attribute = yield attributes_1.attributeModel.findAll({
                 where: {
                     employer_id: user.current_employer_id,
@@ -88,7 +87,7 @@ class ChatServices {
             //         label:val.team_goal,
             //     }
             // })
-            return employeeGoalData.concat(getQuantitativeData).concat(attribute);
+            return employeeGoalData.concat(attribute);
         });
     }
     /*
