@@ -835,24 +835,38 @@ class GoalServices {
         return __awaiter(this, void 0, void 0, function* () {
             let primaryGoals = params.goals.filter((goal) => goal.is_primary == constants.PRIMARY_GOAL.yes);
             if (primaryGoals.length == 4) {
-                yield teamGoalAssign_1.teamGoalAssignModel.update({
-                    is_primary: constants.PRIMARY_GOAL.yes,
-                }, {
+                let checkIfGoalAssignExist = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.count({
                     where: {
                         id: primaryGoals.map((goal) => goal.team_goal_assign_id),
                         employee_id: user.uid,
                     }
-                });
-                yield teamGoalAssign_1.teamGoalAssignModel.update({
-                    is_primary: constants.PRIMARY_GOAL.no,
-                }, {
-                    where: {
-                        id: {
-                            [Op.notIn]: primaryGoals.map((goal) => goal.team_goal_assign_id)
-                        },
-                        employee_id: user.uid,
-                    }
-                });
+                }));
+                if (checkIfGoalAssignExist == 4) {
+                    let updatedGoals = yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        is_primary: constants.PRIMARY_GOAL.yes,
+                    }, {
+                        where: {
+                            id: primaryGoals.map((goal) => goal.team_goal_assign_id),
+                            employee_id: user.uid,
+                        }
+                    });
+                    yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        is_primary: constants.PRIMARY_GOAL.no,
+                    }, {
+                        where: {
+                            id: {
+                                [Op.notIn]: primaryGoals.map((goal) => goal.team_goal_assign_id)
+                            },
+                            employee_id: user.uid,
+                        }
+                    });
+                    return {
+                        updateCount: updatedGoals[0]
+                    };
+                }
+                else {
+                    throw new Error(constants.MESSAGES.four_goal_assign_not_found);
+                }
             }
             else {
                 throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);

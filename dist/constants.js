@@ -166,6 +166,7 @@ exports.MESSAGES = {
     employer_free_trial_already_exhausted: `Free trial already exhausted`,
     goal_not_assigned: `This goal is not assigned to you`,
     goal_assign_not_found: `No goal assined found with this id`,
+    four_goal_assign_not_found: `Either at least one of these four goal assign IDs does not match the goals assigned to this employee or at least one of these goal assign IDs does not exist`,
     only_four_primary_goals_are_allowed: `Exactly 4 goals can be marked as primary at a time. No less no more`,
     attribute_already_added: `An attribute with the same name/label already exist.`,
     attribute_not_found: `Either no attribute exist with this id or it does not belogs to current employer`,
