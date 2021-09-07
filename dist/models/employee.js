@@ -25,6 +25,9 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.DATE,
         allowNull: true
     },
+    prev_employers: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSON),
+    },
     prev_employer: {
         type: sequelize_1.DataTypes.STRING,
     },

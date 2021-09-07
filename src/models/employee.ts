@@ -24,6 +24,9 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.DATE,
         allowNull: true
     },
+    prev_employers: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+    },
     prev_employer: {
         type: DataTypes.STRING,
     },

@@ -4851,7 +4851,7 @@
         ],
         "description": "Api to add a employee",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -4862,138 +4862,80 @@
             "type": "string"
           },
           {
-            "name": "id",
-            "in": "formData",
-            "description": "id, when you will pass id then it will be update otherwise it will be create",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "manager_id",
-            "in": "formData",
-            "description": "manager id",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\temployee_code\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "email",
-            "in": "formData",
-            "description": "email id",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "password",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "country_code",
-            "in": "formData",
-            "description": "country code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "phone_number",
-            "in": "formData",
-            "description": "phone number",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "current_department_id",
-            "in": "formData",
-            "description": "department type id",
-            "required": true,
-            "type": "number"
-          },
-          {
-            "name": "current_designation",
-            "in": "formData",
-            "description": "designation",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "current_date_of_joining",
-            "in": "formData",
-            "description": "current_date_of_joining",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "employee_code",
-            "in": "formData",
-            "description": "employee code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "prev_employer",
-            "in": "formData",
-            "description": "prev_employer",
-            "required":false,
-            "type": "string"
-          },
-          {
-            "name": "prev_department",
-            "in": "formData",
-            "description": "prev_department",
-            "required":false,
-            "type": "string"
-          },
-          {
-            "name": "prev_designation",
-            "in": "formData",
-            "description": "prev_designation",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "prev_date_of_joining",
-            "in": "formData",
-            "description": "prev_date_of_joining YYYY-MM-DD",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "prev_exit",
-            "in": "formData",
-            "description": "prev_exit YYYY-MM-DD",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "is_manager",
-            "in": "formData",
-            "description": "0=> false, 1=>true ",
-            "required": true,
-            "type": "number",
-            "enum":[0,1]
-          },
-          {
-            "name": "manager_team_name",
-            "in": "formData",
-            "description": "manager team name is required if is_manager==1",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "manager_team_icon_url",
-            "in": "formData",
-            "description": "manager team icon url is required if is_manager==1",
-            "required": false,
-            "type": "string"
+            "schema":{
+              "type": "object",
+              "properties":{
+                "id":{
+                  "type": "string"
+                },
+                "manager_id":{
+                  "type": "number"
+                },
+                "name":{
+                  "type": "string"
+                },
+                "email":{
+                  "type": "string"
+                },
+                "password":{
+                  "type": "string"
+                },
+                "country_code":{
+                  "type": "string"
+                },
+                "phone_number":{
+                  "type": "string"
+                },
+                "current_department_id":{
+                  "type": "string"
+                },
+                "current_designation":{
+                  "type": "string"
+                },
+                "current_date_of_joining":{
+                  "type": "string"
+                },
+                "employee_code":{
+                  "type": "string"
+                },
+                "prev_employers":{
+                  "type":"array",
+                  "items": {
+                    "type": "object",
+                    "properties":{
+                      "prev_employer":{
+                        "type":"string"
+                      },
+                      "prev_department":{
+                        "type":"string"
+                      },
+                      "prev_designation":{
+                        "type":"string"
+                      },
+                      "prev_date_of_joining":{
+                        "type":"string"
+                      },
+                      "prev_exit":{
+                        "type":"string"
+                      }
+                    }
+                  }
+                },
+                "is_manager":{
+                  "type": "number"
+                },
+                "manager_team_name":{
+                  "type": "string"
+                },
+                "manager_team_icon_url":{
+                  "type": "string"
+                }
+              }              
+            }
           }
         ],
         "responses": {}

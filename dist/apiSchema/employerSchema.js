@@ -116,6 +116,13 @@ exports.addEditEmployee = joi_1.default.object({
     current_department_id: joi_1.default.string().required(),
     current_designation: joi_1.default.string().optional(),
     employee_code: joi_1.default.string().required(),
+    prev_employers: joi_1.default.array().items(joi_1.default.object().keys({
+        prev_employer: joi_1.default.string().required(),
+        prev_department: joi_1.default.string().required(),
+        prev_designation: joi_1.default.string().required(),
+        prev_date_of_joining: joi_1.default.string().required(),
+        prev_exit: joi_1.default.string().required(),
+    })).optional(),
     prev_employer: joi_1.default.string().optional(),
     prev_department: joi_1.default.string().optional(),
     prev_designation: joi_1.default.string().optional(),
