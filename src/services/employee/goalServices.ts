@@ -262,10 +262,8 @@ export class GoalServices {
 
             let comepletedGoalMeasureValue=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAverageValue),0);
             //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
-            // goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
-            // goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
-            goal.completionTeamAverageValue=(comepletedGoalMeasureValue).toFixed(2);
-            goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure)).toFixed(2)+"%";
+            goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
+            goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
         }
 
         return { count, rows}
@@ -873,12 +871,8 @@ export class GoalServices {
 
             let comepletedGoalMeasureValue=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAverageValue),0);
             //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
-            // goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
-            // goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
-
-            goal.completionTeamAverageValue=(comepletedGoalMeasureValue).toFixed(2);
-            goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure)).toFixed(2)+"%";
-
+            goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
+            goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
 
             delete goal.team_goal_assigns;
 
