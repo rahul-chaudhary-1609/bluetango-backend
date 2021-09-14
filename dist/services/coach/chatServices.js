@@ -45,6 +45,7 @@ class ChatServices {
     * function to get chat  list
     */
     getChatList(user) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
@@ -70,6 +71,7 @@ class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
+                    info: ((_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid)) || null,
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 });
@@ -209,6 +211,18 @@ class ChatServices {
             let recieverEmployeeData = yield employee_1.employeeModel.findOne({
                 where: { id: recieverId, }
             });
+            chatRoomData = yield helperFunction.convertPromiseToObject(chatRoomData);
+            if (chatRoomData.info) {
+                yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                    info: chatRoomData.info.map((info) => {
+                        return Object.assign(Object.assign({}, info), { isDeleted: false });
+                    })
+                }, {
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                });
+            }
             let senderEmployeeData = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: { id: user.uid, }
             }));
@@ -667,6 +681,37 @@ class ChatServices {
                 where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid, reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach })
             }));
             return notification;
+        });
+    }
+    /*
+    * function to clear Chat
+    */
+    clearChat(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield helperFunction.convertPromiseToObject(yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            }));
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            if (chatRoomData.info) {
+                yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                    info: chatRoomData.info.map((info) => {
+                        if (info.id == user.uid) {
+                            return Object.assign(Object.assign({}, info), { chatLastDeletedOn: new Date(), isDeleted: true });
+                        }
+                        else {
+                            return Object.assign({}, info);
+                        }
+                    })
+                }, {
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                });
+            }
+            return true;
         });
     }
 }

@@ -49,6 +49,7 @@ export class ChatServices {
                 status: chat.status,
                 type: chat.type,
                 is_disabled,
+                info:chat.info?.find(info=>info.id==user.uid) || null,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt
             })
@@ -221,6 +222,24 @@ export class ChatServices {
         let recieverEmployeeData = await employeeModel.findOne({
             where: { id: recieverId, }
         })
+
+        chatRoomData=await helperFunction.convertPromiseToObject(chatRoomData);
+
+        if(chatRoomData.info){
+
+            await chatRealtionMappingInRoomModel.update({
+                info:chatRoomData.info.map((info)=>{
+                    return{
+                        ...info,
+                        isDeleted:false,
+                    }
+                })
+            },{
+                where:{
+                    room_id: params.chat_room_id,
+                }
+            })
+        }
 
 
         let senderEmployeeData = await helperFunction.convertPromiseToObject(await coachManagementModel.findOne({
@@ -765,6 +784,46 @@ export class ChatServices {
 
 
         return notification;
+    }
+
+    /*
+    * function to clear Chat
+    */
+    public async clearChat(params: any, user: any) {
+        let chatRoomData = await helperFunction.convertPromiseToObject(
+            await chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            })
+        );
+        
+        if (!chatRoomData) throw new Error(constants.MESSAGES.chat_room_notFound);
+
+        
+        if(chatRoomData.info){
+            await chatRealtionMappingInRoomModel.update({
+                info:chatRoomData.info.map((info)=>{
+                    if(info.id==user.uid){
+                        return{
+                            ...info,
+                            chatLastDeletedOn:new Date(),
+                            isDeleted:true,
+                        }
+                    }else{
+                        return{
+                            ...info,
+                        }
+                    }                        
+                })
+            },{
+                where:{
+                    room_id: params.chat_room_id,
+                }
+            })
+        }       
+
+        return true;
     }
 
 

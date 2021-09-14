@@ -36,6 +36,9 @@ exports.chatRealtionMappingInRoomModel = connection_1.sequelize.define("chat_rel
         allowNull: false,
         defaultValue: 1,
         comment: "0=>inactive, 1=> active"
+    },
+    info: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
     }
 }, {
     tableName: "chat_relation_mapping_in_room"

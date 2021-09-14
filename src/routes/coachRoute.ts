@@ -61,6 +61,9 @@ coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.vali
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
+/* clear Chat*/
+coachRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.clearChat), chatController.clearChat);
+
 /* contact us for employee */
 coachRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateCoachToken, chatController.getNotifications);
 

@@ -4811,6 +4811,34 @@
                 "responses": {}
             }
         },
+        "/employee/clearChat": {
+            "delete": {
+                "tags": [
+                    "EmployeeChat"
+                ],
+                "description": "clear chat",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chat_room_id",
+                        "in": "formData",
+                        "description": "Enter chat room id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employer/login": {
             "post": {
                 "tags": [
@@ -6466,6 +6494,34 @@
                         "in": "formData",
                         "description": "Enter chat token",
                         "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/clearChat": {
+            "delete": {
+                "tags": [
+                    "CoachChat"
+                ],
+                "description": "clear chat",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chat_room_id",
+                        "in": "formData",
+                        "description": "Enter chat room id",
+                        "required": true,
                         "type": "string"
                     }
                 ],

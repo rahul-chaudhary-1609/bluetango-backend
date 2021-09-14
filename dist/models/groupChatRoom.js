@@ -37,6 +37,9 @@ exports.groupChatRoomModel = connection_1.sequelize.define("group_chat_rooms", {
         allowNull: false,
         defaultValue: 1,
         comment: "0=>inactive, 1=> active"
+    },
+    info: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
     }
 }, {
     tableName: "group_chat_rooms"

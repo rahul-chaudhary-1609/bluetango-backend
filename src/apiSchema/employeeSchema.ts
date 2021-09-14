@@ -367,3 +367,7 @@ export const markGoalsAsPrimary=Joi.object({
         })).required(),
 });
 
+export const clearChat = Joi.object({
+  chat_room_id: Joi.number().required()
+})
+

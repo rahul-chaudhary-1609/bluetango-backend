@@ -154,6 +154,21 @@ export class ChatController {
         }
     }
 
+        /**
+ * to clear chat
+ * @param req :[]
+ * @param res 
+ */
+    public async clearChat(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await chatServices.clearChat(req.body, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
     
     
 }

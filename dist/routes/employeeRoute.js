@@ -168,6 +168,8 @@ employeeRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenVa
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/
 employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+/* clear Chat*/
+employeeRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.clearChat), chatController.clearChat);
 //achievement API's
 /* get achievements */
 employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);

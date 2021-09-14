@@ -36,6 +36,9 @@ export const groupChatRoomModel: any = sequelize.define("group_chat_rooms", {
         allowNull: false,
         defaultValue: 1,
         comment: "0=>inactive, 1=> active"
+    },    
+    info: {
+        type: DataTypes.ARRAY(DataTypes.JSONB),
     }
 },
     {

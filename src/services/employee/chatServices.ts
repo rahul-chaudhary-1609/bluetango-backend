@@ -110,7 +110,19 @@ export class ChatServices {
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
                     room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
-                    type: constants.CHAT_ROOM_TYPE.coach
+                    type: constants.CHAT_ROOM_TYPE.coach,
+                    info:[
+                        {
+                            id:user.uid,
+                            chatLastDeletedOn:new Date(),
+                            isDeleted:false,
+                        },
+                        {
+                            id:params.other_user_id,
+                            chatLastDeletedOn:new Date(),
+                            isDeleted:false,
+                        }
+                    ]
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
@@ -129,6 +141,7 @@ export class ChatServices {
                 other_user: coach,
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
+                info:chatRoomData.info,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
@@ -162,7 +175,19 @@ export class ChatServices {
                 let chatRoomObj = <any>{
                     user_id: user.uid,
                     other_user_id: params.other_user_id,
-                    room_id: await helperFunction.getUniqueChatRoomId(),//await helperFunction.randomStringEightDigit()
+                    room_id: await helperFunction.getUniqueChatRoomId(),//await helperFunction.randomStringEightDigit(),
+                    info:[
+                        {
+                            id:user.uid,
+                            chatLastDeletedOn:new Date(),
+                            isDeleted:false,
+                        },
+                        {
+                            id:params.other_user_id,
+                            chatLastDeletedOn:new Date(),
+                            isDeleted:false,
+                        }
+                    ]
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
             }
@@ -180,6 +205,7 @@ export class ChatServices {
                 other_user: users.find((val: any) => val.id == params.other_user_id),
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
+                info:chatRoomData.info,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
@@ -221,6 +247,13 @@ export class ChatServices {
                 member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
+                info:managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id).map((managerTeamMemberId)=>{
+                    return {
+                        id:managerTeamMemberId,
+                        chatLastDeletedOn:new Date(),
+                        isDeleted:false,
+                    }
+                })
             };
 
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(
@@ -240,9 +273,19 @@ export class ChatServices {
            
         }
         else {
+            
             let teamMemberIds = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id);
+            let newMembersInfo=teamMemberIds.filter(id=>!managerGroupChatRoom.member_ids.includes(id)).map((managerTeamMemberId)=>{
+                return {
+                    id:managerTeamMemberId,
+                    chatLastDeletedOn:new Date(),
+                    isDeleted:false,
+                }
+            });
+            
             managerGroupChatRoom.member_ids = teamMemberIds;//[...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
             managerGroupChatRoom.live_member_ids = teamMemberIds;
+            managerGroupChatRoom.info=managerGroupChatRoom.info && [...managerGroupChatRoom.info,...newMembersInfo]
             managerGroupChatRoom.save();
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(managerGroupChatRoom);
         }
@@ -276,6 +319,8 @@ export class ChatServices {
             throw new Error(constants.MESSAGES.firebase_firestore_doc_not_updated)
         }
 
+        
+
         return {
             id: managerGroupChatRoom.id,
             room_id: managerGroupChatRoom.room_id,
@@ -288,6 +333,7 @@ export class ChatServices {
             type: constants.CHAT_ROOM_TYPE.group,
             amIGroupManager: manager.is_manager,
             is_disabled: false,
+            info:managerGroupChatRoom.info?.find(info=>info.id==currentUser.id) || null,
             createdAt: managerGroupChatRoom.createdAt,
             updatedAt: managerGroupChatRoom.updatedAt
         }
@@ -375,6 +421,7 @@ export class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
+                    info:chat.info?.find(info=>info.id==user.uid) || null,
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 })
@@ -401,6 +448,7 @@ export class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
+                    info:chat.info?.find(info=>info.id==user.uid) || null,
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 })
@@ -668,6 +716,24 @@ export class ChatServices {
             })
         }
 
+        chatRoomData=await helperFunction.convertPromiseToObject(chatRoomData);
+
+        if(chatRoomData.info){
+
+            await chatRealtionMappingInRoomModel.update({
+                info:chatRoomData.info.map((info)=>{
+                    return{
+                        ...info,
+                        isDeleted:false,
+                    }
+                })
+            },{
+                where:{
+                    room_id: params.chat_room_id,
+                }
+            })
+        }
+
         let senderEmployeeData = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
             where: { id: user.uid, }
         }))
@@ -683,6 +749,19 @@ export class ChatServices {
                         where: { id: [...groupChatRoomData.live_member_ids,groupChatRoomData.manager_id], }
                     })
                 )
+                await groupChatRoomModel.update({
+                    info:groupChatRoomData.info.map((info)=>{
+                        return{
+                            ...info,
+                            isDeleted:false,
+                        }
+                    })
+                },{
+                    where:{
+                        room_id: params.chat_room_id,
+                    }
+                })
+                
                 for (let recieverEmployee of recieverEmployees) {
                     if (senderEmployeeData.id != recieverEmployee.id) {
                         //add notification 
@@ -1018,6 +1097,77 @@ export class ChatServices {
 
         return notificationData
 
+    }
+
+    /*
+    * function to clear Chat
+    */
+    public async clearChat(params: any, user: any) {
+        let chatRoomData = await helperFunction.convertPromiseToObject(
+            await chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            })
+        );
+
+        let groupChatRoomData = null;
+        if (!chatRoomData) {
+            groupChatRoomData = await helperFunction.convertPromiseToObject( await groupChatRoomModel.findOne({
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                })
+            )
+
+            if(groupChatRoomData.info){
+                await groupChatRoomModel.update({
+                    info:groupChatRoomData.info.map((info)=>{
+                        if(info.id==user.uid){
+                            return{
+                                ...info,
+                                chatLastDeletedOn:new Date(),
+                                isDeleted:true,
+                            }
+                        }else{
+                            return{
+                                ...info,
+                            }
+                        }   
+                    })
+                },{
+                    where:{
+                        room_id: params.chat_room_id,
+                    }
+                })
+            }
+        }else{
+
+            if(chatRoomData.info){
+                await chatRealtionMappingInRoomModel.update({
+                    info:chatRoomData.info.map((info)=>{
+                        if(info.id==user.uid){
+                            return{
+                                ...info,
+                                chatLastDeletedOn:new Date(),
+                                isDeleted:true,
+                            }
+                        }else{
+                            return{
+                                ...info,
+                            }
+                        }                        
+                    })
+                },{
+                    where:{
+                        room_id: params.chat_room_id,
+                    }
+                })
+            }
+            
+        }
+
+        return true;
     }
 
 

@@ -113,3 +113,7 @@ export const markNotificationsAsViewed = Joi.object({
 export const updateEmployerDeviceToken = Joi.object({
     device_token: Joi.string().required()
 })
+
+export const clearChat = Joi.object({
+    chat_room_id: Joi.number().required()
+})

@@ -224,6 +224,8 @@ employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.v
 /* send disconnect video/audio chat notification*/
 employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
+/* clear Chat*/
+employeeRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.clearChat), chatController.clearChat);
 
 //achievement API's
 /* get achievements */
