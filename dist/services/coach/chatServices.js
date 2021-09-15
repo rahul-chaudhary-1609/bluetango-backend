@@ -64,17 +64,22 @@ class ChatServices {
                 });
                 if (employee.status == constants.STATUS.deleted)
                     is_disabled = true;
-                chats.push({
+                let chatObj = {
                     id: chat.id,
                     room_id: chat.room_id,
                     user: employee,
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info: ((_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid)) || null,
+                    info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
-                });
+                };
+                if (!chatObj.info.isDeleted) {
+                    chatObj.chatLastDeletedOn = chatObj.info.chatLastDeletedOn;
+                    delete chatObj.info;
+                    chats.push(chatObj);
+                }
             }
             return chats;
         });

@@ -321,7 +321,7 @@ export class ChatServices {
 
         
 
-        return {
+        return <any>{
             id: managerGroupChatRoom.id,
             room_id: managerGroupChatRoom.room_id,
             group_name: managerGroupChatRoom.name,
@@ -333,7 +333,7 @@ export class ChatServices {
             type: constants.CHAT_ROOM_TYPE.group,
             amIGroupManager: manager.is_manager,
             is_disabled: false,
-            info:managerGroupChatRoom.info?.find(info=>info.id==currentUser.id) || null,
+            info:managerGroupChatRoom.info?.find(info=>info.id==currentUser.id),
             createdAt: managerGroupChatRoom.createdAt,
             updatedAt: managerGroupChatRoom.updatedAt
         }
@@ -414,17 +414,23 @@ export class ChatServices {
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && !coach) is_disabled = true;
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && coach) is_disabled = false;
 
-                chats.push({
+                let chatObj=<any>{
                     id: chat.id,
                     room_id: chat.room_id,
                     user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info:chat.info?.find(info=>info.id==user.uid) || null,
+                    info:chat.info?.find(info=>info.id==user.uid),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
-                })
+                }
+                
+                if(!chatObj.info.isDeleted){
+                    chatObj.chatLastDeletedOn=chatObj.info.chatLastDeletedOn;
+                    delete chatObj.info;
+                    chats.push(chatObj)
+                }
             }
             else {
 
@@ -441,17 +447,23 @@ export class ChatServices {
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && !coach) is_disabled = true;
                 if (chat.type == constants.CHAT_ROOM_TYPE.coach && coach) is_disabled = false;
 
-                chats.push({
+                let chatObj=<any>{
                     id: chat.id,
                     room_id: chat.room_id,
                     user: chat.type == constants.CHAT_ROOM_TYPE.coach ? coach : employee,
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info:chat.info?.find(info=>info.id==user.uid) || null,
+                    info:chat.info?.find(info=>info.id==user.uid),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
-                })
+                }
+
+                if(!chatObj.info.isDeleted){
+                    chatObj.chatLastDeletedOn=chatObj.info.chatLastDeletedOn;
+                    delete chatObj.info;
+                    chats.push(chatObj)
+                }
             }
 
         }
@@ -461,7 +473,11 @@ export class ChatServices {
         if (currentUser.is_manager) {
             let groupChat = await this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser );
             groupChatIds.push(groupChat.id)
-            chats.push(groupChat)
+            if(!groupChat.info.isDeleted){
+                groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+                delete groupChat.info;
+                chats.push(groupChat)
+            }
         }
 
         let manager = await helperFunction.convertPromiseToObject(
@@ -476,7 +492,11 @@ export class ChatServices {
         if (manager) {
             let groupChat = await this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser )
             groupChatIds.push(groupChat.id)
-            chats.push(groupChat)
+            if(!groupChat.info.isDeleted){
+                groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+                delete groupChat.info;
+                chats.push(groupChat)
+            }
         }
 
         // let groupChatRooms = await helperFunction.convertPromiseToObject(
@@ -718,7 +738,7 @@ export class ChatServices {
 
         chatRoomData=await helperFunction.convertPromiseToObject(chatRoomData);
 
-        if(chatRoomData.info){
+        if(chatRoomData?.info){
 
             await chatRealtionMappingInRoomModel.update({
                 info:chatRoomData.info.map((info)=>{
