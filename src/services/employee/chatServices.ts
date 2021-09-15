@@ -125,6 +125,15 @@ export class ChatServices {
                     ]
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            }else{
+                chatRoomData.info=chatRoomData.info.map((info)=>{
+                    return{
+                        ...info,
+                        isDeleted:false,
+                    }
+                });
+
+                chatRoomData.save();
             }
 
             
@@ -190,6 +199,15 @@ export class ChatServices {
                     ]
                 }
                 chatRoomData = await chatRealtionMappingInRoomModel.create(chatRoomObj);
+            }else{
+                chatRoomData.info=chatRoomData.info.map((info)=>{
+                    return{
+                        ...info,
+                        isDeleted:false,
+                    }
+                });
+
+                chatRoomData.save();
             }
 
             let users = await employeeModel.findAll({

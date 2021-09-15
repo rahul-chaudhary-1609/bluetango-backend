@@ -137,6 +137,12 @@ class ChatServices {
                     };
                     chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
                 }
+                else {
+                    chatRoomData.info = chatRoomData.info.map((info) => {
+                        return Object.assign(Object.assign({}, info), { isDeleted: false });
+                    });
+                    chatRoomData.save();
+                }
                 let users = yield employee_1.employeeModel.findAll({
                     attributes: ['id', 'name', 'profile_pic_url'],
                     where: {
@@ -191,6 +197,12 @@ class ChatServices {
                         ]
                     };
                     chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
+                }
+                else {
+                    chatRoomData.info = chatRoomData.info.map((info) => {
+                        return Object.assign(Object.assign({}, info), { isDeleted: false });
+                    });
+                    chatRoomData.save();
                 }
                 let users = yield employee_1.employeeModel.findAll({
                     attributes: ['id', 'name', 'profile_pic_url'],
