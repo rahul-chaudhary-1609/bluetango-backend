@@ -499,11 +499,14 @@ export class ChatServices {
         if (currentUser.is_manager) {
             let groupChat = await this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser );
             groupChatIds.push(groupChat.id)
-            if(!groupChat?.info?.isDeleted){
-                groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
-                delete groupChat.info;
-                chats.push(groupChat)
-            }
+            // if(!groupChat?.info?.isDeleted){
+            //     groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+            //     delete groupChat.info;
+            //     chats.push(groupChat)
+            // }
+            groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+            delete groupChat.info;
+            chats.push(groupChat)
         }
 
         let manager = await helperFunction.convertPromiseToObject(
@@ -518,11 +521,14 @@ export class ChatServices {
         if (manager) {
             let groupChat = await this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser )
             groupChatIds.push(groupChat.id)
-            if(!groupChat?.info?.isDeleted){
-                groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
-                delete groupChat.info;
-                chats.push(groupChat)
-            }
+            // if(!groupChat?.info?.isDeleted){
+            //     groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+            //     delete groupChat.info;
+            //     chats.push(groupChat)
+            // }
+            groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+            delete groupChat.info;
+            chats.push(groupChat)
         }
 
         // let groupChatRooms = await helperFunction.convertPromiseToObject(

@@ -325,7 +325,7 @@ class ChatServices {
     * function to get chat  list
     */
     getChatList(user) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomDataUser = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
@@ -434,11 +434,14 @@ class ChatServices {
             if (currentUser.is_manager) {
                 let groupChat = yield this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser);
                 groupChatIds.push(groupChat.id);
-                if (!((_c = groupChat === null || groupChat === void 0 ? void 0 : groupChat.info) === null || _c === void 0 ? void 0 : _c.isDeleted)) {
-                    groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
-                    delete groupChat.info;
-                    chats.push(groupChat);
-                }
+                // if(!groupChat?.info?.isDeleted){
+                //     groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+                //     delete groupChat.info;
+                //     chats.push(groupChat)
+                // }
+                groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
+                delete groupChat.info;
+                chats.push(groupChat);
             }
             let manager = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
                 attributes: ['manager_id'],
@@ -449,11 +452,14 @@ class ChatServices {
             if (manager) {
                 let groupChat = yield this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser);
                 groupChatIds.push(groupChat.id);
-                if (!((_d = groupChat === null || groupChat === void 0 ? void 0 : groupChat.info) === null || _d === void 0 ? void 0 : _d.isDeleted)) {
-                    groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
-                    delete groupChat.info;
-                    chats.push(groupChat);
-                }
+                // if(!groupChat?.info?.isDeleted){
+                //     groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
+                //     delete groupChat.info;
+                //     chats.push(groupChat)
+                // }
+                groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
+                delete groupChat.info;
+                chats.push(groupChat);
             }
             // let groupChatRooms = await helperFunction.convertPromiseToObject(
             //     await groupChatRoomModel.findAll({
