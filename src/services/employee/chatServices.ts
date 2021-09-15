@@ -241,19 +241,27 @@ export class ChatServices {
         );
 
         if (!managerGroupChatRoom) {
+
+            let info=managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id).map((managerTeamMemberId)=>{
+                return {
+                    id:managerTeamMemberId,
+                    chatLastDeletedOn:new Date(),
+                    isDeleted:false,
+                }
+            });
+
+            info.push({
+                id:parseInt(manager.id),
+                chatLastDeletedOn:new Date(),
+                isDeleted:false,
+            })
             
             let groupChatRoomObj = <any>{
                 manager_id: parseInt(manager.id),
                 member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                 room_id: await helperFunction.getUniqueChatRoomId(), //await helperFunction.randomStringEightDigit(),
-                info:managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id).map((managerTeamMemberId)=>{
-                    return {
-                        id:managerTeamMemberId,
-                        chatLastDeletedOn:new Date(),
-                        isDeleted:false,
-                    }
-                })
+                info,
             };
 
             managerGroupChatRoom = await helperFunction.convertPromiseToObject(
@@ -473,7 +481,7 @@ export class ChatServices {
         if (currentUser.is_manager) {
             let groupChat = await this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser );
             groupChatIds.push(groupChat.id)
-            if(!groupChat.info.isDeleted){
+            if(!groupChat?.info?.isDeleted){
                 groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
                 delete groupChat.info;
                 chats.push(groupChat)
@@ -492,7 +500,7 @@ export class ChatServices {
         if (manager) {
             let groupChat = await this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser )
             groupChatIds.push(groupChat.id)
-            if(!groupChat.info.isDeleted){
+            if(!groupChat?.info?.isDeleted){
                 groupChat.chatLastDeletedOn=groupChat.info.chatLastDeletedOn;
                 delete groupChat.info;
                 chats.push(groupChat)

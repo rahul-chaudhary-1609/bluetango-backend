@@ -231,18 +231,24 @@ class ChatServices {
                 }
             }));
             if (!managerGroupChatRoom) {
+                let info = managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id).map((managerTeamMemberId) => {
+                    return {
+                        id: managerTeamMemberId,
+                        chatLastDeletedOn: new Date(),
+                        isDeleted: false,
+                    };
+                });
+                info.push({
+                    id: parseInt(manager.id),
+                    chatLastDeletedOn: new Date(),
+                    isDeleted: false,
+                });
                 let groupChatRoomObj = {
                     manager_id: parseInt(manager.id),
                     member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     live_member_ids: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id),
                     room_id: yield helperFunction.getUniqueChatRoomId(),
-                    info: managerTeamMembers.map(managerTeamMember => managerTeamMember.team_member_id).map((managerTeamMemberId) => {
-                        return {
-                            id: managerTeamMemberId,
-                            chatLastDeletedOn: new Date(),
-                            isDeleted: false,
-                        };
-                    })
+                    info,
                 };
                 managerGroupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
                 const newDoc = yield db.collection('chats_dev').doc(managerGroupChatRoom.room_id).set({
@@ -307,7 +313,7 @@ class ChatServices {
     * function to get chat  list
     */
     getChatList(user) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let chatRoomDataUser = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
@@ -416,7 +422,7 @@ class ChatServices {
             if (currentUser.is_manager) {
                 let groupChat = yield this.groupChatHandler({ id: user.uid, is_manager: true, }, currentUser);
                 groupChatIds.push(groupChat.id);
-                if (!groupChat.info.isDeleted) {
+                if (!((_c = groupChat === null || groupChat === void 0 ? void 0 : groupChat.info) === null || _c === void 0 ? void 0 : _c.isDeleted)) {
                     groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
                     delete groupChat.info;
                     chats.push(groupChat);
@@ -431,7 +437,7 @@ class ChatServices {
             if (manager) {
                 let groupChat = yield this.groupChatHandler({ id: manager.manager_id, is_manager: false, }, currentUser);
                 groupChatIds.push(groupChat.id);
-                if (!groupChat.info.isDeleted) {
+                if (!((_d = groupChat === null || groupChat === void 0 ? void 0 : groupChat.info) === null || _d === void 0 ? void 0 : _d.isDeleted)) {
                     groupChat.chatLastDeletedOn = groupChat.info.chatLastDeletedOn;
                     delete groupChat.info;
                     chats.push(groupChat);
