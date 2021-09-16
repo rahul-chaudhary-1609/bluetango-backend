@@ -94,6 +94,7 @@ class ChatServices {
     * function to get chat room id
     */
     getChatRoomId(params, user) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             if (user.uid == params.other_user_id) {
                 throw new Error(constants.MESSAGES.self_chat);
@@ -129,7 +130,7 @@ class ChatServices {
                                 isDeleted: false,
                             },
                             {
-                                id: params.other_user_id,
+                                id: parseInt(params.other_user_id),
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
                             }
@@ -155,7 +156,7 @@ class ChatServices {
                     other_user: coach,
                     room_id: chatRoomData.room_id,
                     status: chatRoomData.status,
-                    info: chatRoomData.info,
+                    chatLastDeletedOn: (_a = chatRoomData.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid).chatLastDeletedOn,
                     createdAt: chatRoomData.createdAt,
                     updatedAt: chatRoomData.updatedAt
                 };
@@ -190,7 +191,7 @@ class ChatServices {
                                 isDeleted: false,
                             },
                             {
-                                id: params.other_user_id,
+                                id: parseInt(params.other_user_id),
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
                             }
@@ -217,6 +218,7 @@ class ChatServices {
                     room_id: chatRoomData.room_id,
                     status: chatRoomData.status,
                     info: chatRoomData.info,
+                    chatLastDeletedOn: (_b = chatRoomData.info) === null || _b === void 0 ? void 0 : _b.find(info => info.id == user.uid).chatLastDeletedOn,
                     createdAt: chatRoomData.createdAt,
                     updatedAt: chatRoomData.updatedAt
                 };

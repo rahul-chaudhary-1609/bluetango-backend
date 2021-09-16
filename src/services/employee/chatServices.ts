@@ -118,7 +118,7 @@ export class ChatServices {
                             isDeleted:false,
                         },
                         {
-                            id:params.other_user_id,
+                            id:parseInt(params.other_user_id),
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
                         }
@@ -150,7 +150,7 @@ export class ChatServices {
                 other_user: coach,
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
-                info:chatRoomData.info,
+                chatLastDeletedOn:chatRoomData.info?.find(info=>info.id==user.uid).chatLastDeletedOn,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
@@ -192,7 +192,7 @@ export class ChatServices {
                             isDeleted:false,
                         },
                         {
-                            id:params.other_user_id,
+                            id:parseInt(params.other_user_id),
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
                         }
@@ -224,6 +224,7 @@ export class ChatServices {
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
                 info:chatRoomData.info,
+                chatLastDeletedOn:chatRoomData.info?.find(info=>info.id==user.uid).chatLastDeletedOn,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
