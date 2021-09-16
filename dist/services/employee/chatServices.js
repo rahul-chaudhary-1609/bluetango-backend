@@ -217,7 +217,6 @@ class ChatServices {
                     other_user: users.find((val) => val.id == params.other_user_id),
                     room_id: chatRoomData.room_id,
                     status: chatRoomData.status,
-                    info: chatRoomData.info,
                     chatLastDeletedOn: (_b = chatRoomData.info) === null || _b === void 0 ? void 0 : _b.find(info => info.id == user.uid).chatLastDeletedOn,
                     createdAt: chatRoomData.createdAt,
                     updatedAt: chatRoomData.updatedAt
