@@ -31,6 +31,7 @@ const multerParser_1 = require("../middleware/multerParser");
 const adminRoute = express_1.default.Router();
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
+const coachController = new AdminController.CoachController();
 /* add subAdmin */
 adminRoute.post("/addSubAdmin", validators.trimmer, joiSchemaValidation.validateBody(adminSchema.addNewAdmin), tokenValidator.validateAdminToken, loginController.addNewAdmin);
 /* update subAdmin */
@@ -135,5 +136,8 @@ adminRoute.get("/detailsAdvisor", tokenValidator.validateAdminToken, employersCo
 adminRoute.get("/listFeedback", joiSchemaValidation.validateQueryParams(adminSchema.listFeedback), tokenValidator.validateAdminToken, employersController.listFeedback);
 /* get Feedback Details */
 adminRoute.get("/getFeedbackDetails", joiSchemaValidation.validateQueryParams(adminSchema.getFeedbackDetails), tokenValidator.validateAdminToken, employersController.getFeedbackDetails);
+//new coach API's
+/* add new advisor */
+adminRoute.post("/addEditCoachSpecializationCategories", tokenValidator.validateAdminToken, joiSchemaValidation.validateBody(adminSchema.addEditCoachSpecializationCategories), coachController.addEditCoachSpecializationCategories);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

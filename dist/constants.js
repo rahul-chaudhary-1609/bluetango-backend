@@ -171,6 +171,8 @@ exports.MESSAGES = {
     attribute_already_added: `An attribute with the same name/label already exist.`,
     attribute_not_found: `Either no attribute exist with this id or it does not belogs to current employer`,
     no_feedback: `No feedback found`,
+    no_coach_specialization_category: `No specialization category found`,
+    coach_specialization_category_already_exist: `A coach specialization category with the same name already exist.`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {

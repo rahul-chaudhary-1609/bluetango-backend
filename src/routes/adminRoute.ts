@@ -13,6 +13,7 @@ const adminRoute = express.Router();
 
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
+const coachController = new AdminController.CoachController();
 
 
 /* add subAdmin */
@@ -170,6 +171,12 @@ adminRoute.get("/listFeedback", joiSchemaValidation.validateQueryParams(adminSch
 
 /* get Feedback Details */
 adminRoute.get("/getFeedbackDetails", joiSchemaValidation.validateQueryParams(adminSchema.getFeedbackDetails), tokenValidator.validateAdminToken, employersController.getFeedbackDetails);
+
+
+//new coach API's
+
+/* add new advisor */
+adminRoute.post("/addEditCoachSpecializationCategories", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.addEditCoachSpecializationCategories), coachController.addEditCoachSpecializationCategories);
 
 
 export = adminRoute;

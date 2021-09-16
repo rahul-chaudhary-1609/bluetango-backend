@@ -191,3 +191,9 @@ export const listFeedback = Joi.object ({
 export const getFeedbackDetails = Joi.object ({
   feedback_id: Joi.number().required(),
 })
+
+export const addEditCoachSpecializationCategories= Joi.object ({
+  category_id: Joi.number().optional(),
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+})
