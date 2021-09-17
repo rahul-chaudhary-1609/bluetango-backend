@@ -70,9 +70,55 @@ export class CoachService {
             }
         }else{
             throw new Error(constants.MESSAGES.coach_specialization_category_already_exist)
+        }   
+    }
+
+    public async listCoachSpecializationCategories(params:any){
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        let whereCondintion=<any>{}
+        if(params.searchKey){
+            whereCondintion=<any>{
+                ...whereCondintion,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
         }
-        
-        
+
+        let categories=await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAndCountAll({
+                where:whereCondintion,
+                limit,
+                offset,
+            })
+        )
+
+        if(categories.count==0){
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        return categories;
+
+    }
+
+    public async getCoachSpecializationCategory(params:any){
+
+        let category=await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findOne({
+                where:{
+                    id:params.category_id,
+                }
+            })
+        )
+
+        if(!category){
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        return category;
+
     }
 
     

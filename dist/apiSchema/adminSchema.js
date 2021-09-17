@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addEditCoachSpecializationCategories = exports.getFeedbackDetails = exports.listFeedback = exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
+exports.getCoachSpecializationCategory = exports.listCoachSpecializationCategories = exports.addEditCoachSpecializationCategories = exports.getFeedbackDetails = exports.listFeedback = exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -208,5 +208,13 @@ exports.addEditCoachSpecializationCategories = joi_1.default.object({
     category_id: joi_1.default.number().optional(),
     name: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
+});
+exports.listCoachSpecializationCategories = joi_1.default.object({
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getCoachSpecializationCategory = joi_1.default.object({
+    category_id: joi_1.default.number().required(),
 });
 //# sourceMappingURL=adminSchema.js.map

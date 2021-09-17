@@ -26,7 +26,23 @@ export class CoachController {
         }
     }
 
+    public async listCoachSpecializationCategories(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.listCoachSpecializationCategories(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 
+    public async getCoachSpecializationCategory(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.getCoachSpecializationCategory(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 }

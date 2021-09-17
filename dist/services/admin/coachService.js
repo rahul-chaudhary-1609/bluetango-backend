@@ -95,6 +95,39 @@ class CoachService {
             }
         });
     }
+    listCoachSpecializationCategories(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let whereCondintion = {};
+            if (params.searchKey) {
+                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { name: {
+                        [Op.iLike]: `%${params.searchKey}%`
+                    } });
+            }
+            let categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAndCountAll({
+                where: whereCondintion,
+                limit,
+                offset,
+            }));
+            if (categories.count == 0) {
+                throw new Error(constants.MESSAGES.no_coach_specialization_category);
+            }
+            return categories;
+        });
+    }
+    getCoachSpecializationCategory(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let category = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findOne({
+                where: {
+                    id: params.category_id,
+                }
+            }));
+            if (!category) {
+                throw new Error(constants.MESSAGES.no_coach_specialization_category);
+            }
+            return category;
+        });
+    }
 }
 exports.CoachService = CoachService;
 //# sourceMappingURL=coachService.js.map

@@ -175,8 +175,14 @@ adminRoute.get("/getFeedbackDetails", joiSchemaValidation.validateQueryParams(ad
 
 //new coach API's
 
-/* add new advisor */
+/* add Edit Coach Specialization Categories */
 adminRoute.post("/addEditCoachSpecializationCategories", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.addEditCoachSpecializationCategories), coachController.addEditCoachSpecializationCategories);
+
+/* list Coach Specialization Categories */
+adminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
+
+/* get Coach Specialization Categories */
+adminRoute.get("/getCoachSpecializationCategory", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachSpecializationCategory), coachController.getCoachSpecializationCategory);
 
 
 export = adminRoute;

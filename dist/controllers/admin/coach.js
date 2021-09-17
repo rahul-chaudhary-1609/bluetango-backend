@@ -52,6 +52,28 @@ class CoachController {
             }
         });
     }
+    listCoachSpecializationCategories(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.listCoachSpecializationCategories(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getCoachSpecializationCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.getCoachSpecializationCategory(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.CoachController = CoachController;
 //# sourceMappingURL=coach.js.map

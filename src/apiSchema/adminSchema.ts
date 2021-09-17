@@ -197,3 +197,13 @@ export const addEditCoachSpecializationCategories= Joi.object ({
   name: Joi.string().required(),
   description: Joi.string().required(),
 })
+
+export const listCoachSpecializationCategories= Joi.object ({
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getCoachSpecializationCategory= Joi.object ({
+  category_id: Joi.number().required(),
+})
