@@ -184,5 +184,16 @@ adminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateAdmi
 /* get Coach Specialization Categories */
 adminRoute.get("/getCoachSpecializationCategory", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachSpecializationCategory), coachController.getCoachSpecializationCategory);
 
+//employee rank API's
+
+/* add Edit Employee Rank*/
+adminRoute.post("/addEditEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.addEditEmployeeRank), coachController.addEditEmployeeRank);
+
+/* list Employee Ranks */
+adminRoute.get("/listEmployeeRanks", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+
+/* get Employee Rank */
+adminRoute.get("/getEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeRank), coachController.getEmployeeRank);
+
 
 export = adminRoute;

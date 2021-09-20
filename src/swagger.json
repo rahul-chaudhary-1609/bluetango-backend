@@ -2260,6 +2260,118 @@
         "responses": {}
       }
     },
+    "/admin/addEditEmployeeRank": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to addEdit Employee Rank",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+              "name": "rank_id",
+              "in": "formData",
+              "description": "id, when you will pass id then it will be update otherwise it will be create",
+              "required": false,
+              "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "enter Employee Rank name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "enter Employee Rank description",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listEmployeeRanks": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Employee Ranks",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+              "name": "searchKey",
+              "in": "query",
+              "description": "enter the search key",
+              "required": false,
+              "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getEmployeeRank": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Employee Rank",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+              "name": "rank_id",
+              "in": "query",
+              "description": "enter the category id",
+              "required": true,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/login": {
       "post": {
         "tags": [

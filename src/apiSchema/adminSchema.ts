@@ -207,3 +207,19 @@ export const listCoachSpecializationCategories= Joi.object ({
 export const getCoachSpecializationCategory= Joi.object ({
   category_id: Joi.number().required(),
 })
+
+export const addEditEmployeeRank= Joi.object ({
+  rank_id: Joi.number().optional(),
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+})
+
+export const listEmployeeRanks= Joi.object ({
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getEmployeeRank= Joi.object ({
+  rank_id: Joi.number().required(),
+})

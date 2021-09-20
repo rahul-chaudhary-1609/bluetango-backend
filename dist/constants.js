@@ -173,6 +173,8 @@ exports.MESSAGES = {
     no_feedback: `No feedback found`,
     no_coach_specialization_category: `No specialization category found`,
     coach_specialization_category_already_exist: `A coach specialization category with the same name already exist.`,
+    no_employee_rank: `No employee rank found`,
+    employee_rank_already_exist: `A employee rank with the same name already exist.`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {

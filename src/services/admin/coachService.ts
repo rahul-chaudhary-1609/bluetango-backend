@@ -1,6 +1,7 @@
 import { employersModel, industryTypeModel, employeeModel, departmentModel, adminModel } from "../../models";
 import { coachManagementModel } from "../../models/coachManagement";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeRanksModel } from "../../models/employeeRanks";
 import _ from "lodash";
 
 import * as helperFunction from "../../utils/helperFunction";
@@ -118,6 +119,112 @@ export class CoachService {
         }
 
         return category;
+
+    }
+
+    public async addEditEmployeeRank(params:any){
+
+        let rank=null;
+
+        if(params.rank_id){
+            rank=await employeeRanksModel.findOne({
+                where:{
+                    name:{
+                        [Op.iLike]:`%${params.name}%`
+                    },
+                    status:[constants.STATUS.active,constants.STATUS.inactive],
+                    id:{
+                        [Op.notIn]:[params.rank_id],
+                    }
+                }
+            })
+        }else{
+            rank=await employeeRanksModel.findOne({
+                where:{
+                    name:{
+                        [Op.iLike]:`%${params.name}%`
+                    },
+                    status:[constants.STATUS.active,constants.STATUS.inactive],
+                }
+            })
+        }
+
+        if(!rank){
+            if(params.rank_id){
+                let rank=await employeeRanksModel.findOne({
+                    where:{
+                        id:params.rank_id,
+                    }
+                })
+    
+                if(rank){
+                    rank.name=params.name || rank.name;
+                    rank.description=params.description || rank.description;
+    
+                    rank.save();
+    
+                    return await helperFunction.convertPromiseToObject(rank);
+                }else{
+                    throw new Error(constants.MESSAGES.no_employee_rank)
+                }
+            }else{
+                let rankObj=<any>{
+                    name:params.name,
+                    description:params.description,
+                }
+
+                return await helperFunction.convertPromiseToObject(await employeeRanksModel.create(rankObj))
+            }
+        }else{
+            throw new Error(constants.MESSAGES.employee_rank_already_exist)
+        }   
+    }
+
+    public async listEmployeeRanks(params:any){
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        let whereCondintion=<any>{}
+        if(params.searchKey){
+            whereCondintion=<any>{
+                ...whereCondintion,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
+        }
+
+        let ranks=await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findAndCountAll({
+                where:whereCondintion,
+                limit,
+                offset,
+            })
+        )
+
+        if(ranks.count==0){
+            throw new Error(constants.MESSAGES.no_employee_rank);
+        }
+
+        return ranks;
+
+    }
+
+    public async getEmployeeRank(params:any){
+
+        let rank=await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findOne({
+                where:{
+                    id:params.rank_id,
+                }
+            })
+        )
+
+        if(!rank){
+            throw new Error(constants.MESSAGES.no_employee_rank);
+        }
+
+        return rank;
 
     }
 

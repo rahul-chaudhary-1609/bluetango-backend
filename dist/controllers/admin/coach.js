@@ -36,11 +36,6 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const coachService = new coachService_1.CoachService();
 class CoachController {
     constructor() { }
-    /**
-    * get employer industry type list
-    * @param req :[get data]
-    * @param res : [data]
-    */
     addEditCoachSpecializationCategories(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -67,6 +62,39 @@ class CoachController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield coachService.getCoachSpecializationCategory(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    addEditEmployeeRank(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.addEditEmployeeRank(req.body);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    listEmployeeRanks(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.listEmployeeRanks(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getEmployeeRank(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.getEmployeeRank(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {

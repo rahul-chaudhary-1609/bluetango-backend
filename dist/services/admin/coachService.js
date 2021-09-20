@@ -30,6 +30,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoachService = void 0;
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const constants = __importStar(require("../../constants"));
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -126,6 +127,95 @@ class CoachService {
                 throw new Error(constants.MESSAGES.no_coach_specialization_category);
             }
             return category;
+        });
+    }
+    addEditEmployeeRank(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let rank = null;
+            if (params.rank_id) {
+                rank = yield employeeRanks_1.employeeRanksModel.findOne({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${params.name}%`
+                        },
+                        status: [constants.STATUS.active, constants.STATUS.inactive],
+                        id: {
+                            [Op.notIn]: [params.rank_id],
+                        }
+                    }
+                });
+            }
+            else {
+                rank = yield employeeRanks_1.employeeRanksModel.findOne({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${params.name}%`
+                        },
+                        status: [constants.STATUS.active, constants.STATUS.inactive],
+                    }
+                });
+            }
+            if (!rank) {
+                if (params.rank_id) {
+                    let rank = yield employeeRanks_1.employeeRanksModel.findOne({
+                        where: {
+                            id: params.rank_id,
+                        }
+                    });
+                    if (rank) {
+                        rank.name = params.name || rank.name;
+                        rank.description = params.description || rank.description;
+                        rank.save();
+                        return yield helperFunction.convertPromiseToObject(rank);
+                    }
+                    else {
+                        throw new Error(constants.MESSAGES.no_employee_rank);
+                    }
+                }
+                else {
+                    let rankObj = {
+                        name: params.name,
+                        description: params.description,
+                    };
+                    return yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.create(rankObj));
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.employee_rank_already_exist);
+            }
+        });
+    }
+    listEmployeeRanks(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let whereCondintion = {};
+            if (params.searchKey) {
+                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { name: {
+                        [Op.iLike]: `%${params.searchKey}%`
+                    } });
+            }
+            let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll({
+                where: whereCondintion,
+                limit,
+                offset,
+            }));
+            if (ranks.count == 0) {
+                throw new Error(constants.MESSAGES.no_employee_rank);
+            }
+            return ranks;
+        });
+    }
+    getEmployeeRank(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let rank = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findOne({
+                where: {
+                    id: params.rank_id,
+                }
+            }));
+            if (!rank) {
+                throw new Error(constants.MESSAGES.no_employee_rank);
+            }
+            return rank;
         });
     }
 }
