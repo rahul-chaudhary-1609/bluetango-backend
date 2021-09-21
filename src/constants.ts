@@ -55,6 +55,7 @@ export const MESSAGES = {
   invalid_email_token: "",
   success: 'Success',
   invalid_department: "Invalid department is provided",
+  invalid_employee_rank: "Invalid employee rank is provided",
   invalid_employer: "Invalid employer id",
   invalid_action: "Invalid action request",
   already_activated: "Already activated",
@@ -314,4 +315,9 @@ export const SECRETS = {
     private_key: process.env.BRAINTREE_PRIVATE_KEY,
     access_token:process.env.BRAINTREE_ACCESS_TOKEN
   }
+}
+
+export const IS_PAGINATION={
+  no:0,
+  yes:1,
 }

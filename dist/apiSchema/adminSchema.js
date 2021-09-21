@@ -210,6 +210,7 @@ exports.addEditCoachSpecializationCategories = joi_1.default.object({
     description: joi_1.default.string().required(),
 });
 exports.listCoachSpecializationCategories = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
@@ -223,6 +224,7 @@ exports.addEditEmployeeRank = joi_1.default.object({
     description: joi_1.default.string().required(),
 });
 exports.listEmployeeRanks = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),

@@ -607,6 +607,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "employeeRankName",
+                        "in": "query",
+                        "description": "filter employee list by employee rank name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "offset",
                         "in": "query",
                         "description": "page",
@@ -764,6 +771,13 @@
                         "name": "departmentId",
                         "in": "formData",
                         "description": "department id",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "employeeRankId",
+                        "in": "formData",
+                        "description": "employee rank id",
                         "required": false,
                         "type": "number"
                     },
@@ -2215,6 +2229,15 @@
                         "type": "string"
                     },
                     {
+                        "name": "is_pagination",
+                        "in": "query",
+                        "description": "is_pagination: 0=> no, 1=> yes",
+                        "required": false,
+                        "type": "number",
+                        "default": 1,
+                        "enum": [0, 1]
+                    },
+                    {
                         "name": "offset",
                         "in": "query",
                         "description": "page",
@@ -2325,6 +2348,15 @@
                         "description": "enter the search key",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "is_pagination",
+                        "in": "query",
+                        "description": "is_pagination: 0=> no, 1=> yes",
+                        "required": false,
+                        "type": "number",
+                        "default": 1,
+                        "enum": [0, 1]
                     },
                     {
                         "name": "offset",

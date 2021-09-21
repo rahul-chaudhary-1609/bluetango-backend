@@ -76,24 +76,26 @@ export class CoachService {
 
     public async listCoachSpecializationCategories(params:any){
 
-        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-
-        let whereCondintion=<any>{}
+        let query=<any>{}
+        query.where=<any>{}
         if(params.searchKey){
-            whereCondintion=<any>{
-                ...whereCondintion,
+            query.where=<any>{
+                ...query.where,
                 name:{
                     [Op.iLike]:`%${params.searchKey}%`
                 }
             }
         }
 
+        if(params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+            
+        }
+
         let categories=await helperFunction.convertPromiseToObject(
-            await coachSpecializationCategoriesModel.findAndCountAll({
-                where:whereCondintion,
-                limit,
-                offset,
-            })
+            await coachSpecializationCategoriesModel.findAndCountAll(query)
         )
 
         if(categories.count==0){
@@ -182,24 +184,26 @@ export class CoachService {
 
     public async listEmployeeRanks(params:any){
 
-        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-
-        let whereCondintion=<any>{}
+        let query=<any>{};
+        query.where=<any>{}
         if(params.searchKey){
-            whereCondintion=<any>{
-                ...whereCondintion,
+            query.where=<any>{
+                ...query.where,
                 name:{
                     [Op.iLike]:`%${params.searchKey}%`
                 }
             }
         }
 
+        if(params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+            
+        }
+
         let ranks=await helperFunction.convertPromiseToObject(
-            await employeeRanksModel.findAndCountAll({
-                where:whereCondintion,
-                limit,
-                offset,
-            })
+            await employeeRanksModel.findAndCountAll(query)
         )
 
         if(ranks.count==0){

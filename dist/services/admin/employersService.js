@@ -47,6 +47,7 @@ const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const articleManagement_1 = require("../../models/articleManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const multerParser_1 = require("../../middleware/multerParser");
 const path = __importStar(require("path"));
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -273,22 +274,12 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            models_1.employeeModel.belongsTo(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            var whereCond = {};
-            var employer = {};
-            var department = {};
-            // let where = {
-            //     admin_id: params.admin_id
-            // }
-            //var employerId = []
-            //const employers = await employersModel.findAndCountAll({ where: where, raw: true })
-            // for (let i = 0; i < employers.rows.length; i++) {
-            //     employerId.push(employers.rows[i].id)
-            // }
-            // whereCond = {
-            //     current_employer_id: { [Op.in]: employerId },
-            //     status: 1
-            // }
+            let whereCond = {};
+            let employer = {};
+            let department = {};
+            let employeeRank = {};
             if (params.employerName) {
                 employer = {
                     name: { [Op.iLike]: `%${params.employerName}%` },
@@ -300,14 +291,23 @@ class EmployersService {
                     name: { [Op.iLike]: `%${params.departmentName}%` }
                 };
             }
+            if (params.employeeRankName) {
+                employeeRank = {
+                    name: { [Op.iLike]: `%${params.employeeRankName}%` },
+                };
+            }
             if (params.searchKey) {
                 whereCond = {
-                    //current_employer_id: { [Op.in]: employerId },
+                    name: { [Op.iLike]: `%${params.searchKey}%` },
+                };
+            }
+            if (params.searchKey) {
+                whereCond = {
                     name: { [Op.iLike]: `%${params.searchKey}%` },
                 };
             }
             whereCond["status"] = { [Op.or]: [0, 1] };
-            return yield models_1.employeeModel.findAndCountAll({
+            let employees = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,
                 include: [
                     {
@@ -321,12 +321,22 @@ class EmployersService {
                         where: department,
                         required: true,
                         attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        where: employeeRank,
+                        required: true,
+                        attributes: ["id", "name"]
                     }
                 ],
                 limit: limit,
                 offset: offset,
                 order: [["id", "DESC"]]
-            });
+            }));
+            for (let employee of employees.rows) {
+                employee.total_completed_session = 5;
+            }
+            return employees;
         });
     }
     /**
@@ -386,6 +396,14 @@ class EmployersService {
                     throw new Error(constants.MESSAGES.invalid_department);
                 }
                 params.current_department_id = departmentExists.id;
+            }
+            if (params.employeeRankId) {
+                query = { where: { id: params.employeeRankId } };
+                let employeeRankExists = yield employeeRanks_1.employeeRanksModel.findOne(query);
+                if (!employeeRankExists) {
+                    throw new Error(constants.MESSAGES.invalid_employee_rank);
+                }
+                params.employee_rank_id = employeeRankExists.id;
             }
             if (params.status) {
                 let status = [0, 1, 2];
@@ -878,11 +896,12 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            models_1.employeeModel.belongsTo(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let where = {};
             where.id = params.employeeId;
-            const employee = yield models_1.employeeModel.findOne({
+            const employee = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                 where: where,
                 include: [
                     {
@@ -892,6 +911,11 @@ class EmployersService {
                     },
                     {
                         model: models_1.departmentModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
                         required: false,
                         attributes: ["id", "name"]
                     },
@@ -906,8 +930,9 @@ class EmployersService {
                         //attributes: ["id","name"]
                     }
                 ]
-            });
+            }));
             if (employee) {
+                employee.total_completed_session = 5;
                 return employee;
             }
             else {

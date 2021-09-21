@@ -129,6 +129,11 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         allowNull: true,
         defaultValue: "2021-08-01"
     },
+    employee_rank_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+    },
 }, {
     tableName: "employee"
 });

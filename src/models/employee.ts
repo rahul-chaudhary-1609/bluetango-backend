@@ -128,6 +128,11 @@ export const employeeModel: any = sequelize.define("employee", {
         allowNull: true,
         defaultValue: "2021-08-01"
     },
+    employee_rank_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue:1,
+    },
 },
     {
         tableName: "employee"

@@ -199,6 +199,7 @@ export const addEditCoachSpecializationCategories= Joi.object ({
 })
 
 export const listCoachSpecializationCategories= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
   searchKey: Joi.string().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
@@ -215,6 +216,7 @@ export const addEditEmployeeRank= Joi.object ({
 })
 
 export const listEmployeeRanks= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
   searchKey: Joi.string().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),

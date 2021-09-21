@@ -98,18 +98,19 @@ class CoachService {
     }
     listCoachSpecializationCategories(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let whereCondintion = {};
+            let query = {};
+            query.where = {};
             if (params.searchKey) {
-                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { name: {
+                query.where = Object.assign(Object.assign({}, query.where), { name: {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
             }
-            let categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAndCountAll({
-                where: whereCondintion,
-                limit,
-                offset,
-            }));
+            if (params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset,
+                    query.limit = limit;
+            }
+            let categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAndCountAll(query));
             if (categories.count == 0) {
                 throw new Error(constants.MESSAGES.no_coach_specialization_category);
             }
@@ -187,18 +188,19 @@ class CoachService {
     }
     listEmployeeRanks(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let whereCondintion = {};
+            let query = {};
+            query.where = {};
             if (params.searchKey) {
-                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { name: {
+                query.where = Object.assign(Object.assign({}, query.where), { name: {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
             }
-            let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll({
-                where: whereCondintion,
-                limit,
-                offset,
-            }));
+            if (params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset,
+                    query.limit = limit;
+            }
+            let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll(query));
             if (ranks.count == 0) {
                 throw new Error(constants.MESSAGES.no_employee_rank);
             }

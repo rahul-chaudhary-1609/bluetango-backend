@@ -17,6 +17,7 @@ import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { articleManagementModel } from "../../models/articleManagement";
 import { advisorManagementModel } from "../../models/advisorManagement";
+import { employeeRanksModel } from "../../models/employeeRanks";
 import { deleteFile } from "../../middleware/multerParser";
 import * as path from 'path';
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -258,27 +259,14 @@ export class EmployersService {
 
         employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
 
+        employeeModel.belongsTo(employeeRanksModel, { foreignKey: "employee_rank_id" })
+
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        var whereCond: any = {};
-        var employer: any = {};
-        var department: any = {};
-        // let where = {
-        //     admin_id: params.admin_id
-        // }
-        //var employerId = []
-        //const employers = await employersModel.findAndCountAll({ where: where, raw: true })
-
-        // for (let i = 0; i < employers.rows.length; i++) {
-        //     employerId.push(employers.rows[i].id)
-
-        // }
-
-        // whereCond = {
-
-        //     current_employer_id: { [Op.in]: employerId },
-        //     status: 1
-
-        // }
+        let whereCond: any = {};
+        let employer: any = {};
+        let department: any = {};
+        let employeeRank: any = {};
+    
         if (params.employerName) {
             employer = {
                 name: { [Op.iLike]: `%${params.employerName}%` },
@@ -292,34 +280,60 @@ export class EmployersService {
             }
         }
 
+        if (params.employeeRankName) {
+            employeeRank = {
+                name: { [Op.iLike]: `%${params.employeeRankName}%` },
+            }
+        }
+
         if (params.searchKey) {
             whereCond = {
-                //current_employer_id: { [Op.in]: employerId },
                 name: { [Op.iLike]: `%${params.searchKey}%` },
             }
         }
+
+        if (params.searchKey) {
+            whereCond = {
+                name: { [Op.iLike]: `%${params.searchKey}%` },
+            }
+        }
+
         whereCond["status"] = { [Op.or]: [0, 1] }
 
-        return await employeeModel.findAndCountAll({
-            where: whereCond,
-            include: [
-                {
-                    model: employersModel,
-                    where: employer,
-                    required: true,
-                    attributes: ["id", "name"]
-                },
-                {
-                    model: departmentModel,
-                    where: department,
-                    required: true,
-                    attributes: ["id", "name"]
-                }
-            ],
-            limit: limit,
-            offset: offset,
-            order: [["id", "DESC"]]
-        })
+        let employees=await helperFunction.convertPromiseToObject(
+             await employeeModel.findAndCountAll({
+                where: whereCond,
+                include: [
+                    {
+                        model: employersModel,
+                        where: employer,
+                        required: true,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: departmentModel,
+                        where: department,
+                        required: true,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanksModel,
+                        where: employeeRank,
+                        required: true,
+                        attributes: ["id", "name"]
+                    }
+                ],
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            })
+        )
+
+        for(let employee of employees.rows){
+            employee.total_completed_session=5;    
+        }
+
+        return employees;
 
     }
 
@@ -382,6 +396,14 @@ export class EmployersService {
                 throw new Error(constants.MESSAGES.invalid_department);
             }
             params.current_department_id = departmentExists.id
+        }
+        if (params.employeeRankId) {
+            query = { where: { id: params.employeeRankId } };
+            let employeeRankExists = await employeeRanksModel.findOne(query);
+            if (!employeeRankExists) {
+                throw new Error(constants.MESSAGES.invalid_employee_rank);
+            }
+            params.employee_rank_id = employeeRankExists.id
         }
         if (params.status) {
             let status: any = [0, 1, 2]
@@ -891,38 +913,47 @@ export class EmployersService {
     public async employeeDetails(params: any) {
         employeeModel.belongsTo(employersModel, { foreignKey: "current_employer_id" })
         employeeModel.belongsTo(departmentModel, { foreignKey: "current_department_id" })
+        employeeModel.belongsTo(employeeRanksModel, { foreignKey: "employee_rank_id" })
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" })
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" })
         let where: any = {}
         where.id = params.employeeId
 
-        const employee = await employeeModel.findOne({
-            where: where,
-            include: [
-                {
-                    model: employersModel,
-                    required: false,
-                    attributes: ["id", "name"]
-                },
-                {
-                    model: departmentModel,
-                    required: false,
-                    attributes: ["id", "name"]
-                },
-                {
-                    model: managerTeamMemberModel,
-                    required: false,
-                    include: [{
-                        model: employeeModel,
+        const employee = await helperFunction.convertPromiseToObject(
+             await employeeModel.findOne({
+                where: where,
+                include: [
+                    {
+                        model: employersModel,
                         required: false,
                         attributes: ["id", "name"]
-                    }]
-                    //attributes: ["id","name"]
-                }
-            ]
-        })
+                    },
+                    {
+                        model: departmentModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: managerTeamMemberModel,
+                        required: false,
+                        include: [{
+                            model: employeeModel,
+                            required: false,
+                            attributes: ["id", "name"]
+                        }]
+                        //attributes: ["id","name"]
+                    }
+                ]
+            })
+        )
 
         if (employee) {
+            employee.total_completed_session=5; 
             return employee
         }
         else {
