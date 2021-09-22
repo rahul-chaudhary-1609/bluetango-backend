@@ -99,7 +99,11 @@ class CoachService {
     listCoachSpecializationCategories(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = {};
-            query.where = {};
+            query.where = {
+                status: {
+                    [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                }
+            };
             if (params.searchKey) {
                 query.where = Object.assign(Object.assign({}, query.where), { name: {
                         [Op.iLike]: `%${params.searchKey}%`
@@ -189,7 +193,11 @@ class CoachService {
     listEmployeeRanks(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = {};
-            query.where = {};
+            query.where = {
+                status: {
+                    [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                }
+            };
             if (params.searchKey) {
                 query.where = Object.assign(Object.assign({}, query.where), { name: {
                         [Op.iLike]: `%${params.searchKey}%`

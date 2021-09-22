@@ -46,6 +46,7 @@ const emoji_1 = require("../../models/emoji");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
 const attributes_1 = require("../../models/attributes");
 const attributeRatings_1 = require("../../models/attributeRatings");
+const employeeRanks_1 = require("../../models/employeeRanks");
 var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
@@ -279,6 +280,7 @@ class EmployeeManagement {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id", sourceKey: "id", targetKey: "employee_rank_id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
@@ -287,6 +289,7 @@ class EmployeeManagement {
             let whereCond = {
                 status: [constants.STATUS.active, constants.STATUS.inactive]
             };
+            let employeeRank = {};
             whereCond.current_employer_id = user.uid;
             if (params.departmentId) {
                 whereCond = Object.assign(Object.assign({}, whereCond), { current_department_id: parseInt(params.departmentId) });
@@ -298,6 +301,11 @@ class EmployeeManagement {
                         { email: { [Op.iLike]: `%${searchKey}%` } },
                         { phone_number: { [Op.iLike]: `%${searchKey}%` } }
                     ] });
+            }
+            if (params.employeeRankId) {
+                employeeRank = {
+                    id: params.employeeRankId,
+                };
             }
             let query = {
                 attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
@@ -314,6 +322,12 @@ class EmployeeManagement {
                         as: 'energy_emoji_data',
                         attributes: ['id', 'image_url', 'caption']
                     },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        where: employeeRank,
+                        required: true,
+                        attributes: ["id", "name"]
+                    }
                 ],
                 order: [["createdAt", "DESC"]]
             };
@@ -336,6 +350,19 @@ class EmployeeManagement {
             }));
         });
     }
+    getEmployeeRankList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll({
+                where: {
+                    status: constants.STATUS.active,
+                }
+            }));
+            if (ranks.count == 0) {
+                throw new Error(constants.MESSAGES.no_employee_rank);
+            }
+            return ranks;
+        });
+    }
     /**
      * function to View employee details
      */
@@ -345,7 +372,6 @@ class EmployeeManagement {
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
-                //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
                     status: [constants.STATUS.active, constants.STATUS.inactive]

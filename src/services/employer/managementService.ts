@@ -12,6 +12,7 @@ import { emojiModel } from "../../models/emoji";
 import { groupChatRoomModel } from "../../models/groupChatRoom";
 import { attributeModel } from "../../models/attributes";
 import { attributeRatingModel } from "../../models/attributeRatings"
+import { employeeRanksModel } from "../../models/employeeRanks";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -272,12 +273,11 @@ export class EmployeeManagement {
     * get employee list function
     @param {} params pass all parameters from request
     */
-    public async getEmployeeList(params: any, user: any) {
-
-        
+    public async getEmployeeList(params: any, user: any) {        
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "employee_rank_id", sourceKey: "id", targetKey: "employee_rank_id" });
 
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});
@@ -288,6 +288,7 @@ export class EmployeeManagement {
         let whereCond = <any>{
             status:[constants.STATUS.active,constants.STATUS.inactive]
         };
+        let employeeRank: any = {};
         whereCond.current_employer_id = user.uid;
         if (params.departmentId) {
             whereCond = {
@@ -307,6 +308,12 @@ export class EmployeeManagement {
             };
         }
 
+        if (params.employeeRankId) {
+            employeeRank = {
+                id:params.employeeRankId,
+            }
+        }
+
         let query =<any> {
             attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
             where: whereCond,
@@ -322,6 +329,12 @@ export class EmployeeManagement {
                     as: 'energy_emoji_data',
                     attributes: ['id', 'image_url', 'caption']
                 },
+                {
+                    model: employeeRanksModel,
+                    where: employeeRank,
+                    required: true,
+                    attributes: ["id", "name"]
+                }
             ],
             order: [["createdAt", "DESC"]]
         }
@@ -351,6 +364,25 @@ export class EmployeeManagement {
             })
         )
     }
+
+    public async getEmployeeRankList(){
+
+        let ranks=await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findAndCountAll({
+                where:{
+                    status:constants.STATUS.active,
+                }
+            })
+        )
+
+        if(ranks.count==0){
+            throw new Error(constants.MESSAGES.no_employee_rank);
+        }
+
+        return ranks;
+
+    }
+
     /**
      * function to View employee details
      */
@@ -364,7 +396,6 @@ export class EmployeeManagement {
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employeeDetails = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
-                //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
                     status: [constants.STATUS.active, constants.STATUS.inactive]

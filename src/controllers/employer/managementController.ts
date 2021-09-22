@@ -73,6 +73,21 @@ export class EmployeeController {
         }
     }
 
+      /**
+   * get Employee Rank List
+   * @param req :[get data]
+   * @param res : [employers data]
+   */
+       public async getEmployeeRankList(req: any, res: any) {
+        try {
+            const responseFromService = await employeeService.getEmployeeRankList();
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     /**
     * view Employee Details
     * @param req :[get data]

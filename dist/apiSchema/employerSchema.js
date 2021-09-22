@@ -139,9 +139,11 @@ exports.addEditEmployee = joi_1.default.object({
         "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.base,
         "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.required,
     }).optional(),
+    employee_rank_id: joi_1.default.number().required(),
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
+    employeeRankId: joi_1.default.number().optional(),
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional()

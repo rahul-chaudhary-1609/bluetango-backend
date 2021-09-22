@@ -47,6 +47,8 @@ employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employer
 employerRoute.get("/getManagerList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateQueryParams(employerSchema.getManagerList), managementController.getManagerList);
 /* get employers list route for employers */
 employerRoute.get("/getDepartmentList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getDepartmentList);
+/* get Employee Rank List route for employers */
+employerRoute.get("/getEmployeeRankList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeRankList);
 /* get employers list route for employers */
 employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(employerSchema.getEmployeeList), tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeList);
 /* update employer device token */

@@ -5212,6 +5212,9 @@
                                 },
                                 "manager_team_icon_url": {
                                     "type": "string"
+                                },
+                                "employee_rank_id": {
+                                    "type": "number"
                                 }
                             }
                         }
@@ -5226,6 +5229,27 @@
                     "Employer"
                 ],
                 "description": "Api to get Department list",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/getEmployeeRankList": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "Api to get Employee Rank List",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -5290,6 +5314,13 @@
                         "name": "departmentId",
                         "in": "query",
                         "description": "department type id",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "employeeRankId",
+                        "in": "query",
+                        "description": "employee Rank Id",
                         "required": false,
                         "type": "number"
                     },

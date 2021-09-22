@@ -35,6 +35,9 @@ employerRoute.get("/getManagerList", tokenValidator.validateEmployerToken, token
 /* get employers list route for employers */
 employerRoute.get("/getDepartmentList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getDepartmentList);
 
+/* get Employee Rank List route for employers */
+employerRoute.get("/getEmployeeRankList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeRankList);
+
 /* get employers list route for employers */
 employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(employerSchema.getEmployeeList), tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeList);
 

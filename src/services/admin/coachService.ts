@@ -77,7 +77,11 @@ export class CoachService {
     public async listCoachSpecializationCategories(params:any){
 
         let query=<any>{}
-        query.where=<any>{}
+        query.where=<any>{
+            status:{
+                [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+            }
+        }
         if(params.searchKey){
             query.where=<any>{
                 ...query.where,
@@ -185,7 +189,11 @@ export class CoachService {
     public async listEmployeeRanks(params:any){
 
         let query=<any>{};
-        query.where=<any>{}
+        query.where=<any>{
+            status:{
+                [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+            }
+        }
         if(params.searchKey){
             query.where=<any>{
                 ...query.where,

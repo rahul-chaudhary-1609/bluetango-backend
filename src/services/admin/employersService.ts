@@ -292,12 +292,6 @@ export class EmployersService {
             }
         }
 
-        if (params.searchKey) {
-            whereCond = {
-                name: { [Op.iLike]: `%${params.searchKey}%` },
-            }
-        }
-
         whereCond["status"] = { [Op.or]: [0, 1] }
 
         let employees=await helperFunction.convertPromiseToObject(

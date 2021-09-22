@@ -120,11 +120,13 @@ export const addEditEmployee = Joi.object ({
     "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.base,
     "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.required,
   }).optional(),
+  employee_rank_id:Joi.number().required(),
   
   })
   
   export const getEmployeeList = Joi.object ({
     departmentId: Joi.number().optional(),
+    employeeRankId: Joi.number().optional(),
     searchKey: Joi.string().optional(),
     limit: Joi.number().optional(),
     offset: Joi.number().optional()

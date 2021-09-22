@@ -301,11 +301,6 @@ class EmployersService {
                     name: { [Op.iLike]: `%${params.searchKey}%` },
                 };
             }
-            if (params.searchKey) {
-                whereCond = {
-                    name: { [Op.iLike]: `%${params.searchKey}%` },
-                };
-            }
             whereCond["status"] = { [Op.or]: [0, 1] };
             let employees = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,

@@ -106,6 +106,22 @@ class EmployeeController {
         });
     }
     /**
+ * get Employee Rank List
+ * @param req :[get data]
+ * @param res : [employers data]
+ */
+    getEmployeeRankList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getEmployeeRankList();
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
     * view Employee Details
     * @param req :[get data]
     * @param res : [employee data]
