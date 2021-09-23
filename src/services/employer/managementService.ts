@@ -393,6 +393,7 @@ export class EmployeeManagement {
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employeeDetails = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
@@ -415,6 +416,11 @@ export class EmployeeManagement {
                         model: departmentModel,
                         attributes: ['id', 'name'],
                         required: false,
+                    },
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
                     }
                 ],
                 

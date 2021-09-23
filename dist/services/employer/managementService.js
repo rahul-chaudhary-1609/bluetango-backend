@@ -370,6 +370,7 @@ class EmployeeManagement {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                 where: {
@@ -391,6 +392,11 @@ class EmployeeManagement {
                         model: models_1.departmentModel,
                         attributes: ['id', 'name'],
                         required: false,
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
                     }
                 ],
             }));
