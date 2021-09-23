@@ -277,7 +277,7 @@ export class EmployeeManagement {
 
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-        employeeModel.hasOne(employeeRanksModel, { foreignKey: "employee_rank_id", sourceKey: "id", targetKey: "employee_rank_id" });
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
 
         if(params.departmentId) {
             let departmentExists = await departmentModel.findOne({where:{id: parseInt(params.departmentId)}});

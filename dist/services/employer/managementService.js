@@ -280,7 +280,7 @@ class EmployeeManagement {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id", sourceKey: "id", targetKey: "employee_rank_id" });
+            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
