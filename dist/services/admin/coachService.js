@@ -109,7 +109,7 @@ class CoachService {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
             }
-            if (params.is_pagination == constants.IS_PAGINATION.yes) {
+            if (!params.is_pagination || params.is_pagination == constants.IS_PAGINATION.yes) {
                 let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
                 query.offset = offset,
                     query.limit = limit;
@@ -203,7 +203,7 @@ class CoachService {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
             }
-            if (params.is_pagination == constants.IS_PAGINATION.yes) {
+            if (!params.is_pagination || params.is_pagination == constants.IS_PAGINATION.yes) {
                 let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
                 query.offset = offset,
                     query.limit = limit;

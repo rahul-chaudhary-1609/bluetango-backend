@@ -91,11 +91,10 @@ export class CoachService {
             }
         }
 
-        if(params.is_pagination==constants.IS_PAGINATION.yes){
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
             let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
             query.offset=offset,
-            query.limit=limit
-            
+            query.limit=limit            
         }
 
         let categories=await helperFunction.convertPromiseToObject(
@@ -203,11 +202,10 @@ export class CoachService {
             }
         }
 
-        if(params.is_pagination==constants.IS_PAGINATION.yes){
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
             let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
             query.offset=offset,
             query.limit=limit
-            
         }
 
         let ranks=await helperFunction.convertPromiseToObject(
