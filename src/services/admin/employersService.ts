@@ -837,10 +837,13 @@ export class EmployersService {
             id: params.coachId,
             status: 1
         }
-        const coach = await coachManagementModel.findOne({
-            where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
-        })
+        const coach = await helperFunction.convertPromiseToObject(
+                await coachManagementModel.findOne({
+                where: where,
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+            })
+        )
+        
         if (coach) {
 
             coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(

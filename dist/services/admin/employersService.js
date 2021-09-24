@@ -812,10 +812,10 @@ class EmployersService {
                 id: params.coachId,
                 status: 1
             };
-            const coach = yield coachManagement_1.coachManagementModel.findOne({
+            const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
                 attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
-            });
+            }));
             if (coach) {
                 coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
                     where: {
