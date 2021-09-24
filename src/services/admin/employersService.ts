@@ -847,7 +847,7 @@ export class EmployersService {
                 await coachSpecializationCategoriesModel.findAll({
                     where:{
                         id:{
-                            [Op.in]:coach.coach_specialization_category_ids,
+                            [Op.in]:coach.coach_specialization_category_ids || [],
                         },
                         status:constants.STATUS.active,
                     }
@@ -858,7 +858,7 @@ export class EmployersService {
                 await employeeRanksModel.findAll({
                     where:{
                         id:{
-                            [Op.in]:coach.employee_rank_ids,
+                            [Op.in]:coach.employee_rank_ids || [],
                         },
                         status:constants.STATUS.active,
                     }
@@ -878,7 +878,7 @@ export class EmployersService {
             })
 
             coach.average_rating=totalRating/coach.total_completed_sessions;
-
+            coach.average_rating=coach.average_rating || 1;
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
 
