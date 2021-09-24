@@ -770,18 +770,16 @@ export class EmployersService {
              await coachManagementModel.findAndCountAll({
                 where: where,
                 attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
-                limit: limit,
-                offset: offset,
                 order: [["id", "DESC"]]
             })
         )
-
+        let c=0
         for(let coach of coachList.rows){
             coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
                 await coachSpecializationCategoriesModel.findAll({
                     where:{
                         id:{
-                            [Op.in]:coach.coach_specialization_category_ids,
+                            [Op.in]:coach.coach_specialization_category_ids || [],
                         },
                         status:constants.STATUS.active,
                     }
@@ -792,7 +790,7 @@ export class EmployersService {
                 await employeeRanksModel.findAll({
                     where:{
                         id:{
-                            [Op.in]:coach.employee_rank_ids,
+                            [Op.in]:coach.employee_rank_ids || [],
                         },
                         status:constants.STATUS.active,
                     }
@@ -811,8 +809,8 @@ export class EmployersService {
                 }
             })
 
-            coach.average_rating=totalRating/coach.total_completed_sessions;
-
+            coach.average_rating=parseInt(totalRating)/coach.total_completed_sessions;
+            coach.average_rating=coach.average_rating || 1;
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
         }

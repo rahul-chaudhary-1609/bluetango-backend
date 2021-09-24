@@ -758,15 +758,14 @@ class EmployersService {
             let coachList = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findAndCountAll({
                 where: where,
                 attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
-                limit: limit,
-                offset: offset,
                 order: [["id", "DESC"]]
             }));
+            let c = 0;
             for (let coach of coachList.rows) {
                 coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
                     where: {
                         id: {
-                            [Op.in]: coach.coach_specialization_category_ids,
+                            [Op.in]: coach.coach_specialization_category_ids || [],
                         },
                         status: constants.STATUS.active,
                     }
@@ -774,7 +773,7 @@ class EmployersService {
                 coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
                     where: {
                         id: {
-                            [Op.in]: coach.employee_rank_ids,
+                            [Op.in]: coach.employee_rank_ids || [],
                         },
                         status: constants.STATUS.active,
                     }
@@ -789,7 +788,8 @@ class EmployersService {
                         coach_id: coach.id,
                     }
                 });
-                coach.average_rating = totalRating / coach.total_completed_sessions;
+                coach.average_rating = parseInt(totalRating) / coach.total_completed_sessions;
+                coach.average_rating = coach.average_rating || 1;
                 delete coach.coach_specialization_category_ids;
                 delete coach.employee_rank_ids;
             }
