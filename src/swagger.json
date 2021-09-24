@@ -1136,7 +1136,7 @@
         ],
         "description": "Api to add/edit coach",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -1147,67 +1147,57 @@
             "type": "string"
           },
           {
-            "name": "id",
-            "in": "formData",
-            "description": "id, when you will pass id then it will be update otherwise it will be create",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "email",
-            "in": "formData",
-            "description": "email id",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "password",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "country_code",
-            "in": "formData",
-            "description": "country code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "phone_number",
-            "in": "formData",
-            "description": "phone number",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "formData",
-            "description": "description",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "image",
-            "in": "formData",
-            "description": "image url",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "fileName",
-            "in": "formData",
-            "description": "file name",
-            "required": false,
-            "type": "string"
+            "schema":{
+              "type": "object",
+              "properties":{
+                "id":{
+                  "type": "string"
+                },
+                "name":{
+                  "type": "string"
+                },
+                "email":{
+                  "type": "string"
+                },
+                "password":{
+                  "type": "string"
+                },
+                "country_code":{
+                  "type": "string"
+                },
+                "phone_number":{
+                  "type": "string"
+                },
+                "description":{
+                  "type": "string"
+                },
+                "image":{
+                  "type": "string"
+                },
+                "fileName":{
+                  "type": "string"
+                },
+                "coach_specialization_category_ids":{
+                  "type":"array",
+                  "items": {
+                    "type": "number"
+                    }
+                },
+                "employee_rank_ids":{
+                  "type":"array",
+                  "items": {
+                    "type": "number"
+                    }
+                },
+                "coach_charge":{
+                  "type": "number"
+                }
+              }              
+            }
           }
         ],
         "responses": {}
@@ -1236,6 +1226,28 @@
             "description": "search employer by name",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "coach specialization category id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "employee_rank_id",
+            "in": "query",
+            "description": "employee rank id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "description": "coach rating: 1,2,3,4,5",
+            "required": false,
+            "type": "number",
+            "enum":[1,2,3,4,5]
           },
           {
             "name": "offset",

@@ -71,6 +71,17 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
     fileName: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true
+    },
+    coach_specialization_category_ids: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
+    },
+    employee_rank_ids: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
+    },
+    coach_charge: {
+        type: sequelize_1.DataTypes.DECIMAL(15, 2),
+        allowNull: false,
+        defaultValue: 0,
     }
 }, {
     tableName: "coach_management"

@@ -20,6 +20,8 @@ import { advisorManagementModel } from "../../models/advisorManagement";
 import { employeeRanksModel } from "../../models/employeeRanks";
 import { deleteFile } from "../../middleware/multerParser";
 import * as path from 'path';
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -697,7 +699,7 @@ export class EmployersService {
                 }
                 const password = params.password
                 params.password = await appUtils.bcryptPassword(params.password);
-                const coach = await coachManagementModel.create(params);
+                const coach = await helperFunction.convertPromiseToObject( await coachManagementModel.create(params));
                 const mailParams = <any>{};
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
@@ -706,7 +708,27 @@ export class EmployersService {
                 <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
+                <br> Check your details here:
+                <br><table style="padding:0px 10px 10px 10px;">
                 `;
+
+                delete coach.password;
+                delete coach.coach_specialization_category_ids;
+                delete coach.employee_rank_ids;
+
+                for (let key in coach) {
+        
+                    mailParams.html+= `<tr style="text-align: left;">
+                            <th style="opacity: 0.9;">${key.split("_").map((ele) => {
+                                if (ele == "of" || ele == "in") return ele
+                                else return ele.charAt(0).toUpperCase() + ele.slice(1)
+                            }).join(" ")}</th>
+                            <td style="opacity: 0.8;">:</td>
+                            <td style="opacity: 0.8;">${key=='profile_pic_url'?`<img src='${coach[key]}' />`:coach[key]}</td>
+                        </tr>`
+                }
+                mailParams.html+=`</table>`;
+
                 mailParams.subject = "Coach Login Credentials";
                 await helperFunction.sendEmail(mailParams);
                 return coach
@@ -729,14 +751,81 @@ export class EmployersService {
         if (params.searchKey) {
             where["name"] = { [Op.iLike]: `%${params.searchKey}%` }
         }
-        where["status"] = 1
-        return await coachManagementModel.findAndCountAll({
-            where: where,
-            attributes: ["id", "name", "email", "phone_number"],
-            limit: limit,
-            offset: offset,
-            order: [["id", "DESC"]]
-        })
+
+        if(params.coach_specialization_category_id){
+            where["coach_specialization_category_ids"] = { 
+                        [Op.contains]: [params.coach_specialization_category_id] 
+                    }
+        }
+
+        if(params.employee_rank_id){
+            where["employee_rank_ids"] = { 
+                        [Op.contains]: [params.employee_rank_id] 
+                    }
+        }
+
+        where["status"] = constants.STATUS.active
+
+        let coachList= await helperFunction.convertPromiseToObject(
+             await coachManagementModel.findAndCountAll({
+                where: where,
+                attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            })
+        )
+
+        for(let coach of coachList.rows){
+            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.coach_specialization_category_ids,
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                await employeeRanksModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.employee_rank_ids,
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.total_completed_sessions=await employeeCoachSessionsModel.count({
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            coach.average_rating=totalRating/coach.total_completed_sessions;
+
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+        }
+
+        if(params.rating){
+            let coachListFilteredByRating=coachList.rows.filter((coach)=>coach.average_rating==params.rating);
+            coachList.rows=[...coachListFilteredByRating];
+            coachList.count=coachListFilteredByRating.length;
+        }
+
+        coachList.rows=coachList.rows.slice(offset,offset+limit);  
+
+        return coachList;
 
     }
 
@@ -752,9 +841,49 @@ export class EmployersService {
         }
         const coach = await coachManagementModel.findOne({
             where: where,
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
         })
         if (coach) {
+
+            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.coach_specialization_category_ids,
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                await employeeRanksModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.employee_rank_ids,
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.total_completed_sessions=await employeeCoachSessionsModel.count({
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            coach.average_rating=totalRating/coach.total_completed_sessions;
+
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+
             return coach
         }
         else {

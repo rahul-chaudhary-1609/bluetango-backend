@@ -193,7 +193,10 @@ exports.addEditCoach = joi_1.default.object({
     phone_number: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
     image: joi_1.default.string().optional(),
-    fileName: joi_1.default.string().optional()
+    fileName: joi_1.default.string().optional(),
+    coach_specialization_category_ids: joi_1.default.array().optional(),
+    employee_rank_ids: joi_1.default.array().optional(),
+    coach_charge: joi_1.default.number().optional(),
 });
 exports.listFeedback = joi_1.default.object({
     feedbackType: joi_1.default.number().valid(1, 2, 3, 4).optional(),

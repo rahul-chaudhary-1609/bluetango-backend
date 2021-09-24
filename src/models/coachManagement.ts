@@ -70,7 +70,19 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
     fileName: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    coach_specialization_category_ids:{
+        type:DataTypes.ARRAY(DataTypes.INTEGER),
+    },
+    employee_rank_ids:{
+        type:DataTypes.ARRAY(DataTypes.INTEGER),
+    },
+    coach_charge:{
+        type:DataTypes.DECIMAL(15,2),
+        allowNull:false,
+        defaultValue:0,
     }
+
 },
     {
         tableName: "coach_management"

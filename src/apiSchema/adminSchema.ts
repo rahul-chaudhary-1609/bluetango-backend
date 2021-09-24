@@ -178,7 +178,10 @@ export const addEditCoach = Joi.object ({
   phone_number: Joi.string().required(),
   description: Joi.string().required(),
   image: Joi.string().optional(),
-  fileName: Joi.string().optional()
+  fileName: Joi.string().optional(),
+  coach_specialization_category_ids:Joi.array().optional(),
+  employee_rank_ids:Joi.array().optional(),
+  coach_charge:Joi.number().optional(),
 })
 
 export const listFeedback = Joi.object ({
