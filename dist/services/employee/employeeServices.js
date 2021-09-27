@@ -52,6 +52,7 @@ const authService_1 = require("./authService");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const multerParser_1 = require("../../middleware/multerParser");
 const attributeRatings_1 = require("../../models/attributeRatings");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const path = __importStar(require("path"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -796,6 +797,9 @@ class EmployeeServices {
     generateHTML(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let { employee, folderPath, fileNames } = params;
+            if (employee.employee_rank) {
+                employee.employee_rank = employee.employee_rank.name;
+            }
             let htmlHeader = `<!DOCTYPE html>
             <html>
             <head>
@@ -827,10 +831,18 @@ class EmployeeServices {
     }
     shareEmployeeCV(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: {
                     id: user.uid,
-                }
+                },
+                include: [
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
             }));
             let folderPath = `./src/upload`;
             let fileNames = [
@@ -889,10 +901,18 @@ class EmployeeServices {
     }
     getEmployeeCV(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            employee_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findOne({
                 where: {
                     id: user.uid,
-                }
+                },
+                include: [
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
             }));
             let folderPath = `./src/upload`;
             let fileNames = [

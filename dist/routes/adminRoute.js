@@ -143,6 +143,8 @@ adminRoute.post("/addEditCoachSpecializationCategories", tokenValidator.validate
 adminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
 /* get Coach Specialization Categories */
 adminRoute.get("/getCoachSpecializationCategory", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachSpecializationCategory), coachController.getCoachSpecializationCategory);
+/* delete Coach Specialization Categories */
+adminRoute.delete("/deleteCoachSpecializationCategory", tokenValidator.validateAdminToken, joiSchemaValidation.validateBody(adminSchema.deleteCoachSpecializationCategory), coachController.deleteCoachSpecializationCategory);
 //employee rank API's
 /* add Edit Employee Rank*/
 adminRoute.post("/addEditEmployeeRank", tokenValidator.validateAdminToken, joiSchemaValidation.validateBody(adminSchema.addEditEmployeeRank), coachController.addEditEmployeeRank);
@@ -150,5 +152,7 @@ adminRoute.post("/addEditEmployeeRank", tokenValidator.validateAdminToken, joiSc
 adminRoute.get("/listEmployeeRanks", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
 /* get Employee Rank */
 adminRoute.get("/getEmployeeRank", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeRank), coachController.getEmployeeRank);
+/* delete Employee Rank */
+adminRoute.delete("/deleteEmployeeRank", tokenValidator.validateAdminToken, joiSchemaValidation.validateBody(adminSchema.deleteEmployeeRank), coachController.deleteEmployeeRank);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map

@@ -29,6 +29,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoachService = void 0;
+const models_1 = require("../../models");
+const coachManagement_1 = require("../../models/coachManagement");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const employeeRanks_1 = require("../../models/employeeRanks");
 const helperFunction = __importStar(require("../../utils/helperFunction"));
@@ -134,6 +136,32 @@ class CoachService {
             return category;
         });
     }
+    deleteCoachSpecializationCategory(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let category = yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findOne({
+                where: {
+                    id: params.category_id,
+                }
+            });
+            if (!category) {
+                throw new Error(constants.MESSAGES.no_coach_specialization_category);
+            }
+            let coachCount = yield coachManagement_1.coachManagementModel.count({
+                where: {
+                    coach_specialization_category_ids: {
+                        [Op.contains]: [category.id]
+                    }
+                }
+            });
+            if (coachCount > 0) {
+                throw new Error(constants.MESSAGES.coach_specialization_category_delete_error);
+            }
+            else {
+                category.destroy();
+                return true;
+            }
+        });
+    }
     addEditEmployeeRank(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let rank = null;
@@ -226,6 +254,42 @@ class CoachService {
                 throw new Error(constants.MESSAGES.no_employee_rank);
             }
             return rank;
+        });
+    }
+    deleteEmployeeRank(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let rank = yield employeeRanks_1.employeeRanksModel.findOne({
+                where: {
+                    id: params.rank_id,
+                }
+            });
+            if (!rank) {
+                throw new Error(constants.MESSAGES.no_employee_rank);
+            }
+            let employeeCount = yield models_1.employeeModel.count({
+                where: {
+                    employee_rank_id: rank.id,
+                }
+            });
+            if (employeeCount > 0) {
+                throw new Error(constants.MESSAGES.employee_rank_delete_employee_error);
+            }
+            else {
+                let coachCount = yield coachManagement_1.coachManagementModel.count({
+                    where: {
+                        employee_rank_ids: {
+                            [Op.contains]: [rank.id]
+                        }
+                    }
+                });
+                if (coachCount > 0) {
+                    throw new Error(constants.MESSAGES.employee_rank_delete_coach_error);
+                }
+                else {
+                    rank.destroy();
+                    return true;
+                }
+            }
         });
     }
 }

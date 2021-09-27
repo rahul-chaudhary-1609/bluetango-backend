@@ -69,6 +69,17 @@ class CoachController {
             }
         });
     }
+    deleteCoachSpecializationCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.deleteCoachSpecializationCategory(req.body);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
     addEditEmployeeRank(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -96,6 +107,17 @@ class CoachController {
             try {
                 const responseFromService = yield coachService.getEmployeeRank(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    deleteEmployeeRank(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.deleteEmployeeRank(req.body);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

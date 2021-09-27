@@ -38,6 +38,9 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const tokenResponse = __importStar(require("../../utils/tokenResponse"));
 const coachManagement_1 = require("../../models/coachManagement");
+const employeeRanks_1 = require("../../models/employeeRanks");
+const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
+const employeeCoachSession_1 = require("../../models/employeeCoachSession");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class AuthService {
@@ -66,13 +69,17 @@ class AuthService {
                 if (comparePassword) {
                     delete existingUser.password;
                     let token = yield tokenResponse.coachTokenResponse(existingUser);
-                    existingUser.token = token.token;
+                    let reqData = {
+                        uid: existingUser.id,
+                    };
+                    let profileData = yield this.getProfile(reqData);
+                    profileData.token = token.token;
                     if (params.device_token) {
                         yield coachManagement_1.coachManagementModel.update({
                             device_token: params.device_token
                         }, { where: { id: existingUser.id } });
                     }
-                    return existingUser;
+                    return profileData;
                 }
                 else {
                     throw new Error(constants.MESSAGES.invalid_password);
@@ -149,14 +156,44 @@ class AuthService {
     */
     getProfile(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let profile = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+            let coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: {
                     id: parseInt(user.uid),
                     status: { [Op.ne]: 2 }
                 }
             }));
-            delete profile.password;
-            return profile;
+            coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: coach.coach_specialization_category_ids || [],
+                    },
+                    status: constants.STATUS.active,
+                }
+            }));
+            coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: coach.employee_rank_ids || [],
+                    },
+                    status: constants.STATUS.active,
+                }
+            }));
+            coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                }
+            });
+            let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
+                where: {
+                    coach_id: coach.id,
+                }
+            });
+            coach.average_rating = totalRating / coach.total_completed_sessions;
+            coach.average_rating = coach.average_rating || 1;
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+            delete coach.password;
+            return coach;
         });
     }
     /*
