@@ -212,6 +212,10 @@ export const getCoachSpecializationCategory= Joi.object ({
   category_id: Joi.number().required(),
 })
 
+export const deleteCoachSpecializationCategory= Joi.object ({
+  category_id: Joi.number().required(),
+})
+
 export const addEditEmployeeRank= Joi.object ({
   rank_id: Joi.number().optional(),
   name: Joi.string().required(),
@@ -226,5 +230,9 @@ export const listEmployeeRanks= Joi.object ({
 })
 
 export const getEmployeeRank= Joi.object ({
+  rank_id: Joi.number().required(),
+})
+
+export const deleteEmployeeRank= Joi.object ({
   rank_id: Joi.number().required(),
 })

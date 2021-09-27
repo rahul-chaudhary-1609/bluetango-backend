@@ -41,6 +41,16 @@ export class CoachController {
         }
     }
 
+    public async deleteCoachSpecializationCategory(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.deleteCoachSpecializationCategory(req.body);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     public async addEditEmployeeRank(req: any, res: any) {
         try {
             const responseFromService = await coachService.addEditEmployeeRank(req.body);
@@ -65,6 +75,16 @@ export class CoachController {
         try {
             const responseFromService = await coachService.getEmployeeRank(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    public async deleteEmployeeRank(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.deleteEmployeeRank(req.body);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);

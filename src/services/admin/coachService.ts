@@ -127,6 +127,33 @@ export class CoachService {
 
     }
 
+    public async deleteCoachSpecializationCategory(params:any){
+        let category=await coachSpecializationCategoriesModel.findOne({
+            where:{
+                id:params.category_id,
+            }
+        })
+
+        if(!category){
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        let coachCount=await coachManagementModel.count({
+            where:{
+                coach_specialization_category_ids:{
+                    [Op.contains]:[category.id]
+                }
+            }
+        })
+
+        if(coachCount>0){
+            throw new Error(constants.MESSAGES.coach_specialization_category_delete_error)
+        }else{
+            category.destroy();
+            return true;
+        }
+    }
+
     public async addEditEmployeeRank(params:any){
 
         let rank=null;
@@ -236,6 +263,43 @@ export class CoachService {
 
         return rank;
 
+    }
+
+    public async deleteEmployeeRank(params:any){
+        let rank=await employeeRanksModel.findOne({
+            where:{
+                id:params.rank_id,
+            }
+        })
+
+        if(!rank){
+            throw new Error(constants.MESSAGES.no_employee_rank);
+        }
+
+        let employeeCount=await employeeModel.count({
+            where:{
+                employee_rank_id:rank.id,
+            }
+        })
+
+        if(employeeCount>0){
+            throw new Error(constants.MESSAGES.employee_rank_delete_employee_error)
+        }else{
+            let coachCount=await coachManagementModel.count({
+                where:{
+                    employee_rank_ids:{
+                        [Op.contains]:[rank.id]
+                    }
+                }
+            })
+    
+            if(coachCount>0){
+                throw new Error(constants.MESSAGES.employee_rank_delete_coach_error)
+            }else{
+                rank.destroy();
+                return true;
+            }
+        }
     }
 
     

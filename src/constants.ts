@@ -155,6 +155,10 @@ export const MESSAGES = {
   coach_specialization_category_already_exist:`A coach specialization category with the same name already exist.`,
   no_employee_rank:`No employee rank found`,
   employee_rank_already_exist:`A employee rank with the same name already exist.`,
+  coach_specialization_category_delete_error:`If a coach belongs to a particular coach specialization category then that coach specialization category cannot be deleted.`,
+  employee_rank_delete_employee_error:`If an employee belongs to a particular employee rank then that employee rank cannot be deleted.`,
+  employee_rank_delete_coach_error:`If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
+  delete_success:`Deleted Successfully`,
 }
 
 
