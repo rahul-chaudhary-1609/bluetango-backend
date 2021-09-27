@@ -36,16 +36,23 @@ export class AuthService {
             if (comparePassword) {
                 delete existingUser.password;
                 let token = await tokenResponse.coachTokenResponse(existingUser);
-                existingUser.token = token.token;
+                let reqData = <any>{
+                    uid:existingUser.id,
+                }   
+
+                let profileData= await this.getProfile(reqData);
+
+                profileData.token = token.token;
+
                 if (params.device_token) {
                     await coachManagementModel.update({
                         device_token: params.device_token
                     },
                         { where: { id: existingUser.id } }
                     );
-                }
-               
-                return this.getProfile({uid:existingUser.id});
+                }           
+                
+                return profileData;
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }

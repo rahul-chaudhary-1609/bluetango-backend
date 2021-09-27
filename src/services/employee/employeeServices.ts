@@ -20,6 +20,7 @@ import { AuthService } from "./authService";
 import { libraryManagementModel } from "../../models/libraryManagement";
 import { deleteFile } from "../../middleware/multerParser";
 import { attributeRatingModel } from "../../models/attributeRatings"
+import { employeeRanksModel } from "../../models/employeeRanks";
 import * as path from 'path';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -883,6 +884,10 @@ export class EmployeeServices {
        
         let{employee,folderPath,fileNames}=params;
 
+        if(employee.employee_rank){
+            employee.employee_rank=employee.employee_rank.name;
+        }
+
         let htmlHeader=`<!DOCTYPE html>
             <html>
             <head>
@@ -918,11 +923,20 @@ export class EmployeeServices {
 
 
     public async shareEmployeeCV(params:any,user:any){
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+
         let employee = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
                 where:{
                     id:user.uid,
-                }
+                },
+                include:[
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
             })
         )
 
@@ -1001,11 +1015,20 @@ export class EmployeeServices {
     }
 
     public async getEmployeeCV(params:any,user:any){
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+        
         let employee = await helperFunction.convertPromiseToObject(
             await employeeModel.findOne({
                 where:{
                     id:user.uid,
-                }
+                },
+                include:[
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
             })
         )
 
