@@ -4,7 +4,9 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { coachManagementModel } from "../../models/coachManagement";
-import { param } from "../../routes/adminRoute";
+import { employeeRanksModel } from "../../models/employeeRanks";
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -43,7 +45,7 @@ export class AuthService {
                     );
                 }
                
-                return existingUser;
+                return this.getProfile({uid:existingUser.id});
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }
@@ -117,7 +119,7 @@ export class AuthService {
     * function to get profile 
     */
     public async getProfile(user: any) {
-        let profile= await helperFunction.convertPromiseToObject(
+        let coach= await helperFunction.convertPromiseToObject(
             await coachManagementModel.findOne({
                 where: {
                     id: parseInt(user.uid),
@@ -126,9 +128,48 @@ export class AuthService {
             })
         )
 
-        delete profile.password;
+        coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAll({
+                where:{
+                    id:{
+                        [Op.in]:coach.coach_specialization_category_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            })
+        )
 
-        return profile
+        coach.employee_ranks=await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findAll({
+                where:{
+                    id:{
+                        [Op.in]:coach.employee_rank_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            })
+        )
+
+        coach.total_completed_sessions=await employeeCoachSessionsModel.count({
+            where:{
+                coach_id:coach.id,
+            }
+        })
+
+        let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
+            where:{
+                coach_id:coach.id,
+            }
+        })
+
+        coach.average_rating=totalRating/coach.total_completed_sessions;
+        coach.average_rating=coach.average_rating || 1;
+
+        delete coach.coach_specialization_category_ids;
+        delete coach.employee_rank_ids;
+        delete coach.password;
+
+        return coach
 
     }
 
