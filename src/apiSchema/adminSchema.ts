@@ -236,3 +236,17 @@ export const getEmployeeRank= Joi.object ({
 export const deleteEmployeeRank= Joi.object ({
   rank_id: Joi.number().required(),
 })
+
+export const listEmployeeCoachSessions= Joi.object ({
+  searchKey: Joi.string().optional(),
+  date: Joi.string().optional(),
+  status:Joi.number().optional(),
+  employeeRankId:Joi.number().optional(),
+  sessionType:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getEmployeeCoachSession= Joi.object ({
+  session_id:Joi.number().required(),
+})

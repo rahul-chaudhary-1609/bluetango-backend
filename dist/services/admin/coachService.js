@@ -33,6 +33,7 @@ const models_1 = require("../../models");
 const coachManagement_1 = require("../../models/coachManagement");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const employeeRanks_1 = require("../../models/employeeRanks");
+const employeeCoachSession_1 = require("../../models/employeeCoachSession");
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const constants = __importStar(require("../../constants"));
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -290,6 +291,109 @@ class CoachService {
                     return true;
                 }
             }
+        });
+    }
+    listEmployeeCoachSessions(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            let where = {
+                status: {
+                    [Op.notIn]: [constants.STATUS.deleted]
+                },
+            };
+            let employeeWhere = {};
+            let coachWhere = {};
+            let employeeRankWhere = {};
+            if (params.searchKey) {
+                employeeWhere = Object.assign(Object.assign({}, employeeWhere), { name: {
+                        [Op.iLike]: `%${params.searchKey}%`
+                    } });
+                coachWhere = Object.assign(Object.assign({}, coachWhere), { name: {
+                        [Op.iLike]: `%${params.searchKey}%`
+                    } });
+            }
+            if (params.date) {
+                where = {
+                    [Op.and]: [
+                        Object.assign({}, where),
+                        Sequelize.where(Sequelize.fn('date', Sequelize.col('delivery_datetime')), '=', params.date),
+                    ]
+                };
+            }
+            if (params.status) {
+                where = Object.assign(Object.assign({}, where), { status: parseInt(params.status) });
+            }
+            if (params.employeeRankId) {
+                employeeRankWhere = Object.assign(Object.assign({}, employeeRankWhere), { id: params.employeeRankId });
+            }
+            if (params.sessionType) {
+                where = Object.assign(Object.assign({}, where), { type: parseInt(params.sessionType) });
+            }
+            let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll({
+                where,
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        attributes: ['id', 'name'],
+                        required: false,
+                        where: employeeWhere,
+                    },
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        attributes: ['id', 'name'],
+                        required: false,
+                        where: coachWhere
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: true,
+                        where: employeeRankWhere
+                    }
+                ],
+                limit,
+                offset,
+                order: [["createdAt", "DESC"]]
+            }));
+            if (sessions.count == 0)
+                throw new Error(constants.MESSAGES.no_session);
+            return sessions;
+        });
+    }
+    getEmployeeCoachSession(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
+                where: {
+                    id: params.session_id,
+                    status: {
+                        [Op.notIn]: [constants.STATUS.deleted]
+                    }
+                },
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    },
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: true,
+                    }
+                ],
+            }));
+            if (!session)
+                throw new Error(constants.MESSAGES.no_session);
+            return session;
         });
     }
 }

@@ -159,6 +159,7 @@ export const MESSAGES = {
   employee_rank_delete_employee_error:`If an employee belongs to a particular employee rank then that employee rank cannot be deleted.`,
   employee_rank_delete_coach_error:`If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
   delete_success:`Deleted Successfully`,
+  no_session:`No session found`,
 }
 
 
@@ -324,4 +325,15 @@ export const SECRETS = {
 export const IS_PAGINATION={
   no:0,
   yes:1,
+}
+
+export const EMPLOYEE_COACH_SESSION_CANCELLED_BY={
+  not_cancelled:0,
+  coach:1,
+  employee:2,
+}
+
+export const EMPLOYEE_COACH_SESSION_TYPE={
+  free:1,
+  paid:2,
 }

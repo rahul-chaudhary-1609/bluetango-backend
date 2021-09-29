@@ -2464,7 +2464,107 @@
           {
               "name": "rank_id",
               "in": "formData",
-              "description": "enter the category id",
+              "description": "enter the rank id",
+              "required": true,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listEmployeeCoachSessions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Employee Coach Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+              "name": "searchKey",
+              "in": "query",
+              "description": "enter the search key",
+              "required": false,
+              "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "enter the date: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status: 0=> inactive, 1=> active",
+            "required": false,
+            "type": "number",
+            "enum":[0,1]
+          },
+          {
+            "name": "employeeRankId",
+            "in": "query",
+            "description": "employee Rank Id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "sessionType",
+            "in": "query",
+            "description": "sessionType: 1=>free, 2=>paid",
+            "required": false,
+            "type": "number",
+            "enum":[1,2]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getEmployeeCoachSession": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Employee Coach Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+              "name": "session_id",
+              "in": "query",
+              "description": "enter session id",
               "required": true,
               "type": "number"
           }

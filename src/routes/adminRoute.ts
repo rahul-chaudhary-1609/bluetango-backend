@@ -201,5 +201,13 @@ adminRoute.get("/getEmployeeRank", tokenValidator.validateAdminToken,joiSchemaVa
 /* delete Employee Rank */
 adminRoute.delete("/deleteEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.deleteEmployeeRank), coachController.deleteEmployeeRank);
 
+//session management API's
+
+/* list Employee Coach Sessions */
+adminRoute.get("/listEmployeeCoachSessions", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeCoachSessions), coachController.listEmployeeCoachSessions);
+
+/* get Employee Coach Session */
+adminRoute.get("/getEmployeeCoachSession", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeCoachSession), coachController.getEmployeeCoachSession);
+
 
 export = adminRoute;

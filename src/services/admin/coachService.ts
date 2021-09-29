@@ -2,6 +2,7 @@ import { employersModel, industryTypeModel, employeeModel, departmentModel, admi
 import { coachManagementModel } from "../../models/coachManagement";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 import { employeeRanksModel } from "../../models/employeeRanks";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 import _ from "lodash";
 
 import * as helperFunction from "../../utils/helperFunction";
@@ -302,6 +303,142 @@ export class CoachService {
         }
     }
 
+    public async listEmployeeCoachSessions(params:any){
+
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+
+        employeeCoachSessionsModel.hasOne(employeeModel,{foreignKey:"id",sourceKey:"employee_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
+
+        let where=<any>{
+            status:{
+                [Op.notIn]:[constants.STATUS.deleted]
+            },
+        }
+
+        let employeeWhere=<any>{};
+        let coachWhere=<any>{};
+        let employeeRankWhere=<any>{};
+
+        if(params.searchKey){
+            employeeWhere={
+                ...employeeWhere,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
+
+            coachWhere={
+                ...coachWhere,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
+        }
+
+        if(params.date){
+            where={
+                [Op.and]: [
+                    {
+                        ...where,                      
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('delivery_datetime')), '=', params.date),
+                ]                
+            }
+        }
+
+        if(params.status){
+            where={
+                ...where,
+                status:parseInt(params.status),
+            }
+        }
+
+        if(params.employeeRankId){
+            employeeRankWhere={
+                ...employeeRankWhere,
+                id:params.employeeRankId,
+            }
+        }
+
+        if(params.sessionType){
+            where={
+                ...where,
+                type:parseInt(params.sessionType),
+            }
+        }
+
+        let sessions=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll({
+                where,
+                include:[
+                    {
+                        model:employeeModel,
+                        attributes:['id','name'],
+                        required:false,
+                        where:employeeWhere,
+                    },
+                    {
+                        model:coachManagementModel,
+                        attributes:['id','name'],
+                        required:false,
+                        where:coachWhere
+                    },
+                    {
+                        model:employeeRanksModel,
+                        required:true,
+                        where:employeeRankWhere
+                    }
+                ],
+                limit,
+                offset,
+                order: [["createdAt", "DESC"]]
+            })
+        )
+
+        if(sessions.count==0) throw new Error(constants.MESSAGES.no_session)
+
+        return sessions;
+    }
+
+    public async getEmployeeCoachSession(params:any){
+
+        employeeCoachSessionsModel.hasOne(employeeModel,{foreignKey:"id",sourceKey:"employee_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
+
+        let session=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findOne({
+                where:{
+                    id:params.session_id,
+                    status:{
+                        [Op.notIn]:[constants.STATUS.deleted]
+                    }
+                },
+                include:[
+                    {
+                        model:employeeModel,
+                        attributes:['id','name'],
+                        required:true,
+                    },
+                    {
+                        model:coachManagementModel,
+                        attributes:['id','name'],
+                        required:true,
+                    },
+                    {
+                        model:employeeRanksModel,
+                        required:true,
+                    }
+                ],
+            })
+        )
+
+        if(!session) throw new Error(constants.MESSAGES.no_session)
+
+        return session;
+    }
     
 
 }

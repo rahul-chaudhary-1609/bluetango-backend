@@ -90,4 +90,24 @@ export class CoachController {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
+
+    public async listEmployeeCoachSessions(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.listEmployeeCoachSessions(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    public async getEmployeeCoachSession(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.getEmployeeCoachSession(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 }

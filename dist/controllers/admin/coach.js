@@ -124,6 +124,28 @@ class CoachController {
             }
         });
     }
+    listEmployeeCoachSessions(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.listEmployeeCoachSessions(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getEmployeeCoachSession(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.getEmployeeCoachSession(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.CoachController = CoachController;
 //# sourceMappingURL=coach.js.map
