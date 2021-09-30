@@ -128,7 +128,7 @@ class CoachController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield coachService.listEmployeeCoachSessions(req.query);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
@@ -139,7 +139,7 @@ class CoachController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield coachService.getEmployeeCoachSession(req.query);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

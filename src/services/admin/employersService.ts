@@ -218,36 +218,135 @@ export class EmployersService {
     */
     public async dashboardAnalytics(params) {
 
-        let rawQuery = ""
-        let where: any = {}
-        let employees;
+        // let rawQuery = ""
+        // let employees;
 
-        // let admin_id = params.admin_id
+        // // let admin_id = params.admin_id
 
-        rawQuery = `SELECT * FROM "employers" AS "employers" 
-            WHERE "employers"."status" = 1 AND
-             "employers"."createdAt" BETWEEN date '${params.from}'
-             AND date '${params.to}'
-              `
+        // rawQuery = `SELECT * FROM "employers" AS "employers" 
+        //     WHERE "employers"."status" = 1 AND
+        //      "employers"."createdAt" BETWEEN date '${params.from}'
+        //      AND date '${params.to}'
+        //       `
 
-        let employers = await sequelize.query(rawQuery, {
-            raw: true
-        });
+        // let employers =await helperFunction.convertPromiseToObject(
+        //     await sequelize.query(rawQuery, {
+        //         raw: true
+        //     })
+        // )
 
-        let employerCount = employers[0] ? employers[0].length : 0
+        // let employerCount = employers[0] ? employers[0].length : 0
 
-        rawQuery = `SELECT * FROM "employee" AS "employees" 
-        WHERE "employees"."status" = 1 AND
-         "employees"."createdAt" BETWEEN date '${params.from}'
-         AND date '${params.to}'`
+        // rawQuery = `SELECT * FROM "employee" AS "employees" 
+        // WHERE "employees"."status" = 1 AND
+        //  "employees"."createdAt" BETWEEN date '${params.from}'
+        //  AND date '${params.to}'`
 
-        employees = await sequelize.query(rawQuery, {
-            raw: true
-        });
+        // employees =await helperFunction.convertPromiseToObject(
+        //     await sequelize.query(rawQuery, {
+        //         raw: true
+        //     })
+        // )
 
-        let employeeCount = employees[0] ? employees[0].length : 0
+        // let employeeCount = employees[0] ? employees[0].length : 0
 
-        return { employers: employerCount, employees: employeeCount }
+        // rawQuery = `SELECT * FROM "coach_management" AS "coaches" 
+        // WHERE "coaches"."status" = 1 AND
+        //  "coaches"."createdAt" BETWEEN date '${params.from}'
+        //  AND date '${params.to}'`
+
+        // let coaches =await helperFunction.convertPromiseToObject(
+        //     await sequelize.query(rawQuery, {
+        //         raw: true
+        //     })
+        // )
+
+        // let coachCount = coaches[0] ? coaches[0].length : 0
+
+        let where=<any>{
+            [Op.and]:[
+                {
+                    status:constants.STATUS.active,
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+        }
+
+        let employerCount=await employersModel.count({where})
+
+        let employeeCount=await employeeModel.count({where})
+
+        let coachCount=await coachManagementModel.count({where})
+
+        where={
+            [Op.and]:[
+                {
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+            
+        }
+
+        let totalCompletedSession=await employeeCoachSessionsModel.count({where})
+
+        let totalEarningBySession=await employeeCoachSessionsModel.sum('amount',{where})
+
+        where={
+            [Op.and]:[
+                {
+                    status:{
+                        [Op.notIn]:[constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled]
+                    }
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+            
+        }
+
+        let totalScheduledSession=await employeeCoachSessionsModel.count({where})
+
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
+
+        let topFiveSessionTaker=await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                attributes:[
+                    'coach_id',
+                    [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
+                ],
+                where,
+                group:['"employee_coach_sessions.coach_id"'],
+                order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
+                limit:5,
+            })
+        )
+
+        for(let coach of topFiveSessionTaker){
+            coach.coach=await helperFunction.convertPromiseToObject(
+                await coachManagementModel.findOne({
+                    attributes:["id","name","email"],
+                    where:{
+                        id:coach.coach_id,
+                    }
+                })
+            )
+        }
+
+        return {
+            employers: employerCount,
+            employees: employeeCount,
+            coaches:coachCount,
+            totalCompletedSession,
+            totalEarningBySession,
+            totalScheduledSession,
+            topFiveSessionTaker
+         }
 
     }
 

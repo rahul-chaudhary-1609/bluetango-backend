@@ -41,7 +41,6 @@ const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
-const connection_1 = require("../../connection");
 const feedback_1 = require("../../models/feedback");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
@@ -244,28 +243,104 @@ class EmployersService {
     */
     dashboardAnalytics(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let rawQuery = "";
-            let where = {};
-            let employees;
-            // let admin_id = params.admin_id
-            rawQuery = `SELECT * FROM "employers" AS "employers" 
-            WHERE "employers"."status" = 1 AND
-             "employers"."createdAt" BETWEEN date '${params.from}'
-             AND date '${params.to}'
-              `;
-            let employers = yield connection_1.sequelize.query(rawQuery, {
-                raw: true
-            });
-            let employerCount = employers[0] ? employers[0].length : 0;
-            rawQuery = `SELECT * FROM "employee" AS "employees" 
-        WHERE "employees"."status" = 1 AND
-         "employees"."createdAt" BETWEEN date '${params.from}'
-         AND date '${params.to}'`;
-            employees = yield connection_1.sequelize.query(rawQuery, {
-                raw: true
-            });
-            let employeeCount = employees[0] ? employees[0].length : 0;
-            return { employers: employerCount, employees: employeeCount };
+            // let rawQuery = ""
+            // let employees;
+            // // let admin_id = params.admin_id
+            // rawQuery = `SELECT * FROM "employers" AS "employers" 
+            //     WHERE "employers"."status" = 1 AND
+            //      "employers"."createdAt" BETWEEN date '${params.from}'
+            //      AND date '${params.to}'
+            //       `
+            // let employers =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let employerCount = employers[0] ? employers[0].length : 0
+            // rawQuery = `SELECT * FROM "employee" AS "employees" 
+            // WHERE "employees"."status" = 1 AND
+            //  "employees"."createdAt" BETWEEN date '${params.from}'
+            //  AND date '${params.to}'`
+            // employees =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let employeeCount = employees[0] ? employees[0].length : 0
+            // rawQuery = `SELECT * FROM "coach_management" AS "coaches" 
+            // WHERE "coaches"."status" = 1 AND
+            //  "coaches"."createdAt" BETWEEN date '${params.from}'
+            //  AND date '${params.to}'`
+            // let coaches =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let coachCount = coaches[0] ? coaches[0].length : 0
+            console.log(params);
+            let where = {
+                [Op.and]: [
+                    {
+                        status: constants.STATUS.active,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let employerCount = yield models_1.employersModel.count({ where });
+            let employeeCount = yield models_1.employeeModel.count({ where });
+            let coachCount = yield coachManagement_1.coachManagementModel.count({ where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let totalCompletedSession = yield employeeCoachSession_1.employeeCoachSessionsModel.count({ where });
+            let totalEarningBySession = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('amount', { where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: {
+                            [Op.notIn]: [constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled]
+                        }
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let totalScheduledSession = yield employeeCoachSession_1.employeeCoachSessionsModel.count({ where });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            let topFiveSessionTaker = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
+                attributes: [
+                    'coach_id',
+                    [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
+                ],
+                where,
+                group: ['"employee_coach_sessions.coach_id"'],
+                order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
+                limit: 5,
+            }));
+            for (let coach of topFiveSessionTaker) {
+                coach.coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                    attributes: ["id", "name", "email"],
+                    where: {
+                        id: coach.coach_id,
+                    }
+                }));
+            }
+            return {
+                employers: employerCount,
+                employees: employeeCount,
+                coaches: coachCount,
+                totalCompletedSession,
+                totalEarningBySession,
+                totalScheduledSession,
+                topFiveSessionTaker
+            };
         });
     }
     /**

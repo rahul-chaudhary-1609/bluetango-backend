@@ -94,7 +94,7 @@ export class CoachController {
     public async listEmployeeCoachSessions(req: any, res: any) {
         try {
             const responseFromService = await coachService.listEmployeeCoachSessions(req.query);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
@@ -104,7 +104,7 @@ export class CoachController {
     public async getEmployeeCoachSession(req: any, res: any) {
         try {
             const responseFromService = await coachService.getEmployeeCoachSession(req.query);
-            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.delete_success);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
