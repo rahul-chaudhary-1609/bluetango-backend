@@ -673,6 +673,7 @@ class EmployersService {
                     }
                 });
             }
+            console.log("existingUser", existingUser);
             params.admin_id = user.uid;
             if (lodash_1.default.isEmpty(existingUser)) {
                 if (params.id) {
@@ -728,7 +729,7 @@ class EmployersService {
                         },
                         attributes: ['name']
                     }));
-                    coach.employee_ranks = coach.employee_ranks.mao(rank => rank.name).join(', ');
+                    coach.employee_ranks = coach.employee_ranks.map(rank => rank.name).join(', ');
                     coach.fees_per_session = coach.coach_charge;
                     delete coach.id;
                     delete coach.admin_id;

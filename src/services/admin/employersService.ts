@@ -679,6 +679,7 @@ export class EmployersService {
                 }
             });
         }
+        console.log("existingUser",existingUser)
         params.admin_id = user.uid;
         if (_.isEmpty(existingUser)) {
             if (params.id) {
@@ -741,7 +742,7 @@ export class EmployersService {
                     })
                 )
 
-                coach.employee_ranks=coach.employee_ranks.mao(rank=>rank.name).join(', ');
+                coach.employee_ranks=coach.employee_ranks.map(rank=>rank.name).join(', ');
 
                 coach.fees_per_session=coach.coach_charge;
 
