@@ -740,6 +740,9 @@ class EmployersService {
                     delete coach.fileName;
                     delete coach.status;
                     delete coach.coach_charge;
+                    delete coach.employee_rank_ids;
+                    delete coach.updatedAt;
+                    delete coach.createdAt;
                     for (let key in coach) {
                         mailParams.html += `<tr style="text-align: left;">
                             <th style="opacity: 0.9;">${key.split("_").map((ele) => {

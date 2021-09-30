@@ -755,6 +755,9 @@ export class EmployersService {
                 delete coach.fileName;
                 delete coach.status;
                 delete coach.coach_charge;
+                delete coach.employee_rank_ids
+                delete coach.updatedAt
+                delete coach.createdAt
 
 
                 for (let key in coach) {
