@@ -337,3 +337,10 @@ export const EMPLOYEE_COACH_SESSION_TYPE={
   free:1,
   paid:2,
 }
+
+export const EMPLOYEE_COACH_SESSION_STATUS={
+  active:1,
+  ongoing:2,
+  completed:3,
+  cancelled:4,
+}

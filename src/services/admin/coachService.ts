@@ -77,7 +77,9 @@ export class CoachService {
 
     public async listCoachSpecializationCategories(params:any){
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["createdAt", "DESC"]]
+        }
         query.where=<any>{
             status:{
                 [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
@@ -215,7 +217,9 @@ export class CoachService {
 
     public async listEmployeeRanks(params:any){
 
-        let query=<any>{};
+        let query=<any>{
+            order: [["createdAt", "DESC"]]
+        };
         query.where=<any>{
             status:{
                 [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
@@ -280,6 +284,7 @@ export class CoachService {
         let employeeCount=await employeeModel.count({
             where:{
                 employee_rank_id:rank.id,
+                status:constants.STATUS.active
             }
         })
 
@@ -290,7 +295,8 @@ export class CoachService {
                 where:{
                     employee_rank_ids:{
                         [Op.contains]:[rank.id]
-                    }
+                    },
+                    status:constants.STATUS.active
                 }
             })
     
@@ -343,7 +349,7 @@ export class CoachService {
                     {
                         ...where,                      
                     },
-                    Sequelize.where(Sequelize.fn('date', Sequelize.col('delivery_datetime')), '=', params.date),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
                 ]                
             }
         }

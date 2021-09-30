@@ -58,7 +58,7 @@ export const employeeCoachSessionsModel: any = sequelize.define("employee_coach_
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '0=>inactive,1=>active,2=>deleted'
+        comment: '1=>active, 2=>ongoing, 3=>completed, 4=> cancelled'
     },
     details:{
         type:DataTypes.JSON,

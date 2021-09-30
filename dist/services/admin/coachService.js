@@ -101,7 +101,9 @@ class CoachService {
     }
     listCoachSpecializationCategories(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = {};
+            let query = {
+                order: [["createdAt", "DESC"]]
+            };
             query.where = {
                 status: {
                     [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
@@ -221,7 +223,9 @@ class CoachService {
     }
     listEmployeeRanks(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = {};
+            let query = {
+                order: [["createdAt", "DESC"]]
+            };
             query.where = {
                 status: {
                     [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
@@ -270,6 +274,7 @@ class CoachService {
             let employeeCount = yield models_1.employeeModel.count({
                 where: {
                     employee_rank_id: rank.id,
+                    status: constants.STATUS.active
                 }
             });
             if (employeeCount > 0) {
@@ -280,7 +285,8 @@ class CoachService {
                     where: {
                         employee_rank_ids: {
                             [Op.contains]: [rank.id]
-                        }
+                        },
+                        status: constants.STATUS.active
                     }
                 });
                 if (coachCount > 0) {
@@ -319,7 +325,7 @@ class CoachService {
                 where = {
                     [Op.and]: [
                         Object.assign({}, where),
-                        Sequelize.where(Sequelize.fn('date', Sequelize.col('delivery_datetime')), '=', params.date),
+                        Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
                     ]
                 };
             }

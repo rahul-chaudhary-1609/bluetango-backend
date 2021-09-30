@@ -713,8 +713,48 @@ export class EmployersService {
                 `;
 
                 delete coach.password;
+                coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                    await coachSpecializationCategoriesModel.findAll({
+                        where:{
+                            id:{
+                                [Op.in]:coach.coach_specialization_category_ids || [],
+                            },
+                            status:constants.STATUS.active,
+                        },
+                        attributes:['name']
+                    })
+                )
+
+                coach.coach_specialization_categories=coach.coach_specialization_categories.map(category=>category.name).join(', ');
+
                 delete coach.coach_specialization_category_ids;
-                delete coach.employee_rank_ids;
+
+                coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                    await employeeRanksModel.findAll({
+                        where:{
+                            id:{
+                                [Op.in]:coach.employee_rank_ids || [],
+                            },
+                            status:constants.STATUS.active,
+                        },
+                        attributes:['name']
+                    })
+                )
+
+                coach.employee_ranks=coach.employee_ranks.mao(rank=>rank.name).join(', ');
+
+                coach.fees_per_session=coach.coach_charge;
+
+                delete coach.id;
+                delete coach.admin_id;
+                delete coach.device_token;
+                delete coach.first_time_login;
+                delete coach.first_time_login_datetime;
+                delete coach.first_time_reset_password;
+                delete coach.fileName;
+                delete coach.status;
+                delete coach.coach_charge;
+
 
                 for (let key in coach) {
         
@@ -724,7 +764,7 @@ export class EmployersService {
                                 else return ele.charAt(0).toUpperCase() + ele.slice(1)
                             }).join(" ")}</th>
                             <td style="opacity: 0.8;">:</td>
-                            <td style="opacity: 0.8;">${key=='profile_pic_url'?`<img src='${coach[key]}' />`:coach[key]}</td>
+                            <td style="opacity: 0.8;">${key=='image'?`<img src='${coach[key]}' />`:coach[key]}</td>
                         </tr>`
                 }
                 mailParams.html+=`</table>`;

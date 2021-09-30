@@ -2436,7 +2436,7 @@
                     {
                         "name": "rank_id",
                         "in": "query",
-                        "description": "enter the category id",
+                        "description": "enter rank id",
                         "required": true,
                         "type": "number"
                     }
@@ -2506,10 +2506,10 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "status: 0=> inactive, 1=> active",
+                        "description": "status: 1=>active, 2=>ongoing, 3=>completed, 4=> cancelled",
                         "required": false,
                         "type": "number",
-                        "enum": [0, 1]
+                        "enum": [1, 2, 3, 4]
                     },
                     {
                         "name": "employeeRankId",
