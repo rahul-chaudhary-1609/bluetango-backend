@@ -218,12 +218,10 @@ class GoalServices {
                     include: [
                         {
                             model: employee_1.employeeModel,
-                            separate: true,
                             required: false,
                         },
                         {
                             model: teamGoalAssign_1.teamGoalAssignModel,
-                            separate: true,
                             required: true,
                             include: [
                                 {

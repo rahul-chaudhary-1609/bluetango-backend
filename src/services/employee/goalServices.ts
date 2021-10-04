@@ -201,12 +201,10 @@ export class GoalServices {
                 include: [
                     {
                         model: employeeModel,
-                        separate: true,
                         required: false,
                     },
                     {
                         model: teamGoalAssignModel,
-                        separate: true,
                         required: true,
                         include: [
                             {
