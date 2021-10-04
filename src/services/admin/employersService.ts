@@ -638,7 +638,6 @@ export class EmployersService {
                 {
                     model: employersModel,
                     required: false,
-                    separate: true,
                     where: where,
                     include: [{
                         model: employeeModel,
@@ -650,7 +649,6 @@ export class EmployersService {
                 {
                     model: subscriptionManagementModel,
                     required: false,
-                    separate: true,
                     attributes: ["id", "plan_name"]
                 }
             ],

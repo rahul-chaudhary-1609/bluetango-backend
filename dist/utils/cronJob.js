@@ -123,7 +123,6 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                 include: [
                     {
                         model: teamGoal_1.teamGoalModel,
-                        separate: true,
                         required: false,
                     },
                     {

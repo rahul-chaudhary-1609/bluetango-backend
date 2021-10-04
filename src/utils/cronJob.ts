@@ -111,6 +111,7 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
                         },
                         {
                             model:teamGoalAssignCompletionByEmployeeModel,
+                            separate: true,
                             required: false,
                             order: [["createdAt", "DESC"]]
                         }

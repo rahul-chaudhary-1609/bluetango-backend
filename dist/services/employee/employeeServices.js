@@ -134,7 +134,6 @@ class EmployeeServices {
                 include: [
                     {
                         model: department_1.departmentModel,
-                        separate: true,
                         required: true
                     },
                     {
@@ -144,7 +143,6 @@ class EmployeeServices {
                         include: [
                             {
                                 model: teamGoal_1.teamGoalModel,
-                                separate: true,
                                 required: false
                             }
                         ]

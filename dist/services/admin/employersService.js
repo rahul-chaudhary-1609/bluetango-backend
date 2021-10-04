@@ -610,7 +610,6 @@ class EmployersService {
                     {
                         model: models_1.employersModel,
                         required: false,
-                        separate: true,
                         where: where,
                         include: [{
                                 model: models_1.employeeModel,
@@ -622,7 +621,6 @@ class EmployersService {
                     {
                         model: subscriptionManagement_1.subscriptionManagementModel,
                         required: false,
-                        separate: true,
                         attributes: ["id", "plan_name"]
                     }
                 ],

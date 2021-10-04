@@ -160,6 +160,8 @@ export const MESSAGES = {
   employee_rank_delete_coach_error:`If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
   delete_success:`Deleted Successfully`,
   no_session:`No session found`,
+  coach_schedule_day_required:`Day is required if slot type is weekly`,
+  coach_schedule_custom_dates_required:`Custom dates is/are required if slot type is custom`,
 }
 
 
@@ -343,4 +345,27 @@ export const EMPLOYEE_COACH_SESSION_STATUS={
   ongoing:2,
   completed:3,
   cancelled:4,
+}
+
+export const COACH_SCHEDULE_STATUS={
+  available:1,
+  booked:2,
+}
+
+export const COACH_SCHEDULE_TYPE={
+  does_not_repeat:1,
+  daily:2,
+  weekly:3,
+  every_week_day:4,
+  custom:5,
+}
+
+export const COACH_SCHEDULE_DAY={
+  monday:1,
+  tuesday:2,
+  wednesday:3,
+  thursday:4,
+  friday:5,
+  saturday:6,
+  sunday:7,
 }
