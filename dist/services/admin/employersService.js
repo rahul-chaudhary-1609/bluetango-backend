@@ -187,6 +187,7 @@ class EmployersService {
                     {
                         model: models_1.employeeModel,
                         required: false,
+                        separate: true,
                         attributes: ["id"],
                         where: {
                             status: [0, 1]
@@ -277,7 +278,6 @@ class EmployersService {
             //     })
             // )
             // let coachCount = coaches[0] ? coaches[0].length : 0
-            console.log(params);
             let where = {
                 [Op.and]: [
                     {
@@ -610,16 +610,19 @@ class EmployersService {
                     {
                         model: models_1.employersModel,
                         required: false,
+                        separate: true,
                         where: where,
                         include: [{
                                 model: models_1.employeeModel,
                                 required: false,
+                                separate: true,
                                 attributes: ["id", "name"]
                             }]
                     },
                     {
                         model: subscriptionManagement_1.subscriptionManagementModel,
                         required: false,
+                        separate: true,
                         attributes: ["id", "plan_name"]
                     }
                 ],
@@ -684,6 +687,7 @@ class EmployersService {
                     {
                         model: models_1.employeeModel,
                         required: false,
+                        separate: true,
                         attributes: ["id"]
                     }
                     // {

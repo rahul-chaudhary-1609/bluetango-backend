@@ -159,6 +159,7 @@ export class EmployersService {
                 {
                     model: employeeModel,
                     required: false,
+                    separate: true,
                     attributes: ["id"],
                     where: {
                         status:[0,1]
@@ -637,16 +638,19 @@ export class EmployersService {
                 {
                     model: employersModel,
                     required: false,
+                    separate: true,
                     where: where,
                     include: [{
                         model: employeeModel,
                         required: false,
+                        separate: true,
                         attributes: ["id", "name"]
                     }]
                 },
                 {
                     model: subscriptionManagementModel,
                     required: false,
+                    separate: true,
                     attributes: ["id", "plan_name"]
                 }
             ],
@@ -714,6 +718,7 @@ export class EmployersService {
                 {
                     model: employeeModel,
                     required: false,
+                    separate: true,
                     attributes: ["id"]
                 }
                 // {

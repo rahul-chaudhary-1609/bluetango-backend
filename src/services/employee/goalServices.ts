@@ -201,14 +201,17 @@ export class GoalServices {
                 include: [
                     {
                         model: employeeModel,
+                        separate: true,
                         required: false,
                     },
                     {
                         model: teamGoalAssignModel,
+                        separate: true,
                         required: true,
                         include: [
                             {
                                 model: employeeModel,
+                                separate: true,
                                 where: whereCondition,
                                 required: true,
                             }
@@ -229,15 +232,18 @@ export class GoalServices {
             include: [
                 {
                     model: employeeModel,
+                    separate: true,
                     required: false,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 },
                 {
                     model: teamGoalAssignModel,
+                    separate: true,
                     required: false,
                     include: [
                         {
                             model: employeeModel,
+                            separate: true,
                             where: whereCondition,
                             required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
@@ -284,6 +290,7 @@ export class GoalServices {
             include: [
                 {
                     model: employeeModel,
+                    separate: true,
                     required: true,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 },
@@ -292,6 +299,7 @@ export class GoalServices {
                     include: [
                         {
                             model: employeeModel,
+                            separate: true,
                             required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
@@ -325,10 +333,12 @@ export class GoalServices {
             include: [
                 {
                     model: teamGoalModel,
+                    separate: true,
                     required: false,
                     include: [
                         {
                             model: employeeModel,
+                            separate: true,
                             required: false,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
@@ -481,16 +491,19 @@ export class GoalServices {
             include: [
                 {
                     model: teamGoalAssignModel,
+                    separate: true,
                     required: true,                   
                     include: [
                         {
                             model: teamGoalAssignCompletionByEmployeeModel,
+                            separate: true,
                             attributes: ['id','goal_id','team_goal_assign_id',['description','employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status','createdAt', 'updatedAt'],
                             where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                             required: true,
                         },
                         {
                             model: employeeModel,
+                            separate: true,
                             required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
@@ -738,10 +751,12 @@ export class GoalServices {
                 include: [
                     {
                         model: teamGoalAssignModel,
+                        separate: true,
                         where: { employee_id: user.uid },
                         include: [
                             {
                                 model: employeeModel,
+                                separate: true,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -787,10 +802,12 @@ export class GoalServices {
             include: [
                 {
                     model: teamGoalAssignModel,
+                    separate: true,
                     where: { id: params.team_goal_assign_id, },
                     include: [
                         {
                             model: employeeModel,
+                            separate: true,
                             required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
@@ -853,6 +870,7 @@ export class GoalServices {
                 include: [
                     {
                         model: teamGoalAssignModel,
+                        separate: true,
                     }
                 ],
                 order: [["createdAt", "DESC"]]

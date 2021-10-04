@@ -113,14 +113,17 @@ export class EmployeeServices {
             include: [
                 {
                     model: departmentModel,
+                    separate: true,
                     required: true
                 },
                 {
                     model: teamGoalAssignModel,
+                    separate: true,
                     required: false,
                     include: [
                         {
                             model: teamGoalModel,
+                            separate: true,
                             required: false
                         }
                     ]

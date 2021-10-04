@@ -218,14 +218,17 @@ class GoalServices {
                     include: [
                         {
                             model: employee_1.employeeModel,
+                            separate: true,
                             required: false,
                         },
                         {
                             model: teamGoalAssign_1.teamGoalAssignModel,
+                            separate: true,
                             required: true,
                             include: [
                                 {
                                     model: employee_1.employeeModel,
+                                    separate: true,
                                     where: whereCondition,
                                     required: true,
                                 }
@@ -244,15 +247,18 @@ class GoalServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
+                        separate: true,
                         required: false,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         required: false,
                         include: [
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 where: whereCondition,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
@@ -292,6 +298,7 @@ class GoalServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
+                        separate: true,
                         required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
@@ -300,6 +307,7 @@ class GoalServices {
                         include: [
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -329,10 +337,12 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoal_1.teamGoalModel,
+                        separate: true,
                         required: false,
                         include: [
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 required: false,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -468,16 +478,19 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         required: true,
                         include: [
                             {
                                 model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                                separate: true,
                                 attributes: ['id', 'goal_id', 'team_goal_assign_id', ['description', 'employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status', 'createdAt', 'updatedAt'],
                                 where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                                 required: true,
                             },
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -683,10 +696,12 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         where: { employee_id: user.uid },
                         include: [
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -721,10 +736,12 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         where: { id: params.team_goal_assign_id, },
                         include: [
                             {
                                 model: employee_1.employeeModel,
+                                separate: true,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
@@ -773,6 +790,7 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                     }
                 ],
                 order: [["createdAt", "DESC"]]

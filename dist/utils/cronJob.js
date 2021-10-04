@@ -123,10 +123,12 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
                 include: [
                     {
                         model: teamGoal_1.teamGoalModel,
+                        separate: true,
                         required: false,
                     },
                     {
                         model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                        separate: true,
                         required: false,
                         order: [["createdAt", "DESC"]]
                     }

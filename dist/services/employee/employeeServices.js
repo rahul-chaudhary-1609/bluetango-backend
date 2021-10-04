@@ -134,14 +134,17 @@ class EmployeeServices {
                 include: [
                     {
                         model: department_1.departmentModel,
+                        separate: true,
                         required: true
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         required: false,
                         include: [
                             {
                                 model: teamGoal_1.teamGoalModel,
+                                separate: true,
                                 required: false
                             }
                         ]
