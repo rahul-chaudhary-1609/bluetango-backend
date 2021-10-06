@@ -956,7 +956,7 @@ export class EmployersService {
             })
 
             coach.average_rating=parseInt(totalRating)/coach.total_completed_sessions;
-            coach.average_rating=coach.average_rating || 1;
+            coach.average_rating=coach.average_rating || 0;
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
         }
@@ -1027,7 +1027,7 @@ export class EmployersService {
             })
 
             coach.average_rating=totalRating/coach.total_completed_sessions;
-            coach.average_rating=coach.average_rating || 1;
+            coach.average_rating=coach.average_rating || 0;
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
 

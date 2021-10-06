@@ -189,7 +189,7 @@ class AuthService {
                 }
             });
             coach.average_rating = totalRating / coach.total_completed_sessions;
-            coach.average_rating = coach.average_rating || 1;
+            coach.average_rating = coach.average_rating || 0;
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
             delete coach.password;
