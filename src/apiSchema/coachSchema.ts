@@ -117,3 +117,30 @@ export const updateEmployerDeviceToken = Joi.object({
 export const clearChat = Joi.object({
     chat_room_id: Joi.number().required()
 })
+
+export const addSlot= Joi.object({
+    date: Joi.string().required(),
+    start_time: Joi.string().required(),
+    end_time: Joi.string().required(),
+    type: Joi.number().required(),
+    day: Joi.number().optional(),
+    custom_dates:Joi.array().optional(),
+})
+
+export const getSlots= Joi.object({
+    filter_key: Joi.string().valid("Daily","Weekly","Monthly", "Yearly").allow(null, '').optional(),
+    day: Joi.string().allow(null, '').optional(),
+    week: Joi.string().allow(null, '').optional(),
+    month: Joi.string().allow(null, '').optional(),
+    year: Joi.string().allow(null, '').optional(),
+})
+
+export const getSlot= Joi.object({
+    slot_id: Joi.number().required(),
+})
+
+export const deleteSlot= Joi.object({
+    type:Joi.number().required(),
+    slot_id: Joi.number().optional(),
+    slot_group_id: Joi.string().optional(),
+})

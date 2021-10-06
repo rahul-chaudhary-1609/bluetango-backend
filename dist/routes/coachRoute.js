@@ -29,9 +29,11 @@ const validators = __importStar(require("../middleware/validators"));
 const multerParser_1 = require("../middleware/multerParser");
 const authController_1 = require("../controllers/coach/authController");
 const chatController_1 = require("../controllers/coach/chatController");
+const coachController_1 = require("../controllers/coach/coachController");
 const coachRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 const chatController = new chatController_1.ChatController();
+const coachController = new coachController_1.CoachController();
 // auth API
 /* login route for employee login */
 coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.login), authController.login);
@@ -72,5 +74,11 @@ coachRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator
 coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.markNotificationsAsViewed), chatController.markNotificationsAsViewed);
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, multerParser_1.upload.single('file'), authController.uploadFile);
+/* get Slots */
+coachRoute.get("/getSlots", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlots), coachController.getSlots);
+/*get Slot */
+coachRoute.get("/getSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlot), coachController.getSlot);
+/* delete Slot */
+coachRoute.delete("/deleteSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map

@@ -9,6 +9,10 @@ export const coachScheduleModel: any = sequelize.define("coach_schedules", {
         primaryKey: true,
         autoIncrement: true
     },
+    slot_group_id:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     coach_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -34,7 +38,7 @@ export const coachScheduleModel: any = sequelize.define("coach_schedules", {
     day:{
         type: DataTypes.INTEGER,
         allowNull: true,
-        comment: '1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday, 7=>sunday'
+        comment: '0=>sunday, 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday'
     },
     custom_dates:{
         type:DataTypes.ARRAY(DataTypes.DATEONLY),

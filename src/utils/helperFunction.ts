@@ -8,6 +8,7 @@ const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 import { EmployersService } from '../services/admin/employersService'
 import { chatRealtionMappingInRoomModel } from "../models/chatRelationMappingInRoom";
+import { coachScheduleModel } from "../models/coachSchedule";
 import { groupChatRoomModel } from "../models/groupChatRoom";
 
 //Instantiates a Home services  
@@ -217,3 +218,38 @@ export const getUniqueChatRoomId = async ()=> {
     return room_id;
 }
 
+export const getMonday = (params) => {
+    let date = new Date(params);
+    let day = date.getDay();
+    let diff =date.getDate() - day + (day == 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+}
+
+/*
+* function to generate the random key
+*/
+let getRandomStringOfLengthTen = () => {
+    // Generate Random Number
+    return randomstring.generate({
+        charset: "alphanumeric",
+        length: 10,
+        readable: true,
+    });
+};
+
+export const getUniqueSlotGroupId = async ()=> {
+    let isUniqueFound = false;
+    let slot_group_id= null;
+    while (!isUniqueFound) {
+        slot_group_id = getRandomStringOfLengthTen();
+        let schedule = await coachScheduleModel.findOne({
+            where: {
+                slot_group_id
+            }
+        });
+
+        if (!schedule) isUniqueFound=true 
+    }
+
+    return slot_group_id;
+}

@@ -7,12 +7,14 @@ import { upload } from "../middleware/multerParser"
 
 import { AuthController } from "../controllers/coach/authController";
 import { ChatController } from "../controllers/coach/chatController";
+import { CoachController } from "../controllers/coach/coachController";
 
 
 const coachRoute = express.Router();
 
 const authController = new AuthController();
 const chatController = new ChatController();
+const coachController = new CoachController();
 
 
 // auth API
@@ -76,5 +78,15 @@ coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.
 
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, upload.single('file'), authController.uploadFile);
+
+/* get Slots */
+coachRoute.get("/getSlots",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlots), coachController.getSlots);
+
+/*get Slot */
+coachRoute.get("/getSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlot), coachController.getSlot);
+
+/* delete Slot */
+coachRoute.delete("/deleteSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
+
 
 export = coachRoute;

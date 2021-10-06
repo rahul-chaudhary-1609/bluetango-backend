@@ -6704,6 +6704,212 @@
         "responses": {}
       }
     },
+    "/coach/addSlot": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to add slot",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tcoach_id\n\tdate\n\tstart_time\n\tend_time\n\ttype",
+            "required": true,
+            "schema":{
+               "type":"object",
+               "properties":{
+                "coach_id":{
+                  "type":"number"
+                },
+                "date":{
+                  "type":"string"
+                },
+                "start_time":{
+                  "type":"string"
+                },
+                "end_time":{
+                  "type":"string"
+                },
+                "type":{
+                  "type":"number"
+                },
+                "day":{
+                  "type":"number"
+                },
+                "custom_dates":{
+                  "type":"array",
+                  "items":{
+                    "type":"string"
+                  }
+                }
+               } 
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSlots": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to get slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filter_key",
+            "in": "query",
+            "description": "filter_key",
+            "required": false,
+            "type": "string",
+            "enu":[
+              "Daily",
+              "Weekly",
+              "Monthly",
+              "Yearly"
+            ]
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Enter day",
+            "required": false,
+            "type": "string",
+            "enu":["1","2","3","4","5","6","7","8","9","10",
+              "11","12","13","14","15","16","17","18","19","20",
+              "21","22","23","24","25","26","27","28","29","30","31"
+            ]
+          },
+          {
+            "name": "week",
+            "in": "query",
+            "description": "Enter week",
+            "required": false,
+            "type": "string",
+            "enu":["1","2","3","4","5","6","7","8","9","10",
+              "11","12","13","14","15","16","17","18","19","20",
+              "21","22","23","24","25","26","27","28","29","30",
+              "31","32","33","34","35","36","37","38","39","30",
+              "41","42","43","44","45","46","47","48","49","50",
+              "51","52"
+            ]
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "description": "Enter month",
+            "required": false,
+            "type": "string",
+            "enu":["1","2","3","4","5","6","7","8","9","10",
+              "11","12"
+            ]
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Enter year",
+            "required": false,
+            "type": "string",
+            "enu":["2020","2021","2023","2024","2025","2026","2027","2028","2029","2030"]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSlot": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to get slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slot_id",
+            "in": "query",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/deleteSlot": {
+      "delete": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to delete slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "enter type: 1=> individual, 2=> group",
+            "required": true,
+            "type": "number",
+            "enu":[
+              1,2
+            ]
+          },
+          {
+            "name": "slot_id",
+            "in": "formData",
+            "description": "Slot id is required if type is 1",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "slot_group_id",
+            "in": "formData",
+            "description": "Slot group id is required if type is 2",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/getChatList": {
       "get": {
         "tags": [

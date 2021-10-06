@@ -162,6 +162,10 @@ export const MESSAGES = {
   no_session:`No session found`,
   coach_schedule_day_required:`Day is required if slot type is weekly`,
   coach_schedule_custom_dates_required:`Custom dates is/are required if slot type is custom`,
+  coach_schedule_already_exist:`This schedule time has some conflicts with existing slot(s).`,
+  no_coach_schedule:`No slot found`,
+  slot_id_required:`Slot id is required in case of individual delete`,
+  slot_group_id_required:`Slot group id is required in case of group delete`,
 }
 
 
@@ -349,7 +353,9 @@ export const EMPLOYEE_COACH_SESSION_STATUS={
 
 export const COACH_SCHEDULE_STATUS={
   available:1,
-  booked:2,
+  in_process:2,
+  booked:3,
+  passed:4,
 }
 
 export const COACH_SCHEDULE_TYPE={
@@ -361,11 +367,16 @@ export const COACH_SCHEDULE_TYPE={
 }
 
 export const COACH_SCHEDULE_DAY={
+  sunday:0,
   monday:1,
   tuesday:2,
   wednesday:3,
   thursday:4,
   friday:5,
-  saturday:6,
-  sunday:7,
+  saturday:6, 
+}
+
+export const COACH_SCHEDULE_SLOT_DELETE_TYPE={
+  individual:1,
+  group:2,
 }

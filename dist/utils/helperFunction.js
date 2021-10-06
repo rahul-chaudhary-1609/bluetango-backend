@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.getUniqueSlotGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -42,6 +42,7 @@ const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 const employersService_1 = require("../services/admin/employersService");
 const chatRelationMappingInRoom_1 = require("../models/chatRelationMappingInRoom");
+const coachSchedule_1 = require("../models/coachSchedule");
 const groupChatRoom_1 = require("../models/groupChatRoom");
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
@@ -233,5 +234,37 @@ exports.getUniqueChatRoomId = () => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     return room_id;
+});
+exports.getMonday = (params) => {
+    let date = new Date(params);
+    let day = date.getDay();
+    let diff = date.getDate() - day + (day == 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+};
+/*
+* function to generate the random key
+*/
+let getRandomStringOfLengthTen = () => {
+    // Generate Random Number
+    return randomstring.generate({
+        charset: "alphanumeric",
+        length: 10,
+        readable: true,
+    });
+};
+exports.getUniqueSlotGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let slot_group_id = null;
+    while (!isUniqueFound) {
+        slot_group_id = getRandomStringOfLengthTen();
+        let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
+            where: {
+                slot_group_id
+            }
+        });
+        if (!schedule)
+            isUniqueFound = true;
+    }
+    return slot_group_id;
 });
 //# sourceMappingURL=helperFunction.js.map

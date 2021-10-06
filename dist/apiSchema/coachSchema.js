@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -123,5 +123,28 @@ exports.updateEmployerDeviceToken = joi_1.default.object({
 });
 exports.clearChat = joi_1.default.object({
     chat_room_id: joi_1.default.number().required()
+});
+exports.addSlot = joi_1.default.object({
+    date: joi_1.default.string().required(),
+    start_time: joi_1.default.string().required(),
+    end_time: joi_1.default.string().required(),
+    type: joi_1.default.number().required(),
+    day: joi_1.default.number().optional(),
+    custom_dates: joi_1.default.array().optional(),
+});
+exports.getSlots = joi_1.default.object({
+    filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
+    day: joi_1.default.string().allow(null, '').optional(),
+    week: joi_1.default.string().allow(null, '').optional(),
+    month: joi_1.default.string().allow(null, '').optional(),
+    year: joi_1.default.string().allow(null, '').optional(),
+});
+exports.getSlot = joi_1.default.object({
+    slot_id: joi_1.default.number().required(),
+});
+exports.deleteSlot = joi_1.default.object({
+    type: joi_1.default.number().required(),
+    slot_id: joi_1.default.number().optional(),
+    slot_group_id: joi_1.default.string().optional(),
 });
 //# sourceMappingURL=coachSchema.js.map
