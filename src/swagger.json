@@ -6724,14 +6724,11 @@
           {
             "name": "body",
             "in": "body",
-            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tcoach_id\n\tdate\n\tstart_time\n\tend_time\n\ttype",
+            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tdate\n\tstart_time\n\tend_time\n\ttype",
             "required": true,
             "schema":{
                "type":"object",
                "properties":{
-                "coach_id":{
-                  "type":"number"
-                },
                 "date":{
                   "type":"string"
                 },
