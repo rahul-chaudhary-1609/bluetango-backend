@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniqueSlotGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -252,19 +252,34 @@ let getRandomStringOfLengthTen = () => {
         readable: true,
     });
 };
-exports.getUniqueSlotGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.getUniqueSlotDateGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
     let isUniqueFound = false;
-    let slot_group_id = null;
+    let slot_day_group_id = null;
     while (!isUniqueFound) {
-        slot_group_id = getRandomStringOfLengthTen();
+        slot_day_group_id = getRandomStringOfLengthTen();
         let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
             where: {
-                slot_group_id
+                slot_day_group_id
             }
         });
         if (!schedule)
             isUniqueFound = true;
     }
-    return slot_group_id;
+    return slot_day_group_id;
+});
+exports.getUniqueSlotTimeGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let slot_time_group_id = null;
+    while (!isUniqueFound) {
+        slot_time_group_id = getRandomStringOfLengthTen();
+        let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
+            where: {
+                slot_time_group_id
+            }
+        });
+        if (!schedule)
+            isUniqueFound = true;
+    }
+    return slot_time_group_id;
 });
 //# sourceMappingURL=helperFunction.js.map

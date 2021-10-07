@@ -126,10 +126,15 @@ exports.clearChat = joi_1.default.object({
 });
 exports.addSlot = joi_1.default.object({
     date: joi_1.default.string().required(),
-    start_time: joi_1.default.string().required(),
-    end_time: joi_1.default.string().required(),
+    // start_time: Joi.string().required(),
+    // end_time: Joi.string().required(),
+    slots: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required(),
+    })).required(),
     type: joi_1.default.number().required(),
     day: joi_1.default.number().optional(),
+    custom_date: joi_1.default.string().optional(),
     custom_dates: joi_1.default.array().optional(),
 });
 exports.getSlots = joi_1.default.object({
@@ -144,7 +149,9 @@ exports.getSlot = joi_1.default.object({
 });
 exports.deleteSlot = joi_1.default.object({
     type: joi_1.default.number().required(),
+    group_type: joi_1.default.number().optional(),
     slot_id: joi_1.default.number().optional(),
-    slot_group_id: joi_1.default.string().optional(),
+    slot_date_group_id: joi_1.default.string().optional(),
+    slot_time_group_id: joi_1.default.string().optional(),
 });
 //# sourceMappingURL=coachSchema.js.map

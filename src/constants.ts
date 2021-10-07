@@ -165,7 +165,8 @@ export const MESSAGES = {
   coach_schedule_already_exist:`This schedule time has some conflicts with existing slot(s).`,
   no_coach_schedule:`No slot found`,
   slot_id_required:`Slot id is required in case of individual delete`,
-  slot_group_id_required:`Slot group id is required in case of group delete`,
+  slot_date_group_id_required:`Slot date group id is required in case of date group delete`,
+  slot_time_group_id_required:`Slot time group id is required in case of time group delete`,
 }
 
 
@@ -379,4 +380,9 @@ export const COACH_SCHEDULE_DAY={
 export const COACH_SCHEDULE_SLOT_DELETE_TYPE={
   individual:1,
   group:2,
+}
+
+export const COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE={
+  date:1,
+  time:2,
 }

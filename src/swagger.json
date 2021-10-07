@@ -6732,11 +6732,19 @@
                 "date":{
                   "type":"string"
                 },
-                "start_time":{
-                  "type":"string"
-                },
-                "end_time":{
-                  "type":"string"
+                "slots":{
+                  "type":"array",
+                  "items":{
+                    "type":"object",
+                    "properties":{
+                      "start_time":{
+                        "type":"string"
+                      },
+                      "end_time":{
+                        "type":"string"
+                      }
+                    }
+                  }
                 },
                 "type":{
                   "type":"number"
@@ -6744,13 +6752,16 @@
                 "day":{
                   "type":"number"
                 },
+                "custom_date":{
+                  "type":"string"
+                },
                 "custom_dates":{
                   "type":"array",
                   "items":{
                     "type":"string"
                   }
                 }
-               } 
+              } 
             }
           }
         ],
@@ -6890,6 +6901,16 @@
             ]
           },
           {
+            "name": "group_type",
+            "in": "formData",
+            "description": "enter type: 1=> date, 2=> time",
+            "required": false,
+            "type": "number",
+            "enum":[
+              1,2
+            ]
+          },
+          {
             "name": "slot_id",
             "in": "formData",
             "description": "Slot id is required if type is 1",
@@ -6897,9 +6918,16 @@
             "type": "number"
           },
           {
-            "name": "slot_group_id",
+            "name": "slot_date_group_id",
             "in": "formData",
-            "description": "Slot group id is required if type is 2",
+            "description": "Slot date group id is required if group type is 1",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "slot_time_group_id",
+            "in": "formData",
+            "description": "Slot time group id is required if group type is 2",
             "required": false,
             "type": "string"
           }

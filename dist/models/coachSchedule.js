@@ -10,7 +10,11 @@ exports.coachScheduleModel = connection_1.sequelize.define("coach_schedules", {
         primaryKey: true,
         autoIncrement: true
     },
-    slot_group_id: {
+    slot_date_group_id: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    slot_time_group_id: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
@@ -40,6 +44,10 @@ exports.coachScheduleModel = connection_1.sequelize.define("coach_schedules", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: true,
         comment: '0=>sunday, 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday'
+    },
+    custom_date: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
     },
     custom_dates: {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.DATEONLY),

@@ -75,7 +75,7 @@ class CoachService {
                 case constants.COACH_SCHEDULE_TYPE.weekly: {
                     let start = new Date(params.date);
                     let end = new Date(params.date);
-                    end.setFullYear(start.getFullYear() + 7);
+                    end.setFullYear(start.getFullYear() + 1);
                     while (start < end) {
                         if (params.day == parseInt(moment(start).format('d'))) {
                             dates.push(moment(start).format("YYYY-MM-DD"));
@@ -85,56 +85,70 @@ class CoachService {
                     break;
                 }
                 case constants.COACH_SCHEDULE_TYPE.custom: {
-                    for (let date of params.custom_dates) {
-                        dates.push(date);
+                    let start = new Date(params.date);
+                    let end = new Date(params.custom_date);
+                    while (start < end) {
+                        dates.push(moment(start).format("YYYY-MM-DD"));
+                        start.setDate(start.getDate() + 1);
                     }
                     break;
                 }
+                // case constants.COACH_SCHEDULE_TYPE.custom:{
+                //     for(let date of params.custom_dates){
+                //         dates.push(date)
+                //     }
+                //     break
+                // }
             }
-            let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
-                where: {
-                    coach_id: user.uid,
-                    date: {
-                        [Op.in]: dates,
-                    },
-                    [Op.or]: [
-                        {
-                            start_time: {
-                                [Op.between]: [
-                                    params.start_time,
-                                    params.end_time,
-                                ]
-                            },
-                        },
-                        {
-                            end_time: {
-                                [Op.between]: [
-                                    params.start_time,
-                                    params.end_time,
-                                ]
-                            },
-                        },
-                    ],
-                    status: {
-                        [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
-                    }
-                }
-            });
-            if (schedule)
-                throw new Error(constants.MESSAGES.coach_schedule_already_exist);
             let schedules = [];
-            let slot_group_id = yield helperFunction.getUniqueSlotGroupId();
-            for (let date of dates) {
-                schedules.push({
-                    slot_group_id,
-                    coach_id: user.uid,
-                    date,
-                    start_time: params.start_time,
-                    end_time: params.end_time,
-                    type: params.type,
-                    day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
-                    custom_dates: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_dates : null,
+            let slot_time_group_id = yield helperFunction.getUniqueSlotTimeGroupId();
+            for (let slot of params.slots) {
+                let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
+                    where: {
+                        coach_id: user.uid,
+                        date: {
+                            [Op.in]: dates,
+                        },
+                        [Op.or]: [
+                            {
+                                start_time: {
+                                    [Op.between]: [
+                                        slot.start_time,
+                                        slot.end_time,
+                                    ]
+                                },
+                            },
+                            {
+                                end_time: {
+                                    [Op.between]: [
+                                        slot.start_time,
+                                        slot.end_time,
+                                    ]
+                                },
+                            },
+                        ],
+                        status: {
+                            [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
+                        }
+                    }
                 });
+                if (schedule)
+                    throw new Error(constants.MESSAGES.coach_schedule_already_exist);
+                let slot_date_group_id = yield helperFunction.getUniqueSlotDateGroupId();
+                for (let date of dates) {
+                    schedules.push({
+                        slot_date_group_id,
+                        slot_time_group_id,
+                        coach_id: user.uid,
+                        date,
+                        start_time: slot.start_time,
+                        end_time: slot.end_time,
+                        type: params.type,
+                        day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
+                        custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
+                        custom_dates: null,
+                    });
+                }
             }
             return yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.bulkCreate(schedules));
         });
@@ -250,21 +264,35 @@ class CoachService {
         return __awaiter(this, void 0, void 0, function* () {
             if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual && !params.slot_id)
                 throw new Error(constants.MESSAGES.slot_id_required);
-            if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && !params.slot_group_id)
-                throw new Error(constants.MESSAGES.slot_group_id_required);
+            if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type == constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.date && !params.slot_date_group_id)
+                throw new Error(constants.MESSAGES.slot_date_group_id_required);
+            if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type == constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id)
+                throw new Error(constants.MESSAGES.slot_time_group_id_required);
             if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual) {
+                let schedule = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(params.slot_id));
+                if (!schedule)
+                    throw new Error(constants.MESSAGES.no_coach_schedule);
+                schedule.destroy();
+            }
+            else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_date_group_id) {
                 let schedules = yield coachSchedule_1.coachScheduleModel.findAll({
-                    slot_group_id: params.slot_group_id
+                    where: {
+                        slot_date_group_id: params.slot_date_group_id
+                    }
                 });
                 if (schedules.length == 0)
                     throw new Error(constants.MESSAGES.no_coach_schedule);
                 schedules.destroy();
             }
-            else {
-                let schedule = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(params.slot_id));
-                if (!schedule)
+            else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
+                let schedules = yield coachSchedule_1.coachScheduleModel.findAll({
+                    where: {
+                        slot_time_group_id: params.slot_time_group_id
+                    }
+                });
+                if (schedules.length == 0)
                     throw new Error(constants.MESSAGES.no_coach_schedule);
-                schedule.destroy();
+                schedules.destroy();
             }
             return true;
         });

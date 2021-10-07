@@ -120,10 +120,15 @@ export const clearChat = Joi.object({
 
 export const addSlot= Joi.object({
     date: Joi.string().required(),
-    start_time: Joi.string().required(),
-    end_time: Joi.string().required(),
+    // start_time: Joi.string().required(),
+    // end_time: Joi.string().required(),
+    slots:Joi.array().items(Joi.object().keys({
+        start_time: Joi.string().required(),
+        end_time: Joi.string().required(),
+    })).required(),
     type: Joi.number().required(),
     day: Joi.number().optional(),
+    custom_date:Joi.string().optional(),
     custom_dates:Joi.array().optional(),
 })
 
@@ -141,6 +146,8 @@ export const getSlot= Joi.object({
 
 export const deleteSlot= Joi.object({
     type:Joi.number().required(),
+    group_type:Joi.number().optional(),
     slot_id: Joi.number().optional(),
-    slot_group_id: Joi.string().optional(),
+    slot_date_group_id: Joi.string().optional(),
+    slot_time_group_id: Joi.string().optional(),
 })

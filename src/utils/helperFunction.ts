@@ -237,19 +237,36 @@ let getRandomStringOfLengthTen = () => {
     });
 };
 
-export const getUniqueSlotGroupId = async ()=> {
+export const getUniqueSlotDateGroupId = async ()=> {
     let isUniqueFound = false;
-    let slot_group_id= null;
+    let slot_day_group_id= null;
     while (!isUniqueFound) {
-        slot_group_id = getRandomStringOfLengthTen();
+        slot_day_group_id = getRandomStringOfLengthTen();
         let schedule = await coachScheduleModel.findOne({
             where: {
-                slot_group_id
+                slot_day_group_id
             }
         });
 
         if (!schedule) isUniqueFound=true 
     }
 
-    return slot_group_id;
+    return slot_day_group_id;
+}
+
+export const getUniqueSlotTimeGroupId = async ()=> {
+    let isUniqueFound = false;
+    let slot_time_group_id= null;
+    while (!isUniqueFound) {
+        slot_time_group_id = getRandomStringOfLengthTen();
+        let schedule = await coachScheduleModel.findOne({
+            where: {
+                slot_time_group_id
+            }
+        });
+
+        if (!schedule) isUniqueFound=true 
+    }
+
+    return slot_time_group_id;
 }
