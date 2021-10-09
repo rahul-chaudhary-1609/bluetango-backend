@@ -346,7 +346,12 @@ export class CoachService {
 
             if(schedules.length==0) throw new Error(constants.MESSAGES.no_coach_schedule)
 
-            schedules.destroy();
+            await coachScheduleModel.destroy({
+                where:{
+                    slot_date_group_id:params.slot_date_group_id
+                }
+            });
+
         }else if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
             let schedules = await coachScheduleModel.findAll({
                 where:{
@@ -356,7 +361,11 @@ export class CoachService {
 
             if(schedules.length==0) throw new Error(constants.MESSAGES.no_coach_schedule)
 
-            schedules.destroy();
+            await coachScheduleModel.destroy({
+                where:{
+                    slot_time_group_id:params.slot_time_group_id
+                }
+            });
         }       
 
         return true;
