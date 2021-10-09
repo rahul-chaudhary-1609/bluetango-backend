@@ -11,7 +11,7 @@ export class CoachService {
 
     public async addSlot(params:any,user:any){
 
-        console.log("add slot params",params);
+        console.log("add slot params1",params);
 
         if(params.type==constants.COACH_SCHEDULE_TYPE.weekly && !params.day) 
             throw new Error(constants.MESSAGES.coach_schedule_day_required)
@@ -83,6 +83,33 @@ export class CoachService {
 
         let schedules=[];
         let slot_time_group_id=await helperFunction.getUniqueSlotTimeGroupId();
+
+        let slots=params.slots;
+
+        slots.forEach((slot)=>{
+            Object.keys(slot).forEach((key)=>{
+                slot[key]=parseInt(slot[key].replace(/:/g,""))
+            })
+        })
+
+        slots.forEach((slot1,index1)=>{
+            if(!(slot1.start_time<slot1.end_time)){
+                throw new Error(constants.MESSAGES.coach_schedule_start_greater_or_equal_end)
+            }
+            Object.keys(slot1).forEach((key)=>{
+                slots.forEach((slot2,index2)=>{
+                    if(slot1[key]>=slot2.start_time && slot1[key]<=slot2.end_time && index1!=index2){
+                        throw new Error(constants.MESSAGES.coach_schedule_overlaped)
+                    }
+                })
+            })
+        })
+
+        slots.forEach((slot)=>{
+            Object.keys(slot).forEach((key)=>{
+                slot[key]=moment(slot[key],"HHmmss").format("HH:mm:ss")
+            })
+        })
 
         for(let slot of params.slots){
 
@@ -158,7 +185,6 @@ export class CoachService {
 
             return true;
         }
-
         
     }
 
@@ -236,8 +262,8 @@ export class CoachService {
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("year",Sequelize.col("date")),"=",params.year),
-                    Sequelize.where(Sequelize.fn("week",Sequelize.col("date")),"=",params.week),
+                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
+                    Sequelize.where(Sequelize.fn("date_part","week",Sequelize.col("date")),"=",params.week),
                 ]
             };
         } else if(params.month && params.year){
@@ -246,8 +272,8 @@ export class CoachService {
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("year",Sequelize.col("date")),"=",params.year),
-                    Sequelize.where(Sequelize.fn("month",Sequelize.col("date")),"=",params.month),
+                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
+                    Sequelize.where(Sequelize.fn("date_part","month",Sequelize.col("date")),"=",params.month),
                 ]
             };
         } else if(params.year){
@@ -256,7 +282,7 @@ export class CoachService {
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("year",Sequelize.col("date")),"=",params.year),
+                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
                 ]
             };
         }else{

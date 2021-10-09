@@ -254,18 +254,18 @@ let getRandomStringOfLengthTen = () => {
 };
 exports.getUniqueSlotDateGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
     let isUniqueFound = false;
-    let slot_day_group_id = null;
+    let slot_date_group_id = null;
     while (!isUniqueFound) {
-        slot_day_group_id = getRandomStringOfLengthTen();
+        slot_date_group_id = getRandomStringOfLengthTen();
         let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
             where: {
-                slot_day_group_id
+                slot_date_group_id
             }
         });
         if (!schedule)
             isUniqueFound = true;
     }
-    return slot_day_group_id;
+    return slot_date_group_id;
 });
 exports.getUniqueSlotTimeGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
     let isUniqueFound = false;

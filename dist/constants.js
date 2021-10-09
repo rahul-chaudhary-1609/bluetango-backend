@@ -188,6 +188,8 @@ exports.MESSAGES = {
     slot_id_required: `Slot id is required in case of individual delete`,
     slot_date_group_id_required: `Slot date group id is required in case of date group delete`,
     slot_time_group_id_required: `Slot time group id is required in case of time group delete`,
+    coach_schedule_overlaped: `The recieved slots must have one or more overlaped time values.\nPlease check, fix, and create again`,
+    coach_schedule_start_greater_or_equal_end: `For each slots start time must be less than end time`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
