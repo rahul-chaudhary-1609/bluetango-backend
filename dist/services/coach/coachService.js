@@ -150,7 +150,22 @@ class CoachService {
                     });
                 }
             }
-            return yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.bulkCreate(schedules));
+            if (schedules.length < 1000) {
+                yield coachSchedule_1.coachScheduleModel.bulkCreate(schedules);
+                return true;
+            }
+            else {
+                let size = schedules.length;
+                let start = 0;
+                let end = 999;
+                while (size > 0) {
+                    yield coachSchedule_1.coachScheduleModel.bulkCreate(schedules.slice(start, end));
+                    start = start + 999;
+                    end = end + 999;
+                    size = size - 999;
+                }
+                return true;
+            }
         });
     }
     getSlots(params, user) {
