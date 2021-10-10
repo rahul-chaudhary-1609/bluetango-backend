@@ -193,6 +193,7 @@ class CoachService {
     }
     getSlots(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("params", params);
             let where = {
                 coach_id: user.uid,
                 status: {
@@ -244,7 +245,7 @@ class CoachService {
                 }
             }
             else if ((params.day && params.month && params.year) || params.date) {
-                where = Object.assign(Object.assign({}, where), { date: `${params.year}-${params.month}-${params.day}` || params.date });
+                where = Object.assign(Object.assign({}, where), { date: params.date || `${params.year}-${params.month}-${params.day}` });
             }
             else if (params.week && params.year) {
                 where = {

@@ -190,6 +190,8 @@ export class CoachService {
 
     public async getSlots(params:any,user:any){
 
+        console.log("params",params)
+
         let where=<any>{
             coach_id:user.uid,
             status:{
@@ -254,7 +256,7 @@ export class CoachService {
         } else if((params.day && params.month && params.year) || params.date){
             where = {
                 ...where,
-                date:`${params.year}-${params.month}-${params.day}` || params.date,
+                date:params.date || `${params.year}-${params.month}-${params.day}`,
             };
         } else if(params.week && params.year){
             where = {
