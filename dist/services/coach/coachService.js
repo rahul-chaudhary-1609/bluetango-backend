@@ -243,8 +243,8 @@ class CoachService {
                         } });
                 }
             }
-            else if (params.day && params.month && params.year) {
-                where = Object.assign(Object.assign({}, where), { date: `${params.year}-${params.month}-${params.day}` });
+            else if ((params.day && params.month && params.year) || params.date) {
+                where = Object.assign(Object.assign({}, where), { date: `${params.year}-${params.month}-${params.day}` || params.date });
             }
             else if (params.week && params.year) {
                 where = {

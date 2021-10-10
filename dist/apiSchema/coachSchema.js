@@ -139,6 +139,7 @@ exports.addSlot = joi_1.default.object({
 });
 exports.getSlots = joi_1.default.object({
     filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
+    date: joi_1.default.string().allow(null, '').optional(),
     day: joi_1.default.string().allow(null, '').optional(),
     week: joi_1.default.string().allow(null, '').optional(),
     month: joi_1.default.string().allow(null, '').optional(),

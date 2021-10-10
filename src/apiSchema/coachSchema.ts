@@ -134,6 +134,7 @@ export const addSlot= Joi.object({
 
 export const getSlots= Joi.object({
     filter_key: Joi.string().valid("Daily","Weekly","Monthly", "Yearly").allow(null, '').optional(),
+    date: Joi.string().allow(null, '').optional(),
     day: Joi.string().allow(null, '').optional(),
     week: Joi.string().allow(null, '').optional(),
     month: Joi.string().allow(null, '').optional(),

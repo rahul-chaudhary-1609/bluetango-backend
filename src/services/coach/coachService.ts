@@ -251,10 +251,10 @@ export class CoachService {
                     }
                 };
             }     
-        } else if(params.day && params.month && params.year){
+        } else if((params.day && params.month && params.year) || params.date){
             where = {
                 ...where,
-                date:`${params.year}-${params.month}-${params.day}`,
+                date:`${params.year}-${params.month}-${params.day}` || params.date,
             };
         } else if(params.week && params.year){
             where = {

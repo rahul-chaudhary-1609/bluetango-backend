@@ -6799,6 +6799,13 @@
             ]
           },
           {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date format: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "day",
             "in": "query",
             "description": "Enter day",
