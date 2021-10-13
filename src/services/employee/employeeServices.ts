@@ -21,6 +21,10 @@ import { libraryManagementModel } from "../../models/libraryManagement";
 import { deleteFile } from "../../middleware/multerParser";
 import { attributeRatingModel } from "../../models/attributeRatings"
 import { employeeRanksModel } from "../../models/employeeRanks";
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
+import { coachScheduleModel } from "../../models/coachSchedule";
+const moment =require("moment");
 import * as path from 'path';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -524,16 +528,163 @@ export class EmployeeServices {
     /*
    * function to get coach list
    */
-    public async getCoachList(user: any) {
+    public async getCoachList(user: any,params:any) {
 
-        let coachList = await coachManagementModel.findAndCountAll({
-            attributes: ['id', 'name', 'description', ['image', 'profile_pic_url']],
-            where: {
-                status: constants.STATUS.active,
+        let employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.findByPk(parseInt(user.uid))
+        )
+        let where: any = {}
+
+        if (params.searchKey) {
+            let  coachSpecializationCategories=await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where:{
+                        name:{
+                            [Op.iLike]:`%${params.searchKey}%`
+                        }
+                    }
+                })
+            ) 
+
+            if(coachSpecializationCategories){
+                let coachSpecializationCategoryIds=coachSpecializationCategories.map(coachSpecializationCategory=>coachSpecializationCategory.id);
+                if(coachSpecializationCategoryIds){
+                    where["coach_specialization_category_ids"] = { 
+                            [Op.contains]: coachSpecializationCategoryIds || [],
+                        }
+                }
             }
-        });
+                        
+        }
 
-        return await helperFunction.convertPromiseToObject(coachList);
+        if(employee){
+            where["employee_rank_ids"] = { 
+                        [Op.contains]: [employee.employee_rank_id] 
+                    }
+        }
+
+        where["status"] = constants.STATUS.active
+
+        let query=<any>{
+            where: where,
+            attributes: ["id", "name",'description', "email", "phone_number", ['image', 'profile_pic_url'],"coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+            order: [["id", "DESC"]]
+        }
+
+        if(params.sortBy){
+            if(params.sortBy==1){
+                query.order=[["createdAt","DESC"]]
+            }else if(params.sortBy==2){
+                query.order=[["createdAt","ASC"]]
+            }else if(params.sortBy==4){
+                query.order=[["coach_charge","DESC"]]
+            }else if(params.sortBy==5){
+                query.order=[["coach_charge","ASC"]]
+            }
+        }
+
+        let coachList= await helperFunction.convertPromiseToObject(
+             await coachManagementModel.findAndCountAll(query)
+        )
+        
+        for(let coach of coachList.rows){
+            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.coach_specialization_category_ids || [],
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                await employeeRanksModel.findAll({
+                    where:{
+                        id:{
+                            [Op.in]:coach.employee_rank_ids || [],
+                        },
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.total_completed_sessions=await employeeCoachSessionsModel.count({
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
+                where:{
+                    coach_id:coach.id,
+                }
+            })
+
+            if(!params.date || !moment(params.date,"YYYY-MM-DD").isValid()){
+                params.date=moment(new Date()).format("YYYY-MM-DD");
+            }
+
+            coach.available_slots=await helperFunction.convertPromiseToObject(
+                await coachScheduleModel.findAll({
+                    attributes:['id','date','start_time','end_time'],
+                    where:{
+                        date:params.date,
+                        status:constants.COACH_SCHEDULE_STATUS.available,
+                    },
+                    order:[["date", "ASC"],["start_time", "ASC"],["end_time", "ASC"]]
+                })
+            )
+
+            coach.average_rating=parseInt(totalRating)/coach.total_completed_sessions;
+            coach.average_rating=coach.average_rating || 0;
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+        }
+
+        if(!params.sortBy || params.sortBy==3){
+            coachList.rows.sort((a,b)=>b.average_rating-a.average_rating);
+        }
+
+        if(params.sortBy && params.sortBy==6){
+            coachList.rows.forEach((row)=>{
+                row.available_slots?.forEach((slot)=>{
+                    Object.keys(slot).forEach((key)=>{
+                        if(key=="start_time"){
+                            slot[key]=slot[key].replace(/:/g,"")
+                        }
+                    })
+                })
+            })
+
+            // console.log("coachList",coachList.rows.forEach((row,index)=>{
+            //     console.log(`available_slot${index}`,row.available_slots)
+            // }))
+
+            coachList.rows.sort((a,b)=>a.available_slots[0]?.start_time-b.available_slots[0]?.start_time);
+
+            coachList.rows.forEach((row)=>{
+                row.available_slots?.forEach((slot)=>{
+                    Object.keys(slot).forEach((key)=>{
+                        if(key=="start_time"){
+                            slot[key]=moment(slot[key],"HHmmss").format("HH:mm:ss")
+                        }
+                    })
+                })
+            })
+
+            // console.log("coachList",coachList.rows.forEach((row,index)=>{
+            //     console.log(`available_slot${index}`,row.available_slots)
+            // }))
+        }
+
+        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            coachList.rows=coachList.rows.slice(offset,offset+limit);        
+        }         
+
+        return coachList;
     }
 
     /*

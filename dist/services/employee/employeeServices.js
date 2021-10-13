@@ -53,6 +53,10 @@ const libraryManagement_1 = require("../../models/libraryManagement");
 const multerParser_1 = require("../../middleware/multerParser");
 const attributeRatings_1 = require("../../models/attributeRatings");
 const employeeRanks_1 = require("../../models/employeeRanks");
+const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
+const employeeCoachSession_1 = require("../../models/employeeCoachSession");
+const coachSchedule_1 = require("../../models/coachSchedule");
+const moment = require("moment");
 const path = __importStar(require("path"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -493,15 +497,133 @@ class EmployeeServices {
     /*
    * function to get coach list
    */
-    getCoachList(user) {
+    getCoachList(user, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let coachList = yield coachManagement_1.coachManagementModel.findAndCountAll({
-                attributes: ['id', 'name', 'description', ['image', 'profile_pic_url']],
-                where: {
-                    status: constants.STATUS.active,
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
+            let where = {};
+            if (params.searchKey) {
+                let coachSpecializationCategories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${params.searchKey}%`
+                        }
+                    }
+                }));
+                if (coachSpecializationCategories) {
+                    let coachSpecializationCategoryIds = coachSpecializationCategories.map(coachSpecializationCategory => coachSpecializationCategory.id);
+                    if (coachSpecializationCategoryIds) {
+                        where["coach_specialization_category_ids"] = {
+                            [Op.contains]: coachSpecializationCategoryIds || [],
+                        };
+                    }
                 }
-            });
-            return yield helperFunction.convertPromiseToObject(coachList);
+            }
+            if (employee) {
+                where["employee_rank_ids"] = {
+                    [Op.contains]: [employee.employee_rank_id]
+                };
+            }
+            where["status"] = constants.STATUS.active;
+            let query = {
+                where: where,
+                attributes: ["id", "name", 'description', "email", "phone_number", ['image', 'profile_pic_url'], "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
+                order: [["id", "DESC"]]
+            };
+            if (params.sortBy) {
+                if (params.sortBy == 1) {
+                    query.order = [["createdAt", "DESC"]];
+                }
+                else if (params.sortBy == 2) {
+                    query.order = [["createdAt", "ASC"]];
+                }
+                else if (params.sortBy == 4) {
+                    query.order = [["coach_charge", "DESC"]];
+                }
+                else if (params.sortBy == 5) {
+                    query.order = [["coach_charge", "ASC"]];
+                }
+            }
+            let coachList = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findAndCountAll(query));
+            for (let coach of coachList.rows) {
+                coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                    where: {
+                        coach_id: coach.id,
+                    }
+                });
+                let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
+                    where: {
+                        coach_id: coach.id,
+                    }
+                });
+                if (!params.date || !moment(params.date, "YYYY-MM-DD").isValid()) {
+                    params.date = moment(new Date()).format("YYYY-MM-DD");
+                }
+                coach.available_slots = yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.findAll({
+                    attributes: ['id', 'date', 'start_time', 'end_time'],
+                    where: {
+                        date: params.date,
+                        status: constants.COACH_SCHEDULE_STATUS.available,
+                    },
+                    order: [["date", "ASC"], ["start_time", "ASC"], ["end_time", "ASC"]]
+                }));
+                coach.average_rating = parseInt(totalRating) / coach.total_completed_sessions;
+                coach.average_rating = coach.average_rating || 0;
+                delete coach.coach_specialization_category_ids;
+                delete coach.employee_rank_ids;
+            }
+            if (!params.sortBy || params.sortBy == 3) {
+                coachList.rows.sort((a, b) => b.average_rating - a.average_rating);
+            }
+            if (params.sortBy && params.sortBy == 6) {
+                coachList.rows.forEach((row) => {
+                    var _a;
+                    (_a = row.available_slots) === null || _a === void 0 ? void 0 : _a.forEach((slot) => {
+                        Object.keys(slot).forEach((key) => {
+                            if (key == "start_time") {
+                                slot[key] = slot[key].replace(/:/g, "");
+                            }
+                        });
+                    });
+                });
+                // console.log("coachList",coachList.rows.forEach((row,index)=>{
+                //     console.log(`available_slot${index}`,row.available_slots)
+                // }))
+                coachList.rows.sort((a, b) => { var _a, _b; return ((_a = a.available_slots[0]) === null || _a === void 0 ? void 0 : _a.start_time) - ((_b = b.available_slots[0]) === null || _b === void 0 ? void 0 : _b.start_time); });
+                coachList.rows.forEach((row) => {
+                    var _a;
+                    (_a = row.available_slots) === null || _a === void 0 ? void 0 : _a.forEach((slot) => {
+                        Object.keys(slot).forEach((key) => {
+                            if (key == "start_time") {
+                                slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss");
+                            }
+                        });
+                    });
+                });
+                // console.log("coachList",coachList.rows.forEach((row,index)=>{
+                //     console.log(`available_slot${index}`,row.available_slots)
+                // }))
+            }
+            if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                coachList.rows = coachList.rows.slice(offset, offset + limit);
+            }
+            return coachList;
         });
     }
     /*

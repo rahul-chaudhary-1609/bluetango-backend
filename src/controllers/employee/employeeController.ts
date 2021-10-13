@@ -268,7 +268,7 @@ export class EmployeeController {
    */
     public async getCoachList(req: any, res: any, next: any) {
         try {
-            const responseFromService = await employeeServices.getCoachList(req.user);
+            const responseFromService = await employeeServices.getCoachList(req.user,req.query);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (e) {

@@ -315,7 +315,7 @@ class EmployeeController {
     getCoachList(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeServices.getCoachList(req.user);
+                const responseFromService = yield employeeServices.getCoachList(req.user, req.query);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

@@ -4027,6 +4027,50 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "Enter search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": " Default is 3. Rest options are:\n\t1=>newly_added_on_top,\n\t2=>old_on_top,\n\t3=>rating_high_to_low,\n\t4=>cost_high_to_low,\n\t5=>cost_low_to_high,\n\t6=>sooner_availability_on_top",
+            "required": false,
+            "type": "number",
+            "enum":[1,2,3,4,5,6]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date to get spesific coach availibity. Default is today",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum":[1,2]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size (required if is_pagination is 1)",
+              "required": false,
+              "type": "number"
           }
         ],
         "responses": {}

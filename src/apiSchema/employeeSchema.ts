@@ -371,3 +371,12 @@ export const clearChat = Joi.object({
   chat_room_id: Joi.number().required()
 })
 
+export const getCoachList= Joi.object({
+  searchKey: Joi.string().allow(null,"").optional(),
+  sortBy: Joi.number().optional(),
+  date: Joi.string().allow(null,"").optional(),
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
