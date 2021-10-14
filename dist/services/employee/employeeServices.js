@@ -571,15 +571,28 @@ class EmployeeServices {
                         coach_id: coach.id,
                     }
                 });
-                if (!params.date || !moment(params.date, "YYYY-MM-DD").isValid()) {
-                    params.date = moment(new Date()).format("YYYY-MM-DD");
+                let slotsWhere = {
+                    status: constants.COACH_SCHEDULE_STATUS.available,
+                };
+                if (params.filterBy) {
+                    if (params.filterBy == 1) {
+                        slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: {
+                                [Op.gte]: moment(new Date()).format("YYYY-MM-DD"),
+                            } });
+                    }
+                    else if (params.filterBy == 2) {
+                        slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: moment(new Date()).format("YYYY-MM-DD") });
+                    }
+                    else if (params.filterBy == 3 && params.date && !moment(params.date, "YYYY-MM-DD").isValid()) {
+                        slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: params.date });
+                    }
+                }
+                else {
+                    slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: moment(new Date()).format("YYYY-MM-DD") });
                 }
                 coach.available_slots = yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.findAll({
                     attributes: ['id', 'date', 'start_time', 'end_time'],
-                    where: {
-                        date: params.date,
-                        status: constants.COACH_SCHEDULE_STATUS.available,
-                    },
+                    where: slotsWhere,
                     order: [["date", "ASC"], ["start_time", "ASC"], ["end_time", "ASC"]]
                 }));
                 coach.average_rating = parseInt(totalRating) / coach.total_completed_sessions;

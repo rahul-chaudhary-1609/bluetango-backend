@@ -4040,9 +4040,17 @@
                         "enum": [1, 2, 3, 4, 5, 6]
                     },
                     {
+                        "name": "filterBy",
+                        "in": "query",
+                        "description": " Default is 2. Rest options are:\n\t1=>all,\n\t2=>today,\n\t3=>custom_date",
+                        "required": false,
+                        "type": "number",
+                        "enum": [1, 2, 3]
+                    },
+                    {
                         "name": "date",
                         "in": "query",
-                        "description": "Enter date to get spesific coach availibity. Default is today",
+                        "description": "Enter date to get specific coach availibity. (required if filterBy is 3)",
                         "required": false,
                         "type": "string"
                     },

@@ -374,6 +374,7 @@ export const clearChat = Joi.object({
 export const getCoachList= Joi.object({
   searchKey: Joi.string().allow(null,"").optional(),
   sortBy: Joi.number().optional(),
+  filterBy: Joi.number().optional(),
   date: Joi.string().allow(null,"").optional(),
   is_pagination:Joi.number().optional(),
   limit: Joi.number().optional(),

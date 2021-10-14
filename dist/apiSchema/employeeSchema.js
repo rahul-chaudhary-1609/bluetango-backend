@@ -335,6 +335,7 @@ exports.clearChat = joi_1.default.object({
 exports.getCoachList = joi_1.default.object({
     searchKey: joi_1.default.string().allow(null, "").optional(),
     sortBy: joi_1.default.number().optional(),
+    filterBy: joi_1.default.number().optional(),
     date: joi_1.default.string().allow(null, "").optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),

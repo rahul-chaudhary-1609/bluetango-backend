@@ -559,8 +559,8 @@ export class EmployeeServices {
 
         if(employee){
             where["employee_rank_ids"] = { 
-                        [Op.contains]: [employee.employee_rank_id] 
-                    }
+                [Op.contains]: [employee.employee_rank_id] 
+            }
         }
 
         where["status"] = constants.STATUS.active
@@ -622,17 +622,40 @@ export class EmployeeServices {
                 }
             })
 
-            if(!params.date || !moment(params.date,"YYYY-MM-DD").isValid()){
-                params.date=moment(new Date()).format("YYYY-MM-DD");
+            let slotsWhere=<any>{
+                status:constants.COACH_SCHEDULE_STATUS.available,
             }
+
+            if(params.filterBy){
+                if(params.filterBy==1){
+                    slotsWhere={
+                        ...slotsWhere,
+                        date:{
+                            [Op.gte]:moment(new Date()).format("YYYY-MM-DD"),
+                        }                    
+                    }
+                }else if(params.filterBy==2){
+                    slotsWhere={
+                        ...slotsWhere, 
+                        date:moment(new Date()).format("YYYY-MM-DD"),               
+                    }
+                }else if(params.filterBy==3 && params.date && !moment(params.date,"YYYY-MM-DD").isValid()){
+                    slotsWhere={
+                        ...slotsWhere,
+                        date:params.date,                 
+                    }
+                }
+            }else{
+                slotsWhere={
+                    ...slotsWhere, 
+                    date:moment(new Date()).format("YYYY-MM-DD"),               
+                }
+            }           
 
             coach.available_slots=await helperFunction.convertPromiseToObject(
                 await coachScheduleModel.findAll({
                     attributes:['id','date','start_time','end_time'],
-                    where:{
-                        date:params.date,
-                        status:constants.COACH_SCHEDULE_STATUS.available,
-                    },
+                    where:slotsWhere,
                     order:[["date", "ASC"],["start_time", "ASC"],["end_time", "ASC"]]
                 })
             )
