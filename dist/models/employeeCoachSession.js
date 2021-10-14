@@ -22,14 +22,30 @@ exports.employeeCoachSessionsModel = connection_1.sequelize.define("employee_coa
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
+    coach_specialization_category_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
     coach_rating: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 1,
+        defaultValue: 0,
     },
-    datetime: {
-        type: sequelize_1.DataTypes.DATE,
+    // datetime:{
+    //     type:DataTypes.DATE,
+    //     allowNull:false,
+    // },
+    date: {
+        type: sequelize_1.DataTypes.DATEONLY,
         allowNull: false,
+    },
+    start_time: {
+        type: sequelize_1.DataTypes.TIME,
+        allowNull: false,
+    },
+    end_time: {
+        type: sequelize_1.DataTypes.TIME,
+        allowNull: true,
     },
     call_duration: {
         type: sequelize_1.DataTypes.INTEGER,

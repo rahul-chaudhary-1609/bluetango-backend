@@ -135,6 +135,12 @@ employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, token
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
 /* get coach list */
 employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCoachList);
+/* get Slots */
+employeeRoute.get("/getSlots", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSlots), employeeController.getSlots);
+/*get Slot */
+employeeRoute.get("/getSlot", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSlot), employeeController.getSlot);
+/* create Session Request */
+employeeRoute.post("/createSessionRequest", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createSessionRequest), employeeController.createSessionRequest);
 /* contact us for employee */
 employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.contactUs), employeeController.contactUs);
 /* contact us for employee */

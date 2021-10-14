@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCoachList = exports.clearChat = exports.markGoalsAsPrimary = exports.toggleGoalAsPrimary = exports.shareEmployeeCV = exports.getGoalCompletionAverageAsManager = exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.getAttributes = exports.getAttributeRatings = exports.addAttributeRatings = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.createSessionRequest = exports.getSlot = exports.getSlots = exports.getCoachList = exports.clearChat = exports.markGoalsAsPrimary = exports.toggleGoalAsPrimary = exports.shareEmployeeCV = exports.getGoalCompletionAverageAsManager = exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.getAttributes = exports.getAttributeRatings = exports.addAttributeRatings = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -340,5 +340,24 @@ exports.getCoachList = joi_1.default.object({
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
+});
+exports.getSlots = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+    filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
+    date: joi_1.default.string().allow(null, '').optional(),
+    day: joi_1.default.string().allow(null, '').optional(),
+    week: joi_1.default.string().allow(null, '').optional(),
+    month: joi_1.default.string().allow(null, '').optional(),
+    year: joi_1.default.string().allow(null, '').optional(),
+});
+exports.getSlot = joi_1.default.object({
+    slot_id: joi_1.default.number().required(),
+});
+exports.createSessionRequest = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+    coach_specialization_category_id: joi_1.default.number().required(),
+    date: joi_1.default.string().required(),
+    start_time: joi_1.default.string().required(),
+    end_time: joi_1.default.string().allow(null, '').optional(),
 });
 //# sourceMappingURL=employeeSchema.js.map

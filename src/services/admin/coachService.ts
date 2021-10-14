@@ -343,14 +343,21 @@ export class CoachService {
             }
         }
 
+        // if(params.date){
+        //     where={
+        //         [Op.and]: [
+        //             {
+        //                 ...where,                      
+        //             },
+        //             Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
+        //         ]                
+        //     }
+        // }
+
         if(params.date){
             where={
-                [Op.and]: [
-                    {
-                        ...where,                      
-                    },
-                    Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
-                ]                
+                 ...where,   
+                 date:params.date, 
             }
         }
 

@@ -276,6 +276,33 @@ export class EmployeeController {
         }
     }
 
+    public async getSlots(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getSlots(req.query);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getSlot(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getSlot(req.query);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async createSessionRequest(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.createSessionRequest(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
    * to contact admin
    * @param req :[]

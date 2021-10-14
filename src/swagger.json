@@ -4084,6 +4084,181 @@
         "responses": {}
       }
     },
+    "/employee/getSlots": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "query",
+            "description": "Enter coach id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "filter_key",
+            "in": "query",
+            "description": "filter_key",
+            "required": false,
+            "type": "string",
+            "enum":[
+              "Daily",
+              "Weekly",
+              "Monthly",
+              "Yearly"
+            ]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date format: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Enter day",
+            "required": false,
+            "type": "string",
+            "enum":["1","2","3","4","5","6","7","8","9","10",
+              "11","12","13","14","15","16","17","18","19","20",
+              "21","22","23","24","25","26","27","28","29","30","31"
+            ]
+          },
+          {
+            "name": "week",
+            "in": "query",
+            "description": "Enter week",
+            "required": false,
+            "type": "string",
+            "enum":["1","2","3","4","5","6","7","8","9","10",
+              "11","12","13","14","15","16","17","18","19","20",
+              "21","22","23","24","25","26","27","28","29","30",
+              "31","32","33","34","35","36","37","38","39","40",
+              "41","42","43","44","45","46","47","48","49","50",
+              "51","52"
+            ]
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "description": "Enter month",
+            "required": false,
+            "type": "string",
+            "enum":["1","2","3","4","5","6","7","8","9","10",
+              "11","12"
+            ]
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Enter year",
+            "required": false,
+            "type": "string",
+            "enum":["2020","2021","2023","2024","2025","2026","2027","2028","2029","2030"]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getSlot": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slot_id",
+            "in": "query",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/createSessionRequest": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to create Session Request",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "coach_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "formData",
+            "description": "enter coach specialization category id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "description": "date format: YYYY-DD-MM",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "in": "formData",
+            "description": "start_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "formData",
+            "description": "end_time format: HH:mm:ss",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/viewGoalDetailsAsEmployee": {
       "get": {
         "tags": [

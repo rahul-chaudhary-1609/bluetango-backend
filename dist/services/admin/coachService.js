@@ -321,13 +321,18 @@ class CoachService {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
             }
+            // if(params.date){
+            //     where={
+            //         [Op.and]: [
+            //             {
+            //                 ...where,                      
+            //             },
+            //             Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
+            //         ]                
+            //     }
+            // }
             if (params.date) {
-                where = {
-                    [Op.and]: [
-                        Object.assign({}, where),
-                        Sequelize.where(Sequelize.fn('date', Sequelize.col('datetime')), '=', params.date),
-                    ]
-                };
+                where = Object.assign(Object.assign({}, where), { date: params.date });
             }
             if (params.status) {
                 where = Object.assign(Object.assign({}, where), { status: parseInt(params.status) });

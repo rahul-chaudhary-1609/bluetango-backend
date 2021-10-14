@@ -381,3 +381,25 @@ export const getCoachList= Joi.object({
   offset: Joi.number().optional(),
 })
 
+export const getSlots= Joi.object({
+  coach_id: Joi.number().required(),
+  filter_key: Joi.string().valid("Daily","Weekly","Monthly", "Yearly").allow(null, '').optional(),
+  date: Joi.string().allow(null, '').optional(),
+  day: Joi.string().allow(null, '').optional(),
+  week: Joi.string().allow(null, '').optional(),
+  month: Joi.string().allow(null, '').optional(),
+  year: Joi.string().allow(null, '').optional(),
+})
+
+export const getSlot= Joi.object({
+  slot_id: Joi.number().required(),
+})
+
+export const createSessionRequest= Joi.object({
+  coach_id:Joi.number().required(),
+  coach_specialization_category_id:Joi.number().required(),
+  date:Joi.string().required(),
+  start_time:Joi.string().required(),
+  end_time:Joi.string().allow(null,'').optional(),    
+})
+

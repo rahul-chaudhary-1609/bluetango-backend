@@ -639,6 +639,143 @@ class EmployeeServices {
             return coachList;
         });
     }
+    getSlots(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("params", params);
+            let where = {
+                coach_id: params.coach_id,
+                status: {
+                    [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
+                }
+            };
+            let start_date = new Date();
+            let end_date = new Date();
+            if (params.filter_key) {
+                if (params.filter_key == "Daily") {
+                    where = Object.assign(Object.assign({}, where), { date: moment(new Date()).format("YYYY-MM-DD") });
+                }
+                else if (params.filter_key == "Weekly") {
+                    start_date = helperFunction.getMonday(start_date);
+                    end_date = helperFunction.getMonday(start_date);
+                    end_date.setDate(start_date.getDate() + 6);
+                    where = Object.assign(Object.assign({}, where), { date: {
+                            [Op.between]: [
+                                moment(start_date).format("YYYY-MM-DD"),
+                                moment(end_date).format("YYYY-MM-DD")
+                            ]
+                        } });
+                }
+                else if (params.filter_key == "Monthly") {
+                    start_date.setDate(1);
+                    end_date.setMonth(start_date.getMonth() + 1);
+                    end_date.setDate(1);
+                    end_date.setDate(end_date.getDate() - 1);
+                    where = Object.assign(Object.assign({}, where), { date: {
+                            [Op.between]: [
+                                moment(start_date).format("YYYY-MM-DD"),
+                                moment(end_date).format("YYYY-MM-DD")
+                            ]
+                        } });
+                }
+                else if (params.filter_key == "Yearly") {
+                    start_date.setDate(1);
+                    start_date.setMonth(0);
+                    end_date.setDate(1);
+                    end_date.setMonth(0);
+                    end_date.setFullYear(end_date.getFullYear() + 1);
+                    end_date.setDate(end_date.getDate() - 1);
+                    where = Object.assign(Object.assign({}, where), { date: {
+                            [Op.between]: [
+                                moment(start_date).format("YYYY-MM-DD"),
+                                moment(end_date).format("YYYY-MM-DD")
+                            ]
+                        } });
+                }
+            }
+            else if ((params.day && params.month && params.year) || params.date) {
+                where = Object.assign(Object.assign({}, where), { date: params.date || `${params.year}-${params.month}-${params.day}` });
+            }
+            else if (params.week && params.year) {
+                where = {
+                    [Op.and]: [
+                        Object.assign({}, where),
+                        Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                        Sequelize.where(Sequelize.fn("date_part", "week", Sequelize.col("date")), "=", params.week),
+                    ]
+                };
+            }
+            else if (params.month && params.year) {
+                where = {
+                    [Op.and]: [
+                        Object.assign({}, where),
+                        Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                        Sequelize.where(Sequelize.fn("date_part", "month", Sequelize.col("date")), "=", params.month),
+                    ]
+                };
+            }
+            else if (params.year) {
+                where = {
+                    [Op.and]: [
+                        Object.assign({}, where),
+                        Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                    ]
+                };
+            }
+            else {
+                start_date.setDate(1);
+                end_date.setMonth(start_date.getMonth() + 1);
+                end_date.setDate(1);
+                end_date.setDate(end_date.getDate() - 1);
+                where = Object.assign(Object.assign({}, where), { date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
+                        ]
+                    } });
+            }
+            return yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.findAndCountAll({
+                where,
+                order: [["date", "ASC"], ["start_time", "ASC"]]
+            }));
+        });
+    }
+    getSlot(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let schedule = yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(params.slot_id)));
+            if (!schedule)
+                throw new Error(constants.MESSAGES.no_coach_schedule);
+            return schedule;
+        });
+    }
+    createSessionRequest(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
+            let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                where: {
+                    employee_id: user.uid,
+                    type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                    status: {
+                        [Op.in]: [
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.active,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.ongoing,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                        ]
+                    }
+                }
+            });
+            let employeeCoachSessionObj = {
+                coach_id: params.coach_id,
+                employee_id: user.uid,
+                employee_rank_id: employee.employee_rank_id,
+                coach_specialization_category_id: params.coach_specialization_category_id,
+                date: params.date,
+                start_time: params.start_time,
+                end_time: params.end_time || null,
+                type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+            };
+            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
+        });
+    }
     /*
   * function to contact admin
   */
