@@ -667,7 +667,7 @@ export class EmployeeServices {
             delete coach.employee_rank_ids;
         }
 
-        coachList.rows=coachList.rows.filter(coach=>coach.available_slots);
+        coachList.rows=coachList.rows.filter(coach=> coach.available_slots?.length>0);
 
         if(!params.sortBy || params.sortBy==3){
             coachList.rows.sort((a,b)=>b.average_rating-a.average_rating);

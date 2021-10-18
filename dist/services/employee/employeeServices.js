@@ -601,7 +601,7 @@ class EmployeeServices {
                 delete coach.coach_specialization_category_ids;
                 delete coach.employee_rank_ids;
             }
-            coachList.rows = coachList.rows.filter(coach => coach.available_slots);
+            coachList.rows = coachList.rows.filter(coach => { var _a; return ((_a = coach.available_slots) === null || _a === void 0 ? void 0 : _a.length) > 0; });
             if (!params.sortBy || params.sortBy == 3) {
                 coachList.rows.sort((a, b) => b.average_rating - a.average_rating);
             }
