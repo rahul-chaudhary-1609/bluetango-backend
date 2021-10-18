@@ -623,6 +623,7 @@ export class EmployeeServices {
             })
 
             let slotsWhere=<any>{
+                coach_id:coach.id,
                 status:constants.COACH_SCHEDULE_STATUS.available,
             }
 

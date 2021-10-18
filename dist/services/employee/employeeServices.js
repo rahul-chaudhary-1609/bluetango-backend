@@ -572,6 +572,7 @@ class EmployeeServices {
                     }
                 });
                 let slotsWhere = {
+                    coach_id: coach.id,
                     status: constants.COACH_SCHEDULE_STATUS.available,
                 };
                 if (params.filterBy) {
