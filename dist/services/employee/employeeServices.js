@@ -584,7 +584,7 @@ class EmployeeServices {
                     else if (params.filterBy == 2) {
                         slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: moment(new Date()).format("YYYY-MM-DD") });
                     }
-                    else if (params.filterBy == 3 && params.date && !moment(params.date, "YYYY-MM-DD").isValid()) {
+                    else if (params.filterBy == 3 && params.date) {
                         slotsWhere = Object.assign(Object.assign({}, slotsWhere), { date: params.date });
                     }
                 }

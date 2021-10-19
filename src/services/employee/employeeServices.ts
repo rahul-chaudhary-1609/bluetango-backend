@@ -640,7 +640,7 @@ export class EmployeeServices {
                         ...slotsWhere, 
                         date:moment(new Date()).format("YYYY-MM-DD"),               
                     }
-                }else if(params.filterBy==3 && params.date && !moment(params.date,"YYYY-MM-DD").isValid()){
+                }else if(params.filterBy==3 && params.date){
                     slotsWhere={
                         ...slotsWhere,
                         date:params.date,                 
