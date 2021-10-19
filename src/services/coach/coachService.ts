@@ -88,7 +88,7 @@ export class CoachService {
 
         slots.forEach((slot)=>{
             Object.keys(slot).forEach((key)=>{
-                slot[key]=parseInt(slot[key].replace(/:/g,""))
+                slot[key]=slot[key].replace(/:/g,"")
             })
         })
 

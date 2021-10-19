@@ -605,6 +605,7 @@ class EmployeeServices {
                 delete coach.employee_rank_ids;
             }
             coachList.rows = coachList.rows.filter(coach => { var _a; return ((_a = coach.available_slots) === null || _a === void 0 ? void 0 : _a.length) > 0; });
+            coachList.count = coachList.rows.length;
             if (!params.sortBy || params.sortBy == 3) {
                 coachList.rows.sort((a, b) => b.average_rating - a.average_rating);
             }
@@ -777,6 +778,9 @@ class EmployeeServices {
                 start_time: params.start_time,
                 end_time: params.end_time || null,
                 type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+                details: {
+                    query: params.query,
+                }
             };
             return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
         });

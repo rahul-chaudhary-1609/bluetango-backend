@@ -4217,6 +4217,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "query",
+                        "in": "formData",
+                        "description": "enter query description",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "coach_id",
                         "in": "formData",
                         "description": "coach_id",

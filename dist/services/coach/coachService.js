@@ -105,7 +105,7 @@ class CoachService {
             let slots = params.slots;
             slots.forEach((slot) => {
                 Object.keys(slot).forEach((key) => {
-                    slot[key] = parseInt(slot[key].replace(/:/g, ""));
+                    slot[key] = slot[key].replace(/:/g, "");
                 });
             });
             slots.forEach((slot1, index1) => {
@@ -159,6 +159,7 @@ class CoachService {
                     throw new Error(constants.MESSAGES.coach_schedule_already_exist);
                 let slot_date_group_id = yield helperFunction.getUniqueSlotDateGroupId();
                 for (let date of dates) {
+                    console.log("date", date, "slot", slot);
                     schedules.push({
                         slot_date_group_id,
                         slot_time_group_id,
@@ -342,6 +343,10 @@ class CoachService {
                 });
             }
             return true;
+        });
+    }
+    getSessionRequests(user, params) {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }

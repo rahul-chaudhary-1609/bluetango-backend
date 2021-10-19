@@ -354,6 +354,7 @@ exports.getSlot = joi_1.default.object({
     slot_id: joi_1.default.number().required(),
 });
 exports.createSessionRequest = joi_1.default.object({
+    query: joi_1.default.string().required(),
     coach_id: joi_1.default.number().required(),
     coach_specialization_category_id: joi_1.default.number().required(),
     date: joi_1.default.string().required(),

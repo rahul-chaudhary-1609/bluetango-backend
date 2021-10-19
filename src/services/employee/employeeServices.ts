@@ -674,6 +674,8 @@ export class EmployeeServices {
 
         coachList.rows=coachList.rows.filter(coach=> coach.available_slots?.length>0);
 
+        coachList.count=coachList.rows.length;
+
         if(!params.sortBy || params.sortBy==3){
             coachList.rows.sort((a,b)=>b.average_rating-a.average_rating);
         }
@@ -881,6 +883,9 @@ export class EmployeeServices {
             start_time:params.start_time,
             end_time:params.end_time || null,
             type:employeeSessionCount<2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+            details:{
+                query:params.query,
+            }
         }
 
         return await helperFunction.convertPromiseToObject(

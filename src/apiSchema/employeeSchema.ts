@@ -396,6 +396,7 @@ export const getSlot= Joi.object({
 })
 
 export const createSessionRequest= Joi.object({
+  query:Joi.string().required(),
   coach_id:Joi.number().required(),
   coach_specialization_category_id:Joi.number().required(),
   date:Joi.string().required(),
