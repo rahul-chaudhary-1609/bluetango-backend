@@ -67,7 +67,7 @@ export class CoachService {
                 let start=new Date(params.date);
                 let end=new Date(params.custom_date);
 
-                while (start<end) {
+                while (start<=end) {
                     dates.push(moment(start).format("YYYY-MM-DD"))
                     start.setDate(start.getDate()+1)
                 }

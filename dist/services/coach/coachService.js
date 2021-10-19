@@ -87,7 +87,7 @@ class CoachService {
                 case constants.COACH_SCHEDULE_TYPE.custom: {
                     let start = new Date(params.date);
                     let end = new Date(params.custom_date);
-                    while (start < end) {
+                    while (start <= end) {
                         dates.push(moment(start).format("YYYY-MM-DD"));
                         start.setDate(start.getDate() + 1);
                     }
@@ -159,7 +159,6 @@ class CoachService {
                     throw new Error(constants.MESSAGES.coach_schedule_already_exist);
                 let slot_date_group_id = yield helperFunction.getUniqueSlotDateGroupId();
                 for (let date of dates) {
-                    console.log("date", date, "slot", slot);
                     schedules.push({
                         slot_date_group_id,
                         slot_time_group_id,
@@ -343,10 +342,6 @@ class CoachService {
                 });
             }
             return true;
-        });
-    }
-    getSessionRequests(user, params) {
-        return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }
