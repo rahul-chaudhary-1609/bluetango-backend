@@ -645,7 +645,12 @@ export class EmployeeServices {
                         ...slotsWhere,
                         date:params.date,                 
                     }
-                }
+                }else{
+                    slotsWhere={
+                        ...slotsWhere, 
+                        date:moment(new Date()).format("YYYY-MM-DD"),               
+                    }
+                }   
             }else{
                 slotsWhere={
                     ...slotsWhere, 
