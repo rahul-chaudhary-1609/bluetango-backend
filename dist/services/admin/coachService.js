@@ -314,12 +314,21 @@ class CoachService {
             let coachWhere = {};
             let employeeRankWhere = {};
             if (params.searchKey) {
-                employeeWhere = Object.assign(Object.assign({}, employeeWhere), { name: {
-                        [Op.iLike]: `%${params.searchKey}%`
-                    } });
                 coachWhere = Object.assign(Object.assign({}, coachWhere), { name: {
                         [Op.iLike]: `%${params.searchKey}%`
                     } });
+                let coaches = yield coachManagement_1.coachManagementModel.findOne({
+                    where: coachWhere,
+                });
+                if (!coaches) {
+                    coachWhere = {};
+                    employeeWhere = Object.assign(Object.assign({}, employeeWhere), { name: {
+                            [Op.iLike]: `%${params.searchKey}%`
+                        } });
+                }
+                else {
+                    employeeWhere = {};
+                }
             }
             // if(params.date){
             //     where={

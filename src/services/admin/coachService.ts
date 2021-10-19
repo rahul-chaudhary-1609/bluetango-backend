@@ -328,19 +328,31 @@ export class CoachService {
         let employeeRankWhere=<any>{};
 
         if(params.searchKey){
-            employeeWhere={
-                ...employeeWhere,
-                name:{
-                    [Op.iLike]:`%${params.searchKey}%`
-                }
-            }
-
+            
             coachWhere={
                 ...coachWhere,
                 name:{
                     [Op.iLike]:`%${params.searchKey}%`
                 }
+            }         
+
+            
+            let coaches=await coachManagementModel.findOne({
+                where:coachWhere,
+            })
+
+            if(!coaches){
+                coachWhere={};
+                employeeWhere={
+                    ...employeeWhere,
+                    name:{
+                        [Op.iLike]:`%${params.searchKey}%`
+                    }
+                }
+            }else{
+                employeeWhere={};
             }
+            
         }
 
         // if(params.date){
