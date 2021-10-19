@@ -358,13 +358,13 @@ class CoachService {
                     {
                         model: models_1.employeeModel,
                         attributes: ['id', 'name'],
-                        required: false,
+                        required: true,
                         where: employeeWhere,
                     },
                     {
                         model: coachManagement_1.coachManagementModel,
                         attributes: ['id', 'name'],
-                        required: false,
+                        required: true,
                         where: coachWhere
                     },
                     {

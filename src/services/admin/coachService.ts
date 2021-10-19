@@ -401,13 +401,13 @@ export class CoachService {
                     {
                         model:employeeModel,
                         attributes:['id','name'],
-                        required:false,
+                        required:true,
                         where:employeeWhere,
                     },
                     {
                         model:coachManagementModel,
                         attributes:['id','name'],
-                        required:false,
+                        required:true,
                         where:coachWhere
                     },
                     {
