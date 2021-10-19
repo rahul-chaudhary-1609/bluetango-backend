@@ -350,7 +350,7 @@ class CoachService {
     getSessionRequests(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             let query = {};
             query.where = {
                 coach_id: user.uid,
