@@ -778,9 +778,7 @@ class EmployeeServices {
                 start_time: params.start_time,
                 end_time: params.end_time || null,
                 type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
-                details: {
-                    query: params.query,
-                }
+                query: params.query,
             };
             return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
         });

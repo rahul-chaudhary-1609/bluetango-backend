@@ -91,5 +91,8 @@ coachRoute.get("/getSlot",tokenValidator.validateCoachToken, joiSchemaValidation
 /* delete Slot */
 coachRoute.delete("/deleteSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
 
+/* get Session Requests */
+coachRoute.get("/getSessionRequests",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSessionRequests), coachController.getSessionRequests);
+
 
 export = coachRoute;

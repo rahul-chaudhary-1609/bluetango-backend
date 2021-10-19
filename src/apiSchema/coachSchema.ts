@@ -152,3 +152,9 @@ export const deleteSlot= Joi.object({
     slot_date_group_id: Joi.string().optional(),
     slot_time_group_id: Joi.string().optional(),
 })
+
+export const getSessionRequests=Joi.object({
+    is_pagination:Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional(),
+})

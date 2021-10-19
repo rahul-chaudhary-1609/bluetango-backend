@@ -2,6 +2,9 @@ import _ from "lodash";
 import * as constants from "../../constants";
 import * as helperFunction from "../../utils/helperFunction";
 import { coachScheduleModel } from "../../models/coachSchedule";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
+import { employeeModel } from "../../models";
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 const Sequelize = require('sequelize');
 const moment =require("moment");
 var Op = Sequelize.Op;
@@ -371,5 +374,36 @@ export class CoachService {
         }       
 
         return true;
+    }
+
+    public async getSessionRequests(params:any,user:any){
+        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+
+        let query=<any>{}
+        query.where={
+            coach_id:user.uid,
+        }
+        
+        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset;
+            query.limit=limit;        
+        }
+
+        query.include=[
+            {
+                model:employeeModel,
+                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+            },
+            {
+                model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            }
+        ]
+
+        return await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAndCountAll(query)
+                )
     }
 }

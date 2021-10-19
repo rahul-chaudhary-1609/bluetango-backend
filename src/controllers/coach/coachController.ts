@@ -52,4 +52,13 @@ export class CoachController {
         }
     }
 
+    public async getSessionRequests(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.getSessionRequests(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

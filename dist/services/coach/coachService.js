@@ -32,6 +32,9 @@ exports.CoachService = void 0;
 const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const coachSchedule_1 = require("../../models/coachSchedule");
+const employeeCoachSession_1 = require("../../models/employeeCoachSession");
+const models_1 = require("../../models");
+const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
@@ -342,6 +345,32 @@ class CoachService {
                 });
             }
             return true;
+        });
+    }
+    getSessionRequests(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let query = {};
+            query.where = {
+                coach_id: user.uid,
+            };
+            if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset;
+                query.limit = limit;
+            }
+            query.include = [
+                {
+                    model: models_1.employeeModel,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                },
+                {
+                    model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                }
+            ];
+            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
         });
     }
 }

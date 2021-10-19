@@ -24,6 +24,9 @@ export const employeeCoachSessionsModel: any = sequelize.define("employee_coach_
     coach_specialization_category_id: {
         type: DataTypes.INTEGER,
         allowNull:false,
+    },    
+    query:{
+        type:DataTypes.TEXT,
     },
     coach_rating: {
         type: DataTypes.INTEGER,

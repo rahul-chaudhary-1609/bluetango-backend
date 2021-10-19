@@ -26,6 +26,9 @@ exports.employeeCoachSessionsModel = connection_1.sequelize.define("employee_coa
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
+    query: {
+        type: sequelize_1.DataTypes.TEXT,
+    },
     coach_rating: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

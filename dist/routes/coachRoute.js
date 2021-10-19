@@ -82,5 +82,7 @@ coachRoute.get("/getSlots", tokenValidator.validateCoachToken, joiSchemaValidati
 coachRoute.get("/getSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlot), coachController.getSlot);
 /* delete Slot */
 coachRoute.delete("/deleteSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
+/* get Session Requests */
+coachRoute.get("/getSessionRequests", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSessionRequests), coachController.getSessionRequests);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map
