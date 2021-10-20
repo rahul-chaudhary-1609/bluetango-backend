@@ -404,3 +404,14 @@ export const createSessionRequest= Joi.object({
   end_time:Joi.string().allow(null,'').optional(),    
 })
 
+
+export const getSessions=Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const cancelSession=Joi.object({
+  session_id:Joi.number().required(),
+  cancel_reason: Joi.string().required(),
+})

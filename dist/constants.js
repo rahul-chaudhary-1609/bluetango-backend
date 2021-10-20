@@ -183,6 +183,7 @@ exports.MESSAGES = {
     delete_success: `Deleted Successfully`,
     no_session: `No session found`,
     session_not_belogs_to_coach: `This session is not belongs to you`,
+    session_not_belogs_to_employee: `This session is not belongs to you`,
     coach_schedule_day_required: `Day is required if slot type is weekly`,
     coach_schedule_custom_dates_required: `Custom dates is/are required if slot type is custom`,
     coach_schedule_already_exist: `This schedule time has some conflicts with existing slot(s).`,

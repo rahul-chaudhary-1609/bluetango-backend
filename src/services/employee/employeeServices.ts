@@ -898,6 +898,71 @@ export class EmployeeServices {
         );
     }
 
+    public async getSessions(params:any,user:any){
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+
+        let query=<any>{}
+        query.where={
+            employee_id:user.uid,
+            status:{
+                [Op.in]:[
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                ]
+            },
+        }
+        
+        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset;
+            query.limit=limit;        
+        }
+
+        query.include=[
+            {
+                model:coachManagementModel,
+                attributes:['id', 'name', 'email','phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            }
+        ]
+
+        return await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAndCountAll(query)
+                )
+    }
+
+    public async cancelZoomMeeting(params:any){
+        //comming soon...
+        let details={}
+        return details;
+    }
+
+    public async cancelSession(params:any,user:any){
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.employee_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_employee)
+        }
+
+        await this.cancelZoomMeeting(params);
+
+        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.cancel_reason=params.cancel_reason;
+        session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.employee;
+
+        session.save();
+        
+        return await helperFunction.convertPromiseToObject(session);    
+    }
+
     /*
   * function to contact admin
   */

@@ -303,6 +303,24 @@ export class EmployeeController {
         }
     }
 
+    public async getSessions(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getSessions(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async cancelSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.cancelSession(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
    * to contact admin
    * @param req :[]

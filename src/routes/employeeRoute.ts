@@ -182,6 +182,12 @@ employeeRoute.get("/getSlot",tokenValidator.validateEmployeeToken, joiSchemaVali
 /* create Session Request */
 employeeRoute.post("/createSessionRequest", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createSessionRequest), employeeController.createSessionRequest);
 
+/* get Sessions */
+employeeRoute.get("/getAcceptedSessions",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSessions), employeeController.getSessions);
+
+/* cancel Session */
+employeeRoute.put("/cancelSession",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.cancelSession), employeeController.cancelSession);
+
 
 /* contact us for employee */
 employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.contactUs), employeeController.contactUs);

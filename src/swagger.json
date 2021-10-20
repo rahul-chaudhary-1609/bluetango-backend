@@ -4266,6 +4266,84 @@
         "responses": {}
       }
     },
+    "/employee/getSessions": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to get Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum":[1,2]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size (required if is_pagination is 1)",
+              "required": false,
+              "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/cancelSession": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to cancel Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "cancel_reason",
+            "in": "formData",
+            "description": "enter cancel reason",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/viewGoalDetailsAsEmployee": {
       "get": {
         "tags": [
