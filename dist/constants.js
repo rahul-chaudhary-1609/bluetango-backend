@@ -173,6 +173,7 @@ exports.MESSAGES = {
     attribute_not_found: `Either no attribute exist with this id or it does not belogs to current employer`,
     no_feedback: `No feedback found`,
     no_coach_specialization_category: `No specialization category found`,
+    no_coach_with_specialization_category: `No coach found with this specialization category`,
     coach_specialization_category_already_exist: `A coach specialization category with the same name already exist.`,
     no_employee_rank: `No employee rank found`,
     employee_rank_already_exist: `A employee rank with the same name already exist.`,

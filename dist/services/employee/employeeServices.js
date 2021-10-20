@@ -516,6 +516,15 @@ class EmployeeServices {
                             [Op.contains]: coachSpecializationCategoryIds || [],
                         };
                     }
+                    else {
+                        throw new Error(constants.MESSAGES.no_coach_with_specialization_category);
+                    }
+                }
+                else {
+                    // where["coach_specialization_category_ids"] = { 
+                    //     [Op.contains]: null,
+                    // }
+                    throw new Error(constants.MESSAGES.no_coach_with_specialization_category);
                 }
             }
             if (employee) {
