@@ -771,8 +771,8 @@ class EmployeeServices {
                     type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
                     status: {
                         [Op.in]: [
-                            constants.EMPLOYEE_COACH_SESSION_STATUS.active,
-                            constants.EMPLOYEE_COACH_SESSION_STATUS.ongoing,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
                             constants.EMPLOYEE_COACH_SESSION_STATUS.completed
                         ]
                     }

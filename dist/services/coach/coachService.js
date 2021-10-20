@@ -354,6 +354,79 @@ class CoachService {
             let query = {};
             query.where = {
                 coach_id: user.uid,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+            };
+            if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset;
+                query.limit = limit;
+            }
+            query.include = [
+                {
+                    model: models_1.employeeModel,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                },
+                {
+                    model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                }
+            ];
+            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+        });
+    }
+    scheduleZoomMeeting(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //comming soon...
+            let details = {};
+            return details;
+        });
+    }
+    cancelZoomMeeting(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //comming soon...
+            let details = {};
+            return details;
+        });
+    }
+    acceptSessionRequest(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            if (session.coach_id != user.uid) {
+                throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
+            }
+            session.details = yield this.scheduleZoomMeeting(params);
+            session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
+            session.save();
+            return yield helperFunction.convertPromiseToObject(session);
+        });
+    }
+    rejectSessionRequest(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            if (session.coach_id != user.uid) {
+                throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
+            }
+            yield this.cancelZoomMeeting(params);
+            session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+            session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
+            session.save();
+            return yield helperFunction.convertPromiseToObject(session);
+        });
+    }
+    getAcceptedSessions(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            let query = {};
+            query.where = {
+                coach_id: user.uid,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
             };
             if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
                 let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);

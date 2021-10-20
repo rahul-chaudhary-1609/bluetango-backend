@@ -158,3 +158,17 @@ export const getSessionRequests=Joi.object({
     limit: Joi.number().optional(),
     offset: Joi.number().optional(),
 })
+
+export const acceptSessionRequest=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const rejectSessionRequest=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const getAcceptedSessions=Joi.object({
+    is_pagination:Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional(),
+})

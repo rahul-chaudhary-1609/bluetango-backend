@@ -61,4 +61,31 @@ export class CoachController {
         }
     }
 
+    public async acceptSessionRequest(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.acceptSessionRequest(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async rejectSessionRequest(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.rejectSessionRequest(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getAcceptedSessions(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.getAcceptedSessions(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

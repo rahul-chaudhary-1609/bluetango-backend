@@ -96,6 +96,39 @@ class CoachController {
             }
         });
     }
+    acceptSessionRequest(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.acceptSessionRequest(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    rejectSessionRequest(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.rejectSessionRequest(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    getAcceptedSessions(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.getAcceptedSessions(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.CoachController = CoachController;
 //# sourceMappingURL=coachController.js.map

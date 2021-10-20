@@ -182,6 +182,7 @@ exports.MESSAGES = {
     employee_rank_delete_coach_error: `If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
     delete_success: `Deleted Successfully`,
     no_session: `No session found`,
+    session_not_belogs_to_coach: `This session is not belongs to you`,
     coach_schedule_day_required: `Day is required if slot type is weekly`,
     coach_schedule_custom_dates_required: `Custom dates is/are required if slot type is custom`,
     coach_schedule_already_exist: `This schedule time has some conflicts with existing slot(s).`,
@@ -345,8 +346,8 @@ exports.EMPLOYEE_COACH_SESSION_TYPE = {
     paid: 2,
 };
 exports.EMPLOYEE_COACH_SESSION_STATUS = {
-    active: 1,
-    ongoing: 2,
+    pending: 1,
+    accepted: 2,
     completed: 3,
     cancelled: 4,
 };

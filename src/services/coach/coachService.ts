@@ -383,6 +383,7 @@ export class CoachService {
         let query=<any>{}
         query.where={
             coach_id:user.uid,
+            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
         }
         
         if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
@@ -406,4 +407,89 @@ export class CoachService {
                     await employeeCoachSessionsModel.findAndCountAll(query)
                 )
     }
+
+    public async scheduleZoomMeeting(params:any){
+        //comming soon...
+        let details={}
+        return details;
+    }
+
+    public async cancelZoomMeeting(params:any){
+        //comming soon...
+        let details={}
+        return details;
+    }
+
+    public async acceptSessionRequest(params:any,user:any){
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.coach_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
+        }
+
+        session.details=await this.scheduleZoomMeeting(params);
+        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
+
+        session.save();
+        
+        return await helperFunction.convertPromiseToObject(session);
+    }
+
+    public async rejectSessionRequest(params:any,user:any){
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.coach_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
+        }
+
+        await this.cancelZoomMeeting(params);
+
+        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
+
+        session.save();
+        
+        return await helperFunction.convertPromiseToObject(session);    
+    }
+
+    public async getAcceptedSessions(params:any,user:any){
+        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+
+        let query=<any>{}
+        query.where={
+            coach_id:user.uid,
+            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+        }
+        
+        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset;
+            query.limit=limit;        
+        }
+
+        query.include=[
+            {
+                model:employeeModel,
+                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+            },
+            {
+                model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            }
+        ]
+
+        return await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAndCountAll(query)
+                )
+    }
+
 }
