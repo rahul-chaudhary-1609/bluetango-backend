@@ -348,8 +348,9 @@ exports.EMPLOYEE_COACH_SESSION_TYPE = {
 exports.EMPLOYEE_COACH_SESSION_STATUS = {
     pending: 1,
     accepted: 2,
-    completed: 3,
+    rejected: 3,
     cancelled: 4,
+    completed: 5,
 };
 exports.COACH_SCHEDULE_STATUS = {
     available: 1,

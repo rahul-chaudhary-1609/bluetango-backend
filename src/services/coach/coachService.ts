@@ -452,7 +452,7 @@ export class CoachService {
 
         await this.cancelZoomMeeting(params);
 
-        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
         session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
 
         session.save();

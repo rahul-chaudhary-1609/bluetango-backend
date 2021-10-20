@@ -2506,7 +2506,7 @@
           {
             "name": "status",
             "in": "query",
-            "description": "status: 1=>pending, 2=>accepted, 3=>ongoing, 4=>completed, 5=> cancelled",
+            "description": "status: 1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
             "required": false,
             "type": "number",
             "enum":[1,2,3,4,5]

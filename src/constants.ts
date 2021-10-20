@@ -352,8 +352,10 @@ export const EMPLOYEE_COACH_SESSION_TYPE={
 export const EMPLOYEE_COACH_SESSION_STATUS={
   pending:1,
   accepted:2,
-  completed:3,
+  rejected:3,
   cancelled:4,
+  completed:5,
+  
 }
 
 export const COACH_SCHEDULE_STATUS={
