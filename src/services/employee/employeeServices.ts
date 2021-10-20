@@ -546,7 +546,7 @@ export class EmployeeServices {
                 })
             ) 
 
-            if(coachSpecializationCategories){
+            if(coachSpecializationCategories.length>0){
                 let coachSpecializationCategoryIds=coachSpecializationCategories.map(coachSpecializationCategory=>coachSpecializationCategory.id);
                 if(coachSpecializationCategoryIds){
                     where["coach_specialization_category_ids"] = { 
