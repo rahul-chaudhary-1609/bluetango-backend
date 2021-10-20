@@ -65,6 +65,9 @@ exports.employeeCoachSessionsModel = connection_1.sequelize.define("employee_coa
         defaultValue: 0,
         comment: "0=>not_cancelled, 1=> coach, 2=> employee"
     },
+    cancel_reason: {
+        type: sequelize_1.DataTypes.TEXT,
+    },
     amount: {
         type: sequelize_1.DataTypes.DECIMAL(15, 2),
     },

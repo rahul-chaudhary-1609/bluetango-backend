@@ -88,4 +88,13 @@ export class CoachController {
         }
     }
 
+    public async cancelSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.cancelSession(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

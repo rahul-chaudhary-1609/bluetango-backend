@@ -410,7 +410,13 @@ export class CoachService {
 
     public async scheduleZoomMeeting(params:any){
         //comming soon...
-        let details={}
+        let details={
+            "created_at": "2019-09-05T16:54:14Z",
+            "duration": 15,
+            "host_id": "AbcDefGHi",
+            "id": 1100000,
+            "join_url": "https://zoom.us/j/1100000",
+        }
         return details;
     }
 
@@ -450,10 +456,7 @@ export class CoachService {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        await this.cancelZoomMeeting(params);
-
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
-        session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
 
         session.save();
         
@@ -490,6 +493,28 @@ export class CoachService {
         return await helperFunction.convertPromiseToObject(
                     await employeeCoachSessionsModel.findAndCountAll(query)
                 )
+    }
+
+    public async cancelSession(params:any,user:any){
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.coach_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
+        }
+
+        await this.cancelZoomMeeting(params);
+
+        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.cancel_reason=params.cancel_reason;
+        session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
+
+        session.save();
+        
+        return await helperFunction.convertPromiseToObject(session);    
     }
 
 }

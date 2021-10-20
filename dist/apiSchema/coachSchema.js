@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -170,5 +170,9 @@ exports.getAcceptedSessions = joi_1.default.object({
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
+});
+exports.cancelSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+    cancel_reason: joi_1.default.string().required(),
 });
 //# sourceMappingURL=coachSchema.js.map

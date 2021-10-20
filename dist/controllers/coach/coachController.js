@@ -129,6 +129,17 @@ class CoachController {
             }
         });
     }
+    cancelSession(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.cancelSession(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.CoachController = CoachController;
 //# sourceMappingURL=coachController.js.map

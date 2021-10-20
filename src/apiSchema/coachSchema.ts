@@ -172,3 +172,8 @@ export const getAcceptedSessions=Joi.object({
     limit: Joi.number().optional(),
     offset: Joi.number().optional(),
 })
+
+export const cancelSession=Joi.object({
+    session_id:Joi.number().required(),
+    cancel_reason: Joi.string().required(),
+})

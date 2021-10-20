@@ -94,14 +94,17 @@ coachRoute.delete("/deleteSlot",tokenValidator.validateCoachToken, joiSchemaVali
 /* get Session Requests */
 coachRoute.get("/getSessionRequests",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSessionRequests), coachController.getSessionRequests);
 
-/* get Session Requests */
+/* accept Session Request */
 coachRoute.put("/acceptSessionRequest",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.acceptSessionRequest), coachController.acceptSessionRequest);
 
-/* get Session Requests */
+/* reject Session Request */
 coachRoute.put("/rejectSessionRequest",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.rejectSessionRequest), coachController.rejectSessionRequest);
 
-/* get Session Requests */
+/* get Accepted Sessions */
 coachRoute.get("/getAcceptedSessions",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getAcceptedSessions), coachController.getAcceptedSessions);
+
+/* cancel Session */
+coachRoute.put("/cancelSession",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.cancelSession), coachController.cancelSession);
 
 
 export = coachRoute;
