@@ -167,6 +167,7 @@ export const MESSAGES = {
   coach_schedule_custom_dates_required:`Custom dates is/are required if slot type is custom`,
   coach_schedule_already_exist:`This schedule time has some conflicts with existing slot(s).`,
   no_coach_schedule:`No slot found`,
+  coach_schedule_not_available:`This slot is not available.`,
   slot_id_required:`Slot id is required in case of individual delete`,
   slot_date_group_id_required:`Slot date group id is required in case of date group delete`,
   slot_time_group_id_required:`Slot time group id is required in case of time group delete`,
@@ -361,9 +362,8 @@ export const EMPLOYEE_COACH_SESSION_STATUS={
 
 export const COACH_SCHEDULE_STATUS={
   available:1,
-  in_process:2,
-  booked:3,
-  passed:4,
+  booked:2,
+  passed:3,
 }
 
 export const COACH_SCHEDULE_TYPE={

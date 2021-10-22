@@ -867,35 +867,54 @@ export class EmployeeServices {
             await employeeModel.findByPk(parseInt(user.uid))
         )
 
-        let employeeSessionCount=await employeeCoachSessionsModel.count({
-            where:{
-                employee_id:user.uid,
-                type:constants.EMPLOYEE_COACH_SESSION_TYPE.free,
-                status:{
-                    [Op.in]:[
-                        constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                    ]
+        let slot=await coachScheduleModel.findByPk(parseInt(params.slot_id));
+
+        if(!slot){
+            throw new Error(constants.MESSAGES.no_coach_schedule)
+        }else{
+            if(slot.status!=constants.COACH_SCHEDULE_STATUS.available){
+                throw new Error(constants.MESSAGES.coach_schedule_not_available)
+            }else{
+
+                let employeeSessionCount=await employeeCoachSessionsModel.count({
+                    where:{
+                        employee_id:user.uid,
+                        type:constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                        status:{
+                            [Op.in]:[
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                            ]
+                        }
+                    }
+                })
+        
+                let employeeCoachSessionObj=<any>{
+                    coach_id:params.coach_id,
+                    employee_id:user.uid,
+                    employee_rank_id:employee.employee_rank_id,
+                    coach_specialization_category_id:params.coach_specialization_category_id,
+                    date:params.date,
+                    start_time:params.start_time,
+                    end_time:params.end_time || null,
+                    type:employeeSessionCount<2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+                    query:params.query,
                 }
+        
+                let session= await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.create(employeeCoachSessionObj)
+                );
+        
+                if(session){
+                    slot.status=constants.COACH_SCHEDULE_STATUS.booked;
+                    slot.save();        
+                }
+
+                return session;
             }
-        })
-
-        let employeeCoachSessionObj=<any>{
-            coach_id:params.coach_id,
-            employee_id:user.uid,
-            employee_rank_id:employee.employee_rank_id,
-            coach_specialization_category_id:params.coach_specialization_category_id,
-            date:params.date,
-            start_time:params.start_time,
-            end_time:params.end_time || null,
-            type:employeeSessionCount<2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
-            query:params.query,
         }
-
-        return await helperFunction.convertPromiseToObject(
-            await employeeCoachSessionsModel.create(employeeCoachSessionObj)
-        );
+        
     }
 
     public async getSessions(params:any,user:any){
