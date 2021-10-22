@@ -4217,6 +4217,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "slot_id",
+                        "in": "formData",
+                        "description": "slot id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
                         "name": "query",
                         "in": "formData",
                         "description": "enter query description",
