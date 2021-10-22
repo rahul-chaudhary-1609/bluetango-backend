@@ -404,20 +404,7 @@ class CoachService {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
             session.details = yield this.scheduleZoomMeeting(params);
-            let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
-                where: {
-                    employee_id: session.employee_id,
-                    type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
-                    status: {
-                        [Op.in]: [
-                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                            constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                        ]
-                    }
-                }
-            });
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
-            session.type = employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
@@ -433,6 +420,9 @@ class CoachService {
             }
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
             session.save();
+            let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
+            slot.status = constants.COACH_SCHEDULE_STATUS.available;
+            slot.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
@@ -477,6 +467,9 @@ class CoachService {
             session.cancel_reason = params.cancel_reason;
             session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
             session.save();
+            let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
+            slot.status = constants.COACH_SCHEDULE_STATUS.available;
+            slot.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
     }

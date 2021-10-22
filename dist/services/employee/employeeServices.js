@@ -774,6 +774,19 @@ class EmployeeServices {
                     throw new Error(constants.MESSAGES.coach_schedule_not_available);
                 }
                 else {
+                    let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                        where: {
+                            employee_id: user.uid,
+                            type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                            status: {
+                                [Op.in]: [
+                                    constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                                    constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                                    constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                                ]
+                            }
+                        }
+                    });
                     let employeeCoachSessionObj = {
                         coach_id: params.coach_id,
                         employee_id: user.uid,
@@ -783,6 +796,7 @@ class EmployeeServices {
                         start_time: params.start_time,
                         end_time: params.end_time || null,
                         slot_id: params.slot_id,
+                        type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
                         query: params.query,
                     };
                     let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
@@ -848,6 +862,9 @@ class EmployeeServices {
             session.cancel_reason = params.cancel_reason;
             session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.employee;
             session.save();
+            let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
+            slot.status = constants.COACH_SCHEDULE_STATUS.available;
+            slot.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
