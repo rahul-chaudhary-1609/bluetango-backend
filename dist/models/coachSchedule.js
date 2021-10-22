@@ -57,7 +57,7 @@ exports.coachScheduleModel = connection_1.sequelize.define("coach_schedules", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '1=>available, 2=>in_process, 3=>booked, 4=> passed'
+        comment: '1=>available, 2=>booked, 3=> passed'
     }
 }, {
     tableName: "coach_schedules"

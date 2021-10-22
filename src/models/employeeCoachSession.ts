@@ -49,6 +49,9 @@ export const employeeCoachSessionsModel: any = sequelize.define("employee_coach_
         type:DataTypes.TIME,
         allowNull:true,
     },
+    slot_id: {
+        type: DataTypes.INTEGER,
+    },
     call_duration:{
         type:DataTypes.INTEGER,
         allowNull:false,

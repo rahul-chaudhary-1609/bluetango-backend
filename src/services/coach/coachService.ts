@@ -438,7 +438,22 @@ export class CoachService {
         }
 
         session.details=await this.scheduleZoomMeeting(params);
+
+        let employeeSessionCount=await employeeCoachSessionsModel.count({
+            where:{
+                employee_id:session.employee_id,
+                type:constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                status:{
+                    [Op.in]:[
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                    ]
+                }
+            }
+        })
+        
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
+        session.type=employeeSessionCount<2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid;
 
         session.save();
         

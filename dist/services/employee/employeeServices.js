@@ -774,19 +774,6 @@ class EmployeeServices {
                     throw new Error(constants.MESSAGES.coach_schedule_not_available);
                 }
                 else {
-                    let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
-                        where: {
-                            employee_id: user.uid,
-                            type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
-                            status: {
-                                [Op.in]: [
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                                ]
-                            }
-                        }
-                    });
                     let employeeCoachSessionObj = {
                         coach_id: params.coach_id,
                         employee_id: user.uid,
@@ -795,7 +782,7 @@ class EmployeeServices {
                         date: params.date,
                         start_time: params.start_time,
                         end_time: params.end_time || null,
-                        type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+                        slot_id: params.slot_id,
                         query: params.query,
                     };
                     let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));

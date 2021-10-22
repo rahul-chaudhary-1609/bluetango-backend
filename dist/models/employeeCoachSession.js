@@ -50,6 +50,9 @@ exports.employeeCoachSessionsModel = connection_1.sequelize.define("employee_coa
         type: sequelize_1.DataTypes.TIME,
         allowNull: true,
     },
+    slot_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+    },
     call_duration: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

@@ -404,7 +404,20 @@ class CoachService {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
             session.details = yield this.scheduleZoomMeeting(params);
+            let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                where: {
+                    employee_id: session.employee_id,
+                    type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                    status: {
+                        [Op.in]: [
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                        ]
+                    }
+                }
+            });
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
+            session.type = employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
         });

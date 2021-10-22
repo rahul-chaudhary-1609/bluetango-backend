@@ -56,7 +56,7 @@ export const coachScheduleModel: any = sequelize.define("coach_schedules", {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        comment: '1=>available, 2=>in_process, 3=>booked, 4=> passed'
+        comment: '1=>available, 2=>booked, 3=> passed'
     }
 },
     {
