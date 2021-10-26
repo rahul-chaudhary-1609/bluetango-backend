@@ -92,5 +92,9 @@ coachRoute.put("/rejectSessionRequest", tokenValidator.validateCoachToken, joiSc
 coachRoute.get("/getAcceptedSessions", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getAcceptedSessions), coachController.getAcceptedSessions);
 /* cancel Session */
 coachRoute.put("/cancelSession", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.cancelSession), coachController.cancelSession);
+/* list Session History */
+coachRoute.get("/listSessionHistory", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.listSessionHistory), coachController.listSessionHistory);
+/* get Session History Details */
+coachRoute.get("/getSessionHistoryDetails/:session_id", tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getSessionHistoryDetails), coachController.getSessionHistoryDetails);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map

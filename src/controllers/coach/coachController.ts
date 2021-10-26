@@ -97,4 +97,22 @@ export class CoachController {
         }
     }
 
+    public async listSessionHistory(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.listSessionHistory(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getSessionHistoryDetails(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.getSessionHistoryDetails(req.params);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }

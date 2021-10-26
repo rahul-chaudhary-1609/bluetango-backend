@@ -997,6 +997,7 @@ export class EmployeeServices {
                 [Op.in]:[
                     constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
                 ]
             },
         }

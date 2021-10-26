@@ -473,6 +473,64 @@ class CoachService {
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
+    listSessionHistory(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            let query = {};
+            query.where = {
+                coach_id: user.uid,
+                status: {
+                    [Op.in]: [
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    ]
+                },
+            };
+            if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset;
+                query.limit = limit;
+            }
+            query.include = [
+                {
+                    model: models_1.employeeModel,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                },
+                {
+                    model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                }
+            ];
+            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+        });
+    }
+    getSessionHistoryDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            let query = {};
+            query.where = {
+                id: params.session_id,
+            };
+            query.include = [
+                {
+                    model: models_1.employeeModel,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                },
+                {
+                    model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                }
+            ];
+            let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findOne(query));
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            return session;
+        });
+    }
 }
 exports.CoachService = CoachService;
 //# sourceMappingURL=coachService.js.map

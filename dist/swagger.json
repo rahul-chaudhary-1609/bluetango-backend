@@ -7502,6 +7502,77 @@
                 "responses": {}
             }
         },
+        "/coach/listSessionHistory": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "to list Session History",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "is_pagination",
+                        "in": "query",
+                        "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+                        "required": false,
+                        "type": "number",
+                        "enum": [1, 2]
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page (required if is_pagination is 1)",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size (required if is_pagination is 1)",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/getSessionHistoryDetails/{session_id}": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "to get Session History Details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "session_id",
+                        "in": "path",
+                        "description": "enter session id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/coach/getChatList": {
             "get": {
                 "tags": [
