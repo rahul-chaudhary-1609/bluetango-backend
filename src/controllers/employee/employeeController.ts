@@ -321,6 +321,24 @@ export class EmployeeController {
         }
     }
 
+    public async listSessionHistory(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.listSessionHistory(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getSessionHistoryDetails(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getSessionHistoryDetails(req.params);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
    * to contact admin
    * @param req :[]

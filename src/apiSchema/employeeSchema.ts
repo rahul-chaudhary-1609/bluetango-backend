@@ -416,3 +416,13 @@ export const cancelSession=Joi.object({
   session_id:Joi.number().required(),
   cancel_reason: Joi.string().required(),
 })
+
+export const listSessionHistory=Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getSessionHistoryDetails=Joi.object({
+  session_id:Joi.number().required(),
+})

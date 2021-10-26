@@ -986,6 +986,74 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(session);    
     }
 
+    public async listSessionHistory(params:any,user:any){
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+
+        let query=<any>{}
+        query.where={
+            employee_id:user.uid,
+            status:{
+                [Op.in]:[
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                ]
+            },
+        }
+        
+        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset;
+            query.limit=limit;        
+        }
+
+        query.include=[
+            {
+                model:coachManagementModel,
+                attributes:['id', 'name', 'email','phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            }
+        ]
+
+        return await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAndCountAll(query)
+                )
+    }
+
+    public async getSessionHistoryDetails(params:any){
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+
+        let query=<any>{}
+        query.where={
+            id:params.session_id,
+        }
+
+        query.include=[
+            {
+                model:coachManagementModel,
+                attributes:['id', 'name', 'email','phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            }
+        ]
+
+        let session=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findOne(query)
+        );
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session);
+        }
+
+        return session;
+    }
+
     /*
   * function to contact admin
   */

@@ -145,6 +145,10 @@ employeeRoute.post("/createSessionRequest", validators.trimmer, tokenValidator.v
 employeeRoute.get("/getSessions", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSessions), employeeController.getSessions);
 /* cancel Session */
 employeeRoute.put("/cancelSession", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.cancelSession), employeeController.cancelSession);
+/* list Session History */
+employeeRoute.get("/listSessionHistory", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.listSessionHistory), employeeController.listSessionHistory);
+/* get Session History Details */
+employeeRoute.get("/getSessionHistoryDetails/:session_id", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getSessionHistoryDetails), employeeController.getSessionHistoryDetails);
 /* contact us for employee */
 employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.contactUs), employeeController.contactUs);
 /* contact us for employee */
