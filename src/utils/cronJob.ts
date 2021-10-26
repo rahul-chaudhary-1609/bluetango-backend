@@ -252,7 +252,42 @@ export const scheduleGoalSubmitReminderNotificationJob = async()=> {
 
     });
 
-    console.log("Goal submit reminder notification cron job started!")
+    console.log("Goal submit reminder notification cron job has started!")
+
+    return true;
+}
+
+
+export const scheduleDeleteNotificationJob = async()=> {
+    schedule.scheduleJob('0 */24 * * *', async ()=> {
+
+        let dateBeforeTenDays = new Date((new Date()).setDate(new Date().getDate()-10));
+
+        notificationModel.destroy({
+            where:{
+                createdAt:{
+                    [Op.lt]:dateBeforeTenDays,
+                },
+                status:{
+                    [Op.notIn]:[constants.STATUS.active]
+                }
+            }
+        })
+
+        let dateBeforeSixtyDays = new Date((new Date()).setDate(new Date().getDate()-30));
+
+        notificationModel.destroy({
+            where:{
+                createdAt:{
+                    [Op.lt]:dateBeforeSixtyDays,
+                },
+            }
+        })
+
+        
+    });
+
+    console.log("Delete Notification cron job has started!")
 
     return true;
 }

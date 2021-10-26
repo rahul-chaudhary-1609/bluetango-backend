@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
+exports.scheduleDeleteNotificationJob = exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
 const constants = __importStar(require("../constants"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
 const models_1 = require("../models");
@@ -238,7 +238,32 @@ exports.scheduleGoalSubmitReminderNotificationJob = () => __awaiter(void 0, void
             }
         }
     }));
-    console.log("Goal submit reminder notification cron job started!");
+    console.log("Goal submit reminder notification cron job has started!");
+    return true;
+});
+exports.scheduleDeleteNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('0 */24 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+        let dateBeforeTenDays = new Date((new Date()).setDate(new Date().getDate() - 10));
+        notification_1.notificationModel.destroy({
+            where: {
+                createdAt: {
+                    [Op.lt]: dateBeforeTenDays,
+                },
+                status: {
+                    [Op.notIn]: [constants.STATUS.active]
+                }
+            }
+        });
+        let dateBeforeSixtyDays = new Date((new Date()).setDate(new Date().getDate() - 30));
+        notification_1.notificationModel.destroy({
+            where: {
+                createdAt: {
+                    [Op.lt]: dateBeforeSixtyDays,
+                },
+            }
+        });
+    }));
+    console.log("Delete Notification cron job has started!");
     return true;
 });
 //# sourceMappingURL=cronJob.js.map
