@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleDeleteNotificationJob = exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
+exports.scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = exports.scheduleDeleteNotificationJob = exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
 const constants = __importStar(require("../constants"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
 const models_1 = require("../models");
@@ -37,8 +37,10 @@ const notification_1 = require("../models/notification");
 const teamGoal_1 = require("../models/teamGoal");
 const teamGoalAssign_1 = require("../models/teamGoalAssign");
 const teamGoalAssignCompletionByEmployee_1 = require("../models/teamGoalAssignCompletionByEmployee");
+const employeeCoachSession_1 = require("../models/employeeCoachSession");
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
+const moment = require("moment");
 var Op = Sequelize.Op;
 /*
 * function to schedule job
@@ -264,6 +266,38 @@ exports.scheduleDeleteNotificationJob = () => __awaiter(void 0, void 0, void 0, 
         });
     }));
     console.log("Delete Notification cron job has started!");
+    return true;
+});
+exports.scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('0 */24 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+        employeeCoachSession_1.employeeCoachSessionsModel.update({
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+        }, {
+            where: {
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                date: {
+                    [Op.lt]: moment(new Date()).format("YYYY-MM-DD")
+                },
+                end_time: {
+                    [Op.lt]: moment(new Date()).format("HH:mm:ss")
+                }
+            }
+        });
+        employeeCoachSession_1.employeeCoachSessionsModel.update({
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+        }, {
+            where: {
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                date: {
+                    [Op.lt]: moment(new Date()).format("YYYY-MM-DD")
+                },
+                end_time: {
+                    [Op.lt]: moment(new Date()).format("HH:mm:ss")
+                }
+            }
+        });
+    }));
+    console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!");
     return true;
 });
 //# sourceMappingURL=cronJob.js.map

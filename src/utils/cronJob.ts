@@ -7,8 +7,10 @@ import { notificationModel } from "../models/notification";
 import { teamGoalModel } from  "../models/teamGoal"
 import { teamGoalAssignModel } from  "../models/teamGoalAssign"
 import { teamGoalAssignCompletionByEmployeeModel } from  "../models/teamGoalAssignCompletionByEmployee"
+import { employeeCoachSessionsModel } from "../models/employeeCoachSession";
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
+const moment =require("moment");
 var Op = Sequelize.Op;
 
 /*
@@ -288,6 +290,48 @@ export const scheduleDeleteNotificationJob = async()=> {
     });
 
     console.log("Delete Notification cron job has started!")
+
+    return true;
+}
+
+export const scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = async()=> {
+    schedule.scheduleJob('0 */24 * * *', async ()=> {
+
+        
+        employeeCoachSessionsModel.update({
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+            },{
+                where:{
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                    date:{
+                        [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
+                    },
+                    end_time:{
+                        [Op.lt]:moment(new Date()).format("HH:mm:ss")
+                    }
+                }
+            }
+        )
+
+        employeeCoachSessionsModel.update({
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+            },{
+                where:{
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    date:{
+                        [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
+                    },
+                    end_time:{
+                        [Op.lt]:moment(new Date()).format("HH:mm:ss")
+                    }
+                }
+            }
+        )
+
+        
+    });
+
+    console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
 
     return true;
 }
