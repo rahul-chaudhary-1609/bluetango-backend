@@ -35,6 +35,7 @@ const coachSchedule_1 = require("../../models/coachSchedule");
 const employeeCoachSession_1 = require("../../models/employeeCoachSession");
 const models_1 = require("../../models");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
+const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
 const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
@@ -371,7 +372,18 @@ class CoachService {
                     attributes: ['id', 'name', 'description'],
                 }
             ];
-            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+            let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+            for (let session of sessions.rows) {
+                session.chatRoom = yield helperFunction.convertPromiseToObject(yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                    where: {
+                        user_id: sessions.employee_id,
+                        other_user_id: sessions.coach_id,
+                        type: constants.CHAT_ROOM_TYPE.coach,
+                        status: constants.STATUS.active,
+                    }
+                }));
+            }
+            return sessions;
         });
     }
     scheduleZoomMeeting(params) {
@@ -450,7 +462,18 @@ class CoachService {
                     attributes: ['id', 'name', 'description'],
                 }
             ];
-            return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+            let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
+            for (let session of sessions.rows) {
+                session.chatRoom = yield helperFunction.convertPromiseToObject(yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                    where: {
+                        user_id: sessions.employee_id,
+                        other_user_id: sessions.coach_id,
+                        type: constants.CHAT_ROOM_TYPE.coach,
+                        status: constants.STATUS.active,
+                    }
+                }));
+            }
+            return sessions;
         });
     }
     cancelSession(params, user) {

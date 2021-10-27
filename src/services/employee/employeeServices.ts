@@ -26,6 +26,7 @@ import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 import { coachScheduleModel } from "../../models/coachSchedule";
 const moment =require("moment");
 import * as path from 'path';
+import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const PDFDocument = require('pdfkit');
@@ -950,9 +951,24 @@ export class EmployeeServices {
             }
         ]
 
-        return await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAndCountAll(query)
-                )
+        let sessions=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
+
+        for(let session of sessions.rows){
+            session.chatRoom=await helperFunction.convertPromiseToObject(
+                await chatRealtionMappingInRoomModel.findOne({
+                    where:{
+                        user_id:sessions.employee_id,
+                        other_user_id:sessions.coach_id,
+                        type:constants.CHAT_ROOM_TYPE.coach,
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+        }
+
+        return sessions;
     }
 
     public async cancelZoomMeeting(params:any){

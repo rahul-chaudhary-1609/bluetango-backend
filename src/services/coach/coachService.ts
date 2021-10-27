@@ -5,6 +5,7 @@ import { coachScheduleModel } from "../../models/coachSchedule";
 import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 import { employeeModel } from "../../models";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
 const Sequelize = require('sequelize');
 const moment =require("moment");
 var Op = Sequelize.Op;
@@ -403,9 +404,24 @@ export class CoachService {
             }
         ]
 
-        return await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAndCountAll(query)
-                )
+        let sessions=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
+
+        for(let session of sessions.rows){
+            session.chatRoom=await helperFunction.convertPromiseToObject(
+                await chatRealtionMappingInRoomModel.findOne({
+                    where:{
+                        user_id:sessions.employee_id,
+                        other_user_id:sessions.coach_id,
+                        type:constants.CHAT_ROOM_TYPE.coach,
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+        }
+
+        return sessions;
     }
 
     public async scheduleZoomMeeting(params:any){
@@ -493,9 +509,24 @@ export class CoachService {
             }
         ]
 
-        return await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAndCountAll(query)
-                )
+        let sessions=await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
+
+        for(let session of sessions.rows){
+            session.chatRoom=await helperFunction.convertPromiseToObject(
+                await chatRealtionMappingInRoomModel.findOne({
+                    where:{
+                        user_id:sessions.employee_id,
+                        other_user_id:sessions.coach_id,
+                        type:constants.CHAT_ROOM_TYPE.coach,
+                        status:constants.STATUS.active,
+                    }
+                })
+            )
+        }
+
+        return sessions;
     }
 
     public async cancelSession(params:any,user:any){
