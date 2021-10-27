@@ -660,9 +660,7 @@ class EmployeeServices {
             console.log("params", params);
             let where = {
                 coach_id: params.coach_id,
-                status: {
-                    [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
-                }
+                status: constants.COACH_SCHEDULE_STATUS.available,
             };
             let start_date = new Date();
             let end_date = new Date();
