@@ -412,8 +412,8 @@ export class CoachService {
             session.chatRoom=await helperFunction.convertPromiseToObject(
                 await chatRealtionMappingInRoomModel.findOne({
                     where:{
-                        user_id:sessions.employee_id,
-                        other_user_id:sessions.coach_id,
+                        user_id:session.employee_id,
+                        other_user_id:session.coach_id,
                         type:constants.CHAT_ROOM_TYPE.coach,
                         status:constants.STATUS.active,
                     }
@@ -517,8 +517,8 @@ export class CoachService {
             session.chatRoom=await helperFunction.convertPromiseToObject(
                 await chatRealtionMappingInRoomModel.findOne({
                     where:{
-                        user_id:sessions.employee_id,
-                        other_user_id:sessions.coach_id,
+                        user_id:session.employee_id,
+                        other_user_id:session.coach_id,
                         type:constants.CHAT_ROOM_TYPE.coach,
                         status:constants.STATUS.active,
                     }
