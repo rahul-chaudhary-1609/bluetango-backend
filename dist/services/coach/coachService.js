@@ -382,6 +382,20 @@ class CoachService {
                         status: constants.STATUS.active,
                     }
                 }));
+                if (session.chatRoom) {
+                    session.chatRoom.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    }));
+                    session.chatRoom.other_user = yield helperFunction.convertPromiseToObject(yield models_1.coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    }));
+                }
             }
             return sessions;
         });
@@ -472,6 +486,20 @@ class CoachService {
                         status: constants.STATUS.active,
                     }
                 }));
+                if (session.chatRoom) {
+                    session.chatRoom.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    }));
+                    session.chatRoom.other_user = yield helperFunction.convertPromiseToObject(yield models_1.coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    }));
+                }
             }
             return sessions;
         });

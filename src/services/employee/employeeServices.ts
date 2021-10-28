@@ -964,6 +964,26 @@ export class EmployeeServices {
                     }
                 })
             )
+
+            if(session.chatRoom){
+                session.chatRoom.user=await helperFunction.convertPromiseToObject(
+                    await employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    })
+                )
+
+                session.chatRoom.other_user=await helperFunction.convertPromiseToObject(
+                    await coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    })
+                )
+            }
         }
 
         return sessions;

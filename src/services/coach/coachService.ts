@@ -3,7 +3,7 @@ import * as constants from "../../constants";
 import * as helperFunction from "../../utils/helperFunction";
 import { coachScheduleModel } from "../../models/coachSchedule";
 import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
-import { employeeModel } from "../../models";
+import { coachManagementModel, employeeModel } from "../../models";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
 const Sequelize = require('sequelize');
@@ -419,6 +419,26 @@ export class CoachService {
                     }
                 })
             )
+
+            if(session.chatRoom){
+                session.chatRoom.user=await helperFunction.convertPromiseToObject(
+                    await employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    })
+                )
+
+                session.chatRoom.other_user=await helperFunction.convertPromiseToObject(
+                    await coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    })
+                )
+            }
         }
 
         return sessions;
@@ -524,6 +544,26 @@ export class CoachService {
                     }
                 })
             )
+
+            if(session.chatRoom){
+                session.chatRoom.user=await helperFunction.convertPromiseToObject(
+                    await employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    })
+                )
+
+                session.chatRoom.other_user=await helperFunction.convertPromiseToObject(
+                    await coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    })
+                )
+            }
         }
 
         return sessions;
