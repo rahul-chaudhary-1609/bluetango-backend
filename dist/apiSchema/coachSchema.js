@@ -154,6 +154,7 @@ exports.deleteSlot = joi_1.default.object({
     slot_id: joi_1.default.number().optional(),
     slot_date_group_id: joi_1.default.string().optional(),
     slot_time_group_id: joi_1.default.string().optional(),
+    current_date: joi_1.default.string().optional(),
 });
 exports.getSessionRequests = joi_1.default.object({
     is_pagination: joi_1.default.number().optional(),

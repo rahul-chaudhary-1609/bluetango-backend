@@ -36,6 +36,7 @@ const employeeCoachSession_1 = require("../../models/employeeCoachSession");
 const models_1 = require("../../models");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInRoom");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
@@ -311,6 +312,8 @@ class CoachService {
                 throw new Error(constants.MESSAGES.slot_date_group_id_required);
             if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type == constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id)
                 throw new Error(constants.MESSAGES.slot_time_group_id_required);
+            if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && !params.current_date)
+                throw new Error(constants.MESSAGES.slot_group_delete_date_required);
             if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual) {
                 let schedule = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(params.slot_id));
                 if (!schedule)
@@ -320,28 +323,40 @@ class CoachService {
             else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_date_group_id) {
                 let schedules = yield coachSchedule_1.coachScheduleModel.findAll({
                     where: {
-                        slot_date_group_id: params.slot_date_group_id
+                        slot_date_group_id: params.slot_date_group_id,
+                        date: {
+                            [Op.gte]: params.current_date,
+                        }
                     }
                 });
                 if (schedules.length == 0)
                     throw new Error(constants.MESSAGES.no_coach_schedule);
                 yield coachSchedule_1.coachScheduleModel.destroy({
                     where: {
-                        slot_date_group_id: params.slot_date_group_id
+                        slot_date_group_id: params.slot_date_group_id,
+                        date: {
+                            [Op.gte]: params.current_date,
+                        }
                     }
                 });
             }
             else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
                 let schedules = yield coachSchedule_1.coachScheduleModel.findAll({
                     where: {
-                        slot_time_group_id: params.slot_time_group_id
+                        slot_time_group_id: params.slot_time_group_id,
+                        date: {
+                            [Op.gte]: params.current_date,
+                        }
                     }
                 });
                 if (schedules.length == 0)
                     throw new Error(constants.MESSAGES.no_coach_schedule);
                 yield coachSchedule_1.coachScheduleModel.destroy({
                     where: {
-                        slot_time_group_id: params.slot_time_group_id
+                        slot_time_group_id: params.slot_time_group_id,
+                        date: {
+                            [Op.gte]: params.current_date,
+                        }
                     }
                 });
             }
@@ -352,6 +367,7 @@ class CoachService {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let query = {};
             query.where = {
                 coach_id: user.uid,
@@ -369,6 +385,10 @@ class CoachService {
                 },
                 {
                     model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                },
+                {
+                    model: employeeRanks_1.employeeRanksModel,
                     attributes: ['id', 'name', 'description'],
                 }
             ];
@@ -456,6 +476,7 @@ class CoachService {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let query = {};
             query.where = {
                 coach_id: user.uid,
@@ -473,6 +494,10 @@ class CoachService {
                 },
                 {
                     model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                },
+                {
+                    model: employeeRanks_1.employeeRanksModel,
                     attributes: ['id', 'name', 'description'],
                 }
             ];
@@ -528,6 +553,7 @@ class CoachService {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let query = {};
             query.where = {
                 coach_id: user.uid,
@@ -552,6 +578,10 @@ class CoachService {
                 {
                     model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
                     attributes: ['id', 'name', 'description'],
+                },
+                {
+                    model: employeeRanks_1.employeeRanksModel,
+                    attributes: ['id', 'name', 'description'],
                 }
             ];
             return yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll(query));
@@ -561,6 +591,7 @@ class CoachService {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let query = {};
             query.where = {
                 id: params.session_id,
@@ -572,6 +603,10 @@ class CoachService {
                 },
                 {
                     model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                    attributes: ['id', 'name', 'description'],
+                },
+                {
+                    model: employeeRanks_1.employeeRanksModel,
                     attributes: ['id', 'name', 'description'],
                 }
             ];

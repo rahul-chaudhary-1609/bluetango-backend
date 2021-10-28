@@ -7327,6 +7327,13 @@
             "description": "Slot time group id is required if group type is 2",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "current_date",
+            "in": "formData",
+            "description": "current date is required if type is 2 (YYYY-MM-DD)",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}

@@ -920,6 +920,7 @@ export class EmployeeServices {
     public async getSessions(params:any,user:any){
         employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -945,6 +946,10 @@ export class EmployeeServices {
             },
             {
                 model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
                 attributes:['id', 'name', 'description'],
             }
         ]
@@ -1023,6 +1028,7 @@ export class EmployeeServices {
     public async listSessionHistory(params:any,user:any){
         employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -1050,6 +1056,10 @@ export class EmployeeServices {
             {
                 model:coachSpecializationCategoriesModel,
                 attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
+                attributes:['id', 'name', 'description'],
             }
         ]
 
@@ -1061,6 +1071,7 @@ export class EmployeeServices {
     public async getSessionHistoryDetails(params:any){
         employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -1074,6 +1085,10 @@ export class EmployeeServices {
             },
             {
                 model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
                 attributes:['id', 'name', 'description'],
             }
         ]

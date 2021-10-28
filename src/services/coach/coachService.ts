@@ -6,6 +6,7 @@ import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
 import { coachManagementModel, employeeModel } from "../../models";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
+import { employeeRanksModel } from "../../models/employeeRanks";
 const Sequelize = require('sequelize');
 const moment =require("moment");
 var Op = Sequelize.Op;
@@ -331,9 +332,11 @@ export class CoachService {
 
         if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual && !params.slot_id) throw new Error(constants.MESSAGES.slot_id_required)
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.date && !params.slot_date_group_id) throw new Error(constants.MESSAGES.slot_date_group_id_required)
+        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.date && !params.slot_date_group_id) throw new Error(constants.MESSAGES.slot_date_group_id_required);
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id) throw new Error(constants.MESSAGES.slot_time_group_id_required)
+        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id) throw new Error(constants.MESSAGES.slot_time_group_id_required);
+
+        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && !params.current_date) throw new Error(constants.MESSAGES.slot_group_delete_date_required);
 
         if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual){
             let schedule=await coachScheduleModel.findByPk(parseInt(params.slot_id));
@@ -346,7 +349,10 @@ export class CoachService {
         } else if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_date_group_id) {
             let schedules = await coachScheduleModel.findAll({
                 where:{
-                    slot_date_group_id:params.slot_date_group_id
+                    slot_date_group_id:params.slot_date_group_id,
+                    date:{
+                        [Op.gte]:params.current_date,
+                    }
                 }
             });
 
@@ -354,14 +360,20 @@ export class CoachService {
 
             await coachScheduleModel.destroy({
                 where:{
-                    slot_date_group_id:params.slot_date_group_id
+                    slot_date_group_id:params.slot_date_group_id,
+                    date:{
+                        [Op.gte]:params.current_date,
+                    }
                 }
             });
 
         }else if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
             let schedules = await coachScheduleModel.findAll({
                 where:{
-                    slot_time_group_id:params.slot_time_group_id
+                    slot_time_group_id:params.slot_time_group_id,
+                    date:{
+                        [Op.gte]:params.current_date,
+                    }
                 }
             });
 
@@ -369,7 +381,10 @@ export class CoachService {
 
             await coachScheduleModel.destroy({
                 where:{
-                    slot_time_group_id:params.slot_time_group_id
+                    slot_time_group_id:params.slot_time_group_id,
+                    date:{
+                        [Op.gte]:params.current_date,
+                    }
                 }
             });
         }       
@@ -380,6 +395,7 @@ export class CoachService {
     public async getSessionRequests(params:any,user:any){
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -400,6 +416,10 @@ export class CoachService {
             },
             {
                 model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
                 attributes:['id', 'name', 'description'],
             }
         ]
@@ -505,6 +525,7 @@ export class CoachService {
     public async getAcceptedSessions(params:any,user:any){
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -525,6 +546,10 @@ export class CoachService {
             },
             {
                 model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
                 attributes:['id', 'name', 'description'],
             }
         ]
@@ -597,6 +622,7 @@ export class CoachService {
     public async listSessionHistory(params:any,user:any){
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -624,6 +650,10 @@ export class CoachService {
             {
                 model:coachSpecializationCategoriesModel,
                 attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
+                attributes:['id', 'name', 'description'],
             }
         ]
 
@@ -635,6 +665,7 @@ export class CoachService {
     public async getSessionHistoryDetails(params:any){
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         let query=<any>{}
         query.where={
@@ -648,6 +679,10 @@ export class CoachService {
             },
             {
                 model:coachSpecializationCategoriesModel,
+                attributes:['id', 'name', 'description'],
+            },
+            {
+                model:employeeRanksModel,
                 attributes:['id', 'name', 'description'],
             }
         ]
