@@ -400,6 +400,17 @@ class EmployeeController {
             }
         });
     }
+    rateCoachSession(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.rateCoachSession(req.body);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
     /**
    * to contact admin
    * @param req :[]

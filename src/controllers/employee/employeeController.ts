@@ -339,6 +339,17 @@ export class EmployeeController {
         }
     }
 
+    public async rateCoachSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.rateCoachSession(req.body);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+
+
     /**
    * to contact admin
    * @param req :[]

@@ -426,3 +426,9 @@ export const listSessionHistory=Joi.object({
 export const getSessionHistoryDetails=Joi.object({
   session_id:Joi.number().required(),
 })
+
+export const rateCoachSession=Joi.object({
+  session_id:Joi.number().required(),
+  rating:Joi.number().required(),
+})
+
