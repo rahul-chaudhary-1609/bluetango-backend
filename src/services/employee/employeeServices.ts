@@ -1117,7 +1117,18 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(session);
     }
 
+    public async commentOnCoachSession(params:any){
+        let session = await employeeCoachSessionsModel.findByPk(parseInt(params.session_id))
 
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session);
+        }
+
+        session.comment=params.comment;
+        session.save();
+
+        return await helperFunction.convertPromiseToObject(session);
+    }
 
     /*
   * function to contact admin

@@ -348,7 +348,14 @@ export class EmployeeController {
         }
     }
 
-
+    public async commentOnCoachSession(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.commentOnCoachSession(req.body);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 
     /**
    * to contact admin

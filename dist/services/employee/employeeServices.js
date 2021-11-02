@@ -976,6 +976,17 @@ class EmployeeServices {
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
+    commentOnCoachSession(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(parseInt(params.session_id));
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            session.comment = params.comment;
+            session.save();
+            return yield helperFunction.convertPromiseToObject(session);
+        });
+    }
     /*
   * function to contact admin
   */

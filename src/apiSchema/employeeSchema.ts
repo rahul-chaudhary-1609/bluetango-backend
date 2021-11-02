@@ -432,3 +432,7 @@ export const rateCoachSession=Joi.object({
   rating:Joi.number().required(),
 })
 
+export const commentOnCoachSession=Joi.object({
+  session_id:Joi.number().required(),
+  comment:Joi.string().required(),
+})
