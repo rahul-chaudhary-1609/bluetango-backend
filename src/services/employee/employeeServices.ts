@@ -922,7 +922,9 @@ export class EmployeeServices {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["date"],["start_time"]]
+        }
         query.where={
             employee_id:user.uid,
             status:{
@@ -1030,7 +1032,9 @@ export class EmployeeServices {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["date"],["start_time"]]
+        }
         query.where={
             employee_id:user.uid,
             status:{

@@ -397,7 +397,9 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["date"],["start_time"]]
+        }
         query.where={
             coach_id:user.uid,
             status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
@@ -527,7 +529,9 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["date"],["start_time"]]
+        }
         query.where={
             coach_id:user.uid,
             status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
@@ -624,7 +628,9 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
+        let query=<any>{
+            order: [["date"],["start_time"]]
+        }
         query.where={
             coach_id:user.uid,
             status:{
