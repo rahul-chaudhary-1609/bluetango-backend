@@ -181,7 +181,7 @@ export const scheduleZoomMeeting=async(params:any)=>{
         })
     )
 
-    console.log("zoomUser1",zoomUser)
+    console.log("zoomUser1",zoomUser, constants.SECRETS.ZOOM_SECRETS.jwt_token)
 
     if(!zoomUser){
 
