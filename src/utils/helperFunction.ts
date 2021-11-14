@@ -11,7 +11,7 @@ import { chatRealtionMappingInRoomModel } from "../models/chatRelationMappingInR
 import { coachScheduleModel } from "../models/coachSchedule";
 import { groupChatRoomModel } from "../models/groupChatRoom";
 import { zoomUserModel } from '../models/zoomUsers';
-import fetch from 'node-fetch';
+//import fetch from 'node-fetch';
 import { coachManagementModel, employeeModel } from '../models';
 import moment from 'moment';
 import 'moment-timezone';
