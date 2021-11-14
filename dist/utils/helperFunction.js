@@ -45,7 +45,7 @@ const chatRelationMappingInRoom_1 = require("../models/chatRelationMappingInRoom
 const coachSchedule_1 = require("../models/coachSchedule");
 const groupChatRoom_1 = require("../models/groupChatRoom");
 const zoomUsers_1 = require("../models/zoomUsers");
-//import fetch from 'node-fetch';
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const models_1 = require("../models");
 const moment_1 = __importDefault(require("moment"));
 require("moment-timezone");
@@ -192,7 +192,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
         }
     }));
     if (!zoomUser) {
-        let newZoomUser = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
+        let newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
             method: "GET",
             headers: {
                 authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -209,7 +209,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
                     first_name: coach.name.split(" ")[0],
                 }
             };
-            yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/users`, {
+            yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users`, {
                 method: "POST",
                 headers: {
                     authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -217,7 +217,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
                 },
                 body: JSON.stringify(userBody)
             });
-            newZoomUser = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
+            newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
                 method: "GET",
                 headers: {
                     authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -247,7 +247,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
         password: `${Math.floor(100000 + Math.random() * 900000)}`,
         agenda: `${params.session.query}`,
     };
-    let meeting = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}/meetings`, {
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}/meetings`, {
         method: "POST",
         headers: {
             authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -295,7 +295,7 @@ exports.cancelZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, functi
     //comming soon...
     let coach = yield exports.convertPromiseToObject(yield models_1.coachManagementModel.findByPk(params.session.coach_id));
     let employee = yield exports.convertPromiseToObject(yield models_1.employeeModel.findByPk(params.session.employee_id));
-    let meeting = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
         method: "DELETE",
         headers: {
             authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -330,7 +330,7 @@ exports.cancelZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function* () {
     //comming soon...
-    let meeting = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}/status`, {
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}/status`, {
         method: "PUT",
         headers: {
             authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
@@ -355,7 +355,7 @@ exports.updateZoomMeetingDuration = (params) => __awaiter(void 0, void 0, void 0
     let meetingBody = {
         duration: `${parseInt(params.session.details.duration) + 5}`,
     };
-    let meeting = yield fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
         method: "PATCH",
         headers: {
             authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
