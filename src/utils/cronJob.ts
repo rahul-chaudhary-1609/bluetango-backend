@@ -319,7 +319,7 @@ const sendNotification=async(params:any)=>{
     }
     await notificationModel.create(notificationObj);
 
-    if (!coach.device_token){
+    if (coach.device_token){
         //send push notification
         let notificationData = <any>{
             title: params.title,
@@ -358,7 +358,7 @@ const sendNotification=async(params:any)=>{
         }
         await notificationModel.create(notificationObj);
     
-        if (!employee.device_token){
+        if (employee.device_token){
             //send push notification
             let notificationData = <any>{
                 title: params.title,

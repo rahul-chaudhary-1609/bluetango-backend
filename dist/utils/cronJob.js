@@ -290,7 +290,7 @@ const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function*
         },
     };
     yield notification_1.notificationModel.create(notificationObj);
-    if (!coach.device_token) {
+    if (coach.device_token) {
         //send push notification
         let notificationData = {
             title: params.title,
@@ -323,7 +323,7 @@ const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function*
             },
         };
         yield notification_1.notificationModel.create(notificationObj);
-        if (!employee.device_token) {
+        if (employee.device_token) {
             //send push notification
             let notificationData = {
                 title: params.title,
