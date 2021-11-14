@@ -259,7 +259,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
         },
         body: JSON.stringify(meetingBody)
     });
-    console.log(meeting, meeting.status);
+    console.log(meetingBody, meeting, meeting.status);
     if (meeting.status == 201) {
         meeting = yield meeting.json();
         delete meeting.settings;
