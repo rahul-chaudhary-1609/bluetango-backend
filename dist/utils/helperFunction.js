@@ -246,7 +246,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
         topic: `${params.session.query}`,
         type: 2,
         start_time: `${params.session.date}T${params.session.start_time}`,
-        duration: `${duration}`,
+        duration: `${Math.ceil(duration.asMinutes())}`,
         timezone: params.timezone,
         password: `${Math.floor(100000 + Math.random() * 900000)}`,
         agenda: `${params.session.query}`,
