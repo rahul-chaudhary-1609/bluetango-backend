@@ -364,13 +364,13 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
             console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds);
             if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.free) {
-                if (diffFromStartInSeconds >= 1200) {
+                if (diffFromStartInSeconds == 1200) {
                     let params = {
                         session,
                     };
                     yield helperFunction.endZoomMeeting(params);
                 }
-                else if (diffFromStartInSeconds >= 900) {
+                else if (diffFromStartInSeconds == 900) {
                     let params = {
                         notificationType: constants.NOTIFICATION_TYPE.update_meeting_duration,
                         session,
@@ -380,7 +380,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                     };
                     yield sendNotification(params);
                 }
-                else if (diffFromStartInSeconds >= 600) {
+                else if (diffFromStartInSeconds == 600) {
                     let params = {
                         notificationType: constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
@@ -392,7 +392,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                 }
             }
             else if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.paid) {
-                if (diffToEndInSeconds <= 300) {
+                if (diffToEndInSeconds == 300) {
                     let params = {
                         notificationType: constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,

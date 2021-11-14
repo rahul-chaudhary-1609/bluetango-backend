@@ -411,12 +411,12 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
 
             if(session.type==constants.EMPLOYEE_COACH_SESSION_TYPE.free){                
 
-                if(diffFromStartInSeconds>=1200){
+                if(diffFromStartInSeconds==1200){
                     let params=<any>{
                         session,
                     }
                     await helperFunction.endZoomMeeting(params)                    
-                }else if(diffFromStartInSeconds>=900){
+                }else if(diffFromStartInSeconds==900){
                     let params=<any>{
                         notificationType:constants.NOTIFICATION_TYPE.update_meeting_duration,
                         session,
@@ -427,7 +427,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
 
                     await sendNotification(params);
                     
-                }else if(diffFromStartInSeconds>=600){
+                }else if(diffFromStartInSeconds==600){
                     let params=<any>{
                         notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
@@ -440,7 +440,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
                 }
             }else if(session.type==constants.EMPLOYEE_COACH_SESSION_TYPE.paid){
 
-                if(diffToEndInSeconds<=300){
+                if(diffToEndInSeconds==300){
                     let params=<any>{
                         notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
