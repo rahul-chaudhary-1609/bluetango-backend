@@ -399,7 +399,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
             let currentDateTime = moment(new Date()).tz(constants.TIME_ZONE).format("HH:mm:ss");
             let currentTime=moment(currentDateTime, "HH:mm:ss");
             let startTime = moment(session.start_time, "HH:mm:ss");
-            let endTime = startTime.add(parseInt(session.details.duration),"minutes");
+            let endTime = moment(session.end_time, "HH:mm:ss");
 
             let startDuration = moment.duration(currentTime.diff(startTime));
             let endDuration = moment.duration(endTime.diff(currentTime));
