@@ -115,7 +115,8 @@ var server = app.listen(port, () => __awaiter(void 0, void 0, void 0, function* 
     yield cronJob_1.scheduleFreeTrialExpirationNotificationJob();
     yield cronJob_1.scheduleGoalSubmitReminderNotificationJob();
     yield cronJob_1.scheduleDeleteNotificationJob();
-    yield cronJob_1.scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
+    // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
+    yield cronJob_1.scheduleMeetingRemainingTimeNotificationJob();
 })).on('error', (e) => {
     console.log('Error happened: ', e.message);
 });

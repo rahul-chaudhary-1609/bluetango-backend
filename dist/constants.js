@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.MESSAGES = {
@@ -195,6 +195,11 @@ exports.MESSAGES = {
     slot_group_delete_date_required: `Current date is required in case of group delete`,
     coach_schedule_overlaped: `The recieved slots must have one or more overlaped time values.\nPlease check, fix, and create again`,
     coach_schedule_start_greater_or_equal_end: `For each slots start time must be less than end time`,
+    zoom_cancel_meeting_error: `Something went wrong with canceling the zoom meeting`,
+    zoom_end_meeting_error: `Something went wrong with ending the zoom meeting`,
+    zoom_update_meeting_error: `Something went wrong with updating the zoom meeting`,
+    zoom_schedule_meeting_error: `Something went wrong with scheduling the zoom meeting`,
+    zoom_meeting_not_found: `Meeting with this {meetingId} is not found or has expired.`
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
@@ -281,6 +286,8 @@ exports.NOTIFICATION_TYPE = {
     group_chat: 16,
     expiration_of_free_trial: 17,
     goal_submit_reminder: 18,
+    meeting_about_to_end: 19,
+    update_meeting_duration: 20,
 };
 exports.NOTIFICATION_RECIEVER_TYPE = {
     employee: 1,
@@ -333,6 +340,15 @@ exports.SECRETS = {
         public_key: process.env.BRAINTREE_PUBLIC_KEY,
         private_key: process.env.BRAINTREE_PRIVATE_KEY,
         access_token: process.env.BRAINTREE_ACCESS_TOKEN
+    },
+    ZOOM_SECRETS: {
+        jwt_token: process.env.ZOOM_JWT_TOKEN,
+    }
+};
+exports.TIME_ZONE = process.env.TIME_ZONE;
+exports.URLS = {
+    ZOOM_URLS: {
+        base_url: process.env.ZOOM_BASE_URL
     }
 };
 exports.IS_PAGINATION = {
@@ -383,5 +399,9 @@ exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = {
 exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = {
     date: 1,
     time: 2,
+};
+exports.ZOOM_USER_TYPE = {
+    coach: 1,
+    employee: 2,
 };
 //# sourceMappingURL=constants.js.map

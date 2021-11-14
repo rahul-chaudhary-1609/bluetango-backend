@@ -363,6 +363,7 @@ exports.createSessionRequest = joi_1.default.object({
     end_time: joi_1.default.string().allow(null, '').optional(),
 });
 exports.getSessions = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
@@ -372,6 +373,7 @@ exports.cancelSession = joi_1.default.object({
     cancel_reason: joi_1.default.string().required(),
 });
 exports.listSessionHistory = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),

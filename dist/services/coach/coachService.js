@@ -368,6 +368,22 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            if (params.datetime) {
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                }, {
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+            }
             let query = {
                 order: [["date"], ["start_time"]]
             };
@@ -422,26 +438,6 @@ class CoachService {
             return sessions;
         });
     }
-    scheduleZoomMeeting(params) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //comming soon...
-            let details = {
-                "created_at": "2019-09-05T16:54:14Z",
-                "duration": 15,
-                "host_id": "AbcDefGHi",
-                "id": 1100000,
-                "join_url": "https://zoom.us/j/1100000",
-            };
-            return details;
-        });
-    }
-    cancelZoomMeeting(params) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //comming soon...
-            let details = {};
-            return details;
-        });
-    }
     acceptSessionRequest(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
@@ -451,7 +447,8 @@ class CoachService {
             if (session.coach_id != user.uid) {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
-            session.details = yield this.scheduleZoomMeeting(params);
+            params.session = yield helperFunction.convertPromiseToObject(session);
+            session.details = yield helperFunction.scheduleZoomMeeting(params);
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
@@ -479,6 +476,22 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            if (params.datetime) {
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                }, {
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+            }
             let query = {
                 order: [["date"], ["start_time"]]
             };
@@ -542,7 +555,8 @@ class CoachService {
             if (session.coach_id != user.uid) {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
-            yield this.cancelZoomMeeting(params);
+            params.session = yield helperFunction.convertPromiseToObject(session);
+            yield helperFunction.cancelZoomMeeting(params);
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
             session.cancel_reason = params.cancel_reason;
             session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
@@ -558,6 +572,36 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            if (params.datetime) {
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                }, {
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                }, {
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+            }
             let query = {
                 order: [["date"], ["start_time"]]
             };
@@ -621,6 +665,34 @@ class CoachService {
                 throw new Error(constants.MESSAGES.no_session);
             }
             return session;
+        });
+    }
+    updateZoomMeetingDuration(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            if (session.coach_id != user.uid) {
+                throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
+            }
+            params.session = yield helperFunction.convertPromiseToObject(session);
+            yield helperFunction.updateZoomMeetingDuration(params);
+            return true;
+        });
+    }
+    endZoomMeeting(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            if (!session) {
+                throw new Error(constants.MESSAGES.no_session);
+            }
+            if (session.coach_id != user.uid) {
+                throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
+            }
+            params.session = yield helperFunction.convertPromiseToObject(session);
+            yield helperFunction.endZoomMeeting(params);
+            return true;
         });
     }
 }

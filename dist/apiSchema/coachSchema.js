@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -157,17 +157,20 @@ exports.deleteSlot = joi_1.default.object({
     current_date: joi_1.default.string().optional(),
 });
 exports.getSessionRequests = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
 });
 exports.acceptSessionRequest = joi_1.default.object({
     session_id: joi_1.default.number().required(),
+    timezone: joi_1.default.string().required(),
 });
 exports.rejectSessionRequest = joi_1.default.object({
     session_id: joi_1.default.number().required(),
 });
 exports.getAcceptedSessions = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
@@ -177,11 +180,18 @@ exports.cancelSession = joi_1.default.object({
     cancel_reason: joi_1.default.string().required(),
 });
 exports.listSessionHistory = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
 });
 exports.getSessionHistoryDetails = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.updateZoomMeetingDuration = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.endZoomMeeting = joi_1.default.object({
     session_id: joi_1.default.number().required(),
 });
 //# sourceMappingURL=coachSchema.js.map

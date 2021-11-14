@@ -813,6 +813,36 @@ class EmployeeServices {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            if (params.datetime) {
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                }, {
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                }, {
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+            }
             let query = {
                 order: [["date"], ["start_time"]]
             };
@@ -872,13 +902,6 @@ class EmployeeServices {
             return sessions;
         });
     }
-    cancelZoomMeeting(params) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //comming soon...
-            let details = {};
-            return details;
-        });
-    }
     cancelSession(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
@@ -888,7 +911,8 @@ class EmployeeServices {
             if (session.employee_id != user.uid) {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_employee);
             }
-            yield this.cancelZoomMeeting(params);
+            params.session = yield helperFunction.convertPromiseToObject(session);
+            yield helperFunction.cancelZoomMeeting(params);
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
             session.cancel_reason = params.cancel_reason;
             session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.employee;
@@ -904,6 +928,36 @@ class EmployeeServices {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            if (params.datetime) {
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                }, {
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                }, {
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date: {
+                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time: {
+                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                });
+            }
             let query = {
                 order: [["date"], ["start_time"]]
             };

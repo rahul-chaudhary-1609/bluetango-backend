@@ -96,5 +96,9 @@ coachRoute.put("/cancelSession", tokenValidator.validateCoachToken, joiSchemaVal
 coachRoute.get("/listSessionHistory", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.listSessionHistory), coachController.listSessionHistory);
 /* get Session History Details */
 coachRoute.get("/getSessionHistoryDetails/:session_id", tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getSessionHistoryDetails), coachController.getSessionHistoryDetails);
+/* update Zoom Meeting Duration */
+coachRoute.put("/updateZoomMeetingDuration", tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.updateZoomMeetingDuration), coachController.updateZoomMeetingDuration);
+/* end Zoom Meeting */
+coachRoute.put("/endZoomMeeting", tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map

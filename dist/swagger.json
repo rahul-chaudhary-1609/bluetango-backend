@@ -4287,6 +4287,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
                         "name": "is_pagination",
                         "in": "query",
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
@@ -4363,6 +4370,13 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
                     },
                     {
                         "name": "is_pagination",
@@ -7421,6 +7435,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
                         "name": "is_pagination",
                         "in": "query",
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
@@ -7469,6 +7490,13 @@
                         "description": "enter session id",
                         "required": true,
                         "type": "number"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "formData",
+                        "description": "eg: America/New_York, Asia/calcutta etc",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -7518,6 +7546,13 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
                     },
                     {
                         "name": "is_pagination",
@@ -7598,6 +7633,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
                         "name": "is_pagination",
                         "in": "query",
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
@@ -7643,6 +7685,62 @@
                     {
                         "name": "session_id",
                         "in": "path",
+                        "description": "enter session id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/updateZoomMeetingDuration": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "to update Zoom Meeting Duration",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "session_id",
+                        "in": "formData",
+                        "description": "enter session id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/endZoomMeeting": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "to end Zoom Meeting",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "session_id",
+                        "in": "formData",
                         "description": "enter session id",
                         "required": true,
                         "type": "number"
