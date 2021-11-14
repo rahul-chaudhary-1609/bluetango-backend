@@ -355,13 +355,13 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
         }));
         for (let session of sessions) {
             let currentTime = moment_1.default(new Date()).tz(constants.TIME_ZONE);
-            let startTime = moment_1.default(session.start_time, "HH:mm:ss");
+            let startTime = moment_1.default(session.start_time, "HH:mm:ss").tz(constants.TIME_ZONE);
             let endTime = startTime.add(session.details.duration, "minutes");
             let startDuration = moment_1.default.duration(currentTime.diff(startTime));
             let endDuration = moment_1.default.duration(endTime.diff(currentTime));
             let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
-            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", startDuration, "\n", endDuration, "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds);
+            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds);
             if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.free) {
                 if (diffFromStartInSeconds >= 1200) {
                     let params = {

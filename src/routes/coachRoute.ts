@@ -113,10 +113,10 @@ coachRoute.get("/listSessionHistory",tokenValidator.validateCoachToken, joiSchem
 coachRoute.get("/getSessionHistoryDetails/:session_id",tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getSessionHistoryDetails), coachController.getSessionHistoryDetails);
 
 /* update Zoom Meeting Duration */
-coachRoute.put("/updateZoomMeetingDuration",tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.updateZoomMeetingDuration), coachController.updateZoomMeetingDuration);
+coachRoute.put("/updateZoomMeetingDuration",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateZoomMeetingDuration), coachController.updateZoomMeetingDuration);
 
 /* end Zoom Meeting */
-coachRoute.put("/endZoomMeeting",tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
+coachRoute.put("/endZoomMeeting",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
 
 
 export = coachRoute;
