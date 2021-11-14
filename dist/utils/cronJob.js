@@ -354,7 +354,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
             }
         }));
         for (let session of sessions) {
-            let currentTime = moment_1.default(new Date());
+            let currentTime = moment_1.default(new Date(), "HH:mm:ss").tz(constants.TIME_ZONE);
             let startTime = moment_1.default(session.start_time, "HH:mm:ss");
             let endTime = startTime.add(session.details.duration, "minutes");
             let startDuration = moment_1.default.duration(currentTime.diff(startTime));
