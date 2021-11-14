@@ -346,12 +346,15 @@ exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function*
         })
     });
     if (meeting.status == 204) {
+        console.log("meeting.status\n", meeting.status);
         return true;
     }
     else if (meeting.status == 404) {
+        console.log("meeting.status\n", meeting.status);
         throw new Error(constants.MESSAGES.zoom_meeting_not_found);
     }
     else {
+        console.log("meeting.status\n", meeting.status);
         throw new Error(constants.MESSAGES.zoom_end_meeting_error);
     }
 });
