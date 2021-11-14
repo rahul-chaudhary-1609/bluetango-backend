@@ -922,6 +922,40 @@ export class EmployeeServices {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
+        if(params.datetime){
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                },{
+                    where:{
+                        employee_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                },{
+                    where:{
+                        employee_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+        }
+
         let query=<any>{
             order: [["date"],["start_time"]]
         }
@@ -996,12 +1030,6 @@ export class EmployeeServices {
         return sessions;
     }
 
-    public async cancelZoomMeeting(params:any){
-        //comming soon...
-        let details={}
-        return details;
-    }
-
     public async cancelSession(params:any,user:any){
         let session=await employeeCoachSessionsModel.findByPk(params.session_id);
 
@@ -1013,7 +1041,9 @@ export class EmployeeServices {
             throw new Error(constants.MESSAGES.session_not_belogs_to_employee)
         }
 
-        await this.cancelZoomMeeting(params);
+        params.session=await helperFunction.convertPromiseToObject(session);
+
+        await helperFunction.cancelZoomMeeting(params);
 
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
         session.cancel_reason=params.cancel_reason;
@@ -1031,6 +1061,40 @@ export class EmployeeServices {
         employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        if(params.datetime){
+            await employeeCoachSessionsModel.update({
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+            },{
+                where:{
+                    employee_id:user.uid,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                },{
+                    where:{
+                        employee_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+        }
 
         let query=<any>{
             order: [["date"],["start_time"]]

@@ -1,7 +1,7 @@
 import _, { update } from "lodash";
 import * as constants from "../constants";
 import * as helperFunction from "../utils/helperFunction";
-import { employersModel } from "../models";
+import { coachManagementModel, employersModel } from "../models";
 import { employeeModel } from  "../models/employee"
 import { notificationModel } from "../models/notification";
 import { teamGoalModel } from  "../models/teamGoal"
@@ -10,7 +10,8 @@ import { teamGoalAssignCompletionByEmployeeModel } from  "../models/teamGoalAssi
 import { employeeCoachSessionsModel } from "../models/employeeCoachSession";
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
-const moment =require("moment");
+import moment from "moment";
+import 'moment-timezone';
 var Op = Sequelize.Op;
 
 /*
@@ -294,44 +295,207 @@ export const scheduleDeleteNotificationJob = async()=> {
     return true;
 }
 
-export const scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = async()=> {
-    schedule.scheduleJob('0 */24 * * *', async ()=> {
+const sendNotification=async(params:any)=>{
 
-        
-        employeeCoachSessionsModel.update({
-                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-            },{
-                where:{
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                    date:{
-                        [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-                    },
-                    end_time:{
-                        [Op.lt]:moment(new Date()).format("HH:mm:ss")
+    let coach=await helperFunction.convertPromiseToObject(
+        await coachManagementModel.findByPk(params.session.coach_id)
+    )
+
+    delete coach.password;
+
+    let notificationObj = <any>{
+        type_id: coach.id,
+        sender_id: coach.id,
+        reciever_id: coach.id,
+        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+        type: constants.NOTIFICATION_TYPE.meeting_about_to_end,
+        data: {
+            type: params.notificationType,
+            title: params.title,
+            message: params.body,
+            senderEmplyeeData: coach,
+            session:params.session,
+        },
+    }
+    await notificationModel.create(notificationObj);
+
+    if (!coach.device_token){
+        //send push notification
+        let notificationData = <any>{
+            title: params.title,
+            body: params.body,
+            data: {
+                type: params.notificationType,
+                title: params.title,
+                message: params.body,
+                senderEmplyeeData: coach,
+                session:params.session,
+            },
+        }
+        await helperFunction.sendFcmNotification([coach.device_token], notificationData);
+    }    
+
+    if(params.isEmployee){
+        let employee=await helperFunction.convertPromiseToObject(
+            await employeeModel.findByPk(params.session.employee_id)
+        )
+    
+        delete employee.password;
+
+        notificationObj = <any>{
+            type_id: employee.id,
+            sender_id: employee.id,
+            reciever_id: employee.id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+            type: params.notificationType,
+            data: {
+                type: params.notificationType,
+                title: params.title,
+                message: params.body,
+                senderEmplyeeData: employee,
+                session:params.session,
+            },
+        }
+        await notificationModel.create(notificationObj);
+    
+        if (!employee.device_token){
+            //send push notification
+            let notificationData = <any>{
+                title: params.title,
+                body: params.body,
+                data: {
+                    type: params.notificationType,
+                    title: params.title,
+                    message: params.body,
+                    senderEmplyeeData: employee,
+                    session:params.session,
+                },
+            }
+            await helperFunction.sendFcmNotification([employee.device_token], notificationData);
+        }
+    }    
+    
+}
+
+export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
+    schedule.scheduleJob('* * * * *', async ()=> {
+
+        let sessions=await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where:{
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date:{
+                            [Op.gte]:moment(new Date()).tz(constants.TIME_ZONE).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.gte]:moment(new Date()).tz(constants.TIME_ZONE).format("HH:mm:ss")
+                        }
                     }
                 }
-            }
+            )
         )
 
-        employeeCoachSessionsModel.update({
-                status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-            },{
-                where:{
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                    date:{
-                        [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-                    },
-                    end_time:{
-                        [Op.lt]:moment(new Date()).format("HH:mm:ss")
+        for(let session of sessions){
+            let currentTime = moment(new Date()).tz(constants.TIME_ZONE);
+            let startTime = moment(session.start_time, "HH:mm:ss");
+            let endTime = startTime.add(session.details.duration,"minutes");
+
+            let startDuration = moment.duration(currentTime.diff(startTime));
+            let endDuration = moment.duration(endTime.diff(currentTime));
+
+            let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
+            let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
+
+            if(session.type==constants.EMPLOYEE_COACH_SESSION_TYPE.free){                
+
+                if(diffFromStartInSeconds>=1200){
+                    let params=<any>{
+                        session,
                     }
+                    await helperFunction.endZoomMeeting(params)                    
+                }else if(diffFromStartInSeconds>=900){
+                    let params=<any>{
+                        notificationType:constants.NOTIFICATION_TYPE.update_meeting_duration,
+                        session,
+                        title:`Update Meeting duration`,
+                        body:`Do you want to update the meeting duration by 5 minutes`,
+                        isEmployee:false,
+                    }
+
+                    await sendNotification(params);
+                    
+                }else if(diffFromStartInSeconds>=600){
+                    let params=<any>{
+                        notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
+                        session,
+                        title:`Reminder`,
+                        body:`Ongoing zoom meeting will end in 5 minutes`,
+                        isEmployee:true,
+                    }
+
+                    await sendNotification(params);                  
+                }
+            }else if(session.type==constants.EMPLOYEE_COACH_SESSION_TYPE.paid){
+
+                if(diffToEndInSeconds<=300){
+                    let params=<any>{
+                        notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
+                        session,
+                        title:`Reminder`,
+                        body:`Ongoing zoom meeting will end in 5 minutes`,
+                        isEmployee:true,
+                    }
+
+                    await sendNotification(params);
                 }
             }
-        )
-
+        }
         
     });
 
-    console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
+    console.log("Delete Meeting Remaining Time Notification Job has started!")
 
     return true;
 }
+
+// export const scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = async()=> {
+//     schedule.scheduleJob('0 */24 * * *', async ()=> {
+
+        
+//         employeeCoachSessionsModel.update({
+//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+//             },{
+//                 where:{
+//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+//                     date:{
+//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
+//                     },
+//                     end_time:{
+//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
+//                     }
+//                 }
+//             }
+//         )
+
+//         employeeCoachSessionsModel.update({
+//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+//             },{
+//                 where:{
+//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+//                     date:{
+//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
+//                     },
+//                     end_time:{
+//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
+//                     }
+//                 }
+//             }
+//         )
+
+        
+//     });
+
+//     console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
+
+//     return true;
+// }

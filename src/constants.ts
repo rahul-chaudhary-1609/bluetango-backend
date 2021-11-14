@@ -174,6 +174,11 @@ export const MESSAGES = {
   slot_group_delete_date_required:`Current date is required in case of group delete`,
   coach_schedule_overlaped:`The recieved slots must have one or more overlaped time values.\nPlease check, fix, and create again`,
   coach_schedule_start_greater_or_equal_end:`For each slots start time must be less than end time`,
+  zoom_cancel_meeting_error:`Something went wrong with canceling the zoom meeting`,
+  zoom_end_meeting_error:`Something went wrong with ending the zoom meeting`,
+  zoom_update_meeting_error:`Something went wrong with updating the zoom meeting`,
+  zoom_schedule_meeting_error:`Something went wrong with scheduling the zoom meeting`,
+  zoom_meeting_not_found:`Meeting with this {meetingId} is not found or has expired.`
 }
 
 
@@ -270,8 +275,9 @@ export const NOTIFICATION_TYPE = {
   achievement_comment: 15,
   group_chat:16,
   expiration_of_free_trial: 17,
-  goal_submit_reminder:18,
-  
+  goal_submit_reminder:18,  
+  meeting_about_to_end:19,
+  update_meeting_duration:20,
 }
 
 export const NOTIFICATION_RECIEVER_TYPE = {
@@ -333,6 +339,17 @@ export const SECRETS = {
     public_key: process.env.BRAINTREE_PUBLIC_KEY,
     private_key: process.env.BRAINTREE_PRIVATE_KEY,
     access_token:process.env.BRAINTREE_ACCESS_TOKEN
+  },
+  ZOOM_SECRETS:{
+    jwt_token:process.env.ZOOM_JWT_TOKEN,
+  }
+}
+
+export const TIME_ZONE=process.env.TIME_ZONE
+
+export const URLS={
+  ZOOM_URLS:{
+    base_url:process.env.ZOOM_BASE_URL
   }
 }
 
@@ -393,4 +410,9 @@ export const COACH_SCHEDULE_SLOT_DELETE_TYPE={
 export const COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE={
   date:1,
   time:2,
+}
+
+export const ZOOM_USER_TYPE={
+  coach:1,
+  employee:2,
 }

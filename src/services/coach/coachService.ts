@@ -397,6 +397,24 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
+        if(params.datetime){
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                },{
+                    where:{
+                        coach_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+        }
+
         let query=<any>{
             order: [["date"],["start_time"]]
         }
@@ -466,24 +484,6 @@ export class CoachService {
         return sessions;
     }
 
-    public async scheduleZoomMeeting(params:any){
-        //comming soon...
-        let details={
-            "created_at": "2019-09-05T16:54:14Z",
-            "duration": 15,
-            "host_id": "AbcDefGHi",
-            "id": 1100000,
-            "join_url": "https://zoom.us/j/1100000",
-        }
-        return details;
-    }
-
-    public async cancelZoomMeeting(params:any){
-        //comming soon...
-        let details={}
-        return details;
-    }
-
     public async acceptSessionRequest(params:any,user:any){
         let session=await employeeCoachSessionsModel.findByPk(params.session_id);
 
@@ -495,7 +495,9 @@ export class CoachService {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        session.details=await this.scheduleZoomMeeting(params);
+        params.session=await helperFunction.convertPromiseToObject(session);
+
+        session.details=await helperFunction.scheduleZoomMeeting(params);
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;      
 
         session.save();
@@ -528,6 +530,24 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        if(params.datetime){
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                },{
+                    where:{
+                        coach_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+        }
 
         let query=<any>{
             order: [["date"],["start_time"]]
@@ -609,7 +629,9 @@ export class CoachService {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        await this.cancelZoomMeeting(params);
+        params.session=await helperFunction.convertPromiseToObject(session);
+
+        await helperFunction.cancelZoomMeeting(params);
 
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
         session.cancel_reason=params.cancel_reason;
@@ -627,6 +649,40 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        if(params.datetime){
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                },{
+                    where:{
+                        coach_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+
+            await employeeCoachSessionsModel.update({
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                },{
+                    where:{
+                        coach_id:user.uid,
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        date:{
+                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
+                        },
+                        end_time:{
+                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        }
+                    }
+                }
+            )
+        }
 
         let query=<any>{
             order: [["date"],["start_time"]]
@@ -703,6 +759,44 @@ export class CoachService {
 
         return session;
 
+    }
+
+    public async updateZoomMeetingDuration(params:any,user:any){
+
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.coach_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
+        }
+
+        params.session=await helperFunction.convertPromiseToObject(session);
+
+        await helperFunction.updateZoomMeetingDuration(params);
+        
+        return true;
+    }
+
+    public async endZoomMeeting(params:any,user:any){
+
+        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+
+        if(!session){
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if(session.coach_id!=user.uid){
+            throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
+        }
+
+        params.session=await helperFunction.convertPromiseToObject(session);
+
+        await helperFunction.endZoomMeeting(params);
+        
+        return true;
     }
 
 }

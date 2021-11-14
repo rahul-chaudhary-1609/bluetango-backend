@@ -407,6 +407,7 @@ export const createSessionRequest= Joi.object({
 
 
 export const getSessions=Joi.object({
+  datetime:Joi.string().optional(),
   is_pagination:Joi.number().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
@@ -418,6 +419,7 @@ export const cancelSession=Joi.object({
 })
 
 export const listSessionHistory=Joi.object({
+  datetime:Joi.string().optional(),
   is_pagination:Joi.number().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),

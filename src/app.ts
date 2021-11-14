@@ -11,7 +11,7 @@ import {
     scheduleFreeTrialExpirationNotificationJob,
     scheduleGoalSubmitReminderNotificationJob,
     scheduleDeleteNotificationJob,
-    scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob
+    // scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob
 } from "./utils/cronJob"
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
@@ -107,7 +107,7 @@ var server = app.listen(port, async () => {
     await scheduleFreeTrialExpirationNotificationJob();
     await scheduleGoalSubmitReminderNotificationJob();
     await scheduleDeleteNotificationJob();
-    await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
+    // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
 
 }).on('error', (e) => {
     console.log('Error happened: ', e.message)

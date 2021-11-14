@@ -155,6 +155,7 @@ export const deleteSlot= Joi.object({
 })
 
 export const getSessionRequests=Joi.object({
+    datetime:Joi.string().optional(),
     is_pagination:Joi.number().optional(),
     limit: Joi.number().optional(),
     offset: Joi.number().optional(),
@@ -162,6 +163,7 @@ export const getSessionRequests=Joi.object({
 
 export const acceptSessionRequest=Joi.object({
     session_id:Joi.number().required(),
+    timezone:Joi.string().required(),
 })
 
 export const rejectSessionRequest=Joi.object({
@@ -169,6 +171,7 @@ export const rejectSessionRequest=Joi.object({
 })
 
 export const getAcceptedSessions=Joi.object({
+    datetime:Joi.string().optional(),
     is_pagination:Joi.number().optional(),
     limit: Joi.number().optional(),
     offset: Joi.number().optional(),
@@ -180,11 +183,20 @@ export const cancelSession=Joi.object({
 })
 
 export const listSessionHistory=Joi.object({
+    datetime:Joi.string().optional(),
     is_pagination:Joi.number().optional(),
     limit: Joi.number().optional(),
     offset: Joi.number().optional(),
 })
 
 export const getSessionHistoryDetails=Joi.object({
-session_id:Joi.number().required(),
+    session_id:Joi.number().required(),
+})
+
+export const updateZoomMeetingDuration=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const endZoomMeeting=Joi.object({
+    session_id:Joi.number().required(),
 })

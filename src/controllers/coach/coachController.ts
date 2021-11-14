@@ -115,4 +115,22 @@ export class CoachController {
         }
     }
 
+    public async updateZoomMeetingDuration(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.updateZoomMeetingDuration(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async endZoomMeeting(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.endZoomMeeting(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
