@@ -191,7 +191,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
             status: constants.STATUS.active,
         }
     }));
-    console.log("zoomUser1", zoomUser);
+    console.log("zoomUser1", zoomUser, constants.SECRETS.ZOOM_SECRETS.jwt_token);
     if (!zoomUser) {
         let newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
             method: "GET",
