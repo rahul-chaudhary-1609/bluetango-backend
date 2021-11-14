@@ -191,6 +191,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
             status: constants.STATUS.active,
         }
     }));
+    console.log("zoomUser1", zoomUser);
     if (!zoomUser) {
         let newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
             method: "GET",
@@ -200,6 +201,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
             }
         });
         newZoomUser = yield newZoomUser.json();
+        console.log("zoomUser2", zoomUser);
         if (!newZoomUser.id) {
             let userBody = {
                 action: "custCreate",
@@ -225,6 +227,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
                 }
             });
             newZoomUser = yield newZoomUser.json();
+            console.log("zoomUser3", zoomUser);
         }
         let zoomUserObj = {
             user_id: params.session.coach_id,
@@ -233,6 +236,7 @@ exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, func
             type: constants.ZOOM_USER_TYPE.coach,
             details: newZoomUser,
         };
+        console.log("zoomUser4", zoomUserObj);
         zoomUser = yield exports.convertPromiseToObject(yield zoomUsers_1.zoomUserModel.create(zoomUserObj));
     }
     let startTime = moment_1.default(params.session.start_time, "HH:mm:ss");

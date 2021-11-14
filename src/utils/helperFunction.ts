@@ -181,6 +181,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
         })
     )
 
+    console.log("zoomUser1",zoomUser)
+
     if(!zoomUser){
 
         let newZoomUser:any=await fetch(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`,{
@@ -192,6 +194,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
                 })
         
         newZoomUser=await newZoomUser.json();
+
+        console.log("zoomUser2",zoomUser)
 
         if(!newZoomUser.id){
             let userBody=<any>{
@@ -211,6 +215,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
                 },
                 body:JSON.stringify(userBody)
             })
+
+            
             
             newZoomUser=await fetch(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`,{
                         method:"GET",
@@ -221,6 +227,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
                     })
             
             newZoomUser=await newZoomUser.json();
+
+            console.log("zoomUser3",zoomUser)
         }
         
 
@@ -231,6 +239,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
             type:constants.ZOOM_USER_TYPE.coach,
             details:newZoomUser,
         }
+
+        console.log("zoomUser4",zoomUserObj)
 
         zoomUser=await convertPromiseToObject( await zoomUserModel.create(zoomUserObj));
         
