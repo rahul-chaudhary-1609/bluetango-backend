@@ -406,6 +406,8 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
             let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
 
+            console.log(currentTime,"\n",startTime,"\n",endTime,"\n",startDuration,"\n",endDuration,"\n",diffFromStartInSeconds,"\n",diffToEndInSeconds)
+
             if(session.type==constants.EMPLOYEE_COACH_SESSION_TYPE.free){                
 
                 if(diffFromStartInSeconds>=1200){

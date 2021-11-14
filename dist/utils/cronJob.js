@@ -361,6 +361,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
             let endDuration = moment_1.default.duration(endTime.diff(currentTime));
             let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
+            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", startDuration, "\n", endDuration, "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds);
             if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.free) {
                 if (diffFromStartInSeconds >= 1200) {
                     let params = {
