@@ -270,6 +270,8 @@ export const scheduleZoomMeeting=async(params:any)=>{
                     },
                     body:JSON.stringify(meetingBody)
                 })
+
+    console.log(meeting,meeting.status,await meeting.json())
     
     if(meeting.status==201){
         meeting=await meeting.json();
