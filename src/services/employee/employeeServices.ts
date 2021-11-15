@@ -941,6 +941,7 @@ export class EmployeeServices {
     }
 
     public async getSessions(params:any,user:any){
+        console.log("getSessions",params,user)
         employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
