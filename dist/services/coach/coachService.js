@@ -378,9 +378,6 @@ class CoachService {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
             }
@@ -488,9 +485,6 @@ class CoachService {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
             }
@@ -584,9 +578,6 @@ class CoachService {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
                 yield employeeCoachSession_1.employeeCoachSessionsModel.update({
@@ -598,9 +589,6 @@ class CoachService {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
             }

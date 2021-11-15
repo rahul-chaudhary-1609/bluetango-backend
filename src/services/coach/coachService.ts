@@ -407,9 +407,9 @@ export class CoachService {
                         date:{
                             [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time:{
-                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        }
+                        // end_time:{
+                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        // }
                     }
                 }
             )
@@ -543,9 +543,9 @@ export class CoachService {
                         date:{
                             [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time:{
-                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        }
+                        // end_time:{
+                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        // }
                     }
                 }
             )
@@ -662,9 +662,9 @@ export class CoachService {
                         date:{
                             [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time:{
-                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        }
+                        // end_time:{
+                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        // }
                     }
                 }
             )
@@ -678,9 +678,9 @@ export class CoachService {
                         date:{
                             [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time:{
-                            [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        }
+                        // end_time:{
+                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
+                        // }
                     }
                 }
             )

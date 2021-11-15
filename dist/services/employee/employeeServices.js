@@ -841,9 +841,6 @@ class EmployeeServices {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
                 yield employeeCoachSession_1.employeeCoachSessionsModel.update({
@@ -855,9 +852,6 @@ class EmployeeServices {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
             }
@@ -956,9 +950,6 @@ class EmployeeServices {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
                 yield employeeCoachSession_1.employeeCoachSessionsModel.update({
@@ -970,9 +961,6 @@ class EmployeeServices {
                         date: {
                             [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
                         },
-                        end_time: {
-                            [Op.lt]: moment(params.datetime).format("HH:mm:ss")
-                        }
                     }
                 });
             }
