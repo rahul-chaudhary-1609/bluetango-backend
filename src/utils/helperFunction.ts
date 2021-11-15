@@ -383,6 +383,14 @@ export const endZoomMeeting= async (params:any)=>{
 
     if(meeting.status==204){
         console.log("meeting.status\n",meeting.status)
+        employeeCoachSessionsModel.update({
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+            },{
+                where:{
+                    id:params.session_id,
+                }
+            }
+        )
         return true;
     }else if(meeting.status==404){
         console.log("meeting.status\n",meeting.status)

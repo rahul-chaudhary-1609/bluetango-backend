@@ -347,6 +347,13 @@ exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function*
     });
     if (meeting.status == 204) {
         console.log("meeting.status\n", meeting.status);
+        employeeCoachSession_1.employeeCoachSessionsModel.update({
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+        }, {
+            where: {
+                id: params.session_id,
+            }
+        });
         return true;
     }
     else if (meeting.status == 404) {
