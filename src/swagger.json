@@ -1203,27 +1203,6 @@
         "responses": {}
       }
     },
-    "/employee/getCoachSpecializationCategoryList": {
-      "get": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "api to get Coach Specialization Category List",
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Enter jwt token for authentication",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {}
-      }
-    },
     "/admin/getCoachList": {
       "get": {
         "tags": [
@@ -4027,6 +4006,27 @@
               "time_management",
               "work_product"
             ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getCoachSpecializationCategoryList": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get Coach Specialization Category List",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}
