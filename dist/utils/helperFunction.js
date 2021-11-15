@@ -354,7 +354,7 @@ exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function*
                 id: params.session_id,
             }
         });
-        node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+        yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
             method: "DELETE",
             headers: {
                 authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,

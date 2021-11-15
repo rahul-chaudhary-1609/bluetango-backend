@@ -392,7 +392,7 @@ export const endZoomMeeting= async (params:any)=>{
             }
         )
 
-        fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`,{
+        await fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`,{
             method:"DELETE",
             headers:{
                 authorization:`Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
