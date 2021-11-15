@@ -392,14 +392,14 @@ export const endZoomMeeting= async (params:any)=>{
             }
         )
 
-        await fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`,{
+        let meetingDeleted=await fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`,{
             method:"DELETE",
             headers:{
                 authorization:`Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
                 'content-type': "application/json"
             },
-        })
-
+        })        
+        console.log("meetingDeleted.status\n",meetingDeleted.status)
         return true;
     }else if(meeting.status==404){
         console.log("meeting.status\n",meeting.status)
