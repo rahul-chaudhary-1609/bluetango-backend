@@ -261,6 +261,16 @@ export class EmployeeController {
         }
     }
 
+    public async getCoachSpecializationCategoryList(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getCoachSpecializationCategoryList();
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
    * to get coach list
    * @param req :[]

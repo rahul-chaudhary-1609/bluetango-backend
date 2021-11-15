@@ -495,6 +495,23 @@ class EmployeeServices {
             return yield helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
         });
     }
+    getCoachSpecializationCategoryList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                order: [["createdAt", "DESC"]]
+            };
+            query.where = {
+                status: {
+                    [Op.in]: [constants.STATUS.active]
+                }
+            };
+            let categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAndCountAll(query));
+            if (categories.count == 0) {
+                throw new Error(constants.MESSAGES.no_coach_specialization_category);
+            }
+            return categories;
+        });
+    }
     /*
    * function to get coach list
    */

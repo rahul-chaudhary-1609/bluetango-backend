@@ -169,6 +169,8 @@ employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, token
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
 
+/* get Coach Specialization Category List */
+employeeRoute.get("/getCoachSpecializationCategoryList",tokenValidator.validateEmployeeToken, employeeController.getCoachSpecializationCategoryList);
 
 /* get coach list */
 employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCoachList);

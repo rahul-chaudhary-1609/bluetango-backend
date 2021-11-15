@@ -485,6 +485,7 @@ export class CoachService {
     }
 
     public async acceptSessionRequest(params:any,user:any){
+        console.log("acceptSessionRequest",params,user)
         let session=await employeeCoachSessionsModel.findByPk(params.session_id);
 
         if(!session){

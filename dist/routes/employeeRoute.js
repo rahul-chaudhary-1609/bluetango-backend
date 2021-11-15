@@ -133,6 +133,8 @@ employeeRoute.get("/getAttribute/:attribute_id", validators.trimmer, tokenValida
 employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurementDetails), qualitativeMeasurementController.getQualitativeMeasurementDetails);
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
+/* get Coach Specialization Category List */
+employeeRoute.get("/getCoachSpecializationCategoryList", tokenValidator.validateEmployeeToken, employeeController.getCoachSpecializationCategoryList);
 /* get coach list */
 employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCoachList);
 /* get Slots */

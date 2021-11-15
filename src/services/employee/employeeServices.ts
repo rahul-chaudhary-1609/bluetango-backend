@@ -526,6 +526,29 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
     }
 
+    public async getCoachSpecializationCategoryList(){
+
+        let query=<any>{
+            order: [["createdAt", "DESC"]]
+        }
+        query.where=<any>{
+            status:{
+                [Op.in]:[constants.STATUS.active]
+            }
+        }
+
+        let categories=await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAndCountAll(query)
+        )
+
+        if(categories.count==0){
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        return categories;
+
+    }
+
     /*
    * function to get coach list
    */

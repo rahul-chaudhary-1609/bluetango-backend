@@ -440,6 +440,7 @@ class CoachService {
     }
     acceptSessionRequest(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("acceptSessionRequest", params, user);
             let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
