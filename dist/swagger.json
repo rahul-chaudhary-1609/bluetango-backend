@@ -4312,7 +4312,7 @@
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
                         "required": false,
-                        "type": "number"
+                        "type": "string"
                     },
                     {
                         "name": "is_pagination",
@@ -4396,8 +4396,8 @@
                         "name": "datetime",
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
-                        "required": false,
-                        "type": "number"
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -4425,7 +4425,7 @@
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
                         "required": false,
-                        "type": "number"
+                        "type": "string"
                     },
                     {
                         "name": "is_pagination",
@@ -7488,7 +7488,7 @@
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
                         "required": false,
-                        "type": "number"
+                        "type": "string"
                     },
                     {
                         "name": "is_pagination",
@@ -7601,7 +7601,7 @@
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
                         "required": false,
-                        "type": "number"
+                        "type": "string"
                     },
                     {
                         "name": "is_pagination",
@@ -7686,7 +7686,7 @@
                         "in": "query",
                         "description": "eg: YYYY-MM-DD HH:mm:ss",
                         "required": false,
-                        "type": "number"
+                        "type": "string"
                     },
                     {
                         "name": "is_pagination",
