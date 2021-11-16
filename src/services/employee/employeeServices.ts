@@ -1067,7 +1067,9 @@ export class EmployeeServices {
 
         params.session=await helperFunction.convertPromiseToObject(session);
 
-        await helperFunction.cancelZoomMeeting(params);
+        if(params.session.status==constants.EMPLOYEE_COACH_SESSION_STATUS.accepted){
+            await helperFunction.cancelZoomMeeting(params);
+        }        
 
         session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
         session.cancel_reason=params.cancel_reason;

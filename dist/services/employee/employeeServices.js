@@ -924,7 +924,9 @@ class EmployeeServices {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_employee);
             }
             params.session = yield helperFunction.convertPromiseToObject(session);
-            yield helperFunction.cancelZoomMeeting(params);
+            if (params.session.status == constants.EMPLOYEE_COACH_SESSION_STATUS.accepted) {
+                yield helperFunction.cancelZoomMeeting(params);
+            }
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
             session.cancel_reason = params.cancel_reason;
             session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.employee;
