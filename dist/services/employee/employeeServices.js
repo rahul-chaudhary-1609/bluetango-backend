@@ -1054,7 +1054,7 @@ class EmployeeServices {
                 }
             }
             let query = {
-                order: [["date"], ["start_time"]]
+                order: [["date", "DESC"], ["start_time", "DESC"]]
             };
             query.where = {
                 employee_id: user.uid,

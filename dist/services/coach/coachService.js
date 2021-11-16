@@ -633,7 +633,7 @@ class CoachService {
                 }
             }
             let query = {
-                order: [["date"], ["start_time"]]
+                order: [["date", "DESC"], ["start_time", "DESC"]]
             };
             query.where = {
                 coach_id: user.uid,
