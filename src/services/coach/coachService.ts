@@ -398,21 +398,33 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         if(params.datetime){
-            await employeeCoachSessionsModel.update({
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-                },{
-                    where:{
-                        coach_id:user.uid,
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        date:{
-                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
-                        },
-                        // end_time:{
-                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        // }
+            let sessions=await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAll({
+                        where:{
+                            coach_id:user.uid,
+                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        }
                     }
-                }
+                )
             )
+
+            for(let session of sessions){
+                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
+                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff=Math.ceil(duration.asSeconds())
+
+                if(secondDiff<=0){
+                    await employeeCoachSessionsModel.update({
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    },{
+                        where:{
+                            id:session.id,
+                        }
+                    })
+                }
+            }
         }
 
         let query=<any>{
@@ -534,21 +546,33 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         if(params.datetime){
-            await employeeCoachSessionsModel.update({
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                },{
-                    where:{
-                        coach_id:user.uid,
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        date:{
-                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
-                        },
-                        // end_time:{
-                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        // }
+            let sessions=await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAll({
+                        where:{
+                            coach_id:user.uid,
+                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        }
                     }
-                }
+                )
             )
+
+            for(let session of sessions){
+                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
+                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff=Math.ceil(duration.asSeconds())
+
+                if(secondDiff<=0){
+                    await employeeCoachSessionsModel.update({
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },{
+                        where:{
+                            id:session.id,
+                        }
+                    })
+                }
+            }
         }
 
         let query=<any>{
@@ -653,37 +677,61 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
         if(params.datetime){
-            await employeeCoachSessionsModel.update({
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-                },{
-                    where:{
-                        coach_id:user.uid,
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        date:{
-                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
-                        },
-                        // end_time:{
-                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        // }
+            let sessions=await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAll({
+                        where:{
+                            coach_id:user.uid,
+                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        }
                     }
-                }
+                )
             )
 
-            await employeeCoachSessionsModel.update({
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                },{
-                    where:{
-                        coach_id:user.uid,
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        date:{
-                            [Op.lt]:moment(params.datetime).format("YYYY-MM-DD")
-                        },
-                        // end_time:{
-                        //     [Op.lt]:moment(params.datetime).format("HH:mm:ss")
-                        // }
-                    }
+            for(let session of sessions){
+                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
+                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff=Math.ceil(duration.asSeconds())
+
+                if(secondDiff<=0){
+                    await employeeCoachSessionsModel.update({
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    },{
+                        where:{
+                            id:session.id,
+                        }
+                    })
                 }
+            }            
+
+            sessions=await helperFunction.convertPromiseToObject(
+                    await employeeCoachSessionsModel.findAll({
+                        where:{
+                            coach_id:user.uid,
+                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        }
+                    }
+                )
             )
+
+            for(let session of sessions){
+                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
+                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff=Math.ceil(duration.asSeconds())
+
+                if(secondDiff<=0){
+                    await employeeCoachSessionsModel.update({
+                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },{
+                        where:{
+                            id:session.id,
+                        }
+                    })
+                }
+            }
         }
 
         let query=<any>{

@@ -190,6 +190,9 @@ employeeRoute.get("/getSessions",tokenValidator.validateEmployeeToken, joiSchema
 /* cancel Session */
 employeeRoute.put("/cancelSession",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.cancelSession), employeeController.cancelSession);
 
+/* get Not Rated Sessions */
+employeeRoute.get("/getNotRatedSessions",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getNotRatedSessions), employeeController.getNotRatedSessions);
+
 /* list Session History */
 employeeRoute.get("/listSessionHistory",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.listSessionHistory), employeeController.listSessionHistory);
 

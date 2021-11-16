@@ -369,17 +369,27 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.datetime) {
-                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
-                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-                }, {
+                let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
                     where: {
                         coach_id: user.uid,
                         status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        date: {
-                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
-                        },
                     }
-                });
+                }));
+                for (let session of sessions) {
+                    let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss");
+                    let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss");
+                    let duration = moment.duration(endTime.diff(startTime));
+                    let secondDiff = Math.ceil(duration.asSeconds());
+                    if (secondDiff <= 0) {
+                        yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                    }
+                }
             }
             let query = {
                 order: [["date"], ["start_time"]]
@@ -476,17 +486,27 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.datetime) {
-                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
-                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                }, {
+                let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
                     where: {
                         coach_id: user.uid,
                         status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        date: {
-                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
-                        },
                     }
-                });
+                }));
+                for (let session of sessions) {
+                    let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss");
+                    let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss");
+                    let duration = moment.duration(endTime.diff(startTime));
+                    let secondDiff = Math.ceil(duration.asSeconds());
+                    if (secondDiff <= 0) {
+                        yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                    }
+                }
             }
             let query = {
                 order: [["date"], ["start_time"]]
@@ -569,28 +589,48 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.datetime) {
-                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
-                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-                }, {
+                let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
                     where: {
                         coach_id: user.uid,
                         status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        date: {
-                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
-                        },
                     }
-                });
-                yield employeeCoachSession_1.employeeCoachSessionsModel.update({
-                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                }, {
+                }));
+                for (let session of sessions) {
+                    let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss");
+                    let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss");
+                    let duration = moment.duration(endTime.diff(startTime));
+                    let secondDiff = Math.ceil(duration.asSeconds());
+                    if (secondDiff <= 0) {
+                        yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                    }
+                }
+                sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
                     where: {
                         coach_id: user.uid,
                         status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        date: {
-                            [Op.lt]: moment(params.datetime).format("YYYY-MM-DD")
-                        },
                     }
-                });
+                }));
+                for (let session of sessions) {
+                    let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss");
+                    let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss");
+                    let duration = moment.duration(endTime.diff(startTime));
+                    let secondDiff = Math.ceil(duration.asSeconds());
+                    if (secondDiff <= 0) {
+                        yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                    }
+                }
             }
             let query = {
                 order: [["date"], ["start_time"]]

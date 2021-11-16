@@ -438,3 +438,7 @@ export const commentOnCoachSession=Joi.object({
   session_id:Joi.number().required(),
   comment:Joi.string().required(),
 })
+
+export const getNotRatedSessions=Joi.object({
+  datetime:Joi.string().required(),
+})

@@ -331,6 +331,15 @@ export class EmployeeController {
         }
     }
 
+    public async getNotRatedSessions(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getNotRatedSessions(req.query,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     public async listSessionHistory(req: any, res: any, next: any) {
         try {
             const responseFromService = await employeeServices.listSessionHistory(req.query,req.user);

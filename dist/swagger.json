@@ -4375,6 +4375,34 @@
                 "responses": {}
             }
         },
+        "/employee/getNotRatedSessions": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "to get Not Rated Sessions",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "query",
+                        "description": "eg: YYYY-MM-DD HH:mm:ss",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/employee/listSessionHistory": {
             "get": {
                 "tags": [
