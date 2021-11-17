@@ -347,8 +347,12 @@ exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function*
     });
     if (meeting.status == 204) {
         console.log("meeting.status\n", meeting.status);
+        let startTime = moment_1.default(params.session.start_time, "HH:mm:ss");
+        let endTime = moment_1.default(params.session.end_time, "HH:mm:ss");
+        let duration = moment_1.default.duration(endTime.diff(startTime));
         employeeCoachSession_1.employeeCoachSessionsModel.update({
-            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            call_duration: Math.ceil(duration.asMinutes()),
         }, {
             where: {
                 id: params.session_id,

@@ -1002,8 +1002,14 @@ export class EmployeeServices {
                 let secondDiff=Math.ceil(duration.asSeconds())
     
                 if(secondDiff<=0){
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
                     await employeeCoachSessionsModel.update({
                         status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration:Math.ceil(duration.asMinutes()),
                     },{
                         where:{
                             id:session.id,
@@ -1141,8 +1147,14 @@ export class EmployeeServices {
                 let secondDiff=Math.ceil(duration.asSeconds())
 
                 if(secondDiff<=0){
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
                     await employeeCoachSessionsModel.update({
                         status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration:Math.ceil(duration.asMinutes()),
                     },{
                         where:{
                             id:session.id,
@@ -1259,8 +1271,14 @@ export class EmployeeServices {
                 let secondDiff=Math.ceil(duration.asSeconds())
 
                 if(secondDiff<=0){
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
                     await employeeCoachSessionsModel.update({
                         status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration:Math.ceil(duration.asMinutes()),
                     },{
                         where:{
                             id:session.id,
