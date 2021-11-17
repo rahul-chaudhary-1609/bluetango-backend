@@ -116,11 +116,13 @@ export class ChatServices {
                             id:user.uid,
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
+                            type:constants.CHAT_USER_TYPE.employee
                         },
                         {
                             id:parseInt(params.other_user_id),
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
+                            type:constants.CHAT_USER_TYPE.coach
                         }
                     ]
                 }
@@ -150,7 +152,7 @@ export class ChatServices {
                 other_user: coach,
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
-                chatLastDeletedOn:chatRoomData.info?.find(info=>info.id==user.uid).chatLastDeletedOn,
+                chatLastDeletedOn:chatRoomData.info?.find(info=>(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee)).chatLastDeletedOn,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
@@ -190,11 +192,13 @@ export class ChatServices {
                             id:user.uid,
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
+                            type:constants.CHAT_USER_TYPE.employee,
                         },
                         {
                             id:parseInt(params.other_user_id),
                             chatLastDeletedOn:new Date(),
                             isDeleted:false,
+                            type:constants.CHAT_USER_TYPE.employee,
                         }
                     ]
                 }
@@ -223,7 +227,7 @@ export class ChatServices {
                 other_user: users.find((val: any) => val.id == params.other_user_id),
                 room_id: chatRoomData.room_id,
                 status: chatRoomData.status,
-                chatLastDeletedOn:chatRoomData.info?.find(info=>info.id==user.uid).chatLastDeletedOn,
+                chatLastDeletedOn:chatRoomData.info?.find(info=>(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee)).chatLastDeletedOn,
                 createdAt: chatRoomData.createdAt,
                 updatedAt: chatRoomData.updatedAt
 
@@ -265,6 +269,7 @@ export class ChatServices {
                     id:managerTeamMemberId,
                     chatLastDeletedOn:new Date(),
                     isDeleted:false,
+                    type:constants.CHAT_USER_TYPE.employee,
                 }
             });
 
@@ -272,6 +277,7 @@ export class ChatServices {
                 id:parseInt(manager.id),
                 chatLastDeletedOn:new Date(),
                 isDeleted:false,
+                type:constants.CHAT_USER_TYPE.employee,
             })
             
             let groupChatRoomObj = <any>{
@@ -306,6 +312,7 @@ export class ChatServices {
                     id:managerTeamMemberId,
                     chatLastDeletedOn:new Date(),
                     isDeleted:false,
+                    type:constants.CHAT_USER_TYPE.employee,
                 }
             });
             
@@ -359,7 +366,7 @@ export class ChatServices {
             type: constants.CHAT_ROOM_TYPE.group,
             amIGroupManager: manager.is_manager,
             is_disabled: false,
-            info:managerGroupChatRoom.info?.find(info=>info.id==currentUser.id),
+            info:managerGroupChatRoom.info?.find(info=>(info.id==currentUser.id && info.type==constants.CHAT_USER_TYPE.employee)),
             createdAt: managerGroupChatRoom.createdAt,
             updatedAt: managerGroupChatRoom.updatedAt
         }
@@ -447,7 +454,7 @@ export class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info:chat.info?.find(info=>info.id==user.uid),
+                    info:chat.info?.find(info=>(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee)),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 }
@@ -480,7 +487,7 @@ export class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info:chat.info?.find(info=>info.id==user.uid),
+                    info:chat.info?.find(info=>(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee)),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 }
@@ -1175,7 +1182,7 @@ export class ChatServices {
             if(groupChatRoomData.info){
                 await groupChatRoomModel.update({
                     info:groupChatRoomData.info.map((info)=>{
-                        if(info.id==user.uid){
+                        if(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee){
                             return{
                                 ...info,
                                 chatLastDeletedOn:new Date(),
@@ -1198,7 +1205,7 @@ export class ChatServices {
             if(chatRoomData.info){
                 await chatRealtionMappingInRoomModel.update({
                     info:chatRoomData.info.map((info)=>{
-                        if(info.id==user.uid){
+                        if(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.employee){
                             return{
                                 ...info,
                                 chatLastDeletedOn:new Date(),

@@ -128,11 +128,13 @@ class ChatServices {
                                 id: user.uid,
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.employee
                             },
                             {
                                 id: parseInt(params.other_user_id),
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.coach
                             }
                         ]
                     };
@@ -156,7 +158,7 @@ class ChatServices {
                     other_user: coach,
                     room_id: chatRoomData.room_id,
                     status: chatRoomData.status,
-                    chatLastDeletedOn: (_a = chatRoomData.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid).chatLastDeletedOn,
+                    chatLastDeletedOn: (_a = chatRoomData.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee)).chatLastDeletedOn,
                     createdAt: chatRoomData.createdAt,
                     updatedAt: chatRoomData.updatedAt
                 };
@@ -189,11 +191,13 @@ class ChatServices {
                                 id: user.uid,
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.employee,
                             },
                             {
                                 id: parseInt(params.other_user_id),
                                 chatLastDeletedOn: new Date(),
                                 isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.employee,
                             }
                         ]
                     };
@@ -217,7 +221,7 @@ class ChatServices {
                     other_user: users.find((val) => val.id == params.other_user_id),
                     room_id: chatRoomData.room_id,
                     status: chatRoomData.status,
-                    chatLastDeletedOn: (_b = chatRoomData.info) === null || _b === void 0 ? void 0 : _b.find(info => info.id == user.uid).chatLastDeletedOn,
+                    chatLastDeletedOn: (_b = chatRoomData.info) === null || _b === void 0 ? void 0 : _b.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee)).chatLastDeletedOn,
                     createdAt: chatRoomData.createdAt,
                     updatedAt: chatRoomData.updatedAt
                 };
@@ -249,12 +253,14 @@ class ChatServices {
                         id: managerTeamMemberId,
                         chatLastDeletedOn: new Date(),
                         isDeleted: false,
+                        type: constants.CHAT_USER_TYPE.employee,
                     };
                 });
                 info.push({
                     id: parseInt(manager.id),
                     chatLastDeletedOn: new Date(),
                     isDeleted: false,
+                    type: constants.CHAT_USER_TYPE.employee,
                 });
                 let groupChatRoomObj = {
                     manager_id: parseInt(manager.id),
@@ -278,6 +284,7 @@ class ChatServices {
                         id: managerTeamMemberId,
                         chatLastDeletedOn: new Date(),
                         isDeleted: false,
+                        type: constants.CHAT_USER_TYPE.employee,
                     };
                 });
                 managerGroupChatRoom.member_ids = teamMemberIds; //[...new Set([...managerGroupChatRoom.member_ids, ...teamMemberIds])];
@@ -316,7 +323,7 @@ class ChatServices {
                 type: constants.CHAT_ROOM_TYPE.group,
                 amIGroupManager: manager.is_manager,
                 is_disabled: false,
-                info: (_a = managerGroupChatRoom.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == currentUser.id),
+                info: (_a = managerGroupChatRoom.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == currentUser.id && info.type == constants.CHAT_USER_TYPE.employee)),
                 createdAt: managerGroupChatRoom.createdAt,
                 updatedAt: managerGroupChatRoom.updatedAt
             };
@@ -391,7 +398,7 @@ class ChatServices {
                         status: chat.status,
                         type: chat.type,
                         is_disabled,
-                        info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid),
+                        info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee)),
                         createdAt: chat.createdAt,
                         updatedAt: chat.updatedAt
                     };
@@ -420,7 +427,7 @@ class ChatServices {
                         status: chat.status,
                         type: chat.type,
                         is_disabled,
-                        info: (_b = chat.info) === null || _b === void 0 ? void 0 : _b.find(info => info.id == user.uid),
+                        info: (_b = chat.info) === null || _b === void 0 ? void 0 : _b.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee)),
                         createdAt: chat.createdAt,
                         updatedAt: chat.updatedAt
                     };
@@ -1022,7 +1029,7 @@ class ChatServices {
                 if (groupChatRoomData.info) {
                     yield groupChatRoom_1.groupChatRoomModel.update({
                         info: groupChatRoomData.info.map((info) => {
-                            if (info.id == user.uid) {
+                            if (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee) {
                                 return Object.assign(Object.assign({}, info), { chatLastDeletedOn: new Date(), isDeleted: true });
                             }
                             else {
@@ -1040,7 +1047,7 @@ class ChatServices {
                 if (chatRoomData.info) {
                     yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
                         info: chatRoomData.info.map((info) => {
-                            if (info.id == user.uid) {
+                            if (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.employee) {
                                 return Object.assign(Object.assign({}, info), { chatLastDeletedOn: new Date(), isDeleted: true });
                             }
                             else {

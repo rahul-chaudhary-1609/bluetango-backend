@@ -71,7 +71,7 @@ class ChatServices {
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
-                    info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => info.id == user.uid),
+                    info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach)),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
                 };
@@ -703,7 +703,7 @@ class ChatServices {
             if (chatRoomData.info) {
                 yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
                     info: chatRoomData.info.map((info) => {
-                        if (info.id == user.uid) {
+                        if (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach) {
                             return Object.assign(Object.assign({}, info), { chatLastDeletedOn: new Date(), isDeleted: true });
                         }
                         else {

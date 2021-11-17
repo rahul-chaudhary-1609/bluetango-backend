@@ -287,6 +287,11 @@ export const NOTIFICATION_RECIEVER_TYPE = {
   admin:4,
 }
 
+export const CHAT_USER_TYPE = {
+  employee: 1,
+  coach: 2,
+}
+
 export const STATUS = {
   inactive: 0,
   active: 1,

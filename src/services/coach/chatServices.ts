@@ -48,7 +48,7 @@ export class ChatServices {
                 status: chat.status,
                 type: chat.type,
                 is_disabled,
-                info:chat.info?.find(info=>info.id==user.uid),
+                info:chat.info?.find(info=>(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.coach)),
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt
             }
@@ -809,7 +809,7 @@ export class ChatServices {
         if(chatRoomData.info){
             await chatRealtionMappingInRoomModel.update({
                 info:chatRoomData.info.map((info)=>{
-                    if(info.id==user.uid){
+                    if(info.id==user.uid && info.type==constants.CHAT_USER_TYPE.coach){
                         return{
                             ...info,
                             chatLastDeletedOn:new Date(),
