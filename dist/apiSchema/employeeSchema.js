@@ -384,6 +384,7 @@ exports.getSessionHistoryDetails = joi_1.default.object({
 exports.rateCoachSession = joi_1.default.object({
     session_id: joi_1.default.number().required(),
     rating: joi_1.default.number().required(),
+    comment: joi_1.default.string().optional(),
 });
 exports.commentOnCoachSession = joi_1.default.object({
     session_id: joi_1.default.number().required(),

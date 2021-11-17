@@ -1315,6 +1315,7 @@ export class EmployeeServices {
         }
 
         session.coach_rating=params.rating;
+        session.comment=params.comment;
         session.save();
 
         return await helperFunction.convertPromiseToObject(session);

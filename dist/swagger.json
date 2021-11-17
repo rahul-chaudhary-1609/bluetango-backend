@@ -4512,6 +4512,13 @@
                         "required": true,
                         "type": "number",
                         "enum": [1, 2, 3, 4, 5]
+                    },
+                    {
+                        "name": "comment",
+                        "in": "formData",
+                        "description": "enter comment",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}

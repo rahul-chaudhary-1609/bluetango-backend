@@ -1125,6 +1125,7 @@ class EmployeeServices {
                 throw new Error(constants.MESSAGES.no_session);
             }
             session.coach_rating = params.rating;
+            session.comment = params.comment;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
