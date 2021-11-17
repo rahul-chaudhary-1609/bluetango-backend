@@ -591,11 +591,19 @@ class EmployeeServices {
                 coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 let slotsWhere = {
@@ -667,6 +675,7 @@ class EmployeeServices {
             }
             if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
                 let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                coachList.count = coachList.rows.length;
                 coachList.rows = coachList.rows.slice(offset, offset + limit);
             }
             return coachList;

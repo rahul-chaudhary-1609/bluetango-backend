@@ -891,11 +891,19 @@ class EmployersService {
                 coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 coach.average_rating = parseInt(totalRating) / coach.total_completed_sessions;
@@ -946,11 +954,19 @@ class EmployersService {
                 coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
                     where: {
                         coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
                     }
                 });
                 coach.average_rating = totalRating / coach.total_completed_sessions;

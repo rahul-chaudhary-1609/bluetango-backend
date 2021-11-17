@@ -160,12 +160,20 @@ export class AuthService {
         coach.total_completed_sessions=await employeeCoachSessionsModel.count({
             where:{
                 coach_id:coach.id,
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating:{
+                    [Op.gte]:1
+                }
             }
         })
 
         let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
             where:{
                 coach_id:coach.id,
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating:{
+                    [Op.gte]:1
+                }
             }
         })
 
