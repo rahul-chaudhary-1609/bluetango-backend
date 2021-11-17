@@ -1149,7 +1149,7 @@ export class EmployeeServices {
                     employee_id:user.uid,
                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating:0,
-                    is_rating_skiped:0,
+                    is_rating_skipped:0,
                 },
                 include:[
                     {
@@ -1183,6 +1183,17 @@ export class EmployeeServices {
 
         sessions.rows=sessionArray;
         sessions.count=sessionArray.length;
+
+        await employeeCoachSessionsModel.update({
+            is_rating_skipped:1,
+        },{
+            where:{
+                employee_id:user.uid,
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating:0,
+                is_rating_skipped:0,
+            }
+        })
 
         return sessions;
     }
@@ -1347,7 +1358,7 @@ export class EmployeeServices {
             throw new Error(constants.MESSAGES.no_session);
         }
 
-        session.is_rating_skiped=1;
+        session.is_rating_skipped=1;
         session.save();
 
         return await helperFunction.convertPromiseToObject(session);

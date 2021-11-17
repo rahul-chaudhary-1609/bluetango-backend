@@ -990,7 +990,7 @@ class EmployeeServices {
                     employee_id: user.uid,
                     status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating: 0,
-                    is_rating_skiped: 0,
+                    is_rating_skipped: 0,
                 },
                 include: [
                     {
@@ -1019,6 +1019,16 @@ class EmployeeServices {
             }
             sessions.rows = sessionArray;
             sessions.count = sessionArray.length;
+            yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+                is_rating_skipped: 1,
+            }, {
+                where: {
+                    employee_id: user.uid,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: 0,
+                    is_rating_skipped: 0,
+                }
+            });
             return sessions;
         });
     }
@@ -1154,7 +1164,7 @@ class EmployeeServices {
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
-            session.is_rating_skiped = 1;
+            session.is_rating_skipped = 1;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
         });

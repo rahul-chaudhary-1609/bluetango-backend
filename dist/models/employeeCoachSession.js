@@ -80,7 +80,7 @@ exports.employeeCoachSessionsModel = connection_1.sequelize.define("employee_coa
         defaultValue: 1,
         comment: "1=> free, 2=> paid"
     },
-    is_rating_skiped: {
+    is_rating_skipped: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
