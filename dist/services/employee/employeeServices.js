@@ -959,6 +959,9 @@ class EmployeeServices {
     }
     getNotRatedSessions(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.datetime) {
                 let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
                     where: {
@@ -987,7 +990,21 @@ class EmployeeServices {
                     employee_id: user.uid,
                     status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating: 0,
-                }
+                },
+                include: [
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        attributes: ['id', 'name', 'email', 'phone_number', ['image', 'profile_pic_url']],
+                    },
+                    {
+                        model: coachSpecializationCategories_1.coachSpecializationCategoriesModel,
+                        attributes: ['id', 'name', 'description'],
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        attributes: ['id', 'name', 'description'],
+                    }
+                ]
             }));
             let sessionArray = [];
             for (let session of sessions.rows) {

@@ -1108,6 +1108,10 @@ export class EmployeeServices {
     }
 
     public async getNotRatedSessions(params:any,user:any){
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{ foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
 
         if(params.datetime){
             let sessions=await helperFunction.convertPromiseToObject(
@@ -1145,7 +1149,21 @@ export class EmployeeServices {
                     employee_id:user.uid,
                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating:0,
-                }
+                },
+                include:[
+                    {
+                        model:coachManagementModel,
+                        attributes:['id', 'name', 'email','phone_number', ['image', 'profile_pic_url']],
+                    },
+                    {
+                        model:coachSpecializationCategoriesModel,
+                        attributes:['id', 'name', 'description'],
+                    },
+                    {
+                        model:employeeRanksModel,
+                        attributes:['id', 'name', 'description'],
+                    }
+                ]
             })
         )
 
