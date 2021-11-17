@@ -79,6 +79,12 @@ export const employeeCoachSessionsModel: any = sequelize.define("employee_coach_
         defaultValue:1,
         comment:"1=> free, 2=> paid"
     },
+    is_rating_skiped:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue:0,
+        comment:"0=> false, 1=> true"
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false,

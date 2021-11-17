@@ -435,9 +435,8 @@ export const rateCoachSession=Joi.object({
   comment:Joi.string().optional(),
 })
 
-export const commentOnCoachSession=Joi.object({
+export const skipRateSession=Joi.object({
   session_id:Joi.number().required(),
-  comment:Joi.string().required(),
 })
 
 export const getNotRatedSessions=Joi.object({

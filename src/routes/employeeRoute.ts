@@ -202,8 +202,8 @@ employeeRoute.get("/getSessionHistoryDetails/:session_id",tokenValidator.validat
 /* rate Coach Session */
 employeeRoute.post("/rateCoachSession",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.rateCoachSession), employeeController.rateCoachSession);
 
-/*comment On Coach Session */
-employeeRoute.post("/commentOnCoachSession",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.commentOnCoachSession), employeeController.commentOnCoachSession);
+/*skip Rate Session */
+employeeRoute.put("/skipRateSession",tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.skipRateSession), employeeController.skipRateSession);
 
 
 /* contact us for employee */

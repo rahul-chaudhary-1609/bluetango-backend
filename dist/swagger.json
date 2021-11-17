@@ -4524,12 +4524,12 @@
                 "responses": {}
             }
         },
-        "/employee/commentOnCoachSession": {
-            "post": {
+        "/employee/skipRateSession": {
+            "put": {
                 "tags": [
                     "Employee"
                 ],
-                "description": "to comment On Coach Session",
+                "description": "to skip Rate Session",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -4547,13 +4547,6 @@
                         "description": "enter session id",
                         "required": true,
                         "type": "number"
-                    },
-                    {
-                        "name": "comment",
-                        "in": "formData",
-                        "description": "enter comment",
-                        "required": true,
-                        "type": "string"
                     }
                 ],
                 "responses": {}

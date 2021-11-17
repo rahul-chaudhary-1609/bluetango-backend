@@ -1149,6 +1149,7 @@ export class EmployeeServices {
                     employee_id:user.uid,
                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating:0,
+                    is_rating_skiped:0,
                 },
                 include:[
                     {
@@ -1339,14 +1340,14 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(session);
     }
 
-    public async commentOnCoachSession(params:any){
+    public async skipRateSession(params:any){
         let session = await employeeCoachSessionsModel.findByPk(parseInt(params.session_id))
 
         if(!session){
             throw new Error(constants.MESSAGES.no_session);
         }
 
-        session.comment=params.comment;
+        session.is_rating_skiped=1;
         session.save();
 
         return await helperFunction.convertPromiseToObject(session);

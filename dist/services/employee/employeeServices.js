@@ -990,6 +990,7 @@ class EmployeeServices {
                     employee_id: user.uid,
                     status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating: 0,
+                    is_rating_skiped: 0,
                 },
                 include: [
                     {
@@ -1147,13 +1148,13 @@ class EmployeeServices {
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
-    commentOnCoachSession(params) {
+    skipRateSession(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(parseInt(params.session_id));
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
-            session.comment = params.comment;
+            session.is_rating_skiped = 1;
             session.save();
             return yield helperFunction.convertPromiseToObject(session);
         });
