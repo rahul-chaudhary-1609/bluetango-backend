@@ -161,9 +161,6 @@ export class AuthService {
             where:{
                 coach_id:coach.id,
                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                coach_rating:{
-                    [Op.gte]:1
-                }
             }
         })
 
@@ -177,8 +174,20 @@ export class AuthService {
             }
         })
 
-        coach.average_rating=totalRating/coach.total_completed_sessions;
-        coach.average_rating=coach.average_rating || 0;
+        coach.rating_count=await employeeCoachSessionsModel.count({
+            where:{
+                coach_id:coach.id,
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating:{
+                    [Op.gte]:1
+                }
+            }
+        })
+
+        coach.average_rating=0;
+        if(coach.rating_count>0){
+            coach.average_rating=parseInt(totalRating)/coach.rating_count;
+        }            
 
         delete coach.coach_specialization_category_ids;
         delete coach.employee_rank_ids;
