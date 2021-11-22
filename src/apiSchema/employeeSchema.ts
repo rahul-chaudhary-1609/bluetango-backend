@@ -416,6 +416,7 @@ export const getSessions=Joi.object({
 export const cancelSession=Joi.object({
   session_id:Joi.number().required(),
   cancel_reason: Joi.string().required(),
+  datetime:Joi.string().optional(),
 })
 
 export const listSessionHistory=Joi.object({

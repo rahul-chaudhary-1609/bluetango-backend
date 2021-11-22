@@ -4374,6 +4374,13 @@
             "description": "enter cancel reason",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "formData",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -7665,6 +7672,13 @@
             "in": "formData",
             "description": "enter cancel reason",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "formData",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
             "type": "string"
           }
         ],

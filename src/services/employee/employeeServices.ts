@@ -1115,6 +1115,18 @@ export class EmployeeServices {
 
         params.session=await helperFunction.convertPromiseToObject(session);
 
+        if(params.datetime){
+            let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
+            let endTime=moment(`${params.session.date} ${params.session.start_time}`,"YYYY-MM-DD HH:mm:ss")
+
+            let duration = moment.duration(endTime.diff(startTime));
+            let secondDiff=Math.ceil(duration.asSeconds())
+
+            if(secondDiff<=0){
+                throw new Error(constants.MESSAGES.zoom_meeting_emp_cancel_error)
+            }
+        }        
+
         if(params.session.status==constants.EMPLOYEE_COACH_SESSION_STATUS.accepted){
             await helperFunction.cancelZoomMeeting(params);
         }        

@@ -371,6 +371,7 @@ exports.getSessions = joi_1.default.object({
 exports.cancelSession = joi_1.default.object({
     session_id: joi_1.default.number().required(),
     cancel_reason: joi_1.default.string().required(),
+    datetime: joi_1.default.string().optional(),
 });
 exports.listSessionHistory = joi_1.default.object({
     datetime: joi_1.default.string().optional(),

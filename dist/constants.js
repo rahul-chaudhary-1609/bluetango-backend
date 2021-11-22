@@ -199,7 +199,9 @@ exports.MESSAGES = {
     zoom_end_meeting_error: `Something went wrong with ending the zoom meeting`,
     zoom_update_meeting_error: `Something went wrong with updating the zoom meeting`,
     zoom_schedule_meeting_error: `Something went wrong with scheduling the zoom meeting`,
-    zoom_meeting_not_found: `Meeting with this {meetingId} is not found or has expired.`
+    zoom_meeting_not_found: `Meeting with this {meetingId} is not found or has expired.`,
+    zoom_meeting_emp_cancel_error: `You can cancel a meeting until it has just started`,
+    zoom_meeting_coach_cancel_error: `You can cancel a meeting until it's over`,
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
