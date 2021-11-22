@@ -642,7 +642,7 @@ class EmployeeServices {
                 });
                 coach.average_rating = 0;
                 if (coach.rating_count > 0) {
-                    coach.average_rating = parseInt(totalRating) / coach.rating_count;
+                    coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(2));
                 }
                 delete coach.coach_specialization_category_ids;
                 delete coach.employee_rank_ids;
