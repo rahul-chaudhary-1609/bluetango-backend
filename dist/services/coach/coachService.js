@@ -154,10 +154,21 @@ class CoachService {
                                     ]
                                 },
                             },
+                            {
+                                [Op.and]: [
+                                    {
+                                        start_time: {
+                                            [Op.lte]: slot.start_time,
+                                        },
+                                    },
+                                    {
+                                        end_time: {
+                                            [Op.gte]: slot.end_time,
+                                        },
+                                    },
+                                ],
+                            }
                         ],
-                        status: {
-                            [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
-                        }
                     }
                 });
                 if (schedule)
