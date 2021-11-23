@@ -1060,7 +1060,7 @@ class EmployeeServices {
                     employee_id: user.uid,
                     status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     coach_rating: 0,
-                    is_rating_skipped: 1,
+                    is_rating_skipped: 0,
                 }
             });
             return sessions;
