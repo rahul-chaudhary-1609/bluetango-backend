@@ -514,7 +514,6 @@ class CoachService {
                         let duration = moment.duration(endTime.diff(startTime));
                         yield employeeCoachSession_1.employeeCoachSessionsModel.update({
                             status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                            call_duration: Math.ceil(duration.asMinutes()),
                         }, {
                             where: {
                                 id: session.id,

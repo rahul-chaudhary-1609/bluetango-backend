@@ -585,7 +585,7 @@ export class CoachService {
                     
                     await employeeCoachSessionsModel.update({
                         status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                        call_duration:Math.ceil(duration.asMinutes()),
+                        //call_duration:Math.ceil(duration.asMinutes()),
                     },{
                         where:{
                             id:session.id,
