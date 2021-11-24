@@ -18,7 +18,6 @@ export class CoachService {
     constructor() { }
 
     public async addEditCoachSpecializationCategories(params:any){
-
         let category=null;
 
         if(params.category_id){
@@ -318,9 +317,9 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
 
         let where=<any>{
-            status:{
-                [Op.notIn]:[constants.STATUS.deleted]
-            },
+            // status:{
+            //     [Op.notIn]:[constants.STATUS.deleted]
+            // },
         }
 
         let employeeWhere=<any>{};
@@ -374,9 +373,21 @@ export class CoachService {
         }
 
         if(params.status){
-            where={
-                ...where,
-                status:parseInt(params.status),
+            if([constants.EMPLOYEE_COACH_SESSION_STATUS.pending, constants.EMPLOYEE_COACH_SESSION_STATUS.accepted].includes(parseInt(params.status))){
+                where={
+                    ...where,
+                    status:{
+                        [Op.in]:[
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted
+                        ]
+                    },
+                }
+            }else{
+                where={
+                    ...where,
+                    status:parseInt(params.status),
+                }
             }
         }
 
@@ -437,9 +448,9 @@ export class CoachService {
             await employeeCoachSessionsModel.findOne({
                 where:{
                     id:params.session_id,
-                    status:{
-                        [Op.notIn]:[constants.STATUS.deleted]
-                    }
+                    // status:{
+                    //     [Op.notIn]:[constants.STATUS.deleted]
+                    // }
                 },
                 include:[
                     {

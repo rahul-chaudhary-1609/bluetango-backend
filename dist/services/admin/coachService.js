@@ -306,9 +306,9 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let where = {
-                status: {
-                    [Op.notIn]: [constants.STATUS.deleted]
-                },
+            // status:{
+            //     [Op.notIn]:[constants.STATUS.deleted]
+            // },
             };
             let employeeWhere = {};
             let coachWhere = {};
@@ -344,7 +344,17 @@ class CoachService {
                 where = Object.assign(Object.assign({}, where), { date: params.date });
             }
             if (params.status) {
-                where = Object.assign(Object.assign({}, where), { status: parseInt(params.status) });
+                if ([constants.EMPLOYEE_COACH_SESSION_STATUS.pending, constants.EMPLOYEE_COACH_SESSION_STATUS.accepted].includes(parseInt(params.status))) {
+                    where = Object.assign(Object.assign({}, where), { status: {
+                            [Op.in]: [
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.accepted
+                            ]
+                        } });
+                }
+                else {
+                    where = Object.assign(Object.assign({}, where), { status: parseInt(params.status) });
+                }
             }
             if (params.employeeRankId) {
                 employeeRankWhere = Object.assign(Object.assign({}, employeeRankWhere), { id: params.employeeRankId });
@@ -390,9 +400,6 @@ class CoachService {
             let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
                 where: {
                     id: params.session_id,
-                    status: {
-                        [Op.notIn]: [constants.STATUS.deleted]
-                    }
                 },
                 include: [
                     {
