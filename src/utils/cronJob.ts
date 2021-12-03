@@ -421,7 +421,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
                         notificationType:constants.NOTIFICATION_TYPE.update_meeting_duration,
                         session,
                         title:`Update Meeting duration`,
-                        body:`Do you want to update the meeting duration by 5 minutes`,
+                        body:`We are extending the duration of the meeting by 5 minutes. It will automatically disconnect after 5 minutes`,
                         isEmployee:false,
                     }
 
@@ -432,7 +432,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
                         notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
                         title:`Reminder`,
-                        body:`Ongoing zoom meeting will end in 5 minutes`,
+                        body:`Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee:true,
                     }
 
@@ -445,7 +445,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async()=> {
                         notificationType:constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
                         title:`Reminder`,
-                        body:`Ongoing zoom meeting will end in 5 minutes`,
+                        body:`Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee:true,
                     }
 
