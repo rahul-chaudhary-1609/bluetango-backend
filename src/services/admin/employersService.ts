@@ -643,7 +643,10 @@ export class EmployersService {
                         model: employeeModel,
                         required: false,
                         separate: true,
-                        attributes: ["id", "name"]
+                        attributes: ["id", "name"],
+                        where: {
+                            status:[0,1]
+                        }
                     }]
                 },
                 {
