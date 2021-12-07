@@ -666,8 +666,8 @@ class EmployersService {
                     }
                 ],
                 attributes: ["id", "expiry_date"],
-                limit: limit,
-                offset: offset,
+                // limit: limit,
+                // offset: offset,
                 raw: true
             });
         });
