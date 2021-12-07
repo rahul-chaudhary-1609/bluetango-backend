@@ -717,7 +717,10 @@ export class EmployersService {
                     model: employeeModel,
                     required: false,
                     separate: true,
-                    attributes: ["id"]
+                    attributes: ["id"],
+                    where: {
+                        status:[0,1]
+                    }
                 }
                 // {
                 //     model: industryTypeModel,
