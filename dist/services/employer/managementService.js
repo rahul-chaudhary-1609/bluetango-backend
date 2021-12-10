@@ -194,7 +194,13 @@ class EmployeeManagement {
                                         member_ids: [],
                                         live_member_ids: [],
                                         room_id: yield helperFunction.getUniqueChatRoomId(),
-                                        icon_image_url: params.manager_team_icon_url
+                                        icon_image_url: params.manager_team_icon_url,
+                                        info: [{
+                                                id: parseInt(params.id),
+                                                chatLastDeletedOn: new Date(),
+                                                isDeleted: false,
+                                                type: constants.CHAT_USER_TYPE.employee,
+                                            }],
                                     };
                                     groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
                                 }
@@ -224,7 +230,13 @@ class EmployeeManagement {
                                 member_ids: [],
                                 live_member_ids: [],
                                 room_id: yield helperFunction.getUniqueChatRoomId(),
-                                icon_image_url: params.manager_team_icon_url
+                                icon_image_url: params.manager_team_icon_url,
+                                info: [{
+                                        id: parseInt(employeeRes.id),
+                                        chatLastDeletedOn: new Date(),
+                                        isDeleted: false,
+                                        type: constants.CHAT_USER_TYPE.employee,
+                                    }],
                             };
                             let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
                             employeeRes.groupChatRoom = groupChatRoom;

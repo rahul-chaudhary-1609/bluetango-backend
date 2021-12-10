@@ -174,7 +174,13 @@ export class EmployeeManagement {
                                     member_ids: [],
                                     live_member_ids: [],
                                     room_id: await helperFunction.getUniqueChatRoomId(),
-                                    icon_image_url: params.manager_team_icon_url
+                                    icon_image_url: params.manager_team_icon_url,
+                                    info:[{
+                                        id:parseInt(params.id),
+                                        chatLastDeletedOn:new Date(),
+                                        isDeleted:false,
+                                        type:constants.CHAT_USER_TYPE.employee,
+                                    }],
                                 };
                         
                                 groupChatRoom = await helperFunction.convertPromiseToObject(
@@ -209,7 +215,13 @@ export class EmployeeManagement {
                             member_ids: [],
                             live_member_ids: [],
                             room_id: await helperFunction.getUniqueChatRoomId(),
-                            icon_image_url: params.manager_team_icon_url
+                            icon_image_url: params.manager_team_icon_url,
+                            info:[{
+                                id:parseInt(employeeRes.id),
+                                chatLastDeletedOn:new Date(),
+                                isDeleted:false,
+                                type:constants.CHAT_USER_TYPE.employee,
+                            }],
                         };
                         let groupChatRoom = await helperFunction.convertPromiseToObject(
                             await groupChatRoomModel.create(groupChatRoomObj)
