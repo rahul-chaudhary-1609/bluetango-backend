@@ -99,6 +99,14 @@ class ChatServices {
             if (user.uid == params.other_user_id) {
                 throw new Error(constants.MESSAGES.self_chat);
             }
+            let isHighestManager = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                where: {
+                    team_member_id: user.uid,
+                }
+            });
+            if (!isHighestManager) {
+                throw new Error(constants.MESSAGES.top_level_manager);
+            }
             if (params.type && params.type == constants.CHAT_ROOM_TYPE.coach) {
                 let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
                     where: {

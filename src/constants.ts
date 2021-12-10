@@ -114,6 +114,7 @@ export const MESSAGES = {
   article_details_fetched: "Article details fetched",
   invalid_article: "Invalid article",
   self_chat:"You can not chat with yourself",
+  top_level_manager:`This is the top-level manager. Only your employees can start a chat`,
   advisor_added: "Advisor added",
   advisor_fetched: "Advisor list fetched",
   advisor_updated: "Advisor updated",
