@@ -13,6 +13,7 @@ import { groupChatRoomModel } from "../../models/groupChatRoom";
 import { attributeModel } from "../../models/attributes";
 import { attributeRatingModel } from "../../models/attributeRatings"
 import { employeeRanksModel } from "../../models/employeeRanks";
+import { teamGoalAssignCompletionByEmployeeModel } from "../../models/teamGoalAssignCompletionByEmployee";
 var Op = Sequelize.Op;
 
 export class EmployeeManagement {
@@ -29,6 +30,64 @@ export class EmployeeManagement {
 
         if (employer.subscription_type == constants.EMPLOYER_SUBSCRIPTION_TYPE.no_plan && employer.free_trial_status == constants.EMPLOYER_FREE_TRIAL_STATUS.over) return false
         else return true
+    }
+
+    public async migrateGoalsToNewManager(manager_id,employee_id){
+        teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+        
+        let goalAssigns=await helperFunction.convertPromiseToObject(
+            await teamGoalAssignModel.findAll({
+                where:{
+                    employee_id,
+                },
+                include:[
+                    {
+                        model:teamGoalModel,
+                        required:true,
+                    }
+                ]
+            })
+        )
+
+        for(let goalAssign of goalAssigns){
+            let newGoalObj=<any>{
+                manager_id,
+                title:goalAssign.team_goal.title,
+                description:goalAssign.team_goal.description,
+                start_date:goalAssign.team_goal.start_date,
+                end_date:goalAssign.team_goal.end_date,
+                select_measure:goalAssign.team_goal.select_measure,
+                enter_measure:goalAssign.team_goal.enter_measure,
+            }
+            let [newGoal,created]=await helperFunction.convertPromiseToObject(
+                await teamGoalModel.findOrCreate({
+                    where:newGoalObj,
+                    defaults:newGoalObj,
+                })
+            )
+
+            await teamGoalAssignModel.update(
+                {
+                    goal_id:newGoal.id,
+                },
+                {
+                    where:{
+                        id:goalAssign.id,
+                    }
+                }
+            )
+
+            await teamGoalAssignCompletionByEmployeeModel.update(
+                {
+                    goal_id:newGoal.id,
+                },
+                {
+                    where:{
+                        team_goal_assign_id:goalAssign.id,
+                    }
+                }
+            ) 
+        }
     }
 
     /**
@@ -132,6 +191,8 @@ export class EmployeeManagement {
                                     , {
                                         where: { team_member_id: params.id }
                                     });
+
+                                await this.migrateGoalsToNewManager(params.manager_id,params.id);
                             
                             }
                         } else if (params.manager_id) {
@@ -563,9 +624,7 @@ export class EmployeeManagement {
      * function to delete an employee
      */
 
-    public async deleteEmployee(params: any, user: any) {
-        
-        
+    public async deleteEmployee(params: any, user: any) {        
         
         let employee = await employeeModel.findOne({
             where:{
@@ -589,17 +648,29 @@ export class EmployeeManagement {
      * function to updater an employee manager
      */
 
-    public async updateManager(params: any, user: any) {
+    public async updateManager(params: any, user: any) {       
 
-        
-
-        let managerTeam = await helperFunction.convertPromiseToObject(
+        await helperFunction.convertPromiseToObject(
             await managerTeamMemberModel.update(
                 {
                     manager_id: params.new_manager_id,
                 },
                 {
                     where: { manager_id: params.current_manager_id, },
+                    returning: true
+                }
+            )
+        )
+
+        await helperFunction.convertPromiseToObject(
+            await teamGoalModel.update(
+                {
+                    manager_id: params.new_manager_id,
+                },
+                {
+                    where: { 
+                        manager_id: params.current_manager_id,
+                    },
                     returning: true
                 }
             )

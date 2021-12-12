@@ -419,7 +419,7 @@ export const endZoomMeeting= async (params:any)=>{
 export const updateZoomMeetingDuration= async (params:any)=>{
     //comming soon...
     let meetingBody=<any>{
-        duration: `${parseInt(params.session.details.duration)+5}`,
+        duration: `${parseInt(params.session.details.duration)+parseInt(params.extendingMinutes)}`,
     }
 
     let meeting=await fetch(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`,{
@@ -432,8 +432,8 @@ export const updateZoomMeetingDuration= async (params:any)=>{
     })
 
     if(meeting.status==204){
-        let endTime=moment(params.session.end_time,"HH:mm:ss").add(5,"minutes").format("HH:mm:ss");
-        let duration=`${parseInt(params.session.details.duration)+5}`;
+        let endTime=moment(params.session.end_time,"HH:mm:ss").add(parseInt(params.extendingMinutes),"minutes").format("HH:mm:ss");
+        let duration=`${parseInt(params.session.details.duration)+parseInt(params.extendingMinutes)}`;
         
         await employeeCoachSessionsModel.update({
             end_time:endTime,

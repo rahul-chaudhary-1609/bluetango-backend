@@ -863,6 +863,8 @@ export class CoachService {
 
         params.session=await helperFunction.convertPromiseToObject(session);
 
+        params.extendingMinutes=5;
+
         await helperFunction.updateZoomMeetingDuration(params);
         
         return true;
