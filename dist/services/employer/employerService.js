@@ -305,6 +305,7 @@ class EmployerService {
             let contactObj = {
                 employer_id: parseInt(user.uid),
                 message: params.message,
+                type: constants.CONTACT_TYPE.employer
             };
             return yield contactUs_1.contactUsModel.create(contactObj);
         });

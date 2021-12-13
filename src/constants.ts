@@ -424,3 +424,9 @@ export const ZOOM_USER_TYPE={
   coach:1,
   employee:2,
 }
+
+export const CONTACT_TYPE={
+  employee:1,
+  employer:2,
+  coach:3,
+}

@@ -47,6 +47,7 @@ const groupChatRoom_1 = require("../../models/groupChatRoom");
 const attributes_1 = require("../../models/attributes");
 const attributeRatings_1 = require("../../models/attributeRatings");
 const employeeRanks_1 = require("../../models/employeeRanks");
+const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
 var Op = Sequelize.Op;
 class EmployeeManagement {
     constructor() { }
@@ -60,6 +61,51 @@ class EmployeeManagement {
                 return false;
             else
                 return true;
+        });
+    }
+    migrateGoalsToNewManager(manager_id, employee_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+            let goalAssigns = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
+                where: {
+                    employee_id,
+                },
+                include: [
+                    {
+                        model: teamGoal_1.teamGoalModel,
+                        required: true,
+                    }
+                ]
+            }));
+            for (let goalAssign of goalAssigns) {
+                let newGoalObj = {
+                    manager_id,
+                    title: goalAssign.team_goal.title,
+                    description: goalAssign.team_goal.description,
+                    start_date: goalAssign.team_goal.start_date,
+                    end_date: goalAssign.team_goal.end_date,
+                    select_measure: goalAssign.team_goal.select_measure,
+                    enter_measure: goalAssign.team_goal.enter_measure,
+                };
+                let [newGoal, created] = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOrCreate({
+                    where: newGoalObj,
+                    defaults: newGoalObj,
+                }));
+                yield teamGoalAssign_1.teamGoalAssignModel.update({
+                    goal_id: newGoal.id,
+                }, {
+                    where: {
+                        id: goalAssign.id,
+                    }
+                });
+                yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update({
+                    goal_id: newGoal.id,
+                }, {
+                    where: {
+                        team_goal_assign_id: goalAssign.id,
+                    }
+                });
+            }
         });
     }
     /**
@@ -157,6 +203,7 @@ class EmployeeManagement {
                                     }, {
                                         where: { team_member_id: params.id }
                                     });
+                                    yield this.migrateGoalsToNewManager(params.manager_id, params.id);
                                 }
                             }
                             else if (params.manager_id) {
@@ -526,10 +573,18 @@ class EmployeeManagement {
      */
     updateManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let managerTeam = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
+            yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
                 manager_id: params.new_manager_id,
             }, {
                 where: { manager_id: params.current_manager_id, },
+                returning: true
+            }));
+            yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.update({
+                manager_id: params.new_manager_id,
+            }, {
+                where: {
+                    manager_id: params.current_manager_id,
+                },
                 returning: true
             }));
             return true;

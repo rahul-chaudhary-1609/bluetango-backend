@@ -380,7 +380,7 @@ exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function*
 exports.updateZoomMeetingDuration = (params) => __awaiter(void 0, void 0, void 0, function* () {
     //comming soon...
     let meetingBody = {
-        duration: `${parseInt(params.session.details.duration) + 5}`,
+        duration: `${parseInt(params.session.details.duration) + parseInt(params.extendingMinutes)}`,
     };
     let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
         method: "PATCH",
@@ -391,8 +391,8 @@ exports.updateZoomMeetingDuration = (params) => __awaiter(void 0, void 0, void 0
         body: JSON.stringify(meetingBody)
     });
     if (meeting.status == 204) {
-        let endTime = moment_1.default(params.session.end_time, "HH:mm:ss").add(5, "minutes").format("HH:mm:ss");
-        let duration = `${parseInt(params.session.details.duration) + 5}`;
+        let endTime = moment_1.default(params.session.end_time, "HH:mm:ss").add(parseInt(params.extendingMinutes), "minutes").format("HH:mm:ss");
+        let duration = `${parseInt(params.session.details.duration) + parseInt(params.extendingMinutes)}`;
         yield employeeCoachSession_1.employeeCoachSessionsModel.update({
             end_time: endTime,
             details: Object.assign(Object.assign({}, params.session.details), { duration })

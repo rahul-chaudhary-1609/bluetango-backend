@@ -734,6 +734,7 @@ class CoachService {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
             params.session = yield helperFunction.convertPromiseToObject(session);
+            params.extendingMinutes = 5;
             yield helperFunction.updateZoomMeetingDuration(params);
             return true;
         });

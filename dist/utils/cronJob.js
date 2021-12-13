@@ -370,17 +370,20 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                     };
                     yield helperFunction.endZoomMeeting(params);
                 }
-                else if (diffFromStartInSeconds == 900) {
+                else if (diffToEndInSeconds == 0) {
+                    let extendingMinutes = Math.floor((1200 - diffFromStartInSeconds) / 60);
                     let params = {
                         notificationType: constants.NOTIFICATION_TYPE.update_meeting_duration,
                         session,
-                        title: `Update Meeting duration`,
-                        body: `We are extending the duration of the meeting by 5 minutes. It will automatically disconnect after 5 minutes`,
+                        title: `Meeting duration updated`,
+                        body: `We are extending the duration of the meeting by ${extendingMinutes} minutes. It will automatically disconnect after ${extendingMinutes} minutes`,
                         isEmployee: false,
                     };
                     yield sendNotification(params);
+                    params.extendingMinutes = extendingMinutes;
+                    yield helperFunction.updateZoomMeetingDuration(params);
                 }
-                else if (diffFromStartInSeconds == 600) {
+                else if (diffToEndInSeconds == 300) {
                     let params = {
                         notificationType: constants.NOTIFICATION_TYPE.meeting_about_to_end,
                         session,
