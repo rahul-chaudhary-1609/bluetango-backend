@@ -573,20 +573,56 @@ class EmployeeManagement {
      */
     updateManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
+            yield managerTeamMember_1.managerTeamMemberModel.update({
                 manager_id: params.new_manager_id,
             }, {
                 where: { manager_id: params.current_manager_id, },
                 returning: true
-            }));
-            yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.update({
-                manager_id: params.new_manager_id,
-            }, {
+            });
+            let goals = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findAll({
                 where: {
                     manager_id: params.current_manager_id,
-                },
-                returning: true
+                }
             }));
+            for (let goal of goals) {
+                let newGoal = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+                    where: {
+                        manager_id: params.new_manager_id,
+                        title: goal.title,
+                        description: goal.description,
+                        start_date: goal.start_date,
+                        end_date: goal.end_date,
+                        select_measure: goal.select_measure,
+                        enter_measure: goal.enter_measure,
+                    },
+                }));
+                if (newGoal) {
+                    yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        goal_id: newGoal.id,
+                    }, {
+                        where: {
+                            goal_id: goal.id,
+                        }
+                    });
+                    yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update({
+                        goal_id: newGoal.id,
+                    }, {
+                        where: {
+                            goal_id: goal.id,
+                        }
+                    });
+                }
+                else {
+                    yield teamGoal_1.teamGoalModel.update({
+                        manager_id: params.new_manager_id,
+                    }, {
+                        where: {
+                            manager_id: params.current_manager_id,
+                        },
+                        returning: true
+                    });
+                }
+            }
             return true;
         });
     }

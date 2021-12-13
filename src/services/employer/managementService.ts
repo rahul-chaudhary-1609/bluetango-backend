@@ -650,31 +650,76 @@ export class EmployeeManagement {
 
     public async updateManager(params: any, user: any) {       
 
-        await helperFunction.convertPromiseToObject(
-            await managerTeamMemberModel.update(
-                {
-                    manager_id: params.new_manager_id,
-                },
-                {
-                    where: { manager_id: params.current_manager_id, },
-                    returning: true
-                }
-            )
+        await managerTeamMemberModel.update(
+            {
+                manager_id: params.new_manager_id,
+            },
+            {
+                where: { manager_id: params.current_manager_id, },
+                returning: true
+            }
         )
 
-        await helperFunction.convertPromiseToObject(
-            await teamGoalModel.update(
-                {
-                    manager_id: params.new_manager_id,
-                },
-                {
-                    where: { 
-                        manager_id: params.current_manager_id,
-                    },
-                    returning: true
+        let goals=await helperFunction.convertPromiseToObject(
+            await teamGoalModel.findAll({
+                where:{
+                    manager_id: params.current_manager_id,
                 }
-            )
+            })
         )
+
+        for(let goal of goals){
+            
+            let newGoal=await helperFunction.convertPromiseToObject(
+                await teamGoalModel.findOne({
+                    where:{
+                        manager_id:params.new_manager_id,
+                        title:goal.title,
+                        description:goal.description,
+                        start_date:goal.start_date,
+                        end_date:goal.end_date,
+                        select_measure:goal.select_measure,
+                        enter_measure:goal.enter_measure,
+                    },
+                })
+            )
+
+            if(newGoal){
+                await teamGoalAssignModel.update(
+                    {
+                        goal_id:newGoal.id,
+                    },
+                    {
+                        where:{
+                            goal_id:goal.id,
+                        }
+                    }
+                )
+    
+                await teamGoalAssignCompletionByEmployeeModel.update(
+                    {
+                        goal_id:newGoal.id,
+                    },
+                    {
+                        where:{
+                            goal_id:goal.id,
+                        }
+                    }
+                ) 
+            }else{
+                await teamGoalModel.update(
+                    {
+                        manager_id: params.new_manager_id,
+                    },
+                    {
+                        where: { 
+                            manager_id: params.current_manager_id,
+                        },
+                        returning: true
+                    }
+                )
+            }
+        }
 
         return true;
     }
