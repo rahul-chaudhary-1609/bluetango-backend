@@ -30,10 +30,10 @@ exports.contactUsModel = connection_1.sequelize.define("contact_us", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "1=> employee, 2=> employer, 3=>coach"
+        comment: "0=> none, 1=> employee, 2=> employer, 3=>coach"
     },
 }, {
     tableName: "contact_us"
 });
-exports.contactUsModel.sync({ alter: false });
+exports.contactUsModel.sync({ alter: true });
 //# sourceMappingURL=contactUs.js.map

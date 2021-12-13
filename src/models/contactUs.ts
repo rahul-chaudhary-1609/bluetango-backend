@@ -29,11 +29,11 @@ export const contactUsModel: any = sequelize.define("contact_us", {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "1=> employee, 2=> employer, 3=>coach"
+        comment: "0=> none, 1=> employee, 2=> employer, 3=>coach"
     },    
 },
     {
         tableName: "contact_us"
     }
 );
-contactUsModel.sync({ alter: false });
+contactUsModel.sync({ alter: true });
