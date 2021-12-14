@@ -82,16 +82,6 @@ export class ChatServices {
             throw new Error(constants.MESSAGES.self_chat);
         }
 
-        let isHighestManager = await managerTeamMemberModel.findOne({
-            where: {
-                team_member_id: user.uid,
-            }
-        })
-
-        if(!isHighestManager){
-            throw new Error(constants.MESSAGES.top_level_manager);
-        }
-
         if (params.type && params.type == constants.CHAT_ROOM_TYPE.coach) {
             let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
                 where: {
@@ -173,6 +163,17 @@ export class ChatServices {
             return chatRoomData;
         }
         else {
+
+            let isHighestManager = await managerTeamMemberModel.findOne({
+                where: {
+                    team_member_id: user.uid,
+                }
+            })
+    
+            if(!isHighestManager){
+                throw new Error(constants.MESSAGES.top_level_manager);
+            }
+            
             let chatRoomData = await chatRealtionMappingInRoomModel.findOne({
                 where: {
                     [Op.or]: [
