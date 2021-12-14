@@ -397,11 +397,11 @@ class EmployersController {
   * @param req :[query params]
   * @param res : [contactus list]
   */
-    getCotactUsList(req, res) {
+    getContactUsList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 req.query.admin_id = req.user.uid;
-                const contactUS = yield employersService.getCotactUsList(req.query);
+                const contactUS = yield employersService.getContactUsList(req.query);
                 if (contactUS) {
                     return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_list_fetched);
                 }
@@ -419,11 +419,11 @@ class EmployersController {
   * @param req :[query params]
   * @param res : [contactus list]
   */
-    getCotactUsDetails(req, res) {
+    getContactUsDetails(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 req.query.admin_id = req.user.uid;
-                const contactUS = yield employersService.getCotactUsDetails(req.query);
+                const contactUS = yield employersService.getContactUsDetails(req.query);
                 if (contactUS) {
                     return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_details_fetched);
                 }

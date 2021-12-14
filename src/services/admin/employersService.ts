@@ -1105,7 +1105,7 @@ export class EmployersService {
   * 
   * @param {} params pass all parameters from request
   */
-    public async getCotactUsList(params: any) {
+    public async getContactUsList(params: any) {
 
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
@@ -1124,7 +1124,10 @@ export class EmployersService {
                     required: false,
                     attributes: ["id", "name"]
                 }
-            ]
+            ],
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
         })
     }
 
@@ -1132,7 +1135,7 @@ export class EmployersService {
   * 
   * @param {} params pass all parameters from request
   */
-    public async getCotactUsDetails(params: any) {
+    public async getContactUsDetails(params: any) {
 
         let where = {
             id: params.constactId

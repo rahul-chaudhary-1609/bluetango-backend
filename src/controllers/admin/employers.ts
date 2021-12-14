@@ -332,10 +332,10 @@ export class EmployersController {
   * @param req :[query params]
   * @param res : [contactus list]
   */
-    public async getCotactUsList(req: any, res: any) {
+    public async getContactUsList(req: any, res: any) {
         try {
             req.query.admin_id = req.user.uid;
-            const contactUS = await employersService.getCotactUsList(req.query);
+            const contactUS = await employersService.getContactUsList(req.query);
             if (contactUS) {
                 return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_list_fetched);
             } else {
@@ -351,10 +351,10 @@ export class EmployersController {
   * @param req :[query params]
   * @param res : [contactus list]
   */
-    public async getCotactUsDetails(req: any, res: any) {
+    public async getContactUsDetails(req: any, res: any) {
         try {
             req.query.admin_id = req.user.uid;
-            const contactUS = await employersService.getCotactUsDetails(req.query);
+            const contactUS = await employersService.getContactUsDetails(req.query);
             if (contactUS) {
                 return appUtils.successResponse(res, contactUS, constants.MESSAGES.contact_details_fetched);
             } else {

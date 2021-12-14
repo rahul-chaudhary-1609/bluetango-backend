@@ -1027,7 +1027,7 @@ class EmployersService {
   *
   * @param {} params pass all parameters from request
   */
-    getCotactUsList(params) {
+    getContactUsList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
@@ -1044,7 +1044,10 @@ class EmployersService {
                         required: false,
                         attributes: ["id", "name"]
                     }
-                ]
+                ],
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
             });
         });
     }
@@ -1052,7 +1055,7 @@ class EmployersService {
   *
   * @param {} params pass all parameters from request
   */
-    getCotactUsDetails(params) {
+    getContactUsDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {
                 id: params.constactId

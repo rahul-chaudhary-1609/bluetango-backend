@@ -101,10 +101,10 @@ adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersC
 adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
 
 /* view contact us list */
-adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+adminRoute.get("/getContactUsList", tokenValidator.validateAdminToken, employersController.getContactUsList);
 
 /* view contact us list */
-adminRoute.get("/getCotactUsDetails", tokenValidator.validateAdminToken, employersController.getCotactUsDetails);
+adminRoute.get("/getContactUsDetails", tokenValidator.validateAdminToken, employersController.getContactUsDetails);
 
 /* send email and push notification */
 adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
