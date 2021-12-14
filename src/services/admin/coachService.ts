@@ -443,6 +443,7 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(employeeModel,{foreignKey:"id",sourceKey:"employee_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{foreignKey:"id",sourceKey:"coach_specialization_category_id",targetKey:"id"})
 
         let session=await helperFunction.convertPromiseToObject(
             await employeeCoachSessionsModel.findOne({
@@ -465,6 +466,10 @@ export class CoachService {
                     },
                     {
                         model:employeeRanksModel,
+                        required:true,
+                    },
+                    {
+                        model:coachSpecializationCategoriesModel,
                         required:true,
                     }
                 ],
