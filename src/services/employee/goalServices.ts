@@ -210,7 +210,7 @@ export class GoalServices {
                 include: [
                     {
                         model: employeeModel,
-                        required: false,
+                        required: true,
                     },
                     {
                         model: teamGoalAssignModel,
@@ -229,9 +229,7 @@ export class GoalServices {
             count = await teamGoalModel.count({
                 where: {manager_id: user.uid }
             })
-        }
-
-       
+        }       
        
         let rows = await helperFunction.convertPromiseToObject(   await teamGoalModel.findAll({
             where: {manager_id: user.uid },
@@ -239,13 +237,13 @@ export class GoalServices {
                 {
                     model: employeeModel,
                     // separate: true,
-                    required: false,
+                    required: true,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 },
                 {
                     model: teamGoalAssignModel,
                     separate: true,
-                    required: false,
+                    required: true,
                     include: [
                         {
                             model: employeeModel,

@@ -226,7 +226,7 @@ class GoalServices {
                     include: [
                         {
                             model: employee_1.employeeModel,
-                            required: false,
+                            required: true,
                         },
                         {
                             model: teamGoalAssign_1.teamGoalAssignModel,
@@ -253,13 +253,13 @@ class GoalServices {
                     {
                         model: employee_1.employeeModel,
                         // separate: true,
-                        required: false,
+                        required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
                         separate: true,
-                        required: false,
+                        required: true,
                         include: [
                             {
                                 model: employee_1.employeeModel,
