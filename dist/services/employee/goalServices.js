@@ -276,7 +276,7 @@ class GoalServices {
             }));
             for (let goal of rows) {
                 let totalGoalMeasure = parseFloat(goal.enter_measure);
-                let goalAssignCount = goal.team_goal_assigns.length;
+                let goalAssignCount = goal.team_goal_assigns.length != 0 ? goal.team_goal_assigns.length : 1;
                 for (let goal_asssign of goal.team_goal_assigns) {
                     goal_asssign.completionAverageValue = parseFloat(goal_asssign.complete_measure);
                     //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
@@ -797,7 +797,8 @@ class GoalServices {
             }));
             for (let goal of goals) {
                 let totalGoalMeasure = parseFloat(goal.enter_measure);
-                let goalAssignCount = goal.team_goal_assigns.length;
+                let goalAssignCount = goal.team_goal_assigns.length != 0 ? goal.team_goal_assigns.length : 1;
+                ;
                 for (let goal_asssign of goal.team_goal_assigns) {
                     goal_asssign.completionAverageValue = parseFloat(goal_asssign.complete_measure);
                     //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
