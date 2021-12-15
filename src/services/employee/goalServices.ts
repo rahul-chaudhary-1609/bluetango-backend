@@ -297,7 +297,7 @@ export class GoalServices {
             include: [
                 {
                     model: employeeModel,
-                    separate: true,
+                    // separate: true,
                     required: true,
                     attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                 },
