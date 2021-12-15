@@ -200,36 +200,36 @@ export class GoalServices {
         //     })
         // )
         var count, whereCondition;
-        if (params.search_string) {
-            whereCondition = <any> {
-               name: { [Op.iLike]: `%${params.search_string}%` },
-               status:constants.STATUS.active,
-            }
-            count = await teamGoalModel.count({
-                where: {manager_id: user.uid },
-                include: [
-                    {
-                        model: employeeModel,
-                        required: true,
-                    },
-                    {
-                        model: teamGoalAssignModel,
-                        required: true,
-                        include: [
-                            {
-                                model: employeeModel,
-                                where: whereCondition,
-                                required: true,
-                            }
-                        ]
-                    }
-                ],
-            })
-        } else {
-            count = await teamGoalModel.count({
-                where: {manager_id: user.uid }
-            })
-        }       
+        // if (params.search_string) {
+        //     whereCondition = <any> {
+        //        name: { [Op.iLike]: `%${params.search_string}%` },
+        //        status:constants.STATUS.active,
+        //     }
+        //     count = await teamGoalModel.count({
+        //         where: {manager_id: user.uid },
+        //         include: [
+        //             {
+        //                 model: employeeModel,
+        //                 required: true,
+        //             },
+        //             {
+        //                 model: teamGoalAssignModel,
+        //                 required: true,
+        //                 include: [
+        //                     {
+        //                         model: employeeModel,
+        //                         where: whereCondition,
+        //                         required: true,
+        //                     }
+        //                 ]
+        //             }
+        //         ],
+        //     })
+        // } else {
+        //     count = await teamGoalModel.count({
+        //         where: {manager_id: user.uid }
+        //     })
+        // }       
        
         let rows = await helperFunction.convertPromiseToObject(   await teamGoalModel.findAll({
             where: {manager_id: user.uid },
@@ -247,18 +247,20 @@ export class GoalServices {
                     include: [
                         {
                             model: employeeModel,
-                            where: whereCondition,
+                            // where: whereCondition,
                             required: true,
                             attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                         }
                     ]
                 }
             ],
-            limit: limit,
-            offset: offset,
+            // limit: limit,
+            // offset: offset,
             order: [["createdAt", "DESC"]]
         })
         )
+
+        let filteredRows=[];
 
         for(let goal of rows){
 
@@ -268,14 +270,32 @@ export class GoalServices {
                 goal_asssign.completionAverageValue=parseFloat(goal_asssign.complete_measure);
                 //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
             }
-
-            
+          
 
             let comepletedGoalMeasureValue=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAverageValue),0);
             //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
             goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
             goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
+            
+            if(params.search_string && params.search_string.trim()){
+                let isFound=false;
+                for(let assign of goal.team_goal_assigns){
+                    if(assign.employee.name.toLowerCase().includes(params.search_string.toLowerCase())){
+                        isFound=true;
+                        break;
+                    }
+                }
+
+                if(isFound){
+                    filteredRows.push(goal)
+                }
+            }else{
+                filteredRows.push(goal)
+            }
         }
+
+        rows=[...filteredRows];
+        count=rows.length;
 
         return { count, rows}
     }
