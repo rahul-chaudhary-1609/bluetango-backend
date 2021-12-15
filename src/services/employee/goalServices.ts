@@ -474,6 +474,8 @@ export class GoalServices {
             }
             await helperFunction.sendFcmNotification([managerData.device_token], notificationData);
 
+            teamGoalAssignRequestRes.goal_total_measure=getGoalData.enter_measure;
+
             return teamGoalAssignRequestRes;
         // } else {
         //     throw new Error(constants.MESSAGES.invalid_measure);
