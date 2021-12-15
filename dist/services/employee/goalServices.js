@@ -208,10 +208,18 @@ class GoalServices {
             teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            // let employee=await helperFunction.convertPromiseToObject(
+            //     await employeeModel.findAll({
+            //         where:{
+            //             [Op.iLike]: `%${params.search_string}%`
+            //         }
+            //     })
+            // )
             var count, whereCondition;
             if (params.search_string) {
                 whereCondition = {
-                    name: { [Op.iLike]: `%${params.search_string}%` }
+                    name: { [Op.iLike]: `%${params.search_string}%` },
+                    status: constants.STATUS.active,
                 };
                 count = yield teamGoal_1.teamGoalModel.count({
                     where: { manager_id: user.uid },

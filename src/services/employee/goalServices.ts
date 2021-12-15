@@ -191,10 +191,19 @@ export class GoalServices {
         teamGoalModel.hasMany(teamGoalAssignModel,{ foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
         teamGoalAssignModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
         teamGoalModel.hasMany(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+
+        // let employee=await helperFunction.convertPromiseToObject(
+        //     await employeeModel.findAll({
+        //         where:{
+        //             [Op.iLike]: `%${params.search_string}%`
+        //         }
+        //     })
+        // )
         var count, whereCondition;
         if (params.search_string) {
             whereCondition = <any> {
-               name: { [Op.iLike]: `%${params.search_string}%` }
+               name: { [Op.iLike]: `%${params.search_string}%` },
+               status:constants.STATUS.active,
             }
             count = await teamGoalModel.count({
                 where: {manager_id: user.uid },
