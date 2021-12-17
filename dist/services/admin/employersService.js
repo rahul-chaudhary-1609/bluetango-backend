@@ -27,9 +27,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployersService = void 0;
 const models_1 = require("../../models");
@@ -37,7 +34,6 @@ const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
 const coachManagement_1 = require("../../models/coachManagement");
 const contactUs_1 = require("../../models/contactUs");
-const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
@@ -85,7 +81,7 @@ class EmployersService {
                     status: { [Op.in]: [0, 1] }
                 };
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield models_1.employersModel.findOne({
                     where: {
@@ -116,7 +112,7 @@ class EmployersService {
                 });
             }
             params.admin_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
+            if (!existingUser) {
                 if (params.id) {
                     delete params.password;
                     let updateData = yield models_1.employersModel.update(params, {
@@ -729,7 +725,7 @@ class EmployersService {
                     status: { [Op.in]: [0, 1] }
                 };
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield coachManagement_1.coachManagementModel.findOne({
                     where: {
@@ -761,7 +757,7 @@ class EmployersService {
             }
             console.log("existingUser", existingUser);
             params.admin_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
+            if (!existingUser) {
                 if (params.id) {
                     delete params.password;
                     let updateData = yield coachManagement_1.coachManagementModel.update(params, {

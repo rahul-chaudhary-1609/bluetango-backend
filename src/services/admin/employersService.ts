@@ -57,7 +57,7 @@ export class EmployersService {
                 status: { [Op.in]: [0, 1] }
             };
         }
-        var existingUser;
+        let existingUser=null;
         if (params.id) {
             existingUser = await employersModel.findOne({
                 where: {
@@ -87,7 +87,7 @@ export class EmployersService {
             });
         }
         params.admin_id = user.uid;
-        if (_.isEmpty(existingUser)) {
+        if (!existingUser) {
             if (params.id) {
                 delete params.password;
                 let updateData = await employersModel.update(params, {
@@ -761,7 +761,7 @@ export class EmployersService {
                 status: { [Op.in]: [0, 1] }
             };
         }
-        var existingUser;
+        let existingUser=null;
         if (params.id) {
             existingUser = await coachManagementModel.findOne({
                 where: {
@@ -792,7 +792,7 @@ export class EmployersService {
         }
         console.log("existingUser",existingUser)
         params.admin_id = user.uid;
-        if (_.isEmpty(existingUser)) {
+        if (!existingUser) {
             if (params.id) {
                 delete params.password;
                 let updateData = await coachManagementModel.update(params, {
