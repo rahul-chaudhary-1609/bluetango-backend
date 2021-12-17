@@ -104,7 +104,7 @@ export class EmployeeManagement {
             if(!departmentExists)
                 throw new Error(constants.MESSAGES.invalid_department);
         }
-        var existingUser; 
+        let existingUser=null; 
         if (params.id) {
             existingUser = await employeeModel.findOne({
                 where: {
@@ -135,7 +135,7 @@ export class EmployeeManagement {
         }      
         
         params.current_employer_id = user.uid;
-        if (_.isEmpty(existingUser)) {
+        if (!existingUser) {
             let isEmployeeCodeExist = null;
             if (params.id) {
                 isEmployeeCodeExist = await employeeModel.findOne({

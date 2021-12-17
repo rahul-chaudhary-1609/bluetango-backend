@@ -27,13 +27,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployeeManagement = void 0;
 const models_1 = require("../../models");
-const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
@@ -120,7 +116,7 @@ class EmployeeManagement {
                 if (!departmentExists)
                     throw new Error(constants.MESSAGES.invalid_department);
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield models_1.employeeModel.findOne({
                     where: {
@@ -151,7 +147,7 @@ class EmployeeManagement {
                 });
             }
             params.current_employer_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
+            if (!existingUser) {
                 let isEmployeeCodeExist = null;
                 if (params.id) {
                     isEmployeeCodeExist = yield models_1.employeeModel.findOne({
