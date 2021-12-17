@@ -301,7 +301,10 @@ export class EmployersService {
             [Op.and]:[
                 {
                     status:{
-                        [Op.notIn]:[constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled]
+                        [Op.notIn]:[
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                        ]
                     }
                 },
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
