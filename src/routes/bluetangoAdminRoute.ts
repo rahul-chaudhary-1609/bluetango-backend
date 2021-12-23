@@ -40,5 +40,5 @@ bluetangoAdminRoute.put("/updateBios", upload.single('image'), joiSchemaValidati
 /* delete Bios */
 bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
 /* get Bios */
-bluetangoAdminRoute.get("/getBios", biosController.getBios);
+bluetangoAdminRoute.get("/getBios",tokenValidator.validateBluetangoAdminToken, biosController.getBios);
 export = bluetangoAdminRoute;
