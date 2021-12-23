@@ -28,6 +28,7 @@ const employeeRoute_1 = __importDefault(require("./employeeRoute"));
 const employerRoute_1 = __importDefault(require("./employerRoute"));
 const coachRoute_1 = __importDefault(require("./coachRoute"));
 const webRoute_1 = __importDefault(require("./webRoute"));
+const bluetangoAdminRoute_1 = __importDefault(require("./bluetangoAdminRoute"));
 const appUtils = __importStar(require("../utils/appUtils"));
 const constants = __importStar(require("../constants"));
 module.exports = function (app) {
@@ -36,6 +37,7 @@ module.exports = function (app) {
     app.use(`${ROUTE_PREFIX}employer`, employerRoute_1.default);
     app.use(`${ROUTE_PREFIX}coach`, coachRoute_1.default);
     app.use(`${ROUTE_PREFIX}web`, webRoute_1.default);
+    app.use(`${ROUTE_PREFIX}bluetango-admin`, bluetangoAdminRoute_1.default);
     app.use((err, req, res, next) => {
         appUtils.errorResponse(res, err, constants.code.error_code);
     });

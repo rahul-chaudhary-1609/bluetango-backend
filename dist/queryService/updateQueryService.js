@@ -40,11 +40,12 @@ const lodash_1 = __importDefault(require("lodash"));
 *
 */
 exports.updateData = (params, condition) => __awaiter(void 0, void 0, void 0, function* () {
+    let updateQueryServiceData;
     console.log('params - - ', params, 'cond - - ', condition);
     if (!lodash_1.default.isEmpty(params.model)) {
         if (!lodash_1.default.isEmpty(params) && !lodash_1.default.isEmpty(condition)) {
             let model = params.model;
-            var updateQueryServiceData = yield model.update(params, { where: condition });
+            updateQueryServiceData = yield model.update(params, { where: condition });
         }
         else {
             throw new Error(constants.MESSAGES.request_validation_message);

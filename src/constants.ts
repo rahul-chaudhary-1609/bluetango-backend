@@ -197,12 +197,14 @@ export const ROUTE_PREFIX = {
 
 export const mobile_otp_message = 'Your one time password is ';
 export const SECRET_KEY = "A!@#$%^";
+export const BLUETANGO_ADMIN_SECRET_KEY = "S$%^!@#K";
 export const ADMIN_SECRET_KEY = "S$%^!@#K";
 export const EMAIL_SECRET_KEY = "S$%^K@*S";
 export const EMPLOYEE_SECRET_KEY = "EE$%^!@#K"
 export const EMPLOYER_SECRET_KEY = "ER$%^!@#K"
 export const COACH_SECRET_KEY = "ER$%^!@#K"
 export const FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K"
+export const BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K"
 export const defaultServerResponse = {
   status: 400,
   success: false,
@@ -429,4 +431,11 @@ export const CONTACT_TYPE={
   employee:1,
   employer:2,
   coach:3,
+}
+
+export const ADMIN_PERMISSION={
+  add:1,
+  update:2,
+  view:3,
+  delete:4
 }

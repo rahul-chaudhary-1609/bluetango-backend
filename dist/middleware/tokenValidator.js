@@ -31,12 +31,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkEmployerHaveActivePlan = exports.validateCoachToken = exports.validateEmployerToken = exports.validateEmployeeToken = exports.validateForgotPasswordToken = exports.validateAdminToken = void 0;
+exports.checkEmployerHaveActivePlan = exports.validateCoachToken = exports.validateEmployerToken = exports.validateEmployeeToken = exports.validateBluetangoForgotPasswordToken = exports.validateForgotPasswordToken = exports.validateBluetangoAdminToken = exports.validateAdminToken = void 0;
 const constants = __importStar(require("../constants"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const employersService_1 = require("../services/admin/employersService");
 const models_1 = require("../models");
+const queryServices = __importStar(require("../queryService/bluetangoAdmin/queryService"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
+const bluetangoAdmin_1 = require("../models/bluetangoAdmin");
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,6 +69,38 @@ exports.validateAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 
     }
     return res.status(response.status).send(response);
 });
+exports.validateBluetangoAdminToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let response = Object.assign({}, constants.defaultServerResponse);
+    try {
+        if (!req.headers.authorization) {
+            throw new Error(constants.MESSAGES.token_missing);
+        }
+        const token = req.headers.authorization;
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.BLUETANGO_ADMIN_SECRET_KEY || constants.BLUETANGO_ADMIN_SECRET_KEY);
+        const admin = yield queryServices.selectOne(bluetangoAdmin_1.bluetangoAdminModel, { where: { id: decoded.id } });
+        if (admin.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account;
+            return res.status(response.status).send(response);
+        }
+        else if (admin.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account;
+            return res.status(response.status).send(response);
+        }
+        let payload = {
+            uid: decoded.id,
+            user_role: decoded.user_role
+        };
+        req.user = payload;
+        return next();
+    }
+    catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+});
 exports.validateForgotPasswordToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let response = Object.assign({}, constants.defaultServerResponse);
     try {
@@ -78,6 +112,26 @@ exports.validateForgotPasswordToken = (req, res, next) => __awaiter(void 0, void
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
+        };
+        req.user = payload;
+        return next();
+    }
+    catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+});
+exports.validateBluetangoForgotPasswordToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let response = Object.assign({}, constants.defaultServerResponse);
+    try {
+        if (!req.headers.authorization) {
+            throw new Error(constants.MESSAGES.token_missing);
+        }
+        const token = req.headers.authorization;
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY);
+        let payload = {
+            uid: decoded.id,
         };
         req.user = payload;
         return next();

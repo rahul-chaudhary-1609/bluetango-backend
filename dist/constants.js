@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CONTACT_TYPE = exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.CHAT_USER_TYPE = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+exports.ADMIN_PERMISSION = exports.CONTACT_TYPE = exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.CHAT_USER_TYPE = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.BLUETANGO_ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.MESSAGES = {
@@ -213,12 +213,14 @@ exports.ROUTE_PREFIX = {
 };
 exports.mobile_otp_message = 'Your one time password is ';
 exports.SECRET_KEY = "A!@#$%^";
+exports.BLUETANGO_ADMIN_SECRET_KEY = "S$%^!@#K";
 exports.ADMIN_SECRET_KEY = "S$%^!@#K";
 exports.EMAIL_SECRET_KEY = "S$%^K@*S";
 exports.EMPLOYEE_SECRET_KEY = "EE$%^!@#K";
 exports.EMPLOYER_SECRET_KEY = "ER$%^!@#K";
 exports.COACH_SECRET_KEY = "ER$%^!@#K";
 exports.FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K";
+exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K";
 exports.defaultServerResponse = {
     status: 400,
     success: false,
@@ -415,5 +417,11 @@ exports.CONTACT_TYPE = {
     employee: 1,
     employer: 2,
     coach: 3,
+};
+exports.ADMIN_PERMISSION = {
+    add: 1,
+    update: 2,
+    view: 3,
+    delete: 4
 };
 //# sourceMappingURL=constants.js.map

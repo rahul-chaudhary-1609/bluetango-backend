@@ -4,6 +4,7 @@ import employeeRoute  from "./employeeRoute";
 import employerRoute from "./employerRoute";
 import coachRoute from "./coachRoute";
 import webRoute from "./webRoute";
+import bluetangoAdminRoute from "./bluetangoAdminRoute";
 import * as appUtils from '../utils/appUtils';
 import * as constants from '../constants';
 
@@ -13,6 +14,7 @@ module.exports = function(app) {
   app.use(`${ROUTE_PREFIX}employer`, employerRoute);
   app.use(`${ROUTE_PREFIX}coach`, coachRoute);
   app.use(`${ROUTE_PREFIX}web`, webRoute);
+  app.use(`${ROUTE_PREFIX}bluetango-admin`, bluetangoAdminRoute);
   app.use((err, req, res, next) => {
     appUtils.errorResponse(res, err, constants.code.error_code);
   });
