@@ -1,8 +1,7 @@
-import { BiosService } from "../../services/bluetango/index";
+import { BiosService } from "../../services/bluetangoAdmin/index";
 import * as constants from '../../constants';
 import * as appUtils from '../../utils/appUtils';
 import { deleteFile } from "../../middleware/multerParser";
-const json2csv = require('json2csv').parse;
 
 
 //Instantiates a Home services  

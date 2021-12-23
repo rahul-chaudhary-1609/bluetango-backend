@@ -8,11 +8,12 @@ import * as multer from '../middleware/multerParser';
 import * as validators from "../middleware/validators";
 import * as helperFunction from "../utils/helperFunction";
 import { upload } from "../middleware/multerParser"
+import * as BluetangoController from "../controllers/bluetangoAdmin/index";
 
 const bluetangoAdminRoute = express.Router();
 
 const authController = new AdminController.AuthController();
-
+const biosController = new BluetangoController.BiosController();
 
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin",tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
@@ -32,5 +33,9 @@ bluetangoAdminRoute.post("/uploadFile", tokenValidator.validateBluetangoAdminTok
 /* logout route for admin logout */
 bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, authController.logout);
 
-
+/* add add Bios */
+bluetangoAdminRoute.post("/addBios",upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios),tokenValidator.validateAdminToken, biosController.addBios);
+bluetangoAdminRoute.put("/updateBios",upload.single('image'), joiSchemaValidation.validateBody(adminSchema.updateBios),tokenValidator.validateAdminToken, biosController.updateBios);
+bluetangoAdminRoute.delete("/deleteBios/:id",tokenValidator.validateAdminToken, biosController.deleteBios);
+bluetangoAdminRoute.get("/getBios", biosController.getBios);
 export = bluetangoAdminRoute;

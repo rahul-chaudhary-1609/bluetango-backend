@@ -7,7 +7,7 @@ import webRoute from "./webRoute";
 import bluetangoAdminRoute from "./bluetangoAdminRoute";
 import * as appUtils from '../utils/appUtils';
 import * as constants from '../constants';
-import buleangoRoute from './bluetangoRoute'
+//import buleangoRoute from './bluetangoRoute'
 module.exports = function(app) {
   app.use(`${ROUTE_PREFIX}admin`, adminRoute);
   app.use(`${ROUTE_PREFIX}employee`, employeeRoute);
