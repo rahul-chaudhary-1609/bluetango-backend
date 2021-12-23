@@ -53,6 +53,10 @@
     {
       "name": "Web",
       "description": "Web related api's"
+    },
+    {
+      "name": "bluetango",
+      "description": "bluetango related api's"
     }
   ],
   "paths": {
@@ -8154,6 +8158,140 @@
           "application/x-www-form-urlencoded"
         ],
         "parameters": [],
+        "responses": {}
+      }
+    },
+    "/bluetango/addBios": {
+      "post": {
+        "tags": [
+          "bluetango"
+        ],
+        "description": "add bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+         
+          {
+            "name": "admin_id",
+            "in": "formData",
+            "description": "admin_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "coach_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango/updateBios": {
+      "put": {
+        "tags": [
+          "bluetango"
+        ],
+        "description": "update bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "admin_id",
+            "in": "formData",
+            "description": "admin_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango/deleteBios/{id}": {
+      "delete": {
+        "tags": [
+          "bluetango"
+        ],
+        "description": "delete bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango/getBios": {
+      "get": {
+        "tags": [
+          "bluetango"
+        ],
+        "description": "get bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+        ],
         "responses": {}
       }
     }

@@ -182,6 +182,12 @@ export const MESSAGES = {
   zoom_meeting_not_found:`Meeting with this {meetingId} is not found or has expired.`,
   zoom_meeting_emp_cancel_error:`You can cancel a meeting until it has just started`,
   zoom_meeting_coach_cancel_error:`You can cancel a meeting until it's over`,
+  biosAdded:'Bios added successfully',
+  bios_already_exist:'Bios already exists for this coach',
+  bios_not_exist:'Bios not exists for this coach',
+  biosUpdated:'Bios updated successfully',
+  biosDeleted:'Bios deleted successfully',
+
 }
 
 
