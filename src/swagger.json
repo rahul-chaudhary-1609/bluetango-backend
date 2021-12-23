@@ -55,8 +55,8 @@
       "description": "Web related api's"
     },
     {
-      "name": "bluetango",
-      "description": "bluetango related api's"
+      "name": "Bluetango Admin",
+      "description": "Bluetango admin related api's"
     }
   ],
   "paths": {
@@ -8161,10 +8161,219 @@
         "responses": {}
       }
     },
-    "/bluetango/addBios": {
+    "/bluetango-admin/login": {
       "post": {
         "tags": [
-          "bluetango"
+          "Bluetango Admin"
+        ],
+        "description": "Admin Login",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addAdmin": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin Login",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tpermissions is required\n2. permissions is an array of integers: [1,2,3,4]: 1=>add, 2=> updated, 3=> view, 4=> delete",
+            "required": true,
+            "schema":{
+              "type": "object",
+              "properties":{
+                "name":{
+                  "type": "string"
+                },
+                "email":{
+                  "type": "string"
+                },
+                "country_code":{
+                  "type": "string"
+                },
+                "phone_number":{
+                  "type": "string"
+                },
+                "profile_pic_url":{
+                  "type": "string"
+                },
+                "permissions":{
+                  "type":"array",
+                  "items": {
+                    "type": "number"
+                    }
+                },
+                "social_media_handles":{
+                  "type":"object",
+                    "properties":{
+                      "facebook":{
+                        "type":"string"
+                      },
+                      "twitter":{
+                        "type":"string"
+                      },
+                      "linkedin":{
+                        "type":"string"
+                      },
+                      "instagram":{
+                        "type":"string"
+                      },
+                      "google":{
+                        "type":"string"
+                      }
+                    }
+                }
+              }              
+            }
+          }        
+          
+        ],
+        "responses": {}
+      }
+    },
+    
+    "/bluetango-admin/forgotPassword": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin forget password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/resetPassword": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin reset password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/uploadFile": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Employee get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "folderName",
+            "in": "formData",
+            "description": "folderName",
+            "required": true,
+            "type": "string",
+            "enum":["bluetango_admin_profile_pic"]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/logout": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to get admin logout",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addBios": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
         ],
         "description": "add bios",
         "consumes": [
@@ -8211,10 +8420,10 @@
         "responses": {}
       }
     },
-    "/bluetango/updateBios": {
+    "/bluetango-admin/updateBios": {
       "put": {
         "tags": [
-          "bluetango"
+          "Bluetango Admin"
         ],
         "description": "update bios",
         "consumes": [
@@ -8260,10 +8469,10 @@
         "responses": {}
       }
     },
-    "/bluetango/deleteBios/{id}": {
+    "/bluetango-admin/deleteBios/{id}": {
       "delete": {
         "tags": [
-          "bluetango"
+          "Bluetango Admin"
         ],
         "description": "delete bios",
         "consumes": [
@@ -8281,10 +8490,10 @@
         "responses": {}
       }
     },
-    "/bluetango/getBios": {
+    "/bluetango-admin/getBios": {
       "get": {
         "tags": [
-          "bluetango"
+          "Bluetango Admin"
         ],
         "description": "get bios",
         "consumes": [
@@ -8295,7 +8504,6 @@
         "responses": {}
       }
     }
-
 
   },
   "definitions": {

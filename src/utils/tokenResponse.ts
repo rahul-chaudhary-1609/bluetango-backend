@@ -10,6 +10,18 @@ export const tokenResponse = async (obj: any) => {
     return { token };
 }
 
+export const bluetangoAdminTokenResponse = async (obj: any) => {
+    const token = jwt.sign(
+        { 
+            id: obj.id,
+            user_role: obj.admin_role
+        }, 
+        process.env.BLUETANGO_ADMIN_SECRET_KEY || constants.BLUETANGO_ADMIN_SECRET_KEY, 
+        //{ expiresIn: '1d' }
+    );
+    return { token };
+}
+
 export const adminTokenResponse = async (obj: any) => {
     const token = jwt.sign(
         { 
@@ -65,6 +77,17 @@ export const forgotPasswordTokenResponse = async (obj: any, role:any) => {
             user_role: role
         }, 
         process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, 
+        { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+    );
+    return { token };
+}
+
+export const bluetangoForgotPasswordTokenResponse = async (obj: any) => {
+    const token = jwt.sign(
+        { 
+            id: obj.id,
+        }, 
+        process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY, 
         { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
     );
     return { token };

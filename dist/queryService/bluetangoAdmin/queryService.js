@@ -31,16 +31,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRawQueryResult = exports.selectAndCountAll = exports.selectAll = exports.selectData = void 0;
-const constants = __importStar(require("../constants"));
+exports.deleteModel = exports.deleteData = exports.getRawQueryResult = exports.selectAndCountAll = exports.selectAll = exports.selectOne = exports.updateData = exports.addData = void 0;
+const constants = __importStar(require("../../constants"));
 const lodash_1 = __importDefault(require("lodash"));
-const connection_1 = require("../connection");
+const connection_1 = require("../../connection");
+/*
+* function for add details
+* @req : token, data
+*
+*/
+exports.addData = (model, data) => __awaiter(void 0, void 0, void 0, function* () {
+    let addQueryServiceData;
+    if (!lodash_1.default.isEmpty(model)) {
+        if (!lodash_1.default.isEmpty(data)) {
+            addQueryServiceData = yield model.create(data);
+        }
+        else {
+            throw new Error(constants.MESSAGES.request_validation_message);
+        }
+    }
+    else {
+        throw new Error(constants.MESSAGES.model_name_required);
+    }
+    return addQueryServiceData;
+});
+/*
+* function for update details
+* @req : token, data
+*
+*/
+exports.updateData = (params, condition) => __awaiter(void 0, void 0, void 0, function* () {
+    let updateQueryServiceData;
+    console.log('params - - ', params, 'cond - - ', condition);
+    if (!lodash_1.default.isEmpty(params.model)) {
+        if (!lodash_1.default.isEmpty(params) && !lodash_1.default.isEmpty(condition)) {
+            let model = params.model;
+            updateQueryServiceData = yield model.update(params, condition);
+        }
+        else {
+            throw new Error(constants.MESSAGES.request_validation_message);
+        }
+    }
+    else {
+        throw new Error(constants.MESSAGES.model_name_required);
+    }
+    return updateQueryServiceData;
+});
 /*
 * function for select details
 * @req : token, data
 *
 */
-exports.selectData = (model, condition) => __awaiter(void 0, void 0, void 0, function* () {
+exports.selectOne = (model, condition) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let selectQueryServiceData;
         if (!lodash_1.default.isEmpty(model)) {
@@ -104,4 +146,35 @@ exports.getRawQueryResult = (query, replacements) => __awaiter(void 0, void 0, v
     const result = yield connection_1.rawQuery(query, replacements);
     return result[0];
 });
-//# sourceMappingURL=selectQueryService.js.map
+/*
+* function for delete details
+* @req : token, data
+*
+*/
+exports.deleteData = (params, condition) => __awaiter(void 0, void 0, void 0, function* () {
+    let deleteQueryServiceData;
+    if (!lodash_1.default.isEmpty(params.model)) {
+        if (!lodash_1.default.isEmpty(params) && !lodash_1.default.isEmpty(condition)) {
+            let model = params.model;
+            deleteQueryServiceData = yield model.destroy(params, { where: condition });
+        }
+        else {
+            throw new Error(constants.MESSAGES.request_validation_message);
+        }
+    }
+    else {
+        throw new Error(constants.MESSAGES.model_name_required);
+    }
+    return deleteQueryServiceData;
+});
+exports.deleteModel = (model) => __awaiter(void 0, void 0, void 0, function* () {
+    let deleteQueryServiceData;
+    if (!lodash_1.default.isEmpty(model)) {
+        deleteQueryServiceData = yield model.destroy();
+    }
+    else {
+        throw new Error(constants.MESSAGES.model_name_required);
+    }
+    return deleteQueryServiceData;
+});
+//# sourceMappingURL=queryService.js.map
