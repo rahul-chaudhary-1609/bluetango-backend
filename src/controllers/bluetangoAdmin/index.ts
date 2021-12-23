@@ -1,4 +1,4 @@
-import { BiosController } from "../bluetangoAdmin/biosController";
+import { BiosController } from "./coachBiosController";
 
 export {
     BiosController

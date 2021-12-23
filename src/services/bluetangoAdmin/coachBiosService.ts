@@ -5,6 +5,7 @@ import * as constants from "../../constants";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 import path from 'path'
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
 
 export class BiosService {
     constructor() { }
@@ -18,14 +19,14 @@ export class BiosService {
             coach_id: params.coach_id,
         };
         qry.raw = true;
-        let existingBios = await coachBiosModel.findOne(qry)
+        let existingBios = await queryService.selectOne(coachBiosModel,qry)
         if (_.isEmpty(existingBios)) {
             if (file) {
                 let profilePic = await helperFunction.uploadFile(file, "bios_profile_pic");
                 params.image = profilePic;
             }
             params.admin_id = user.uid;
-            let bios = await coachBiosModel.create(params)
+            let bios = await queryService.addData(coachBiosModel,params)
             return bios;
         } else {
             throw new Error(constants.MESSAGES.bios_already_exist);
@@ -41,7 +42,7 @@ export class BiosService {
             id: params.id,
         };
         qry.raw = true;
-        let existingBios = await coachBiosModel.findOne(qry)
+        let existingBios = await queryService.selectOne(coachBiosModel,qry)
         if (!_.isEmpty(existingBios)) {
             if (file) {
                 let profilePic = await helperFunction.uploadFile(file, "bios_profile_pic");
@@ -68,17 +69,13 @@ export class BiosService {
         */
     public async deleteBios(params: any) {
         try {
-            let bios = await coachBiosModel.findOne({
-                where: { id: params.id }
-            })
+            let bios = await queryService.selectOne(coachBiosModel,{where: { id: params.id }})
             let fileName = path.parse(bios.image).base;
             const Param = {
                 Key: fileName
             };
             await helperFunction.deleteFile(Param)
-            let deleteBios = await coachBiosModel.destroy({
-                where: { id: params.id }
-            })
+            let deleteBios = queryService.deleteData(coachBiosModel,{ where: { id: params.id }})
             return deleteBios;
         } catch (error) {
             throw new Error(constants.MESSAGES.bad_request);
@@ -90,7 +87,7 @@ export class BiosService {
        * @param : token
        */
  public async getBios() {
-    return await coachBiosModel.findAll()
+    return await queryService.selectAndCountAll(coachBiosModel,{},{})
 
 }
 }

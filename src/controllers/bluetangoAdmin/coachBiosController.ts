@@ -29,7 +29,7 @@ export class BiosController {
       * @param req :
       * @param res 
       */
-     public async updateBios(req: any, res: any) {
+    public async updateBios(req: any, res: any) {
         try {
             const responseFromService = await biosService.updateBios(req.body, req.file, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosUpdated);
@@ -43,24 +43,24 @@ export class BiosController {
       * @param req :
       * @param res 
       */
-     public async deleteBios(req: any, res: any) {
+    public async deleteBios(req: any, res: any) {
         try {
-           const responseFromService = await biosService.deleteBios(req.params);
-           return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosDeleted);
+            const responseFromService = await biosService.deleteBios(req.params);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosDeleted);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
-     /**
-      * get all coach bios
-      * @param req :
-      * @param res 
-      */
-      public async getBios(req: any, res: any) {
+    /**
+     * get all coach bios
+     * @param req :
+     * @param res 
+     */
+    public async getBios(req: any, res: any) {
         try {
-           const responseFromService = await biosService.getBios();
-           return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosDeleted);
+            const responseFromService = await biosService.getBios();
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);

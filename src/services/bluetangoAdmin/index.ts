@@ -1,4 +1,4 @@
-import { BiosService } from "../bluetangoAdmin/biosService";
+import { BiosService } from "./coachBiosService";
 
 export {
     BiosService
