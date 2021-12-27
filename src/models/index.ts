@@ -5,6 +5,7 @@ import { departmentModel } from './department';
 import { industryTypeModel } from './industryType';
 import { emojiModel } from './emoji';
 import { coachManagementModel } from './coachManagement';
+import { coachBiosModel } from './coachBios';
 
 
 /* all associations put here to avoid duplicate association */
@@ -17,5 +18,6 @@ export {
     employeeModel,
     departmentModel,
     industryTypeModel,
-    coachManagementModel
+    coachManagementModel,
+    coachBiosModel
 }

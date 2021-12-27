@@ -571,3 +571,13 @@ export const getUniqueSlotTimeGroupId = async ()=> {
 
     return slot_time_group_id;
 }
+export const deleteFile = (params: any) => {
+    params.Bucket = process.env.AWS_BUCKET_NAME;
+    s3Client.deleteObject(params, (error, data) => {
+      if (error) {
+        console.log(error)
+      }
+      console.log(data)
+    });
+  
+  }
