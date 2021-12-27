@@ -49,7 +49,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
             let query = {
-                attributes: ['id', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles'],
+                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles'],
                 where: {
                     email: params.email,
                     status: {
@@ -133,11 +133,71 @@ class AuthService {
                 <br> password : ${password}
                 `;
                 mailParams.subject = "Subadmin Login Credentials";
+                mailParams.name = "BlueTango";
                 yield helperFunction.sendEmail(mailParams);
                 return newAdmin;
             }
             else {
                 throw new Error(constants.MESSAGES.email_phone_already_registered);
+            }
+        });
+    }
+    /**
+    * add sub admin function
+    @param {} params pass all parameters from request
+    */
+    updateProfile(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            params.email = params.email.toLowerCase();
+            let query = {
+                where: {
+                    email: params.email,
+                    status: {
+                        [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                    },
+                    id: {
+                        [Op.ne]: user.uid,
+                    }
+                }
+            };
+            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            if (!admin) {
+                params.model = bluetangoAdmin_1.bluetangoAdminModel;
+                query = {
+                    where: {
+                        id: user.uid,
+                    },
+                    returning: true,
+                    raw: true,
+                };
+                let updatedAdmin = yield queryService.updateData(params, query);
+                return updatedAdmin;
+            }
+            else {
+                throw new Error(constants.MESSAGES.email_already_registered);
+            }
+        });
+    }
+    /*
+    * function to set new pass
+    */
+    changePassword(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                where: {
+                    id: user.uid,
+                }
+            };
+            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let comparePassword = yield appUtils.comparePassword(params.old_password, admin.password);
+            if (comparePassword) {
+                params.password = yield appUtils.bcryptPassword(params.new_password);
+                params.model = bluetangoAdmin_1.bluetangoAdminModel;
+                yield queryService.updateData(params, query);
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.invalid_old_password);
             }
         });
     }
@@ -166,6 +226,7 @@ class AuthService {
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
                 mailParams.subject = "Reset Password Request";
+                mailParams.name = "BlueTango";
                 yield helperFunction.sendEmail(mailParams);
                 return true;
             }

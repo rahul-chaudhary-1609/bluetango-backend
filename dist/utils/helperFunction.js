@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -94,7 +94,7 @@ exports.sendEmail = (params) => __awaiter(void 0, void 0, void 0, function* () {
             to: params.to,
             from: {
                 email: process.env.SENDGRID_FROM_EMAIL,
-                name: 'BluXinga'
+                name: params.name || 'BluXinga'
             },
             subject: params.subject,
             html: params.html,
@@ -518,4 +518,13 @@ exports.getUniqueSlotTimeGroupId = () => __awaiter(void 0, void 0, void 0, funct
     }
     return slot_time_group_id;
 });
+exports.deleteFile = (params) => {
+    params.Bucket = process.env.AWS_BUCKET_NAME;
+    s3Client.deleteObject(params, (error, data) => {
+        if (error) {
+            console.log(error);
+        }
+        console.log(data);
+    });
+};
 //# sourceMappingURL=helperFunction.js.map

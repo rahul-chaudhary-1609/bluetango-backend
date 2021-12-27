@@ -40,6 +40,7 @@ const port = process.env.PORT || 3000;
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express")); // import swagger package for documentation
 const swagger_json_1 = __importDefault(require("./swagger.json"));
 const cors_1 = __importDefault(require("cors"));
+const cronJob_1 = require("./utils/cronJob");
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
 //options for cors midddleware
@@ -111,11 +112,11 @@ require("./routes")(app);
 /*Initialize Listner*/
 var server = app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Listening on port: ', port);
-    // await scheduleFreeTrialExpirationNotificationJob();
-    // await scheduleGoalSubmitReminderNotificationJob();
-    // await scheduleDeleteNotificationJob();
-    // // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
-    // await scheduleMeetingRemainingTimeNotificationJob();
+    yield cronJob_1.scheduleFreeTrialExpirationNotificationJob();
+    yield cronJob_1.scheduleGoalSubmitReminderNotificationJob();
+    yield cronJob_1.scheduleDeleteNotificationJob();
+    // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
+    yield cronJob_1.scheduleMeetingRemainingTimeNotificationJob();
 })).on('error', (e) => {
     console.log('Error happened: ', e.message);
 });

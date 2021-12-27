@@ -76,11 +76,30 @@ class AuthController {
             }
         });
     }
-    /**
-    * addNewAdmin
-    * @param req :[email]
-    * @param res
-    */
+    updateProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.updateProfile(req.body, req.user);
+                const msg = constants.MESSAGES.update_user_details;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    changePassword(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.changePassword(req.body, req.user);
+                const msg = constants.MESSAGES.password_change_success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
     forgetPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -93,11 +112,6 @@ class AuthController {
             }
         });
     }
-    /**
-    * addNewAdmin
-    * @param req :[email, otp, password, confirmPassword]
-    * @param res
-    */
     resetPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

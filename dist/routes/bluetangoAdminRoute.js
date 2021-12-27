@@ -27,12 +27,20 @@ const joiSchemaValidation = __importStar(require("../middleware/joiSchemaValidat
 const tokenValidator = __importStar(require("../middleware/tokenValidator"));
 const AdminController = __importStar(require("../controllers/bluetangoAdmin/authController"));
 const multerParser_1 = require("../middleware/multerParser");
+const BluetangoController = __importStar(require("../controllers/bluetangoAdmin/index"));
+const CoachController = __importStar(require("../controllers/bluetangoAdmin/coachController"));
 const bluetangoAdminRoute = express_1.default.Router();
 const authController = new AdminController.AuthController();
+const biosController = new BluetangoController.BiosController();
+const coachController = new CoachController.CoachController();
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 /* login route for admin login */
 bluetangoAdminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), authController.login);
+/* update profile */
+bluetangoAdminRoute.put("/updateProfile", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateProfile), authController.updateProfile);
+/* add subAdmin */
+bluetangoAdminRoute.put("/changePassword", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.changePassword), authController.changePassword);
 /* forget pass route for admin */
 bluetangoAdminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), authController.forgetPassword);
 /* reset pass route for admin */
@@ -41,5 +49,15 @@ bluetangoAdminRoute.post("/resetPassword", tokenValidator.validateBluetangoForgo
 bluetangoAdminRoute.post("/uploadFile", tokenValidator.validateBluetangoAdminToken, multerParser_1.upload.single('file'), authController.uploadFile);
 /* logout route for admin logout */
 bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, authController.logout);
+/* get coach list */
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, coachController.getCoachList);
+/*  add Bios */
+bluetangoAdminRoute.post("/addBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
+/* update Bios */
+bluetangoAdminRoute.put("/updateBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.updateBios), tokenValidator.validateBluetangoAdminToken, biosController.updateBios);
+/* delete Bios */
+bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
+/* get Bios */
+bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, biosController.getBios);
 module.exports = bluetangoAdminRoute;
 //# sourceMappingURL=bluetangoAdminRoute.js.map

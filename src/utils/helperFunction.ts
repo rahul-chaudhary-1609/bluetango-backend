@@ -69,7 +69,7 @@ export const sendEmail = async (params) => {
             to: params.to,
             from: {
                 email: process.env.SENDGRID_FROM_EMAIL,
-                name: 'BluXinga'
+                name: params.name || 'BluXinga'
             },
             subject: params.subject,
             html: params.html,

@@ -31,6 +31,7 @@ const webRoute_1 = __importDefault(require("./webRoute"));
 const bluetangoAdminRoute_1 = __importDefault(require("./bluetangoAdminRoute"));
 const appUtils = __importStar(require("../utils/appUtils"));
 const constants = __importStar(require("../constants"));
+//import buleangoRoute from './bluetangoRoute'
 module.exports = function (app) {
     app.use(`${ROUTE_PREFIX}admin`, adminRoute_1.default);
     app.use(`${ROUTE_PREFIX}employee`, employeeRoute_1.default);

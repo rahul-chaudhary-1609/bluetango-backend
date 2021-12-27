@@ -9,17 +9,25 @@ import * as validators from "../middleware/validators";
 import * as helperFunction from "../utils/helperFunction";
 import { upload } from "../middleware/multerParser"
 import * as BluetangoController from "../controllers/bluetangoAdmin/index";
+import * as CoachController from "../controllers/bluetangoAdmin/coachController";
 
 const bluetangoAdminRoute = express.Router();
 
 const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
+const coachController= new CoachController.CoachController();
 
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 
 /* login route for admin login */
 bluetangoAdminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), authController.login);
+
+/* update profile */
+bluetangoAdminRoute.put("/updateProfile", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateProfile), authController.updateProfile);
+
+/* add subAdmin */
+bluetangoAdminRoute.put("/changePassword", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.changePassword), authController.changePassword);
 
 /* forget pass route for admin */
 bluetangoAdminRoute.post("/forgotPassword", joiSchemaValidation.validateBody(adminSchema.forgetPassword), authController.forgetPassword);
@@ -32,6 +40,10 @@ bluetangoAdminRoute.post("/uploadFile", tokenValidator.validateBluetangoAdminTok
 
 /* logout route for admin logout */
 bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, authController.logout);
+
+
+/* get coach list */
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken,  coachController.getCoachList);
 
 /*  add Bios */
 bluetangoAdminRoute.post("/addBios", upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);

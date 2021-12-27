@@ -8189,6 +8189,7 @@
         "responses": {}
       }
     },
+        
     "/bluetango-admin/addAdmin": {
       "post": {
         "tags": [
@@ -8263,7 +8264,7 @@
         "responses": {}
       }
     },
-    
+
     "/bluetango-admin/forgotPassword": {
       "post": {
         "tags": [
@@ -8365,6 +8366,175 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateProfile": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin update Profile",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Required Fields are:\n\tname,\n\temail",
+            "required": true,
+            "schema":{
+              "type": "object",
+              "properties":{
+                "name":{
+                  "type": "string"
+                },
+                "email":{
+                  "type": "string"
+                },
+                "profile_pic_url":{
+                  "type": "string"
+                },
+                "social_media_handles":{
+                  "type":"object",
+                    "properties":{
+                      "facebook":{
+                        "type":"string"
+                      },
+                      "twitter":{
+                        "type":"string"
+                      },
+                      "linkedin":{
+                        "type":"string"
+                      },
+                      "instagram":{
+                        "type":"string"
+                      },
+                      "google":{
+                        "type":"string"
+                      }
+                    }
+                }
+              }              
+            }
+          }        
+          
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/changePassword": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin change Password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "old_password",
+            "in": "formData",
+            "description": "new password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "new_password",
+            "in": "formData",
+            "description": "new password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getCoachList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the coach list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search employer by name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "coach specialization category id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "employee_rank_id",
+            "in": "query",
+            "description": "employee rank id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "0=>inactive 1=>active",
+            "required": false,
+            "type": "number",
+            "enum":[0,1]
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "description": "coach rating: 1,2,3,4,5",
+            "required": false,
+            "type": "number",
+            "enum":[1,2,3,4,5]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+              "name": "limit",
+              "in": "query",
+              "description": "page size",
+              "required": false,
+              "type": "number"
           }
         ],
         "responses": {}

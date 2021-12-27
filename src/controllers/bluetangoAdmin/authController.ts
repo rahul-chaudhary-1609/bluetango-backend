@@ -46,12 +46,27 @@ export class AuthController {
         }
     }
 
+    public async updateProfile(req: any, res: any) {
+        try {
+            const responseFromService = await authService.updateProfile(req.body,req.user);
+            const msg = constants.MESSAGES.update_user_details;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
+    public async changePassword(req: any, res: any) {
+        try {
+            const responseFromService = await authService.changePassword(req.body,req.user);
+            const msg = constants.MESSAGES.password_change_success;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
     
-    /**
-    * addNewAdmin
-    * @param req :[email]
-    * @param res 
-    */
+
     public async forgetPassword(req: any, res: any) {
         try {
             const responseFromService = await authService.forgotPassword(req.body);
@@ -62,11 +77,6 @@ export class AuthController {
         }
     }
 
-    /**
-    * addNewAdmin
-    * @param req :[email, otp, password, confirmPassword]
-    * @param res 
-    */
     public async resetPassword(req: any, res: any) {
         try {
             const responseFromService = await authService.resetPassword(req.body,req.user);

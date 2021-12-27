@@ -20,7 +20,7 @@ export class AuthService {
     public async login(params: any) {
         params.email=params.email.toLowerCase();
         let query:any={
-            attributes:['id','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles'],
+            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles'],
             where:{
                 email:params.email,
                 status:{
@@ -106,12 +106,76 @@ export class AuthService {
                 <br> password : ${password}
                 `;
                 mailParams.subject = "Subadmin Login Credentials";
+                mailParams.name="BlueTango"
                 await helperFunction.sendEmail(mailParams);
                 return newAdmin;
         }else{
             throw new Error(constants.MESSAGES.email_phone_already_registered)
         }
         
+    }
+
+    /**
+    * add sub admin function
+    @param {} params pass all parameters from request
+    */
+    public async updateProfile(params: any,user:any) {
+        params.email=params.email.toLowerCase();
+
+        let query:any={
+            where:{
+                email:params.email,
+                status:{
+                    [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+                },
+                id:{
+                    [Op.ne]:user.uid,
+                }
+            }
+        }
+
+        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
+
+        if(!admin){
+                params.model=bluetangoAdminModel;
+                query={
+                    where:{
+                        id:user.uid,
+                    },
+                    returning:true,
+                    raw:true,
+                }
+                let updatedAdmin=await queryService.updateData(params,query);
+                return updatedAdmin;
+        }else{
+            throw new Error(constants.MESSAGES.email_already_registered)
+        }
+        
+    }
+
+    /*
+    * function to set new pass 
+    */
+    public async changePassword(params: any, user: any) {
+        let query:any={
+            where:{
+                id:user.uid,
+            }
+        }
+        
+        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
+        let comparePassword = await appUtils.comparePassword(params.old_password, admin.password);
+        if(comparePassword){
+            params.password= await appUtils.bcryptPassword(params.new_password)
+            params.model=bluetangoAdminModel;
+
+            await queryService.updateData(params,query);
+
+            return true;
+        }else{
+            throw new Error(constants.MESSAGES.invalid_old_password);
+        }
+       
     }
 
   
@@ -143,6 +207,7 @@ export class AuthService {
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
             mailParams.subject = "Reset Password Request";
+            mailParams.name="BlueTango"
             await helperFunction.sendEmail(mailParams);
             return true;
         } else {
