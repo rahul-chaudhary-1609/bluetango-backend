@@ -1,5 +1,7 @@
 import { BiosController } from "./coachBiosController";
+import { StaticContentController } from "./staticContentController";
 
 export {
-    BiosController
+    BiosController,
+    StaticContentController
 };

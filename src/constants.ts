@@ -187,6 +187,8 @@ export const MESSAGES = {
   bios_not_exist:'Bios not exists for this coach',
   biosUpdated:'Bios updated successfully',
   biosDeleted:'Bios deleted successfully',
+  staticContentUpdated:'Static content updated successfully',
+
 
 }
 
