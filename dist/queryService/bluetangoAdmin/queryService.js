@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteModel = exports.deleteData = exports.getRawQueryResult = exports.selectAndCountAll = exports.selectAll = exports.selectOne = exports.updateData = exports.addData = void 0;
+exports.deleteModel = exports.deleteData = exports.getRawQueryResult = exports.selectAndCountAll = exports.selectAll = exports.selectOne = exports.count = exports.updateData = exports.addData = void 0;
 const constants = __importStar(require("../../constants"));
 const lodash_1 = __importDefault(require("lodash"));
 const connection_1 = require("../../connection");
@@ -77,6 +77,26 @@ exports.updateData = (params, condition) => __awaiter(void 0, void 0, void 0, fu
     }
     return updateQueryServiceData;
 });
+exports.count = (model, condition) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let selectQueryServiceData;
+        if (!lodash_1.default.isEmpty(model)) {
+            if (!lodash_1.default.isEmpty(condition)) {
+                selectQueryServiceData = yield model.count(condition);
+            }
+            else {
+                throw new Error(constants.MESSAGES.request_validation_message);
+            }
+        }
+        else {
+            throw new Error(constants.MESSAGES.model_name_required);
+        }
+        return selectQueryServiceData;
+    }
+    catch (error) {
+        throw new Error(error);
+    }
+});
 /*
 * function for select details
 * @req : token, data
@@ -102,7 +122,7 @@ exports.selectOne = (model, condition) => __awaiter(void 0, void 0, void 0, func
         throw new Error(error);
     }
 });
-exports.selectAll = (model, condition, attributes) => __awaiter(void 0, void 0, void 0, function* () {
+exports.selectAll = (model, condition, attributes = {}) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let selectQueryServiceData;
         if (!lodash_1.default.isEmpty(model)) {

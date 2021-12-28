@@ -31,6 +31,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoachService = void 0;
 const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const models_1 = require("../../models");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const employeeRanks_1 = require("../../models/employeeRanks");
@@ -39,6 +40,94 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class CoachService {
     constructor() { }
+    dashboard(params) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {
+                [Op.and]: [
+                    {
+                        status: constants.STATUS.active,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let coachCount = yield queryService.count(models_1.coachManagementModel, { where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            where = Object.assign(Object.assign({}, where), { type: constants.EMPLOYEE_COACH_SESSION_TYPE.free });
+            let totalFreeSessions = yield queryService.count(employeeCoachSession_1.employeeCoachSessionsModel, { where });
+            where = Object.assign(Object.assign({}, where), { type: constants.EMPLOYEE_COACH_SESSION_TYPE.paid });
+            let totalPaidSessions = yield queryService.count(employeeCoachSession_1.employeeCoachSessionsModel, { where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: {
+                            [Op.notIn]: [
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                            ]
+                        }
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            let conditions = {
+                attributes: [
+                    'coach_id',
+                    [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
+                    [Sequelize.fn('SUM', Sequelize.col('call_duration')), 'totalDuration'],
+                ],
+                where,
+                group: ['"employee_coach_sessions.coach_id"'],
+                order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
+            };
+            let topFiveSessionTaker = yield helperFunction.convertPromiseToObject(yield queryService.selectAll(employeeCoachSession_1.employeeCoachSessionsModel, conditions));
+            for (let coach of topFiveSessionTaker) {
+                let conditions = {
+                    attributes: ["id", "name", "email"],
+                    where: {
+                        id: coach.coach_id,
+                    }
+                };
+                coach.coach = yield helperFunction.convertPromiseToObject(yield queryService.selectOne(models_1.coachManagementModel, conditions));
+                conditions = {
+                    attributes: ["createdAt"],
+                    where: {
+                        coach_id: coach.coach_id,
+                    },
+                    order: [["createdAt", "DESC"]],
+                };
+                coach.since = yield helperFunction.convertPromiseToObject(yield queryService.selectOne(employeeCoachSession_1.employeeCoachSessionsModel, conditions));
+                coach.since = (_a = coach.since) === null || _a === void 0 ? void 0 : _a.createdAt;
+            }
+            let topCoaches = [];
+            if (params.searchKey && params.searchKey.trim()) {
+                topCoaches = topFiveSessionTaker.filter(coach => coach.coach.name.toLowerCase().includes(params.searchKey.toLowerCase())).slice(0, 5);
+            }
+            else {
+                topCoaches = topFiveSessionTaker.slice(0, 5);
+            }
+            return {
+                totalCoach: coachCount,
+                avgFreeSession: coachCount ? totalFreeSessions / coachCount : 0,
+                avgPaidSession: coachCount ? totalPaidSessions / coachCount : 0,
+                totalFreeSessions,
+                totalPaidSessions,
+                avgConversionRate: 1,
+                topCoaches
+            };
+        });
+    }
     getCoachList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);

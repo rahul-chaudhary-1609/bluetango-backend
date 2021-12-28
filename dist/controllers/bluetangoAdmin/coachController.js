@@ -36,11 +36,19 @@ const appUtils = __importStar(require("../../utils/appUtils"));
 const coachService = new coachService_1.CoachService();
 class CoachController {
     constructor() { }
-    /**
-    * login
-    * @param req :[email, password]
-    * @param res
-    */
+    dashboard(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.dashboard(req.query);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
     getCoachList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

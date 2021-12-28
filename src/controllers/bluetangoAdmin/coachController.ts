@@ -11,11 +11,17 @@ export class CoachController {
 
     constructor() { }
 
-    /**
-    * login
-    * @param req :[email, password]
-    * @param res 
-    */
+    public async dashboard(req: any, res: any) {
+        try {
+            const responseFromService = await coachService.dashboard(req.query);
+            const msg = constants.MESSAGES.success;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            console.log(error)
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     public async getCoachList(req: any, res: any) {
         try {
             const responseFromService = await coachService.getCoachList(req.query);

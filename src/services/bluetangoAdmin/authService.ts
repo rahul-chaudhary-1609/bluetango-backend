@@ -115,6 +115,20 @@ export class AuthService {
         
     }
 
+    public async getProfile(user:any){
+        let query:any={
+            attributes:['id','name','email','country_code','phone_number','admin_role','status','permissions','social_media_handles','thought_of_the_day','profile_pic_url','createdAt','updatedAt'],
+            where:{
+                id:user.uid,
+            }
+        }
+
+        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
+        
+
+        return admin;
+    }
+
     /**
     * add sub admin function
     @param {} params pass all parameters from request

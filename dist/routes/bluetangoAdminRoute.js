@@ -37,6 +37,8 @@ const coachController = new CoachController.CoachController();
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 /* login route for admin login */
 bluetangoAdminRoute.post("/login", joiSchemaValidation.validateBody(adminSchema.login), authController.login);
+/* get profile */
+bluetangoAdminRoute.get("/getProfile", tokenValidator.validateBluetangoAdminToken, authController.getProfile);
 /* update profile */
 bluetangoAdminRoute.put("/updateProfile", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateProfile), authController.updateProfile);
 /* add subAdmin */
@@ -49,6 +51,8 @@ bluetangoAdminRoute.post("/resetPassword", tokenValidator.validateBluetangoForgo
 bluetangoAdminRoute.post("/uploadFile", tokenValidator.validateBluetangoAdminToken, multerParser_1.upload.single('file'), authController.uploadFile);
 /* logout route for admin logout */
 bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, authController.logout);
+/*  get dashboard */
+bluetangoAdminRoute.get("/dashboard", tokenValidator.validateBluetangoAdminToken, coachController.dashboard);
 /* get coach list */
 bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, coachController.getCoachList);
 /*  add Bios */

@@ -46,6 +46,16 @@ export class AuthController {
         }
     }
 
+    public async getProfile(req: any, res: any) {
+        try {
+            const responseFromService = await authService.getProfile(req.user);
+            const msg = constants.MESSAGES.success;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+
     public async updateProfile(req: any, res: any) {
         try {
             const responseFromService = await authService.updateProfile(req.body,req.user);

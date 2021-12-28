@@ -16,6 +16,124 @@ var Op = Sequelize.Op;
 export class CoachService {
     constructor() { }
 
+    public async dashboard(params:any) {
+
+        
+        let where=<any>{
+            [Op.and]:[
+                {
+                    status:constants.STATUS.active,
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+        }
+
+        let coachCount=await queryService.count(coachManagementModel,{where})
+
+        where={
+            [Op.and]:[
+                {
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+            
+        }
+
+
+        where={
+            ...where,
+            type:constants.EMPLOYEE_COACH_SESSION_TYPE.free,            
+        }
+
+        let totalFreeSessions=await queryService.count(employeeCoachSessionsModel,{where});
+
+        where={
+            ...where,
+            type:constants.EMPLOYEE_COACH_SESSION_TYPE.paid,            
+        }
+
+        let totalPaidSessions=await queryService.count(employeeCoachSessionsModel,{where});
+
+        where={
+            [Op.and]:[
+                {
+                    status:{
+                        [Op.notIn]:[
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                        ]
+                    }
+                },
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                
+            ]
+            
+        }
+
+        employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
+
+        let conditions:any={
+                    attributes:[
+                        'coach_id',
+                        [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
+                        [Sequelize.fn('SUM', Sequelize.col('call_duration')), 'totalDuration'],
+                    ],
+                    where,
+                    group:['"employee_coach_sessions.coach_id"'],
+                    order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
+        }
+
+        let topFiveSessionTaker=await helperFunction.convertPromiseToObject(await queryService.selectAll(employeeCoachSessionsModel,conditions))
+
+        for(let coach of topFiveSessionTaker){
+            let conditions:any={
+                    attributes:["id","name","email"],
+                    where:{
+                        id:coach.coach_id,
+                    }
+            }
+
+            coach.coach=await helperFunction.convertPromiseToObject(await queryService.selectOne(coachManagementModel,conditions));
+            
+            conditions={
+                attributes:["createdAt"],
+                    where:{
+                        coach_id:coach.coach_id,
+                        // status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },
+                    order: [["createdAt", "DESC"]],
+            }
+            coach.since=await helperFunction.convertPromiseToObject(await queryService.selectOne(employeeCoachSessionsModel,conditions));
+            coach.since=coach.since?.createdAt;
+        }
+
+        let topCoaches=[];
+
+        if(params.searchKey && params.searchKey.trim()){
+            topCoaches=topFiveSessionTaker.filter(coach=>coach.coach.name.toLowerCase().includes(params.searchKey.toLowerCase())).slice(0,5);
+        }else{
+            topCoaches=topFiveSessionTaker.slice(0,5);
+        }
+
+        return {
+            totalCoach:coachCount,
+            avgFreeSession:coachCount?totalFreeSessions/coachCount:0,
+            avgPaidSession:coachCount?totalPaidSessions/coachCount:0,
+            totalFreeSessions,
+            totalPaidSessions,
+            avgConversionRate:1,
+            topCoaches
+         }
+
+    }
+
+
     public async getCoachList(params:any){
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}

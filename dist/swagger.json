@@ -8361,6 +8361,27 @@
                 "responses": {}
             }
         },
+        "/bluetango-admin/getProfile": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Admin get Profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/bluetango-admin/updateProfile": {
             "put": {
                 "tags": [
@@ -8451,6 +8472,48 @@
                         "in": "formData",
                         "description": "new password",
                         "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/dashboard": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Api to get dashboard",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "YYYY-MM-DD",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "YYYY-MM-DD",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "search key: coach name",
+                        "required": false,
                         "type": "string"
                     }
                 ],

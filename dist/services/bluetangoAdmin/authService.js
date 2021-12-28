@@ -142,6 +142,18 @@ class AuthService {
             }
         });
     }
+    getProfile(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt'],
+                where: {
+                    id: user.uid,
+                }
+            };
+            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            return admin;
+        });
+    }
     /**
     * add sub admin function
     @param {} params pass all parameters from request

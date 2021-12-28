@@ -76,6 +76,18 @@ class AuthController {
             }
         });
     }
+    getProfile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getProfile(req.user);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
     updateProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

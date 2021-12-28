@@ -45,6 +45,25 @@ export const updateData = async (params: any, condition: any) => {
     return updateQueryServiceData;
 }
 
+export const count = async (model: any, condition: any) => {
+    try {
+        let selectQueryServiceData;
+        if (!_.isEmpty(model)) {
+            if (!_.isEmpty(condition)) {
+                selectQueryServiceData = await model.count(condition);
+            } else {
+                throw new Error(constants.MESSAGES.request_validation_message);
+            }
+        } else {
+            throw new Error(constants.MESSAGES.model_name_required);
+        }
+        return selectQueryServiceData;
+    } catch (error) {
+        throw new Error(error);
+    }
+
+}
+
 /*
 * function for select details 
 * @req : token, data
@@ -69,7 +88,7 @@ export const selectOne = async (model: any, condition: any) => {
 
 }
 
-export const selectAll = async (model: any, condition: any, attributes: any) => {
+export const selectAll = async (model: any, condition: any, attributes: any={}) => {
     try {
         let selectQueryServiceData;
         if (!_.isEmpty(model)) {
