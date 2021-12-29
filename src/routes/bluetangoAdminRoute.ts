@@ -15,7 +15,8 @@ const bluetangoAdminRoute = express.Router();
 
 const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
-const coachController= new CoachController.CoachController();
+const coachController = new CoachController.CoachController();
+const staticContentController = new BluetangoController.StaticContentController();
 
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
@@ -48,7 +49,7 @@ bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, a
 bluetangoAdminRoute.get("/dashboard", tokenValidator.validateBluetangoAdminToken, coachController.dashboard);
 
 /* get coach list */
-bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken,  coachController.getCoachList);
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, coachController.getCoachList);
 
 /*  add Bios */
 bluetangoAdminRoute.post("/addBios", upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
@@ -57,5 +58,9 @@ bluetangoAdminRoute.put("/updateBios", upload.single('image'), joiSchemaValidati
 /* delete Bios */
 bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
 /* get Bios */
-bluetangoAdminRoute.get("/getBios",tokenValidator.validateBluetangoAdminToken, biosController.getBios);
+bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, biosController.getBios);
+/* add static content */
+bluetangoAdminRoute.put("/addStaticContent", joiSchemaValidation.validateBody(adminSchema.updateStaticContent), tokenValidator.validateBluetangoAdminToken, staticContentController.addStaticContent);
+/* get static content */
+bluetangoAdminRoute.get("/getStaticContent", tokenValidator.validateBluetangoAdminToken, staticContentController.getStaticContent);
 export = bluetangoAdminRoute;
