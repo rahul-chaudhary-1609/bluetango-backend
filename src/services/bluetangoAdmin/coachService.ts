@@ -109,6 +109,7 @@ export class CoachService {
                     },
                     order: [["createdAt", "DESC"]],
             }
+            coach.conversionRate=1;
             coach.since=await helperFunction.convertPromiseToObject(await queryService.selectOne(employeeCoachSessionsModel,conditions));
             coach.since=coach.since?.createdAt;
         }

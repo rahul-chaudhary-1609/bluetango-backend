@@ -107,6 +107,7 @@ class CoachService {
                     },
                     order: [["createdAt", "DESC"]],
                 };
+                coach.conversionRate = 1;
                 coach.since = yield helperFunction.convertPromiseToObject(yield queryService.selectOne(employeeCoachSession_1.employeeCoachSessionsModel, conditions));
                 coach.since = (_a = coach.since) === null || _a === void 0 ? void 0 : _a.createdAt;
             }
