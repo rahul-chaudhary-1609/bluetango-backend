@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
+exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -109,5 +109,12 @@ exports.changePassword = joi_1.default.object({
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     })
+});
+exports.updateStaticContent = joi_1.default.object({
+    pricing: joi_1.default.string(),
+    contact_us: joi_1.default.string(),
+    about_us: joi_1.default.string(),
+    privacy_policy: joi_1.default.string(),
+    terms_ondition: joi_1.default.string()
 });
 //# sourceMappingURL=bluetangoAdminSchema.js.map

@@ -223,7 +223,10 @@
                         "description": "1--> active/ 2--> delete",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     }
                 ],
                 "responses": {}
@@ -909,7 +912,10 @@
                         "description": "0=>inactive,1=>active",
                         "required": false,
                         "type": "number",
-                        "enum": [0, 1]
+                        "enum": [
+                            0,
+                            1
+                        ]
                     }
                 ],
                 "responses": {}
@@ -938,7 +944,10 @@
                         "description": "0=>inactive,1=>active",
                         "required": false,
                         "type": "number",
-                        "enum": [0, 1]
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     {
                         "name": "offset",
@@ -1251,7 +1260,13 @@
                         "description": "coach rating: 1,2,3,4,5",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3, 4, 5]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
                     },
                     {
                         "name": "offset",
@@ -1413,7 +1428,10 @@
                         "description": "employer/employee",
                         "required": true,
                         "type": "string",
-                        "enum": ["employer", "employee"]
+                        "enum": [
+                            "employer",
+                            "employee"
+                        ]
                     },
                     {
                         "name": "notification_type",
@@ -1421,7 +1439,11 @@
                         "description": "0->email/1->notification/2->both",
                         "required": true,
                         "type": "number",
-                        "enum": [0, 1, 2]
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "message",
@@ -1639,7 +1661,10 @@
                         "description": "1--> active/ 2--> delete",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     }
                 ],
                 "responses": {}
@@ -2123,7 +2148,12 @@
                         "description": "feedback type: 1=>employee, 2=>employer, 3=>coach, 4=> other",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3, 4]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
                     },
                     {
                         "name": "searchKey",
@@ -2251,7 +2281,10 @@
                         "required": false,
                         "type": "number",
                         "default": 1,
-                        "enum": [0, 1]
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     {
                         "name": "offset",
@@ -2400,7 +2433,10 @@
                         "required": false,
                         "type": "number",
                         "default": 1,
-                        "enum": [0, 1]
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     {
                         "name": "offset",
@@ -2513,7 +2549,13 @@
                         "description": "status: 1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3, 4, 5]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
                     },
                     {
                         "name": "employeeRankId",
@@ -2528,7 +2570,10 @@
                         "description": "sessionType: 1=>free, 2=>paid",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -2634,7 +2679,9 @@
                         "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4,coach=> 5",
                         "required": true,
                         "type": "number",
-                        "enum": [5]
+                        "enum": [
+                            5
+                        ]
                     }
                 ],
                 "responses": {}
@@ -2852,11 +2899,13 @@
                         "description": "folderName",
                         "required": true,
                         "type": "string",
-                        "enum": ["employee_profile_pic",
+                        "enum": [
+                            "employee_profile_pic",
                             "employer_profile_pic",
                             "admin_profile_pic",
                             "coach_profile_pic",
-                            "other"]
+                            "other"
+                        ]
                     }
                 ],
                 "responses": {}
@@ -3014,7 +3063,10 @@
                         "description": "select_measure, 1=>Amount, 2=> Quantity",
                         "required": true,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "enter_measure",
@@ -3242,7 +3294,10 @@
                         "description": "status, approve=>1, rejected=> 2",
                         "required": true,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     }
                 ],
                 "responses": {}
@@ -4062,7 +4117,14 @@
                         "description": " Default is 3. Options are:\n\t1=>newly_added_on_top,\n\t2=>old_on_top,\n\t3=>rating_high_to_low,\n\t4=>cost_high_to_low,\n\t5=>cost_low_to_high,\n\t6=>sooner_availability_on_top",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3, 4, 5, 6]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ]
                     },
                     {
                         "name": "filterBy",
@@ -4070,7 +4132,11 @@
                         "description": " Default is 2. Options are:\n\t1=>all,\n\t2=>today,\n\t3=>custom_date",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3]
+                        "enum": [
+                            1,
+                            2,
+                            3
+                        ]
                     },
                     {
                         "name": "date",
@@ -4085,7 +4151,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -4155,9 +4224,38 @@
                         "description": "Enter day",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-                            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12",
+                            "13",
+                            "14",
+                            "15",
+                            "16",
+                            "17",
+                            "18",
+                            "19",
+                            "20",
+                            "21",
+                            "22",
+                            "23",
+                            "24",
+                            "25",
+                            "26",
+                            "27",
+                            "28",
+                            "29",
+                            "30",
+                            "31"
                         ]
                     },
                     {
@@ -4166,12 +4264,59 @@
                         "description": "Enter week",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-                            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
-                            "31", "32", "33", "34", "35", "36", "37", "38", "39", "40",
-                            "41", "42", "43", "44", "45", "46", "47", "48", "49", "50",
-                            "51", "52"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12",
+                            "13",
+                            "14",
+                            "15",
+                            "16",
+                            "17",
+                            "18",
+                            "19",
+                            "20",
+                            "21",
+                            "22",
+                            "23",
+                            "24",
+                            "25",
+                            "26",
+                            "27",
+                            "28",
+                            "29",
+                            "30",
+                            "31",
+                            "32",
+                            "33",
+                            "34",
+                            "35",
+                            "36",
+                            "37",
+                            "38",
+                            "39",
+                            "40",
+                            "41",
+                            "42",
+                            "43",
+                            "44",
+                            "45",
+                            "46",
+                            "47",
+                            "48",
+                            "49",
+                            "50",
+                            "51",
+                            "52"
                         ]
                     },
                     {
@@ -4180,8 +4325,19 @@
                         "description": "Enter month",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12"
                         ]
                     },
                     {
@@ -4190,7 +4346,18 @@
                         "description": "Enter year",
                         "required": false,
                         "type": "string",
-                        "enum": ["2020", "2021", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"]
+                        "enum": [
+                            "2020",
+                            "2021",
+                            "2023",
+                            "2024",
+                            "2025",
+                            "2026",
+                            "2027",
+                            "2028",
+                            "2029",
+                            "2030"
+                        ]
                     }
                 ],
                 "responses": {}
@@ -4324,7 +4491,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -4444,7 +4614,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -4522,7 +4695,13 @@
                         "description": "enter rating",
                         "required": true,
                         "type": "number",
-                        "enum": [1, 2, 3, 4, 5]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
                     },
                     {
                         "name": "comment",
@@ -4992,7 +5171,10 @@
                                             "is_primary": {
                                                 "description": "0=> no, 1=> yes",
                                                 "type": "number",
-                                                "enum": [0, 1]
+                                                "enum": [
+                                                    0,
+                                                    1
+                                                ]
                                             }
                                         }
                                     }
@@ -5094,7 +5276,13 @@
                                             },
                                             "rating": {
                                                 "type": "number",
-                                                "enum": [1, 2, 3, 4, 5]
+                                                "enum": [
+                                                    1,
+                                                    2,
+                                                    3,
+                                                    4,
+                                                    5
+                                                ]
                                             },
                                             "desc": {
                                                 "type": "string"
@@ -5510,7 +5698,11 @@
                         "description": "0=> employee, 1=> coach, 2=> group",
                         "required": false,
                         "type": "number",
-                        "enum": [0, 1, 2]
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
                     }
                 ],
                 "responses": {}
@@ -5672,7 +5864,11 @@
                         "description": "text | audio | video",
                         "required": true,
                         "type": "string",
-                        "enum": ["text", "audio", "video"]
+                        "enum": [
+                            "text",
+                            "audio",
+                            "video"
+                        ]
                     },
                     {
                         "name": "chat_room_id",
@@ -7339,9 +7535,38 @@
                         "description": "Enter day",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-                            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12",
+                            "13",
+                            "14",
+                            "15",
+                            "16",
+                            "17",
+                            "18",
+                            "19",
+                            "20",
+                            "21",
+                            "22",
+                            "23",
+                            "24",
+                            "25",
+                            "26",
+                            "27",
+                            "28",
+                            "29",
+                            "30",
+                            "31"
                         ]
                     },
                     {
@@ -7350,12 +7575,59 @@
                         "description": "Enter week",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-                            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
-                            "31", "32", "33", "34", "35", "36", "37", "38", "39", "40",
-                            "41", "42", "43", "44", "45", "46", "47", "48", "49", "50",
-                            "51", "52"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12",
+                            "13",
+                            "14",
+                            "15",
+                            "16",
+                            "17",
+                            "18",
+                            "19",
+                            "20",
+                            "21",
+                            "22",
+                            "23",
+                            "24",
+                            "25",
+                            "26",
+                            "27",
+                            "28",
+                            "29",
+                            "30",
+                            "31",
+                            "32",
+                            "33",
+                            "34",
+                            "35",
+                            "36",
+                            "37",
+                            "38",
+                            "39",
+                            "40",
+                            "41",
+                            "42",
+                            "43",
+                            "44",
+                            "45",
+                            "46",
+                            "47",
+                            "48",
+                            "49",
+                            "50",
+                            "51",
+                            "52"
                         ]
                     },
                     {
@@ -7364,8 +7636,19 @@
                         "description": "Enter month",
                         "required": false,
                         "type": "string",
-                        "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                            "11", "12"
+                        "enum": [
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "10",
+                            "11",
+                            "12"
                         ]
                     },
                     {
@@ -7374,7 +7657,18 @@
                         "description": "Enter year",
                         "required": false,
                         "type": "string",
-                        "enum": ["2020", "2021", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"]
+                        "enum": [
+                            "2020",
+                            "2021",
+                            "2023",
+                            "2024",
+                            "2025",
+                            "2026",
+                            "2027",
+                            "2028",
+                            "2029",
+                            "2030"
+                        ]
                     }
                 ],
                 "responses": {}
@@ -7432,7 +7726,8 @@
                         "required": true,
                         "type": "number",
                         "enum": [
-                            1, 2
+                            1,
+                            2
                         ]
                     },
                     {
@@ -7442,7 +7737,8 @@
                         "required": false,
                         "type": "number",
                         "enum": [
-                            1, 2
+                            1,
+                            2
                         ]
                     },
                     {
@@ -7507,7 +7803,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -7620,7 +7919,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -7712,7 +8014,10 @@
                         "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2]
+                        "enum": [
+                            1,
+                            2
+                        ]
                     },
                     {
                         "name": "offset",
@@ -8334,7 +8639,9 @@
                         "description": "folderName",
                         "required": true,
                         "type": "string",
-                        "enum": ["bluetango_admin_profile_pic"]
+                        "enum": [
+                            "bluetango_admin_profile_pic"
+                        ]
                     }
                 ],
                 "responses": {}
@@ -8564,7 +8871,10 @@
                         "description": "0=>inactive 1=>active",
                         "required": false,
                         "type": "number",
-                        "enum": [0, 1]
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     {
                         "name": "rating",
@@ -8572,7 +8882,13 @@
                         "description": "coach rating: 1,2,3,4,5",
                         "required": false,
                         "type": "number",
-                        "enum": [1, 2, 3, 4, 5]
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
                     },
                     {
                         "name": "offset",
@@ -8602,6 +8918,13 @@
                     "application/x-www-form-urlencoded"
                 ],
                 "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "name": "admin_id",
                         "in": "formData",
@@ -8652,6 +8975,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "id",
                         "in": "formData",
                         "description": "id",
@@ -8701,6 +9031,13 @@
                 ],
                 "parameters": [
                     {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
                         "name": "id",
                         "in": "path",
                         "description": "id",
@@ -8720,7 +9057,99 @@
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/addStaticContent": {
+            "put": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "add Static Content",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pricing",
+                        "in": "formData",
+                        "description": "pricing",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "contact_us",
+                        "in": "formData",
+                        "description": "contact_us",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "about_us",
+                        "in": "formData",
+                        "description": "about_us",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "privacy_policy",
+                        "in": "formData",
+                        "description": "privacy_policy",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "terms_ondition",
+                        "in": "formData",
+                        "description": "terms_ondition",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getStaticContent": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "get Static Content",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "contentType",
+                        "in": "query",
+                        "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {}
             }
         }

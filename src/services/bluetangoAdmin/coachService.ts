@@ -186,7 +186,7 @@ export class CoachService {
         let coachList= await helperFunction.convertPromiseToObject(
              await coachManagementModel.findAndCountAll({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+                attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
                 order: [["id", "DESC"]]
             })
         )

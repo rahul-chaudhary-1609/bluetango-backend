@@ -172,7 +172,7 @@ class CoachService {
             }
             let coachList = yield helperFunction.convertPromiseToObject(yield models_1.coachManagementModel.findAndCountAll({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
+                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge", "status"],
                 order: [["id", "DESC"]]
             }));
             let c = 0;

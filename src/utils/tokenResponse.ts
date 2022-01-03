@@ -77,7 +77,8 @@ export const forgotPasswordTokenResponse = async (obj: any, role:any) => {
             user_role: role
         }, 
         process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, 
-        { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+        // { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+        { expiresIn: '1h' }
     );
     return { token };
 }
@@ -88,7 +89,8 @@ export const bluetangoForgotPasswordTokenResponse = async (obj: any) => {
             id: obj.id,
         }, 
         process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY, 
-        { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+        // { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+        { expiresIn: '1h' }
     );
     return { token };
 }

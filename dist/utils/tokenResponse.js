@@ -77,13 +77,17 @@ exports.forgotPasswordTokenResponse = (obj, role) => __awaiter(void 0, void 0, v
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
         user_role: role
-    }, process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES });
+    }, process.env.FORGOT_PASSWORD_SECRET_KEY || constants.FORGOT_PASSWORD_SECRET_KEY, 
+    // { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+    { expiresIn: '1h' });
     return { token };
 });
 exports.bluetangoForgotPasswordTokenResponse = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({
         id: obj.id,
-    }, process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY, { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES });
+    }, process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY, 
+    // { expiresIn: process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES }
+    { expiresIn: '1h' });
     return { token };
 });
 exports.verificationEmailToken = (obj) => __awaiter(void 0, void 0, void 0, function* () {
