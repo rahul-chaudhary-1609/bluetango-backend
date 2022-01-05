@@ -59,7 +59,7 @@ export class BiosController {
      */
     public async getBios(req: any, res: any) {
         try {
-            const responseFromService = await biosService.getBios();
+            const responseFromService = await biosService.getBios(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
 
         } catch (error) {

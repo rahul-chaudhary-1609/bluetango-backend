@@ -124,3 +124,41 @@ export const validateJsonString = (text: string) => {
         return false
     }
 }
+export const formatPassedAwayTime = (data: any) => {
+    const formatedData = data;
+    const today = new Date();
+    for (let k = 0; k < data.length; k++) {
+        const b = moment(data[k].date),
+            a = moment(today),
+            intervals = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'],
+            out = [];
+
+        for (let i = 0; i < intervals.length; i++) {
+            const diff = a.diff(b, intervals[i]);
+            b.add(diff, intervals[i]);
+            out.push(diff);
+        }
+        if (out[0] >= 1) {
+            formatedData[k]["time_passed"] = `${out[0]} year`;
+        }
+        else if (out[1] >= 1) {
+            formatedData[k]["time_passed"] = `${out[1]} month`;
+        }
+        else if (out[2] >= 1) {
+            formatedData[k]["time_passed"] = `${out[2]} week`;
+        }
+        else if (out[3] >= 1) {
+            formatedData[k]["time_passed"] = `${out[3]} day`;
+        }
+        else if (out[4] >= 1) {
+            formatedData[k]["time_passed"] = `${out[4]} hour`;
+        }
+        else if (out[5] >= 1) {
+            formatedData[k]["time_passed"] = `${out[5]} minutes`;
+        }
+        else {
+            formatedData[k]["time_passed"] = `${out[6]} seconds`;
+        }
+    }
+    return formatedData
+}

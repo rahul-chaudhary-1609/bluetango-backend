@@ -17,7 +17,7 @@ const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
 const coachController = new CoachController.CoachController();
 const staticContentController = new BluetangoController.StaticContentController();
-
+const SessionManagementController= new BluetangoController.SessionManagementController();
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 
@@ -63,4 +63,12 @@ bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, 
 bluetangoAdminRoute.put("/addStaticContent", joiSchemaValidation.validateBody(adminSchema.updateStaticContent), tokenValidator.validateBluetangoAdminToken, staticContentController.addStaticContent);
 /* get static content */
 bluetangoAdminRoute.get("/getStaticContent", tokenValidator.validateBluetangoAdminToken, staticContentController.getStaticContent);
+/* get session List view */
+bluetangoAdminRoute.get("/getSessionList", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getSessionList);
+/* get session detailed view */
+bluetangoAdminRoute.get("/getSessionDetail", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getSessionDetail);
+/*perform action on sessions */
+bluetangoAdminRoute.put("/performAction",joiSchemaValidation.validateBody(adminSchema.performAction), tokenValidator.validateBluetangoAdminToken, SessionManagementController.performAction);
+/* get session detailed view */
+bluetangoAdminRoute.get("/getAvailabileCoaches", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getAvailabileCoaches);
 export = bluetangoAdminRoute;

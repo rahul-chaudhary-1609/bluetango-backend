@@ -188,8 +188,9 @@ export const MESSAGES = {
   biosUpdated:'Bios updated successfully',
   biosDeleted:'Bios deleted successfully',
   staticContentUpdated:'Static content updated successfully',
-
-
+  session_details_fetched: "Session details fetched successfully",
+  available_coaches_fetched:"Available coaches fetched successfully"
+  
 }
 
 

@@ -9064,6 +9064,20 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -9148,6 +9162,223 @@
             "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getSessionList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the Session List (completed session and pending session)",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search by name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "1=> free, 2=> paid",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "team_level",
+            "in": "query",
+            "description": "team_level",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getSessionDetail": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the Session Detail (completed session and pending session)",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/performAction": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to perform action on pending sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "slot_id",
+            "in": "formData",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "Enter coach id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "description": "Enter date",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "in": "formData",
+            "description": "1=>pending, 2=>declined, 3=>expired, 4=> reassigned, 5=>accepted",
+            "required": true,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "start_time",
+            "in": "formData",
+            "description": "start_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "formData",
+            "description": "end_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getAvailabileCoaches": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view Availabile Coaches Slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
