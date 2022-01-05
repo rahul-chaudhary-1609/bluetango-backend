@@ -7,7 +7,10 @@ import { emojiModel } from './emoji';
 import { coachManagementModel } from './coachManagement';
 import { coachBiosModel } from './coachBios';
 import { staticContentModel } from './staticContent';
-
+import {employeeCoachSessionsModel} from './employeeCoachSession';
+import {employeeRanksModel} from './employeeRanks';
+import {coachSpecializationCategoriesModel} from './coachSpecializationCategories'
+import {coachScheduleModel} from './coachSchedule'
 
 /* all associations put here to avoid duplicate association */
 employeeModel.hasOne(emojiModel,{ as: 'energy_emoji_data', foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
@@ -21,5 +24,9 @@ export {
     industryTypeModel,
     coachManagementModel,
     coachBiosModel,
-    staticContentModel
+    staticContentModel,
+    employeeCoachSessionsModel,
+    employeeRanksModel,
+    coachSpecializationCategoriesModel,
+    coachScheduleModel
 }

@@ -98,3 +98,12 @@ export const updateStaticContent = Joi.object({
   privacy_policy: Joi.string(),
   terms_ondition: Joi.string()
 });
+export const performAction = Joi.object({
+  id: Joi.number().required(),
+  slot_id: Joi.number().required(),
+  coach_id: Joi.number().required(),
+  date: Joi.string().required(),
+  action: Joi.number().required().valid(1,2,3,4,5),
+  start_time: Joi.string().required(),
+  end_time: Joi.string().required()
+});

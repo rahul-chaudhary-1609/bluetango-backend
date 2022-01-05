@@ -94,6 +94,27 @@ export const employeeCoachSessionsModel: any = sequelize.define("employee_coach_
     details:{
         type:DataTypes.JSON,
     },
+    action_by:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue:0,
+        comment:"0=> pending,1=> coach, 2=> system, 3=> admin"
+    },
+    action: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '1=>pending, 2=>declined, 3=>expired, 4=> reassigned, 5=>accepted'
+    },
+    request_received_date:{
+        type:DataTypes.DATE,
+        allowNull:true,
+        comment: 'coach request received date'
+    },
+    timeline:{
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        allowNull:true,
+    },
 },
     {
         tableName: "employee_coach_sessions"
