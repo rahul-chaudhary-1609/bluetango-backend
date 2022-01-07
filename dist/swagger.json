@@ -8908,6 +8908,348 @@
                 "responses": {}
             }
         },
+        "/bluetango-admin/addCoach": {
+            "post": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Api to add coach",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "country_code": {
+                                    "type": "string"
+                                },
+                                "phone_number": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "type": "string"
+                                },
+                                "fileName": {
+                                    "type": "string"
+                                },
+                                "coach_specialization_category_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                },
+                                "employee_rank_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                },
+                                "coach_charge": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/editCoach": {
+            "put": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Api to edit coach",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tcoach_id,\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "coach_id": {
+                                    "type": "number"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "country_code": {
+                                    "type": "string"
+                                },
+                                "phone_number": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "image": {
+                                    "type": "string"
+                                },
+                                "fileName": {
+                                    "type": "string"
+                                },
+                                "coach_specialization_category_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                },
+                                "employee_rank_ids": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                },
+                                "coach_charge": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getCoachDetails": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to get coach details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "coach_id",
+                        "in": "query",
+                        "description": "coach id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/deleteCoach": {
+            "delete": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to delete Coach",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "coach_id",
+                        "in": "formData",
+                        "description": "coach id",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/blockUnblockCoach": {
+            "put": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to block Unblock Coach",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "coach_id",
+                        "in": "formData",
+                        "description": "coach id",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "status",
+                        "in": "formData",
+                        "description": "0=>inactive 1=>active",
+                        "required": true,
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/listEmployeeRanks": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Api to list Employee Ranks",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "enter the search key",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "is_pagination",
+                        "in": "query",
+                        "description": "is_pagination: 0=> no, 1=> yes",
+                        "required": false,
+                        "type": "number",
+                        "default": 1,
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/listCoachSpecializationCategories": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "Api to list Coach Specialization Categories",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "enter the search key",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "is_pagination",
+                        "in": "query",
+                        "description": "is_pagination: 0=> no, 1=> yes",
+                        "required": false,
+                        "type": "number",
+                        "default": 1,
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/bluetango-admin/addBios": {
             "post": {
                 "tags": [
@@ -9064,6 +9406,20 @@
                         "description": "Enter jwt token for authentication",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}
@@ -9148,6 +9504,223 @@
                         "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getSessionList": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to view the Session List (completed session and pending session)",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "search by name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
+                        "required": false,
+                        "type": "number",
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "1=> free, 2=> paid",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "team_level",
+                        "in": "query",
+                        "description": "team_level",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getSessionDetail": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to view the Session Detail (completed session and pending session)",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "session id",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/performAction": {
+            "put": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to perform action on pending sessions",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "formData",
+                        "description": "session id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "slot_id",
+                        "in": "formData",
+                        "description": "slot id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "coach_id",
+                        "in": "formData",
+                        "description": "Enter coach id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "date",
+                        "in": "formData",
+                        "description": "Enter date",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "action",
+                        "in": "formData",
+                        "description": "1=>pending, 2=>declined, 3=>expired, 4=> reassigned, 5=>accepted",
+                        "required": true,
+                        "type": "number",
+                        "enum": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    },
+                    {
+                        "name": "start_time",
+                        "in": "formData",
+                        "description": "start_time format: HH:mm:ss",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "end_time",
+                        "in": "formData",
+                        "description": "end_time format: HH:mm:ss",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getAvailabileCoaches": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "api to view Availabile Coaches Slots",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "session id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}

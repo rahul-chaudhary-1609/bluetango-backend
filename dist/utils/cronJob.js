@@ -40,12 +40,14 @@ const notification_1 = require("../models/notification");
 const teamGoal_1 = require("../models/teamGoal");
 const teamGoalAssign_1 = require("../models/teamGoalAssign");
 const teamGoalAssignCompletionByEmployee_1 = require("../models/teamGoalAssignCompletionByEmployee");
-const employeeCoachSession_1 = require("../models/employeeCoachSession");
+const index_1 = require("../models/index");
 const schedule = require('node-schedule');
 const Sequelize = require('sequelize');
 const moment_1 = __importDefault(require("moment"));
 require("moment-timezone");
 var Op = Sequelize.Op;
+const queryService = __importStar(require("../queryService/bluetangoAdmin/queryService"));
+const sessionManagementService_1 = require("../services/bluetangoAdmin/sessionManagementService");
 /*
 * function to schedule job
 */
@@ -342,7 +344,7 @@ const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
     schedule.scheduleJob('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-        let sessions = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
+        let sessions = yield helperFunction.convertPromiseToObject(yield index_1.employeeCoachSessionsModel.findAll({
             where: {
                 status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
                 date: {
@@ -445,4 +447,99 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
 //     console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
 //     return true;
 // }
+/*
+*perform action on sessions
+*/
+const sessionExpire = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    let Sessions = yield new sessionManagementService_1.SessionManagementService().getSessionDetail(params);
+    params.model = index_1.employeeCoachSessionsModel;
+    params.action_by = 2;
+    if (Sessions.timeline) {
+        params.timeline = [...Sessions.timeline, {
+                "name": Sessions.name,
+                "request_received": Sessions.request_received_date,
+                "status": "Sent",
+                "action": Number(params.action),
+                "action_by": 2
+            }];
+    }
+    else {
+        params.timeline = [{
+                "name": Sessions.name,
+                "request_received": Sessions.request_received_date,
+                "status": "Sent",
+                "action": Number(params.action),
+                "action_by": 2
+            }];
+    }
+    let sessions = yield queryService.updateData(params, { where: { id: params.id } });
+    let mailParams = {};
+    mailParams.to = Sessions.email;
+    mailParams.html = `Hi  ${Sessions.name}
+            <br>session expired with the session id:${Sessions.id}
+            `;
+    mailParams.subject = "Session expired";
+    mailParams.name = "BlueTango";
+    // await helperFunction.sendEmail(mailParams);
+    return sessions;
+});
+const randomsSessionSchedule = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    let coaches = yield new sessionManagementService_1.SessionManagementService().getAvailabileCoaches(params);
+    coaches = coaches.find(elem => elem.status == 1);
+    let random_index = Math.floor(Math.random() * coaches.length);
+    coaches = coaches[random_index];
+    params.model = index_1.employeeCoachSessionsModel;
+    params.date = coaches.date;
+    params.start_time = coaches.start_time;
+    params.end_time = coaches.end_time;
+    params.slot_id = coaches.id;
+    params.coach_id = coaches.coach_id;
+    let sessions = yield queryService.updateData(params, { returning: true, where: { id: params.id } });
+    yield queryService.updateData({ model: index_1.coachScheduleModel, status: 2 }, { where: { id: coaches.id } });
+    let Sessions = yield new sessionManagementService_1.SessionManagementService().getSessionDetail(params);
+    // let mailParams = <any>{};
+    // mailParams.to = Sessions.email;
+    // mailParams.html = `Hi  ${Sessions.name}
+    //         <br>A new session is assigned to you by admin with session id:${Sessions.id}
+    //         `;
+    // mailParams.subject = "Session Assign";
+    // mailParams.name = "BlueTango"
+    //await helperFunction.sendEmail(mailParams);
+    return sessions;
+});
+// schedule.scheduleJob('/5 * * * * *', async () => {
+//     let sessions = await queryService.selectAll(employeeCoachSessionsModel, {
+//         where: { action: { [Op.in]: [1, 2, 3, 4] }, status: 1 },
+//         raw: true,
+//         attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "status", "type", "action_by", "request_received_date"]
+//     }, {})
+//     sessions.forEach((ele, index, arr) => {
+//         let received_date = new Date(ele.request_received_date).setHours(new Date(ele.request_received_date).getHours() + 24)
+//         let current_date = Date.now()
+//         let params: any = {}
+//         switch (ele.action) {
+//             case 1:
+//                 //for automatic expire
+//                 if (received_date < current_date) {
+//                     params.id = ele.id
+//                     params.action = 3
+//                     return sessionExpire(params)
+//                 }
+//             case 2:
+//                 //for declined session reassign
+//                 if (current_date < ele.date) {
+//                     params.id = ele.id
+//                     params.action_by = 0;
+//                     return randomsSessionSchedule(params)
+//                 }
+//             case 3:
+//                 //for expired session reassign
+//                 if (current_date < ele.date) {
+//                     params.id = ele.id
+//                     params.action_by = 0;
+//                     return randomsSessionSchedule(params)
+//                 }
+//         }
+//     });
+// });
 //# sourceMappingURL=cronJob.js.map

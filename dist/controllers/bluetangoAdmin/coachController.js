@@ -62,6 +62,97 @@ class CoachController {
             }
         });
     }
+    addCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.addCoach(req.body, req.user);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    editCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.editCoach(req.body);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    getCoachDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.getCoachDetails(req.query);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    deleteCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.deleteCoach(req.body);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    blockUnblockCoach(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.blockUnblockCoach(req.body);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    listCoachSpecializationCategories(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.listCoachSpecializationCategories(req.query);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    listEmployeeRanks(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield coachService.listEmployeeRanks(req.query);
+                const msg = constants.MESSAGES.success;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.CoachController = CoachController;
 //# sourceMappingURL=coachController.js.map

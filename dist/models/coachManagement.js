@@ -82,9 +82,15 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
         type: sequelize_1.DataTypes.DECIMAL(15, 2),
         allowNull: false,
         defaultValue: 0,
-    }
+    },
+    app_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '1=>BX,2=>BT'
+    },
 }, {
     tableName: "coach_management"
 });
-exports.coachManagementModel.sync({ alter: false });
+exports.coachManagementModel.sync({ alter: true });
 //# sourceMappingURL=coachManagement.js.map

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
+exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -116,5 +116,70 @@ exports.updateStaticContent = joi_1.default.object({
     about_us: joi_1.default.string(),
     privacy_policy: joi_1.default.string(),
     terms_ondition: joi_1.default.string()
+});
+exports.performAction = joi_1.default.object({
+    id: joi_1.default.number().required(),
+    slot_id: joi_1.default.number().required(),
+    coach_id: joi_1.default.number().required(),
+    date: joi_1.default.string().required(),
+    action: joi_1.default.number().required().valid(1, 2, 3, 4, 5),
+    start_time: joi_1.default.string().required(),
+    end_time: joi_1.default.string().required()
+});
+exports.addCoach = joi_1.default.object({
+    name: joi_1.default.string().required(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    country_code: joi_1.default.string().required(),
+    phone_number: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+    image: joi_1.default.string().optional(),
+    fileName: joi_1.default.string().optional(),
+    coach_specialization_category_ids: joi_1.default.array().optional(),
+    employee_rank_ids: joi_1.default.array().optional(),
+    coach_charge: joi_1.default.number().optional(),
+});
+exports.editCoach = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+    name: joi_1.default.string().required(),
+    email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    country_code: joi_1.default.string().required(),
+    phone_number: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+    image: joi_1.default.string().optional(),
+    fileName: joi_1.default.string().optional(),
+    coach_specialization_category_ids: joi_1.default.array().optional(),
+    employee_rank_ids: joi_1.default.array().optional(),
+    coach_charge: joi_1.default.number().optional(),
+});
+exports.getCoachList = joi_1.default.object({
+    searchKey: joi_1.default.string().optional(),
+    coach_specialization_category_id: joi_1.default.number().optional(),
+    employee_rank_id: joi_1.default.number().optional(),
+    status: joi_1.default.number().optional().valid(0, 1),
+    rating: joi_1.default.number().optional().valid(1, 2, 3, 4, 5),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getCoachDetails = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+});
+exports.deleteCoach = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+});
+exports.blockUnblockCoach = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+    status: joi_1.default.number().required().valid(0, 1),
+});
+exports.listCoachSpecializationCategories = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.listEmployeeRanks = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
 });
 //# sourceMappingURL=bluetangoAdminSchema.js.map

@@ -448,3 +448,8 @@ export const ADMIN_PERMISSION={
   view:3,
   delete:4
 }
+
+export const COACH_APP_ID={
+  BX:1,
+  BT:2,
+}

@@ -64,6 +64,25 @@ export const count = async (model: any, condition: any) => {
 
 }
 
+export const sum = async (model: any,attribute:any, condition: any) => {
+    try {
+        let selectQueryServiceData;
+        if (!_.isEmpty(model)) {
+            if (!_.isEmpty(condition)) {
+                selectQueryServiceData = await model.sum(attribute,condition);
+            } else {
+                throw new Error(constants.MESSAGES.request_validation_message);
+            }
+        } else {
+            throw new Error(constants.MESSAGES.model_name_required);
+        }
+        return selectQueryServiceData;
+    } catch (error) {
+        throw new Error(error);
+    }
+
+}
+
 /*
 * function for select details 
 * @req : token, data
@@ -107,7 +126,7 @@ export const selectAll = async (model: any, condition: any, attributes: any={}) 
 
 }
 
-export const selectAndCountAll = async (model: any, condition: any, attributes: any) => {
+export const selectAndCountAll = async (model: any, condition: any, attributes: any={}) => {
     try {
         let selectQueryServiceData;
         if (!_.isEmpty(model)) {
@@ -136,12 +155,11 @@ export const getRawQueryResult = async(query, replacements) => {
 * @req : token, data
 *
 */
-export const deleteData = async (params: any, condition: any) => {
+export const deleteData = async (model: any, condition: any) => {
     let deleteQueryServiceData;
-    if (!_.isEmpty(params.model)) {
-        if (!_.isEmpty(params) && !_.isEmpty(condition)) {
-            let model = params.model;
-            deleteQueryServiceData = await model.destroy(params, { where: condition });
+    if (!_.isEmpty(model)) {
+        if (!_.isEmpty(condition)) {
+            deleteQueryServiceData = await model.destroy(condition);
         } else {
             throw new Error(constants.MESSAGES.request_validation_message);
         }

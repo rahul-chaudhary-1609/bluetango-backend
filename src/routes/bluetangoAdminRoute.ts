@@ -49,7 +49,29 @@ bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, a
 bluetangoAdminRoute.get("/dashboard", tokenValidator.validateBluetangoAdminToken, coachController.dashboard);
 
 /* get coach list */
-bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, coachController.getCoachList);
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachList), coachController.getCoachList);
+
+/* add coach*/
+bluetangoAdminRoute.post("/addCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.addCoach), coachController.addCoach);
+
+/* edit coach*/
+bluetangoAdminRoute.put("/editCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.editCoach), coachController.editCoach);
+
+/* get coach deatils */
+bluetangoAdminRoute.get("/getCoachDetails", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachDetails), coachController.getCoachDetails);
+
+/* delete Coach*/
+bluetangoAdminRoute.delete("/deleteCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.deleteCoach), coachController.deleteCoach);
+
+/* block Unblock Coach*/
+bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.blockUnblockCoach), coachController.blockUnblockCoach);
+
+/* list Coach Specialization Categories*/
+bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
+
+/* list Employee Ranks*/
+bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+
 
 /*  add Bios */
 bluetangoAdminRoute.post("/addBios", upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);

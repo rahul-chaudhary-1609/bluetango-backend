@@ -137,7 +137,9 @@ export class CoachService {
 
     public async getCoachList(params:any){
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where: any = {}
+        let where: any = {
+            app_id:constants.COACH_APP_ID.BT,
+        }
 
         if (params.searchKey && params.searchKey.trim()) {
             where={
@@ -182,56 +184,54 @@ export class CoachService {
             }
         }
 
+        let query:any={
+            where: where,
+            attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
+            order: [["id", "DESC"]],
+        }
+
        
         let coachList= await helperFunction.convertPromiseToObject(
-             await coachManagementModel.findAndCountAll({
-                where: where,
-                attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
-                order: [["id", "DESC"]]
-            })
+             await queryService.selectAndCountAll(coachManagementModel,query)
         )
         let c=0
         for(let coach of coachList.rows){
-            let coach_specialization_categories=//helperFunction.convertPromiseToObject(
-                coachSpecializationCategoriesModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.coach_specialization_category_ids || [],
-                        },
-                        status:constants.STATUS.active,
-                    }
-                })
-           // )
+            let query:any={
+                where:{
+                    id:{
+                        [Op.in]:coach.coach_specialization_category_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            }
 
-            let employee_ranks=//helperFunction.convertPromiseToObject(
-                employeeRanksModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.employee_rank_ids || [],
-                        },
-                        status:constants.STATUS.active,
-                    }
-                })
-            //)
+            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                await queryService.selectAll(coachSpecializationCategoriesModel,query)
+            )
 
-            let total_completed_sessions=employeeCoachSessionsModel.count({
+            query={
+                where:{
+                    id:{
+                        [Op.in]:coach.employee_rank_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            }
+
+            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                await queryService.selectAll(employeeRanksModel,query)
+            )
+
+            query={
                 where:{
                     coach_id:coach.id,
                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                 }
-            })
+            }
 
-            let totalRating=employeeCoachSessionsModel.sum('coach_rating',{
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                    coach_rating:{
-                        [Op.gte]:1
-                    }
-                }
-            })
+            coach.total_completed_sessions=await queryService.count(employeeCoachSessionsModel,query);
 
-            let rating_count=employeeCoachSessionsModel.count({
+            query={
                 where:{
                     coach_id:coach.id,
                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
@@ -239,21 +239,21 @@ export class CoachService {
                         [Op.gte]:1
                     }
                 }
-            })
+            }
 
-            let allPromiseResponse=await Promise.all([
-                coach_specialization_categories,
-                employee_ranks,
-                total_completed_sessions,
-                totalRating,
-                rating_count
-            ])
+            let totalRating=await queryService.sum(employeeCoachSessionsModel,'coach_rating',query);
 
-            coach.coach_specialization_categories=allPromiseResponse[0]
-            coach.employee_ranks=allPromiseResponse[1]
-            coach.total_completed_sessions=allPromiseResponse[2]
-            totalRating=allPromiseResponse[3]
-            coach.rating_count=allPromiseResponse[4]
+            query={
+                where:{
+                    coach_id:coach.id,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating:{
+                        [Op.gte]:1
+                    }
+                }
+            }
+
+            coach.rating_count=await queryService.count(employeeCoachSessionsModel,query);
 
             coach.average_rating=0;
 
@@ -275,4 +275,375 @@ export class CoachService {
         return coachList;
     }
     
+    public async addCoach(params: any, user: any) {
+        params.email=params.email.toLowerCase();
+
+        let query:any={
+            where:{
+                [Op.or]:[
+                    {
+                        email:params.email,
+                    },
+                    {
+                        phone_number:params.phone_number
+                    },
+                ],
+                status:{
+                    [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+                },
+                app_id:constants.COACH_APP_ID.BT,
+            }
+        }
+
+        let coach:any=await queryService.selectOne(coachManagementModel,query);
+
+        if(!coach){
+                let password = helperFunction.generaePassword();
+                params.app_id=constants.COACH_APP_ID.BT;
+                params.admin_id=user.uid,
+                params.password = await appUtils.bcryptPassword(password);
+                let newCoach=await queryService.addData(coachManagementModel,params);
+                newCoach = newCoach.get({plain:true});
+
+                delete newCoach.password;
+
+                const mailParams = <any>{};
+                mailParams.to = params.email;
+                mailParams.html = `Hi  ${params.name}
+                <br> Please download the app by clicking on link below and use the given credentials for login into the app :
+                <br><br><b> Android URL</b>: ${process.env.COACH_ANDROID_URL}
+                <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
+                <br> username : ${params.email}
+                <br> password : ${password}
+                <br> Check your details here:
+                <br><table style="padding:0px 10px 10px 10px;">
+                `;
+
+                delete newCoach.password;
+                let query:any={
+                    where:{
+                        id:{
+                            [Op.in]:newCoach.coach_specialization_category_ids || [],
+                        },
+                        status:constants.STATUS.active,
+                    },
+                    attributes:['name']
+                }
+
+                newCoach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                    await queryService.selectAll(coachSpecializationCategoriesModel,query)
+                )
+
+                newCoach.coach_specialization_categories=newCoach.coach_specialization_categories.map(category=>category.name).join(', ');
+
+                delete newCoach.coach_specialization_category_ids;
+
+                query={
+                    where:{
+                        id:{
+                            [Op.in]:newCoach.employee_rank_ids || [],
+                        },
+                        status:constants.STATUS.active,
+                    },
+                    attributes:['name']
+                }
+                newCoach.employee_ranks=await helperFunction.convertPromiseToObject(
+                    await queryService.selectAll(employeeRanksModel,query)
+                )
+
+                newCoach.employee_ranks=newCoach.employee_ranks.map(rank=>rank.name).join(', ');
+
+                newCoach.fees_per_session=newCoach.coach_charge;
+
+                // delete newCoach.id;
+                // delete newCoach.admin_id;
+                // delete newCoach.device_token;
+                delete newCoach.first_time_login;
+                delete newCoach.first_time_login_datetime;
+                delete newCoach.first_time_reset_password;
+                delete newCoach.fileName;
+                delete newCoach.status;
+                delete newCoach.coach_charge;
+                delete newCoach.employee_rank_ids
+                delete newCoach.updatedAt
+                delete newCoach.createdAt
+
+
+                for (let key in newCoach) {
+        
+                    mailParams.html+= `<tr style="text-align: left;">
+                            <th style="opacity: 0.9;">${key.split("_").map((ele) => {
+                                if (ele == "of" || ele == "in") return ele
+                                else return ele.charAt(0).toUpperCase() + ele.slice(1)
+                            }).join(" ")}</th>
+                            <td style="opacity: 0.8;">:</td>
+                            <td style="opacity: 0.8;">${key=='image'?`<img src='${newCoach[key]}' />`:newCoach[key]}</td>
+                        </tr>`
+                }
+                mailParams.html+=`</table>`;
+
+                mailParams.subject = "Coach Login Credentials";
+                mailParams.name="BlueTango"
+                await helperFunction.sendEmail(mailParams);
+                return newCoach;
+        }else{
+            throw new Error(constants.MESSAGES.email_phone_already_registered)
+        }
+    }
+
+    public async editCoach(params: any) {
+        params.email=params.email.toLowerCase();
+
+        let query:any={
+            where:{
+                [Op.or]:[
+                    {
+                        email:params.email,
+                    },
+                    {
+                        phone_number:params.phone_number
+                    },
+                ],
+                status:{
+                    [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+                },
+                app_id:constants.COACH_APP_ID.BT,
+                id:{
+                    [Op.ne]:params.coach_id,
+                }
+            }
+        }
+
+        let coach:any=await queryService.selectOne(coachManagementModel,query);
+
+        if(!coach){
+
+            params.model=coachManagementModel;                
+            let query:any={
+                where:{
+                    id:params.coach_id,
+                    app_id:constants.COACH_APP_ID.BT,
+                },
+                raw:true,
+            }
+            let updatedCoach=await queryService.updateData(params,query);
+            return updatedCoach;
+        }else{
+            throw new Error(constants.MESSAGES.email_phone_already_registered)
+        }
+    }
+
+    public async getCoachDetails(params: any) {
+
+        let query:any={
+            where :{
+                id: params.coach_id,
+                status: [0,1]
+            },
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
+        }
+        const coach = await helperFunction.convertPromiseToObject(
+                await queryService.selectOne(coachManagementModel,query)
+        )
+        
+        if (coach) {
+
+            let query:any={
+                where:{
+                    id:{
+                        [Op.in]:coach.coach_specialization_category_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            }
+
+            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                await queryService.selectAll(coachSpecializationCategoriesModel,query)
+            )
+
+            query={
+                where:{
+                    id:{
+                        [Op.in]:coach.employee_rank_ids || [],
+                    },
+                    status:constants.STATUS.active,
+                }
+            }
+
+            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                await queryService.selectAll(employeeRanksModel,query)
+            )
+
+            query={
+                where:{
+                    coach_id:coach.id,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                }
+            }
+
+            coach.total_completed_sessions=await queryService.count(employeeCoachSessionsModel,query);
+
+            query={
+                where:{
+                    coach_id:coach.id,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating:{
+                        [Op.gte]:1
+                    }
+                }
+            }
+
+            let totalRating=await queryService.sum(employeeCoachSessionsModel,'coach_rating',query);
+
+            query={
+                where:{
+                    coach_id:coach.id,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating:{
+                        [Op.gte]:1
+                    }
+                }
+            }
+
+            coach.rating_count=await queryService.count(employeeCoachSessionsModel,query);
+
+            coach.average_rating=0;
+
+            if(coach.rating_count>0){
+                coach.average_rating=parseFloat((parseInt(totalRating)/coach.rating_count).toFixed(0));
+            }            
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+    
+            let where:any={
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_id:coach.id,
+                type:constants.EMPLOYEE_COACH_SESSION_TYPE.free,            
+            }
+    
+            coach.freeSessionsCount=await queryService.count(employeeCoachSessionsModel,{where});
+            coach.freeSessionsMinutes=await queryService.sum(employeeCoachSessionsModel,'call_duration',{where}) || 0;
+    
+            where={
+                ...where,
+                type:constants.EMPLOYEE_COACH_SESSION_TYPE.paid,            
+            }
+    
+            coach.paidSessionsCount=await queryService.count(employeeCoachSessionsModel,{where});
+            coach.paidSessionsMinutes=await queryService.sum(employeeCoachSessionsModel,'call_duration',{where}) || 0;
+    
+            coach.conversionRate=1;
+
+            return coach
+        }
+        else {
+            throw new Error(constants.MESSAGES.coach_not_found)
+        }
+
+    }
+
+
+    public async deleteCoach(params: any) {
+        let query:any={
+            where : {
+                id: params.coach_id
+            }
+        }
+
+        const coach = await queryService.deleteData(coachManagementModel,query);
+
+        return coach;
+
+    }
+
+    public async blockUnblockCoach(params: any) {
+        let query:any={
+            where : {
+                id: params.coach_id
+            }
+        }
+        
+        params.model=coachManagementModel;
+
+        const coach = await queryService.updateData(params,query);
+
+        return coach;
+
+    }
+
+    public async listCoachSpecializationCategories(params:any){
+
+        let query=<any>{
+            order: [["createdAt", "DESC"]]
+        }
+        query.where=<any>{
+            status:{
+                [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+            }
+        }
+        if(params.searchKey){
+            query.where=<any>{
+                ...query.where,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
+        }
+
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit            
+        }
+
+        let categories=await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAndCountAll(query)
+        )
+
+        if(categories.count==0){
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        return categories;
+
+    }
+
+    public async listEmployeeRanks(params:any){
+
+        let query=<any>{
+            order: [["createdAt", "DESC"]]
+        };
+        query.where=<any>{
+            status:{
+                [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+            }
+        }
+        if(params.searchKey){
+            query.where=<any>{
+                ...query.where,
+                name:{
+                    [Op.iLike]:`%${params.searchKey}%`
+                }
+            }
+        }
+
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+        }
+
+        let ranks=await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findAndCountAll(query)
+        )
+
+        if(ranks.count==0){
+            throw new Error(constants.MESSAGES.no_employee_rank);
+        }
+
+        return ranks;
+
+    }
+
+
 }

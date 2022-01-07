@@ -34,6 +34,7 @@ const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
 const coachController = new CoachController.CoachController();
 const staticContentController = new BluetangoController.StaticContentController();
+const SessionManagementController = new BluetangoController.SessionManagementController();
 /* add subAdmin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 /* login route for admin login */
@@ -55,7 +56,21 @@ bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, a
 /*  get dashboard */
 bluetangoAdminRoute.get("/dashboard", tokenValidator.validateBluetangoAdminToken, coachController.dashboard);
 /* get coach list */
-bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, coachController.getCoachList);
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachList), coachController.getCoachList);
+/* add coach*/
+bluetangoAdminRoute.post("/addCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addCoach), coachController.addCoach);
+/* edit coach*/
+bluetangoAdminRoute.put("/editCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.editCoach), coachController.editCoach);
+/* get coach deatils */
+bluetangoAdminRoute.get("/getCoachDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachDetails), coachController.getCoachDetails);
+/* delete Coach*/
+bluetangoAdminRoute.delete("/deleteCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.deleteCoach), coachController.deleteCoach);
+/* block Unblock Coach*/
+bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.blockUnblockCoach), coachController.blockUnblockCoach);
+/* list Coach Specialization Categories*/
+bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
+/* list Employee Ranks*/
+bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
 /*  add Bios */
 bluetangoAdminRoute.post("/addBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
 /* update Bios */
@@ -68,5 +83,13 @@ bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, 
 bluetangoAdminRoute.put("/addStaticContent", joiSchemaValidation.validateBody(adminSchema.updateStaticContent), tokenValidator.validateBluetangoAdminToken, staticContentController.addStaticContent);
 /* get static content */
 bluetangoAdminRoute.get("/getStaticContent", tokenValidator.validateBluetangoAdminToken, staticContentController.getStaticContent);
+/* get session List view */
+bluetangoAdminRoute.get("/getSessionList", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getSessionList);
+/* get session detailed view */
+bluetangoAdminRoute.get("/getSessionDetail", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getSessionDetail);
+/*perform action on sessions */
+bluetangoAdminRoute.put("/performAction", joiSchemaValidation.validateBody(adminSchema.performAction), tokenValidator.validateBluetangoAdminToken, SessionManagementController.performAction);
+/* get session detailed view */
+bluetangoAdminRoute.get("/getAvailabileCoaches", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getAvailabileCoaches);
 module.exports = bluetangoAdminRoute;
 //# sourceMappingURL=bluetangoAdminRoute.js.map

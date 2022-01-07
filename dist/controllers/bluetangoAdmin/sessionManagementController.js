@@ -28,71 +28,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BiosController = void 0;
+exports.SessionManagementController = void 0;
 const index_1 = require("../../services/bluetangoAdmin/index");
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 //Instantiates a Home services  
-const biosService = new index_1.BiosService();
-class BiosController {
+const sessionManagement = new index_1.SessionManagementService();
+class SessionManagementController {
     constructor() { }
     /**
-      * add coach bios
+      * get Session List
       * @param req :
       * @param res
       */
-    addBios(req, res) {
+    getSessionList(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield biosService.addBios(req.body, req.file, req.user);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosAdded);
-            }
-            catch (error) {
-                appUtils.errorResponse(res, error, constants.code.error_code);
-            }
-        });
-    }
-    /**
-      * update coach bios
-      * @param req :
-      * @param res
-      */
-    updateBios(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const responseFromService = yield biosService.updateBios(req.body, req.file, req.user);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosUpdated);
-            }
-            catch (error) {
-                appUtils.errorResponse(res, error, constants.code.error_code);
-            }
-        });
-    }
-    /**
-      * delete coach bios
-      * @param req :
-      * @param res
-      */
-    deleteBios(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const responseFromService = yield biosService.deleteBios(req.params);
-                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosDeleted);
-            }
-            catch (error) {
-                appUtils.errorResponse(res, error, constants.code.error_code);
-            }
-        });
-    }
-    /**
-     * get all coach bios
-     * @param req :
-     * @param res
-     */
-    getBios(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const responseFromService = yield biosService.getBios(req.query);
+                const responseFromService = yield sessionManagement.getSessionList(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
             }
             catch (error) {
@@ -100,6 +52,54 @@ class BiosController {
             }
         });
     }
+    /**
+      * get Session details
+      * @param req :
+      * @param res
+      */
+    getSessionDetail(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield sessionManagement.getSessionDetail(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.session_details_fetched);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * perform action on sessions
+  * @param req :
+  * @param res
+  */
+    performAction(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield sessionManagement.performAction(req.body);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.action_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * get Availabile Coaches
+  * @param req :
+  * @param res
+  */
+    getAvailabileCoaches(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield sessionManagement.getAvailabileCoaches(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.available_coaches_fetched);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
-exports.BiosController = BiosController;
-//# sourceMappingURL=coachBiosController.js.map
+exports.SessionManagementController = SessionManagementController;
+//# sourceMappingURL=sessionManagementController.js.map

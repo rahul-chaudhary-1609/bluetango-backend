@@ -105,15 +105,8 @@ class AuthService {
             };
             let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
             if (!admin) {
-                let password = generator.generate({
-                    length: 10,
-                    numbers: true,
-                    symbols: true,
-                    lowercase: true,
-                    uppercase: true,
-                    excludeSimilarCharacters: true,
-                    strict: true,
-                });
+                let password = helperFunction.generaePassword();
+                ;
                 params.admin_role = constants.USER_ROLE.sub_admin;
                 params.password = yield appUtils.bcryptPassword(password);
                 let newAdmin = yield queryService.addData(bluetangoAdmin_1.bluetangoAdminModel, params);

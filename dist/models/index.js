@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.staticContentModel = exports.coachBiosModel = exports.coachManagementModel = exports.industryTypeModel = exports.departmentModel = exports.employeeModel = exports.employersModel = exports.adminModel = void 0;
+exports.coachScheduleModel = exports.coachSpecializationCategoriesModel = exports.employeeRanksModel = exports.employeeCoachSessionsModel = exports.staticContentModel = exports.coachBiosModel = exports.coachManagementModel = exports.industryTypeModel = exports.departmentModel = exports.employeeModel = exports.employersModel = exports.adminModel = void 0;
 const admin_1 = require("./admin");
 Object.defineProperty(exports, "adminModel", { enumerable: true, get: function () { return admin_1.adminModel; } });
 const employers_1 = require("./employers");
@@ -18,6 +18,14 @@ const coachBios_1 = require("./coachBios");
 Object.defineProperty(exports, "coachBiosModel", { enumerable: true, get: function () { return coachBios_1.coachBiosModel; } });
 const staticContent_1 = require("./staticContent");
 Object.defineProperty(exports, "staticContentModel", { enumerable: true, get: function () { return staticContent_1.staticContentModel; } });
+const employeeCoachSession_1 = require("./employeeCoachSession");
+Object.defineProperty(exports, "employeeCoachSessionsModel", { enumerable: true, get: function () { return employeeCoachSession_1.employeeCoachSessionsModel; } });
+const employeeRanks_1 = require("./employeeRanks");
+Object.defineProperty(exports, "employeeRanksModel", { enumerable: true, get: function () { return employeeRanks_1.employeeRanksModel; } });
+const coachSpecializationCategories_1 = require("./coachSpecializationCategories");
+Object.defineProperty(exports, "coachSpecializationCategoriesModel", { enumerable: true, get: function () { return coachSpecializationCategories_1.coachSpecializationCategoriesModel; } });
+const coachSchedule_1 = require("./coachSchedule");
+Object.defineProperty(exports, "coachScheduleModel", { enumerable: true, get: function () { return coachSchedule_1.coachScheduleModel; } });
 /* all associations put here to avoid duplicate association */
 employee_1.employeeModel.hasOne(emoji_1.emojiModel, { as: 'energy_emoji_data', foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
 employee_1.employeeModel.hasOne(emoji_1.emojiModel, { as: 'job_emoji_data', foreignKey: "id", sourceKey: "job_emoji_id", targetKey: "id" });

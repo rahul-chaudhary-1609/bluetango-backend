@@ -107,3 +107,67 @@ export const performAction = Joi.object({
   start_time: Joi.string().required(),
   end_time: Joi.string().required()
 });
+
+export const addCoach = Joi.object ({
+  name: Joi.string().required(),
+  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+  country_code: Joi.string().required(),
+  phone_number: Joi.string().required(),
+  description: Joi.string().required(),
+  image: Joi.string().optional(),
+  fileName: Joi.string().optional(),
+  coach_specialization_category_ids:Joi.array().optional(),
+  employee_rank_ids:Joi.array().optional(),
+  coach_charge:Joi.number().optional(),
+})
+
+export const editCoach = Joi.object ({
+  coach_id: Joi.number().required(),
+  name: Joi.string().required(),
+  email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+  country_code: Joi.string().required(),
+  phone_number: Joi.string().required(),
+  description: Joi.string().required(),
+  image: Joi.string().optional(),
+  fileName: Joi.string().optional(),
+  coach_specialization_category_ids:Joi.array().optional(),
+  employee_rank_ids:Joi.array().optional(),
+  coach_charge:Joi.number().optional(),
+})
+
+export const getCoachList=Joi.object({
+  searchKey:Joi.string().optional(),
+  coach_specialization_category_id:Joi.number().optional(),
+  employee_rank_id:Joi.number().optional(),
+  status:Joi.number().optional().valid(0,1),
+  rating:Joi.number().optional().valid(1,2,3,4,5),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getCoachDetails=Joi.object({
+  coach_id: Joi.number().required(),
+})
+
+export const deleteCoach=Joi.object({
+  coach_id: Joi.number().required(),
+})
+
+export const blockUnblockCoach=Joi.object({
+  coach_id: Joi.number().required(),
+  status:Joi.number().required().valid(0,1),
+})
+
+export const listCoachSpecializationCategories= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const listEmployeeRanks= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})

@@ -49,7 +49,7 @@ export class EmployersService {
     */
     public async addEditEmployers(params: any, user: any) {
         params.email = params.email.toLowerCase();
-        var isEmail = await appUtils.CheckEmail(params);
+        let isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {
             qry.where = {
@@ -135,7 +135,7 @@ export class EmployersService {
     public async getEmployersList(params: any) {
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        var whereCond: any = {};
+        let whereCond: any = {};
         if (params.searchKey) {
             whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` }
 
@@ -753,7 +753,7 @@ export class EmployersService {
     */
     public async addEditCoach(params: any, user: any) {
         params.email = params.email.toLowerCase();
-        var isEmail = await appUtils.CheckEmail(params);
+        let isEmail = await appUtils.CheckEmail(params);
         const qry = <any>{ where: {} };
         if (isEmail) {
             qry.where = {
@@ -774,7 +774,8 @@ export class EmployersService {
                     },
                     id: {
                         [Op.ne]: params.id
-                    }
+                    },
+                    app_id:constants.COACH_APP_ID.BX,
                 }
             });
         } else {
@@ -786,7 +787,8 @@ export class EmployersService {
                     ],
                     status: {
                         [Op.in]: [0, 1]
-                    }
+                    },
+                    app_id:constants.COACH_APP_ID.BX,
                 }
             });
         }
@@ -901,7 +903,9 @@ export class EmployersService {
     public async getCoachList(params: any) {
 
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where: any = {}
+        let where: any = {
+            app_id:constants.COACH_APP_ID.BX,
+        }
 
         if (params.searchKey) {
             where["name"] = { [Op.iLike]: `%${params.searchKey}%` }
@@ -1007,7 +1011,7 @@ export class EmployersService {
 
         let where = {
             id: params.coachId,
-            status: 1
+            status: [0,1]
         }
         const coach = await helperFunction.convertPromiseToObject(
                 await coachManagementModel.findOne({

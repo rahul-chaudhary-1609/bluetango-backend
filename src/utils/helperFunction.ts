@@ -16,6 +16,7 @@ import { coachManagementModel, employeeModel } from '../models';
 import moment from 'moment';
 import 'moment-timezone';
 import { employeeCoachSessionsModel } from '../models/employeeCoachSession';
+const generator = require('generate-password');
 
 //Instantiates a Home services  
 const employersService = new EmployersService();
@@ -581,3 +582,17 @@ export const deleteFile = (params: any) => {
     });
   
   }
+
+  export const generaePassword = () => {
+    // Generate Random password
+    let password = generator.generate({
+        length: 10,
+        numbers: true,
+        symbols: true,
+        lowercase: true,
+        uppercase: true,
+        excludeSimilarCharacters: true,
+        strict:true,
+    });
+    return password;
+};

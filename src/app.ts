@@ -105,11 +105,11 @@ require("./routes")(app);
 /*Initialize Listner*/
 var server = app.listen(port, async () => {
     console.log('Listening on port: ', port);
-    await scheduleFreeTrialExpirationNotificationJob();
-    await scheduleGoalSubmitReminderNotificationJob();
-    await scheduleDeleteNotificationJob();
-    // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
-    await scheduleMeetingRemainingTimeNotificationJob();
+    // await scheduleFreeTrialExpirationNotificationJob();
+    // await scheduleGoalSubmitReminderNotificationJob();
+    // await scheduleDeleteNotificationJob();
+    // // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
+    // await scheduleMeetingRemainingTimeNotificationJob();
 
 }).on('error', (e) => {
     console.log('Error happened: ', e.message)

@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.generaePassword = exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -50,6 +50,7 @@ const models_1 = require("../models");
 const moment_1 = __importDefault(require("moment"));
 require("moment-timezone");
 const employeeCoachSession_1 = require("../models/employeeCoachSession");
+const generator = require('generate-password');
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 const s3Client = new AWS.S3({
@@ -526,5 +527,18 @@ exports.deleteFile = (params) => {
         }
         console.log(data);
     });
+};
+exports.generaePassword = () => {
+    // Generate Random password
+    let password = generator.generate({
+        length: 10,
+        numbers: true,
+        symbols: true,
+        lowercase: true,
+        uppercase: true,
+        excludeSimilarCharacters: true,
+        strict: true,
+    });
+    return password;
 };
 //# sourceMappingURL=helperFunction.js.map

@@ -73,7 +73,7 @@ class EmployersService {
     addEditEmployers(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            var isEmail = yield appUtils.CheckEmail(params);
+            let isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
                 qry.where = {
@@ -163,7 +163,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            var whereCond = {};
+            let whereCond = {};
             if (params.searchKey) {
                 whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` };
             }
@@ -717,7 +717,7 @@ class EmployersService {
     addEditCoach(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            var isEmail = yield appUtils.CheckEmail(params);
+            let isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
                 qry.where = {
@@ -738,7 +738,8 @@ class EmployersService {
                         },
                         id: {
                             [Op.ne]: params.id
-                        }
+                        },
+                        app_id: constants.COACH_APP_ID.BX,
                     }
                 });
             }
@@ -751,7 +752,8 @@ class EmployersService {
                         ],
                         status: {
                             [Op.in]: [0, 1]
-                        }
+                        },
+                        app_id: constants.COACH_APP_ID.BX,
                     }
                 });
             }
@@ -855,7 +857,9 @@ class EmployersService {
     getCoachList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let where = {};
+            let where = {
+                app_id: constants.COACH_APP_ID.BX,
+            };
             if (params.searchKey) {
                 where["name"] = { [Op.iLike]: `%${params.searchKey}%` };
             }
@@ -941,7 +945,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {
                 id: params.coachId,
-                status: 1
+                status: [0, 1]
             };
             const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: where,

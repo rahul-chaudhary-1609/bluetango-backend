@@ -81,11 +81,17 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
         type:DataTypes.DECIMAL(15,2),
         allowNull:false,
         defaultValue:0,
-    }
+    },
+    app_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '1=>BX,2=>BT'
+    },
 
 },
     {
         tableName: "coach_management"
     }
 );
-coachManagementModel.sync({ alter: false });
+coachManagementModel.sync({ alter: true });
