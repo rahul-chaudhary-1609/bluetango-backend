@@ -20,7 +20,7 @@ export class AuthService {
     public async login(params: any) {
         params.email=params.email.toLowerCase();
         let query:any={
-            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles'],
+            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles','profile_pic_url'],
             where:{
                 email:params.email,
                 status:{

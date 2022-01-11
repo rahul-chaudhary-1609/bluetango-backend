@@ -29,10 +29,12 @@ const AdminController = __importStar(require("../controllers/bluetangoAdmin/auth
 const multerParser_1 = require("../middleware/multerParser");
 const BluetangoController = __importStar(require("../controllers/bluetangoAdmin/index"));
 const CoachController = __importStar(require("../controllers/bluetangoAdmin/coachController"));
+const ChatController = __importStar(require("../controllers/bluetangoAdmin/chatController"));
 const bluetangoAdminRoute = express_1.default.Router();
 const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
 const coachController = new CoachController.CoachController();
+const chatController = new ChatController.ChatController();
 const staticContentController = new BluetangoController.StaticContentController();
 const SessionManagementController = new BluetangoController.SessionManagementController();
 /* add subAdmin */
@@ -71,6 +73,12 @@ bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAd
 bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
 /* list Employee Ranks*/
 bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+/* get chat room id */
+bluetangoAdminRoute.get("/getChatRoomId", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getChatRoomId), chatController.getChatRoomId);
+/* get chat list */
+bluetangoAdminRoute.get("/getChatList", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getChatList), chatController.getChatList);
+/* send video/audio chat notification*/
+bluetangoAdminRoute.post("/sendChatNotification", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.sendChatNotification), chatController.sendChatNotification);
 /*  add Bios */
 bluetangoAdminRoute.post("/addBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
 /* update Bios */

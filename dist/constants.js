@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COACH_APP_ID = exports.ADMIN_PERMISSION = exports.CONTACT_TYPE = exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.CHAT_USER_TYPE = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.BLUETANGO_ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+exports.COACH_APP_ID = exports.ADMIN_PERMISSION = exports.CONTACT_TYPE = exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.BLUETANGO_CHAT_USER_TYPE = exports.CHAT_USER_TYPE = exports.NOTIFICATION_RECIEVER_TYPE = exports.BLUETANGO_NOTIFICATION_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.BLUETANGO_ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.MESSAGES = {
@@ -142,6 +142,7 @@ exports.MESSAGES = {
     invalid_advisor: "Invalid advisor",
     only_manager_chat: "You can initiate chat with your manager only",
     only_manager_or_coach_chat: "You can initiate chat either with your manager or with a coach",
+    only_coach_chat: "You can initiate chat with a coach only",
     chat_room_notFound: "chat room not found",
     video_chat_session_create_error: "Error in video chat session creation",
     video_chat_session_created: "Session created",
@@ -182,6 +183,7 @@ exports.MESSAGES = {
     employee_rank_delete_employee_error: `If an employee belongs to a particular employee rank then that employee rank cannot be deleted.`,
     employee_rank_delete_coach_error: `If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
     delete_success: `Deleted Successfully`,
+    no_coach: `No coach found`,
     no_session: `No session found`,
     session_not_belogs_to_coach: `This session is not belongs to you`,
     session_not_belogs_to_employee: `This session is not belongs to you`,
@@ -302,6 +304,9 @@ exports.NOTIFICATION_TYPE = {
     meeting_about_to_end: 19,
     update_meeting_duration: 20,
 };
+exports.BLUETANGO_NOTIFICATION_TYPE = {
+    text_chat: 1
+};
 exports.NOTIFICATION_RECIEVER_TYPE = {
     employee: 1,
     employer: 2,
@@ -310,6 +315,10 @@ exports.NOTIFICATION_RECIEVER_TYPE = {
 };
 exports.CHAT_USER_TYPE = {
     employee: 1,
+    coach: 2,
+};
+exports.BLUETANGO_CHAT_USER_TYPE = {
+    admin: 1,
     coach: 2,
 };
 exports.STATUS = {

@@ -121,6 +121,7 @@ export const MESSAGES = {
   invalid_advisor: "Invalid advisor",
   only_manager_chat: "You can initiate chat with your manager only",
   only_manager_or_coach_chat: "You can initiate chat either with your manager or with a coach",
+  only_coach_chat: "You can initiate chat with a coach only",
   chat_room_notFound: "chat room not found",
   video_chat_session_create_error: "Error in video chat session creation",
   video_chat_session_created: "Session created",
@@ -161,6 +162,7 @@ export const MESSAGES = {
   employee_rank_delete_employee_error:`If an employee belongs to a particular employee rank then that employee rank cannot be deleted.`,
   employee_rank_delete_coach_error:`If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
   delete_success:`Deleted Successfully`,
+  no_coach:`No coach found`,
   no_session:`No session found`,
   session_not_belogs_to_coach:`This session is not belongs to you`,
   session_not_belogs_to_employee:`This session is not belongs to you`,
@@ -294,6 +296,10 @@ export const NOTIFICATION_TYPE = {
   update_meeting_duration:20,
 }
 
+export const BLUETANGO_NOTIFICATION_TYPE = {
+  text_chat: 1
+}
+
 export const NOTIFICATION_RECIEVER_TYPE = {
   employee: 1,
   employer: 2,
@@ -303,6 +309,11 @@ export const NOTIFICATION_RECIEVER_TYPE = {
 
 export const CHAT_USER_TYPE = {
   employee: 1,
+  coach: 2,
+}
+
+export const BLUETANGO_CHAT_USER_TYPE = {
+  admin: 1,
   coach: 2,
 }
 

@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generaePassword = exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.generaePassword = exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueBluetangoChatRoomId = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -50,6 +50,8 @@ const models_1 = require("../models");
 const moment_1 = __importDefault(require("moment"));
 require("moment-timezone");
 const employeeCoachSession_1 = require("../models/employeeCoachSession");
+const queryService = __importStar(require("../queryService/bluetangoAdmin/queryService"));
+const bluetangoChatRoom_1 = require("../models/bluetangoChatRoom");
 const generator = require('generate-password');
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
@@ -468,6 +470,22 @@ exports.getUniqueChatRoomId = () => __awaiter(void 0, void 0, void 0, function* 
             });
             if (!groupChatRoom)
                 isUniqueFound = true;
+        }
+    }
+    return room_id;
+});
+exports.getUniqueBluetangoChatRoomId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let room_id = null;
+    while (!isUniqueFound) {
+        room_id = exports.randomStringEightDigit();
+        let chatRoom = yield queryService.selectOne(bluetangoChatRoom_1.bluetangoChatRoomModel, {
+            where: {
+                room_id
+            }
+        });
+        if (!chatRoom) {
+            isUniqueFound = true;
         }
     }
     return room_id;
