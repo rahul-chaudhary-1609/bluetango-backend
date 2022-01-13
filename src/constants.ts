@@ -101,7 +101,7 @@ export const MESSAGES = {
   subAdmin_not_found: "SubAdmin not found",
   invalid_admin: "Only super admin can add subAdmin",
   contact_details_fetched: "Contact Us details fetched",
-  subAdmin_added: "Sub admin added successfully",
+  subAdmin_added: "Admins added successfully",
   subAdmin_updated: "Sub admin updated successfully",
   invalid_subAdmin: "Invalid sub admin",
   library_video_added: "Library video added",
@@ -191,7 +191,10 @@ export const MESSAGES = {
   biosDeleted:'Bios deleted successfully',
   staticContentUpdated:'Static content updated successfully',
   session_details_fetched: "Session details fetched successfully",
-  available_coaches_fetched:"Available coaches fetched successfully"
+  available_coaches_fetched:"Available coaches fetched successfully",
+  admin_deleted: "Admin deleted successfully",
+  role_already_exist:"Role already exist"
+
   
 }
 

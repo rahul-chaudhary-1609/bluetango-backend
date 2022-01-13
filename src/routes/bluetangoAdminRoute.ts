@@ -20,7 +20,7 @@ const coachController = new CoachController.CoachController();
 const chatController = new ChatController.ChatController();
 const staticContentController = new BluetangoController.StaticContentController();
 const SessionManagementController= new BluetangoController.SessionManagementController();
-/* add subAdmin */
+/* add Admin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 
 /* login route for admin login */
@@ -104,4 +104,7 @@ bluetangoAdminRoute.get("/getSessionDetail", tokenValidator.validateBluetangoAdm
 bluetangoAdminRoute.put("/performAction",joiSchemaValidation.validateBody(adminSchema.performAction), tokenValidator.validateBluetangoAdminToken, SessionManagementController.performAction);
 /* get session detailed view */
 bluetangoAdminRoute.get("/getAvailabileCoaches", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getAvailabileCoaches);
+/* delete Admin */
+bluetangoAdminRoute.delete("/deleteAdmin/:admin_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteAdmin), authController.deleteAdmin);
+
 export = bluetangoAdminRoute;

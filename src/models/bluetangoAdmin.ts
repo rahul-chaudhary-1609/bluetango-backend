@@ -71,6 +71,11 @@ export const bluetangoAdminModel: any = sequelize.define("bluetango_admins", {
         type: DataTypes.ARRAY(DataTypes.JSONB),
         allowNull:true,
     },
+    role_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "FK to bluetango_admin_roles table"
+      },
 },
     {
         tableName: "bluetango_admins"
