@@ -170,6 +170,24 @@ class AuthController {
             }
         });
     }
+    /**
+    * delete admin
+    * @param req :admin_id
+    * @param res
+    */
+    deleteAdmin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.deleteAdmin(req.params);
+                const msg = constants.MESSAGES.admin_deleted;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map

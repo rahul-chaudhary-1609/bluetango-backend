@@ -19,10 +19,8 @@ exports.bluetangoAdminModel = connection_1.sequelize.define("bluetango_admins", 
         allowNull: true,
     },
     admin_role: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        defaultValue: 2,
-        comment: '1=>super_admin, 2=>sub_admin'
     },
     reset_pass_otp: {
         type: sequelize_1.DataTypes.STRING,
@@ -63,13 +61,22 @@ exports.bluetangoAdminModel = connection_1.sequelize.define("bluetango_admins", 
     },
     permissions: {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
-        allowNull: false,
+        allowNull: true,
         comment: '1=>add, 2=>update, 3=>view, 4=>delete'
     },
     social_media_handles: {
         type: sequelize_1.DataTypes.JSON,
         allowNull: true,
-    }
+    },
+    module_wise_permissions: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
+        allowNull: true,
+    },
+    role_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        comment: "FK to bluetango_admin_roles table"
+    },
 }, {
     tableName: "bluetango_admins"
 });

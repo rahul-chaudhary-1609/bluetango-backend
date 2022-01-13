@@ -32,6 +32,7 @@ exports.SessionManagementService = void 0;
 const models_1 = require("../../models");
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const appUtils = __importStar(require("../../utils/appUtils"));
+const constants = __importStar(require("../../constants"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
@@ -49,7 +50,7 @@ class SessionManagementService {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
-            let Where = {};
+            let Where = { app_id: constants.COACH_APP_ID.BT };
             let Wheres = {};
             if (params.searchKey && params.searchKey.trim()) {
                 Where = {
@@ -92,7 +93,8 @@ class SessionManagementService {
                 attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
             }, {});
             sessions.rows = sessions.rows.slice(offset, offset + limit);
-            return appUtils.formatPassedAwayTime(sessions.rows);
+            sessions.rows = appUtils.formatPassedAwayTime(sessions.rows);
+            return sessions;
         });
     }
     /*
@@ -110,7 +112,8 @@ class SessionManagementService {
                     {
                         model: models_1.coachManagementModel,
                         required: true,
-                        attributes: []
+                        attributes: [],
+                        where: { app_id: constants.COACH_APP_ID.BT }
                     },
                     {
                         model: models_1.employeeRanksModel,
@@ -128,7 +131,10 @@ class SessionManagementService {
                 raw: true,
                 attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category']]
             });
-            return appUtils.formatPassedAwayTime([sessions])[0];
+            if (sessions) {
+                return appUtils.formatPassedAwayTime([sessions])[0];
+            }
+            return sessions;
         });
     }
     /*
@@ -177,65 +183,70 @@ class SessionManagementService {
     getAvailabileCoaches(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let Sessions = yield this.getSessionDetail(params);
-            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let where = {};
-            let Where = {};
-            where = {
-                date: [Sessions.date],
-                [Op.or]: [
-                    {
-                        start_time: {
-                            [Op.between]: [
-                                Sessions.start_time,
-                                Sessions.end_time,
-                            ]
-                        },
-                    },
-                    {
-                        end_time: {
-                            [Op.between]: [
-                                Sessions.start_time,
-                                Sessions.end_time,
-                            ]
-                        },
-                    },
-                    {
-                        [Op.and]: [
-                            {
-                                start_time: {
-                                    [Op.lte]: Sessions.start_time,
+            let availableCoaches = { rows: [], count: 0 };
+            if (Sessions) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                let where = {};
+                let Where = { app_id: constants.COACH_APP_ID.BT };
+                where = {
+                    date: [Sessions.date],
+                    [Op.or]: [
+                        // {
+                        //     start_time: {
+                        //         [Op.between]: [
+                        //             Sessions.start_time,
+                        //             Sessions.end_time,
+                        //         ]
+                        //     },
+                        // },
+                        // {
+                        //     end_time: {
+                        //         [Op.between]: [
+                        //             Sessions.start_time,
+                        //             Sessions.end_time,
+                        //         ]
+                        //     },
+                        // },
+                        {
+                            [Op.and]: [
+                                {
+                                    start_time: {
+                                        [Op.lte]: Sessions.start_time,
+                                    },
                                 },
-                            },
-                            {
-                                end_time: {
-                                    [Op.gte]: Sessions.end_time,
+                                {
+                                    end_time: {
+                                        [Op.gte]: Sessions.end_time,
+                                    },
                                 },
-                            },
-                        ],
-                    }
-                ]
-            };
-            Where["coach_specialization_category_ids"] = { [Op.contains]: [Sessions.coach_specialization_category_id] };
-            Where["employee_rank_ids"] = { [Op.contains]: [Sessions.employee_rank_id] };
-            let availableCoaches = yield queryService.selectAndCountAll(models_1.coachScheduleModel, {
-                where: where,
-                include: [
-                    {
-                        model: models_1.coachManagementModel,
-                        where: Where,
-                        required: true,
-                        attributes: [],
-                    }
-                ],
-                raw: true,
-                attributes: ["id", "date", "start_time", "end_time", "coach_id", "status", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('coach_management.phone_number'), 'phone_number']]
-            }, {});
-            availableCoaches.rows.forEach((element, index, arr) => {
-                arr[index]["coach_specialization_category"] = Sessions.coach_specialization_category;
-                arr[index]["team_level"] = Sessions.team_level,
-                    arr[index]["session_id"] = Sessions.id;
-            });
-            return availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
+                            ],
+                        }
+                    ]
+                };
+                Where["coach_specialization_category_ids"] = { [Op.contains]: [Sessions.coach_specialization_category_id] };
+                Where["employee_rank_ids"] = { [Op.contains]: [Sessions.employee_rank_id] };
+                availableCoaches = yield queryService.selectAndCountAll(models_1.coachScheduleModel, {
+                    where: where,
+                    include: [
+                        {
+                            model: models_1.coachManagementModel,
+                            where: Where,
+                            required: true,
+                            attributes: [],
+                        }
+                    ],
+                    raw: true,
+                    attributes: ["id", "date", "start_time", "end_time", "coach_id", "status", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('coach_management.phone_number'), 'phone_number']]
+                }, {});
+                availableCoaches.rows.forEach((element, index, arr) => {
+                    arr[index]["coach_specialization_category"] = Sessions.coach_specialization_category;
+                    arr[index]["team_level"] = Sessions.team_level,
+                        arr[index]["session_id"] = Sessions.id;
+                });
+                availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
+                return availableCoaches;
+            }
+            return availableCoaches;
         });
     }
 }
