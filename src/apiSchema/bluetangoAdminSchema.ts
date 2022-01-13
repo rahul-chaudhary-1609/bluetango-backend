@@ -166,3 +166,18 @@ export const listEmployeeRanks= Joi.object ({
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
 })
+
+export const getChatRoomId = Joi.object({
+  other_user_id: Joi.string().required(),
+})
+
+export const getChatList= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const sendChatNotification = Joi.object({
+  chat_room_id: Joi.string().required(),
+  message: Joi.string().allow('',null).optional(),
+})

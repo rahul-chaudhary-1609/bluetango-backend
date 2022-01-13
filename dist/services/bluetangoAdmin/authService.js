@@ -49,7 +49,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
             let query = {
-                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles'],
+                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url'],
                 where: {
                     email: params.email,
                     status: {

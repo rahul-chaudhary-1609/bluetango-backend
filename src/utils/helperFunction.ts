@@ -16,6 +16,8 @@ import { coachManagementModel, employeeModel } from '../models';
 import moment from 'moment';
 import 'moment-timezone';
 import { employeeCoachSessionsModel } from '../models/employeeCoachSession';
+import * as queryService from '../queryService/bluetangoAdmin/queryService';
+import { bluetangoChatRoomModel } from  "../models/bluetangoChatRoom";
 const generator = require('generate-password');
 
 //Instantiates a Home services  
@@ -514,6 +516,25 @@ export const getUniqueChatRoomId = async ()=> {
             });
 
             if (!groupChatRoom) isUniqueFound = true;
+        }
+    }
+
+    return room_id;
+}
+
+export const getUniqueBluetangoChatRoomId = async ()=> {
+    let isUniqueFound = false;
+    let room_id = null;
+    while (!isUniqueFound) {
+        room_id = randomStringEightDigit();
+        let chatRoom = await queryService.selectOne(bluetangoChatRoomModel,{
+            where: {
+                room_id
+            }
+        });
+
+        if (!chatRoom) {
+            isUniqueFound = true;
         }
     }
 

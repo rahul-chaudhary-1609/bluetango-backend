@@ -10,12 +10,14 @@ import * as helperFunction from "../utils/helperFunction";
 import { upload } from "../middleware/multerParser"
 import * as BluetangoController from "../controllers/bluetangoAdmin/index";
 import * as CoachController from "../controllers/bluetangoAdmin/coachController";
+import * as ChatController from "../controllers/bluetangoAdmin/chatController";
 
 const bluetangoAdminRoute = express.Router();
 
 const authController = new AdminController.AuthController();
 const biosController = new BluetangoController.BiosController();
 const coachController = new CoachController.CoachController();
+const chatController = new ChatController.ChatController();
 const staticContentController = new BluetangoController.StaticContentController();
 const SessionManagementController= new BluetangoController.SessionManagementController();
 /* add subAdmin */
@@ -71,6 +73,15 @@ bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.val
 
 /* list Employee Ranks*/
 bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+
+/* get chat room id */
+bluetangoAdminRoute.get("/getChatRoomId", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getChatRoomId), chatController.getChatRoomId);
+
+/* get chat list */
+bluetangoAdminRoute.get("/getChatList", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getChatList), chatController.getChatList);
+
+/* send video/audio chat notification*/
+bluetangoAdminRoute.post("/sendChatNotification", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.sendChatNotification), chatController.sendChatNotification);
 
 
 /*  add Bios */

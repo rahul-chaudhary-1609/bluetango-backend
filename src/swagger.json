@@ -9210,6 +9210,116 @@
         "responses": {}
       }
     },
+    "/bluetango-admin/getChatRoomId": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get chat room id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "other_user_id",
+            "in": "query",
+            "description": "other_user_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getChatList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get chat list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/sendChatNotification": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "send chat notification",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "Enter message in case of text chat",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/bluetango-admin/addBios": {
       "post": {
         "tags": [

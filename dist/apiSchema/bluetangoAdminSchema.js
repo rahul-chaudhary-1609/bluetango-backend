@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
+exports.sendChatNotification = exports.getChatList = exports.getChatRoomId = exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -181,5 +181,17 @@ exports.listEmployeeRanks = joi_1.default.object({
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
+});
+exports.getChatRoomId = joi_1.default.object({
+    other_user_id: joi_1.default.string().required(),
+});
+exports.getChatList = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.sendChatNotification = joi_1.default.object({
+    chat_room_id: joi_1.default.string().required(),
+    message: joi_1.default.string().allow('', null).optional(),
 });
 //# sourceMappingURL=bluetangoAdminSchema.js.map

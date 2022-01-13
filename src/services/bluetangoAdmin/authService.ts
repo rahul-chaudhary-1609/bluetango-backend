@@ -18,13 +18,13 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
-        params.email = params.email.toLowerCase();
-        let query: any = {
-            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles'],
-            where: {
-                email: params.email,
-                status: {
-                    [Op.ne]: constants.STATUS.deleted
+        params.email=params.email.toLowerCase();
+        let query:any={
+            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles','profile_pic_url'],
+            where:{
+                email:params.email,
+                status:{
+                    [Op.ne]:constants.STATUS.deleted
                 }
             }
         }
