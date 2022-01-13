@@ -19,7 +19,7 @@ const biosController = new BluetangoController.BiosController();
 const coachController = new CoachController.CoachController();
 const chatController = new ChatController.ChatController();
 const staticContentController = new BluetangoController.StaticContentController();
-const SessionManagementController= new BluetangoController.SessionManagementController();
+const SessionManagementController = new BluetangoController.SessionManagementController();
 /* add Admin */
 bluetangoAdminRoute.post("/addAdmin", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addAdmin), authController.addAdmin);
 
@@ -51,34 +51,34 @@ bluetangoAdminRoute.get("/logout", tokenValidator.validateBluetangoAdminToken, a
 bluetangoAdminRoute.get("/dashboard", tokenValidator.validateBluetangoAdminToken, coachController.dashboard);
 
 /* get coach list */
-bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachList), coachController.getCoachList);
+bluetangoAdminRoute.get("/getCoachList", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachList), coachController.getCoachList);
 
 /* add coach*/
-bluetangoAdminRoute.post("/addCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.addCoach), coachController.addCoach);
+bluetangoAdminRoute.post("/addCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.addCoach), coachController.addCoach);
 
 /* edit coach*/
-bluetangoAdminRoute.put("/editCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.editCoach), coachController.editCoach);
+bluetangoAdminRoute.put("/editCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.editCoach), coachController.editCoach);
 
 /* get coach deatils */
-bluetangoAdminRoute.get("/getCoachDetails", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachDetails), coachController.getCoachDetails);
+bluetangoAdminRoute.get("/getCoachDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachDetails), coachController.getCoachDetails);
 
 /* delete Coach*/
-bluetangoAdminRoute.delete("/deleteCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.deleteCoach), coachController.deleteCoach);
+bluetangoAdminRoute.delete("/deleteCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.deleteCoach), coachController.deleteCoach);
 
 /* block Unblock Coach*/
-bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateBody(adminSchema.blockUnblockCoach), coachController.blockUnblockCoach);
+bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.blockUnblockCoach), coachController.blockUnblockCoach);
 
 /* list Coach Specialization Categories*/
-bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
+bluetangoAdminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
 
 /* list Employee Ranks*/
-bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+bluetangoAdminRoute.get("/listEmployeeRanks", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
 
 /* get chat room id */
 bluetangoAdminRoute.get("/getChatRoomId", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getChatRoomId), chatController.getChatRoomId);
 
 /* get chat list */
-bluetangoAdminRoute.get("/getChatList", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getChatList), chatController.getChatList);
+bluetangoAdminRoute.get("/getChatList", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getChatList), chatController.getChatList);
 
 /* send video/audio chat notification*/
 bluetangoAdminRoute.post("/sendChatNotification", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.sendChatNotification), chatController.sendChatNotification);
@@ -101,10 +101,14 @@ bluetangoAdminRoute.get("/getSessionList", tokenValidator.validateBluetangoAdmin
 /* get session detailed view */
 bluetangoAdminRoute.get("/getSessionDetail", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getSessionDetail);
 /*perform action on sessions */
-bluetangoAdminRoute.put("/performAction",joiSchemaValidation.validateBody(adminSchema.performAction), tokenValidator.validateBluetangoAdminToken, SessionManagementController.performAction);
+bluetangoAdminRoute.put("/performAction", joiSchemaValidation.validateBody(adminSchema.performAction), tokenValidator.validateBluetangoAdminToken, SessionManagementController.performAction);
 /* get session detailed view */
 bluetangoAdminRoute.get("/getAvailabileCoaches", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getAvailabileCoaches);
 /* delete Admin */
 bluetangoAdminRoute.delete("/deleteAdmin/:admin_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteAdmin), authController.deleteAdmin);
+/* role view */
+bluetangoAdminRoute.get("/viewRoleDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.viewRoleDetails), authController.viewRoleDetails);
+/* delete Admin */
+bluetangoAdminRoute.delete("/deleteRole/:role_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteRole), authController.deleteRole);
 
 export = bluetangoAdminRoute;

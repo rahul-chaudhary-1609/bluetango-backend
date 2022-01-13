@@ -8511,8 +8511,8 @@
             "required": true,
             "schema": {
               "type": "object"
-              }
             }
+          }
         ],
         "responses": {}
       }
@@ -9781,6 +9781,90 @@
             "description": "page size",
             "required": false,
             "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteAdmin/{admin_id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to delete Admin",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin_id",
+            "in": "path",
+            "description": "admin_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/viewRoleDetails": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to get  role details along with admin details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "query",
+            "description": "role_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteRole/{role_id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to delete Role",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "description": "role_id",
+            "required": true,
+            "type": "integer"
           }
         ],
         "responses": {}

@@ -1,5 +1,5 @@
 import { adminModel } from "../../models/admin";
-import { bluetangoAdminModel,bluetangoAdminRolesModel } from "../../models";
+import { bluetangoAdminModel, bluetangoAdminRolesModel } from "../../models";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -10,7 +10,9 @@ const generator = require('generate-password');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
-bluetangoAdminModel.belongsTo(bluetangoAdminRolesModel, { foreignKey: 'role_id', targetKey: 'id' });
+bluetangoAdminModel.belongsTo(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
+bluetangoAdminRolesModel.hasMany(bluetangoAdminModel, { foreignKey: 'role_id', onDelete: 'cascade', hooks: true });
+
 export class AuthService {
     constructor() { }
 
@@ -19,13 +21,13 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
-        params.email=params.email.toLowerCase();
-        let query:any={
-            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles','profile_pic_url'],
-            where:{
-                email:params.email,
-                status:{
-                    [Op.ne]:constants.STATUS.deleted
+        params.email = params.email.toLowerCase();
+        let query: any = {
+            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url'],
+            where: {
+                email: params.email,
+                status: {
+                    [Op.ne]: constants.STATUS.deleted
                 }
             }
         }
@@ -58,8 +60,8 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async addAdmin(Params: any) {
-        let role: any = await queryService.selectOne(bluetangoAdminRolesModel, {where:{role_name:Params.role_name}});
-        if(role){
+        let role: any = await queryService.selectOne(bluetangoAdminRolesModel, { where: { role_name: Params.role_name } });
+        if (role) {
             throw new Error(constants.MESSAGES.role_already_exist);
         }
         let newRole = await queryService.addData(bluetangoAdminRolesModel, Params);
@@ -77,7 +79,7 @@ export class AuthService {
             }
             let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
             if (!admin) {
-                params.role_id=newRole.id
+                params.role_id = newRole.id
                 let password = await helperFunction.generaePassword();
                 params.admin_role = constants.USER_ROLE.sub_admin;
                 params.password = await appUtils.bcryptPassword(password);
@@ -268,12 +270,39 @@ export class AuthService {
         }
     }
     public async deleteAdmin(params: any) {
-        let query:any={
-            where : {
+        let query: any = {
+            where: {
                 id: params.admin_id
             }
         }
-        const coach = await queryService.deleteData(bluetangoAdminModel,query);
-        return coach;
+        const admin = await queryService.deleteData(bluetangoAdminModel, query);
+        return admin;
+    }
+    public async viewRoleDetails(params: any) {
+        let where: any = {}
+        if (params.id) {
+            where["id"] = params.role_id
+        }
+        let roleDetails = await queryService.selectOne(bluetangoAdminRolesModel, {
+            where: where,
+            include: [
+                {
+                    model: bluetangoAdminModel,
+                    required: true,
+                    attributes: ["name", "email"],
+                },
+            ],
+            attributes: ["id", "role_name", "status", "module_wise_permissions"]
+        })
+        return roleDetails;
+    }
+    public async deleteRole(params: any) {
+        let query: any = {
+            where: {
+                id: params.role_id
+            }
+        }
+        const deletedRole = await queryService.deleteData(bluetangoAdminRolesModel, query);
+        return deletedRole;
     }
 }

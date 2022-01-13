@@ -193,7 +193,9 @@ export const MESSAGES = {
   session_details_fetched: "Session details fetched successfully",
   available_coaches_fetched:"Available coaches fetched successfully",
   admin_deleted: "Admin deleted successfully",
-  role_already_exist:"Role already exist"
+  role_already_exist:"Role already exist",
+  role_details_fetched:"Role details fetched successfully",
+  role_deleted:"Role deleted successfully"
 
   
 }
