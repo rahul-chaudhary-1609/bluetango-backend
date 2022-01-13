@@ -16,11 +16,12 @@ export const login = Joi.object({
     "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
   })
 });
-
-export const addAdmin = Joi.array().items({
+export const addAdmin = Joi.object({
+  admins:Joi.array().items({
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
   name: Joi.string().required(),
-  admin_role:Joi.string().required(),
+  }),
+  role_name:Joi.string().required(),
   module_wise_permissions: Joi.array().items({module:Joi.string().required().valid('Dashboard', 'Coach Administration', 'Administration Management','Static Content','Session Content'),permissions:Joi.array().required()}).required(),
 });
 export const forgetPassword = Joi.object({
@@ -181,3 +182,6 @@ export const sendChatNotification = Joi.object({
   chat_room_id: Joi.string().required(),
   message: Joi.string().allow('',null).optional(),
 })
+export const deleteAdmin = Joi.object({
+  admin_id: Joi.number().required(),
+});

@@ -126,4 +126,19 @@ export class AuthController {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
+    /**
+    * delete admin
+    * @param req :admin_id
+    * @param res 
+    */
+     public async deleteAdmin(req: any, res: any) {
+        try {
+            const responseFromService = await authService.deleteAdmin(req.params);
+            const msg = constants.MESSAGES.admin_deleted;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            console.log(error)
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import { adminModel } from "../../models/admin";
-import { bluetangoAdminModel } from "../../models/bluetangoAdmin";
+import { bluetangoAdminModel,bluetangoAdminRolesModel } from "../../models";
 import _ from "lodash";
 import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
@@ -10,6 +10,7 @@ const generator = require('generate-password');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
+bluetangoAdminModel.belongsTo(bluetangoAdminRolesModel, { foreignKey: 'role_id', targetKey: 'id' });
 export class AuthService {
     constructor() { }
 
@@ -57,9 +58,14 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async addAdmin(Params: any) {
+        let role: any = await queryService.selectOne(bluetangoAdminRolesModel, {where:{role_name:Params.role_name}});
+        if(role){
+            throw new Error(constants.MESSAGES.role_already_exist);
+        }
+        let newRole = await queryService.addData(bluetangoAdminRolesModel, Params);
         let AlreadyExistAdmins = [];
         let created = [];
-        for (let params of Params) {
+        for (let params of Params.admins) {
             params.email = params.email.toLowerCase();
             let query: any = {
                 where: {
@@ -71,6 +77,7 @@ export class AuthService {
             }
             let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
             if (!admin) {
+                params.role_id=newRole.id
                 let password = await helperFunction.generaePassword();
                 params.admin_role = constants.USER_ROLE.sub_admin;
                 params.password = await appUtils.bcryptPassword(password);
@@ -259,5 +266,14 @@ export class AuthService {
         } catch (error) {
             throw new Error(error);
         }
+    }
+    public async deleteAdmin(params: any) {
+        let query:any={
+            where : {
+                id: params.admin_id
+            }
+        }
+        const coach = await queryService.deleteData(bluetangoAdminModel,query);
+        return coach;
     }
 }

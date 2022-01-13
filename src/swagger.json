@@ -8507,13 +8507,10 @@
           {
             "name": "body",
             "in": "body",
-            "description": "[{name:'string',email:'@gmail.com',admin_role:'string',permissions:[1=>add, 2=> updated, 3=> view, 4=> delete],module_wise_permissions:[module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]",
+            "description": "{admins:[{name:'string',email:'@gmail.com'}],role_name:'string',module_wise_permissions:[{module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]}",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object"
-              }
+              "type": "object"
               }
             }
         ],
