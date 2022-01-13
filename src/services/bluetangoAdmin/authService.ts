@@ -18,35 +18,35 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
-        params.email=params.email.toLowerCase();
-        let query:any={
-            attributes:['id','name','email','password','country_code','phone_number','admin_role','status','permissions','social_media_handles'],
-            where:{
-                email:params.email,
-                status:{
-                    [Op.ne]:constants.STATUS.deleted
+        params.email = params.email.toLowerCase();
+        let query: any = {
+            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles'],
+            where: {
+                email: params.email,
+                status: {
+                    [Op.ne]: constants.STATUS.deleted
                 }
             }
         }
 
         query.raw = true;
 
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
-        if(admin){
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
+        if (admin) {
             let comparePassword = await appUtils.comparePassword(params.password, admin.password);
-            if(comparePassword){
-                if(admin.status==constants.STATUS.active){
+            if (comparePassword) {
+                if (admin.status == constants.STATUS.active) {
                     delete admin.password;
                     let token = await tokenResponse.bluetangoAdminTokenResponse(admin);
-                    admin.token=token;
+                    admin.token = token;
                     return admin;
-                }else{
+                } else {
                     throw new Error(constants.MESSAGES.deactivate_account);
                 }
-            }else{
+            } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }
-        }else{
+        } else {
             throw new Error(constants.MESSAGES.invalid_credentials);
         }
 
@@ -56,35 +56,28 @@ export class AuthService {
     * add sub admin function
     @param {} params pass all parameters from request
     */
-    public async addAdmin(params: any) {
-        params.email=params.email.toLowerCase();
-
-        let query:any={
-            where:{
-                [Op.or]:[
-                    {
-                        email:params.email,
-                    },
-                    {
-                        phone_number:params.phone_number
-                    },
-                ],
-                status:{
-                    [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+    public async addAdmin(Params: any) {
+        let AlreadyExistAdmins = [];
+        let created = [];
+        for (let params of Params) {
+            params.email = params.email.toLowerCase();
+            let query: any = {
+                where: {
+                    email: params.email,
+                    status: {
+                        [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                    }
                 }
             }
-        }
-
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
-
-        if(!admin){
-                let password = helperFunction.generaePassword();;
-                params.admin_role=constants.USER_ROLE.sub_admin;
+            let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
+            if (!admin) {
+                let password = await helperFunction.generaePassword();
+                params.admin_role = constants.USER_ROLE.sub_admin;
                 params.password = await appUtils.bcryptPassword(password);
-                let newAdmin=await queryService.addData(bluetangoAdminModel,params);
-                newAdmin = newAdmin.get({plain:true});
+                let newAdmin = await queryService.addData(bluetangoAdminModel, params);
+                newAdmin = newAdmin.get({ plain: true });
                 let token = await tokenResponse.bluetangoAdminTokenResponse(newAdmin);
-                newAdmin.token=token;
+                newAdmin.token = token;
                 delete newAdmin.password;
                 delete newAdmin.reset_pass_otp;
                 delete newAdmin.reset_pass_expiry;
@@ -98,25 +91,26 @@ export class AuthService {
                 <br> password : ${password}
                 `;
                 mailParams.subject = "Subadmin Login Credentials";
-                mailParams.name="BlueTango"
+                mailParams.name = "BlueTango"
                 await helperFunction.sendEmail(mailParams);
-                return newAdmin;
-        }else{
-            throw new Error(constants.MESSAGES.email_phone_already_registered)
+                created.push(newAdmin)
+            } else {
+                AlreadyExistAdmins.push(params)
+            }
         }
-        
+        return { newly_created: created, Already_exist_admins: AlreadyExistAdmins }
     }
 
-    public async getProfile(user:any){
-        let query:any={
-            attributes:['id','name','email','country_code','phone_number','admin_role','status','permissions','social_media_handles','thought_of_the_day','profile_pic_url','createdAt','updatedAt'],
-            where:{
-                id:user.uid,
+    public async getProfile(user: any) {
+        let query: any = {
+            attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt'],
+            where: {
+                id: user.uid,
             }
         }
 
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
-        
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
+
 
         return admin;
     }
@@ -125,83 +119,83 @@ export class AuthService {
     * add sub admin function
     @param {} params pass all parameters from request
     */
-    public async updateProfile(params: any,user:any) {
-        params.email=params.email.toLowerCase();
+    public async updateProfile(params: any, user: any) {
+        params.email = params.email.toLowerCase();
 
-        let query:any={
-            where:{
-                email:params.email,
-                status:{
-                    [Op.in]:[constants.STATUS.active,constants.STATUS.inactive]
+        let query: any = {
+            where: {
+                email: params.email,
+                status: {
+                    [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
                 },
-                id:{
-                    [Op.ne]:user.uid,
+                id: {
+                    [Op.ne]: user.uid,
                 }
             }
         }
 
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
 
-        if(!admin){
-                params.model=bluetangoAdminModel;
-                query={
-                    where:{
-                        id:user.uid,
-                    },
-                    returning:true,
-                    raw:true,
-                }
-                let updatedAdmin=await queryService.updateData(params,query);
-                return updatedAdmin;
-        }else{
+        if (!admin) {
+            params.model = bluetangoAdminModel;
+            query = {
+                where: {
+                    id: user.uid,
+                },
+                returning: true,
+                raw: true,
+            }
+            let updatedAdmin = await queryService.updateData(params, query);
+            return updatedAdmin;
+        } else {
             throw new Error(constants.MESSAGES.email_already_registered)
         }
-        
+
     }
 
     /*
     * function to set new pass 
     */
     public async changePassword(params: any, user: any) {
-        let query:any={
-            where:{
-                id:user.uid,
+        let query: any = {
+            where: {
+                id: user.uid,
             }
         }
-        
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
-        let comparePassword = await appUtils.comparePassword(params.old_password, admin.password);
-        if(comparePassword){
-            params.password= await appUtils.bcryptPassword(params.new_password)
-            params.model=bluetangoAdminModel;
 
-            await queryService.updateData(params,query);
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
+        let comparePassword = await appUtils.comparePassword(params.old_password, admin.password);
+        if (comparePassword) {
+            params.password = await appUtils.bcryptPassword(params.new_password)
+            params.model = bluetangoAdminModel;
+
+            await queryService.updateData(params, query);
 
             return true;
-        }else{
+        } else {
             throw new Error(constants.MESSAGES.invalid_old_password);
         }
-       
+
     }
 
-  
-     /**
-     * reset password function to add the data
-     * @param {*} params pass all parameters from request 
-     */
-      public async forgotPassword(params: any) {
-        params.email=params.email.toLowerCase()
 
-        let query:any = { 
+    /**
+    * reset password function to add the data
+    * @param {*} params pass all parameters from request 
+    */
+    public async forgotPassword(params: any) {
+        params.email = params.email.toLowerCase()
+
+        let query: any = {
             where: {
-                email : params.email,
-                status: {[Op.ne]: constants.STATUS.deleted}
-            } 
+                email: params.email,
+                status: { [Op.ne]: constants.STATUS.deleted }
+            }
         };
 
-        query.raw=true;
+        query.raw = true;
 
-        let admin:any=await queryService.selectOne(bluetangoAdminModel,query);
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
 
         if (admin) {
             let token = await tokenResponse.bluetangoForgotPasswordTokenResponse(admin);
@@ -213,7 +207,7 @@ export class AuthService {
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
             mailParams.subject = "Reset Password Request";
-            mailParams.name="BlueTango"
+            mailParams.name = "BlueTango"
             await helperFunction.sendEmail(mailParams);
             return true;
         } else {
@@ -226,40 +220,40 @@ export class AuthService {
     * function to set new pass 
     */
     public async resetPassword(params: any, user: any) {
-        
-        params.password= await appUtils.bcryptPassword(params.password)
-        params.model=bluetangoAdminModel;
 
-        let query:any ={ 
+        params.password = await appUtils.bcryptPassword(params.password)
+        params.model = bluetangoAdminModel;
+
+        let query: any = {
             where: {
-                id : user.uid
-            } 
+                id: user.uid
+            }
         };
 
-        await queryService.updateData(params,query);
+        await queryService.updateData(params, query);
 
         return true;
-       
+
     }
 
-     /*
-    * function to upload file 
-    */
-     public async uploadFile(params: any, folderName) {
+    /*
+   * function to upload file 
+   */
+    public async uploadFile(params: any, folderName) {
         return await helperFunction.uploadFile(params, folderName);
     }
 
-    
+
     public async logout(params: any, user: any) {
         try {
             let update = {
                 'token': null,
                 'model': adminModel
             };
-            let query:any ={ 
+            let query: any = {
                 where: {
-                    id : user.uid
-                } 
+                    id: user.uid
+                }
             };
             return await queryService.updateData(update, query);
         } catch (error) {
