@@ -18,10 +18,8 @@ export const bluetangoAdminModel: any = sequelize.define("bluetango_admins", {
         allowNull: true,
     },
     admin_role: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 2,
-        comment: '1=>super_admin, 2=>sub_admin'
     },
     reset_pass_otp: {
         type: DataTypes.STRING,
@@ -62,13 +60,17 @@ export const bluetangoAdminModel: any = sequelize.define("bluetango_admins", {
     },
     permissions: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
-        allowNull: false,
+        allowNull: true,
         comment: '1=>add, 2=>update, 3=>view, 4=>delete'
     },
     social_media_handles: {
         type: DataTypes.JSON,
         allowNull: true,
-    }
+    },
+    module_wise_permissions:{
+        type: DataTypes.ARRAY(DataTypes.JSONB),
+        allowNull:true,
+    },
 },
     {
         tableName: "bluetango_admins"

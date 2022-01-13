@@ -22,7 +22,7 @@ export class SessionManagementService {
     public async getSessionList(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
-        let Where: any = {}
+        let Where: any = {app_id:constants.COACH_APP_ID.BT}
         let Wheres: any = {}
 
         if (params.searchKey && params.searchKey.trim()) {
@@ -68,7 +68,8 @@ export class SessionManagementService {
             attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
         }, {})
         sessions.rows = sessions.rows.slice(offset, offset + limit);
-        return appUtils.formatPassedAwayTime(sessions.rows);
+        sessions.rows = appUtils.formatPassedAwayTime(sessions.rows);
+        return sessions
     }
     /*
  *get Session details
@@ -84,7 +85,8 @@ export class SessionManagementService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: []
+                    attributes: [],
+                    where:{app_id:constants.COACH_APP_ID.BT}
                 },
                 {
                     model: employeeRanksModel,
@@ -102,7 +104,10 @@ export class SessionManagementService {
             raw: true,
             attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category']]
         })
+        if(sessions){
         return appUtils.formatPassedAwayTime([sessions])[0];
+        }
+        return sessions
     }
 
     /*
@@ -148,29 +153,31 @@ export class SessionManagementService {
 */
     public async getAvailabileCoaches(params: any) {
         let Sessions = await this.getSessionDetail(params)
+        let availableCoaches: any = {rows:[],count:0};
+        if(Sessions){
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
-        let Where: any = {}
+        let Where: any = {app_id:constants.COACH_APP_ID.BT}
 
         where = {
             date: [Sessions.date],
             [Op.or]: [
-                {
-                    start_time: {
-                        [Op.between]: [
-                            Sessions.start_time,
-                            Sessions.end_time,
-                        ]
-                    },
-                },
-                {
-                    end_time: {
-                        [Op.between]: [
-                            Sessions.start_time,
-                            Sessions.end_time,
-                        ]
-                    },
-                },
+                // {
+                //     start_time: {
+                //         [Op.between]: [
+                //             Sessions.start_time,
+                //             Sessions.end_time,
+                //         ]
+                //     },
+                // },
+                // {
+                //     end_time: {
+                //         [Op.between]: [
+                //             Sessions.start_time,
+                //             Sessions.end_time,
+                //         ]
+                //     },
+                // },
                 {
                     [Op.and]: [
                         {
@@ -189,7 +196,7 @@ export class SessionManagementService {
         }
         Where["coach_specialization_category_ids"] = { [Op.contains]: [Sessions.coach_specialization_category_id] }
         Where["employee_rank_ids"] = { [Op.contains]: [Sessions.employee_rank_id] }
-        let availableCoaches = await queryService.selectAndCountAll(coachScheduleModel, {
+        availableCoaches = await queryService.selectAndCountAll(coachScheduleModel, {
             where: where,
             include: [
                 {
@@ -207,6 +214,9 @@ export class SessionManagementService {
             arr[index]["team_level"] = Sessions.team_level,
                 arr[index]["session_id"] = Sessions.id
         });
-        return availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
+        availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
+        return availableCoaches;
+    }
+    return availableCoaches;
     }
 }

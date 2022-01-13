@@ -8492,7 +8492,7 @@
         "tags": [
           "Bluetango Admin"
         ],
-        "description": "Admin Login",
+        "description": "Add admin",
         "consumes": [
           "application/json"
         ],
@@ -8507,55 +8507,15 @@
           {
             "name": "body",
             "in": "body",
-            "description": "1. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tpermissions is required\n2. permissions is an array of integers: [1,2,3,4]: 1=>add, 2=> updated, 3=> view, 4=> delete",
+            "description": "[{name:'string',email:'@gmail.com',admin_role:'string',permissions:[1=>add, 2=> updated, 3=> view, 4=> delete],module_wise_permissions:[module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "country_code": {
-                  "type": "string"
-                },
-                "phone_number": {
-                  "type": "string"
-                },
-                "profile_pic_url": {
-                  "type": "string"
-                },
-                "permissions": {
-                  "type": "array",
-                  "items": {
-                    "type": "number"
-                  }
-                },
-                "social_media_handles": {
-                  "type": "object",
-                  "properties": {
-                    "facebook": {
-                      "type": "string"
-                    },
-                    "twitter": {
-                      "type": "string"
-                    },
-                    "linkedin": {
-                      "type": "string"
-                    },
-                    "instagram": {
-                      "type": "string"
-                    },
-                    "google": {
-                      "type": "string"
-                    }
-                  }
-                }
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
               }
             }
-          }
         ],
         "responses": {}
       }
@@ -9376,13 +9336,6 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "admin_id",
-            "in": "formData",
-            "description": "admin_id",
-            "required": true,
-            "type": "number"
           },
           {
             "name": "coach_id",

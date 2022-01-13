@@ -17,16 +17,12 @@ export const login = Joi.object({
   })
 });
 
-export const addAdmin = Joi.object({
+export const addAdmin = Joi.array().items({
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
   name: Joi.string().required(),
-  phone_number: Joi.string().required(),
-  country_code: Joi.string().required(),
-  permissions: Joi.array().required(),
-  profile_pic_url: Joi.string().allow("", null).optional(),
-  social_media_handles: Joi.object().allow(null).optional(),
+  admin_role:Joi.string().required(),
+  module_wise_permissions: Joi.array().items({module:Joi.string().required().valid('Dashboard', 'Coach Administration', 'Administration Management','Static Content','Session Content'),permissions:Joi.array().required()}).required(),
 });
-
 export const forgetPassword = Joi.object({
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
 });
@@ -46,7 +42,6 @@ export const resetPassword = Joi.object({
     })
 });
 export const addBios = Joi.object({
-  admin_id: Joi.number().required(),
   name: Joi.string().required(),
   description: Joi.string().required(),
   coach_id: Joi.number().required()
