@@ -9869,6 +9869,128 @@
         ],
         "responses": {}
       }
+    },
+    "/bluetango-admin/updateAdminAndRole": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Update admin",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "{admins:[{id:'number',name:'string',email:'@gmail.com'}],id:'number',role_name:'string',module_wise_permissions:[{module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]}",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateAdminAndRoleStatus": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "update Admin And Role Status",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formDate",
+            "description": "0--> inactive/ 1--> active",
+            "required": true,
+            "type": "number",
+            "enum": [
+             0,
+             1
+            ]
+          },
+          {
+            "name": "id",
+            "in": "formDate",
+            "description": "role_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getrolesAndAdmins": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "update Admin And Role Status",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "0--> inactive/ 1--> active",
+            "required": false,
+            "type": "number",
+            "enum": [
+             0,
+             1
+            ]
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {}

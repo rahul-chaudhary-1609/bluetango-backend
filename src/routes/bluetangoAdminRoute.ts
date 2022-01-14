@@ -110,5 +110,11 @@ bluetangoAdminRoute.delete("/deleteAdmin/:admin_id", tokenValidator.validateBlue
 bluetangoAdminRoute.get("/viewRoleDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.viewRoleDetails), authController.viewRoleDetails);
 /* delete Admin */
 bluetangoAdminRoute.delete("/deleteRole/:role_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteRole), authController.deleteRole);
+/* update admin and role Admin */
+bluetangoAdminRoute.put("/updateAdminAndRole", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRole), authController.updateAdminAndRole);
+/* update role status */
+bluetangoAdminRoute.put("/updateAdminAndRoleStatus", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRoleStatus), authController.updateAdminAndRoleStatus);
+/* get roles And Admins */
+bluetangoAdminRoute.get("/getrolesAndAdmins", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.getrolesAndAdmins), authController.getrolesAndAdmins);
 
 export = bluetangoAdminRoute;

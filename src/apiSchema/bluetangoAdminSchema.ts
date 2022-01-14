@@ -191,3 +191,23 @@ export const viewRoleDetails = Joi.object({
 export const deleteRole = Joi.object({
   role_id: Joi.number().required(),
 });
+export const updateAdminAndRole = Joi.object({
+  admins: Joi.array().items({
+    id: Joi.number().required(),
+    email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+    name: Joi.string().required(),
+  }),
+  id: Joi.number().required(),
+  role_name: Joi.string(),
+  module_wise_permissions: Joi.array().items({ module: Joi.string().required().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'), permissions: Joi.array().required() }),
+});
+export const updateAdminAndRoleStatus = Joi.object({
+  status: Joi.number().required().valid(0, 1),
+  id: Joi.number().required()
+})
+export const getrolesAndAdmins=Joi.object({
+  status: Joi.number().optional().valid(0, 1),
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})

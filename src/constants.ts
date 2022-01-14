@@ -195,7 +195,10 @@ export const MESSAGES = {
   admin_deleted: "Admin deleted successfully",
   role_already_exist:"Role already exist",
   role_details_fetched:"Role details fetched successfully",
-  role_deleted:"Role deleted successfully"
+  role_deleted:"Role deleted successfully",
+  admin_And_role_updated:"Admin and role details updated successfully",
+  admin_and_role_status:"Admin and role status updated successfully",
+  role_fetched:"Roles fetched successfully"
 
   
 }

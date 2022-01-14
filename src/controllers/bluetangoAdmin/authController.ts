@@ -29,7 +29,7 @@ export class AuthController {
 
     /**
     * add sub admin
-    * @param req :[name, email, password, confirmPassword]
+    * @param req :[]
     * @param res 
     */
     public async addAdmin(req: any, res: any) {
@@ -165,6 +165,54 @@ export class AuthController {
         try {
             const responseFromService = await authService.deleteRole(req.params);
             const msg = constants.MESSAGES.role_deleted;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            console.log(error)
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+    /**
+    * update Admin And Role
+    * @param req :[]
+    * @param res 
+    */
+     public async updateAdminAndRole(req: any, res: any) {
+        try {
+            // if(req.user.user_role != constants.USER_ROLE.super_admin) {
+            //     throw new Error(constants.MESSAGES.invalid_admin)
+            // }
+            const responseFromService = await authService.updateAdminAndRole(req.body);
+            const msg = constants.MESSAGES.admin_And_role_updated;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            console.log(error)
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+     /**
+    * update Admin And RoleS tatus
+    * @param req :[]
+    * @param res 
+    */
+      public async updateAdminAndRoleStatus(req: any, res: any) {
+        try {
+            const responseFromService = await authService.updateAdminAndRoleStatus(req.body);
+            const msg = constants.MESSAGES.admin_and_role_status;
+            appUtils.successResponse(res, responseFromService, msg);
+        } catch (error) {
+            console.log(error)
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+     /**
+    * get roles And Admins
+    * @param req :[]
+    * @param res 
+    */
+      public async getrolesAndAdmins(req: any, res: any) {
+        try {
+            const responseFromService = await authService.getrolesAndAdmins(req.query);
+            const msg = constants.MESSAGES.role_fetched;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
             console.log(error)
