@@ -30,7 +30,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const admin_1 = require("../../models/admin");
-const bluetangoAdmin_1 = require("../../models/bluetangoAdmin");
+const models_1 = require("../../models");
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const tokenResponse = __importStar(require("../../utils/tokenResponse"));
@@ -39,6 +39,7 @@ const queryService = __importStar(require("../../queryService/bluetangoAdmin/que
 const generator = require('generate-password');
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+models_1.bluetangoAdminModel.belongsTo(models_1.bluetangoAdminRolesModel, { foreignKey: 'role_id', targetKey: 'id' });
 class AuthService {
     constructor() { }
     /**
@@ -58,7 +59,7 @@ class AuthService {
                 }
             };
             query.raw = true;
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
             if (admin) {
                 let comparePassword = yield appUtils.comparePassword(params.password, admin.password);
                 if (comparePassword) {
@@ -85,54 +86,57 @@ class AuthService {
     * add sub admin function
     @param {} params pass all parameters from request
     */
-    addAdmin(params) {
+    addAdmin(Params) {
         return __awaiter(this, void 0, void 0, function* () {
-            params.email = params.email.toLowerCase();
-            let query = {
-                where: {
-                    [Op.or]: [
-                        {
-                            email: params.email,
-                        },
-                        {
-                            phone_number: params.phone_number
-                        },
-                    ],
-                    status: {
-                        [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+            let role = yield queryService.selectOne(models_1.bluetangoAdminRolesModel, { where: { role_name: Params.role_name } });
+            if (role) {
+                throw new Error(constants.MESSAGES.role_already_exist);
+            }
+            let newRole = yield queryService.addData(models_1.bluetangoAdminRolesModel, Params);
+            let AlreadyExistAdmins = [];
+            let created = [];
+            for (let params of Params.admins) {
+                params.email = params.email.toLowerCase();
+                let query = {
+                    where: {
+                        email: params.email,
+                        status: {
+                            [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                        }
                     }
-                }
-            };
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
-            if (!admin) {
-                let password = helperFunction.generaePassword();
-                ;
-                params.admin_role = constants.USER_ROLE.sub_admin;
-                params.password = yield appUtils.bcryptPassword(password);
-                let newAdmin = yield queryService.addData(bluetangoAdmin_1.bluetangoAdminModel, params);
-                newAdmin = newAdmin.get({ plain: true });
-                let token = yield tokenResponse.bluetangoAdminTokenResponse(newAdmin);
-                newAdmin.token = token;
-                delete newAdmin.password;
-                delete newAdmin.reset_pass_otp;
-                delete newAdmin.reset_pass_expiry;
-                const mailParams = {};
-                mailParams.to = params.email;
-                mailParams.html = `Hi  ${params.name}
+                };
+                let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+                if (!admin) {
+                    params.role_id = newRole.id;
+                    let password = yield helperFunction.generaePassword();
+                    params.admin_role = constants.USER_ROLE.sub_admin;
+                    params.password = yield appUtils.bcryptPassword(password);
+                    let newAdmin = yield queryService.addData(models_1.bluetangoAdminModel, params);
+                    newAdmin = newAdmin.get({ plain: true });
+                    let token = yield tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                    newAdmin.token = token;
+                    delete newAdmin.password;
+                    delete newAdmin.reset_pass_otp;
+                    delete newAdmin.reset_pass_expiry;
+                    const mailParams = {};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
                 <br>Use the given credentials for login into the admin pannel :
                 
                 <br><b> Web URL</b>: ${process.env.BLUETANGO_WEB_URL} <br>
                 <br> email : ${params.email}
                 <br> password : ${password}
                 `;
-                mailParams.subject = "Subadmin Login Credentials";
-                mailParams.name = "BlueTango";
-                yield helperFunction.sendEmail(mailParams);
-                return newAdmin;
+                    mailParams.subject = "Subadmin Login Credentials";
+                    mailParams.name = "BlueTango";
+                    yield helperFunction.sendEmail(mailParams);
+                    created.push(newAdmin);
+                }
+                else {
+                    AlreadyExistAdmins.push(params);
+                }
             }
-            else {
-                throw new Error(constants.MESSAGES.email_phone_already_registered);
-            }
+            return { newly_created: created, Already_exist_admins: AlreadyExistAdmins };
         });
     }
     getProfile(user) {
@@ -143,7 +147,7 @@ class AuthService {
                     id: user.uid,
                 }
             };
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
             return admin;
         });
     }
@@ -165,9 +169,9 @@ class AuthService {
                     }
                 }
             };
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
             if (!admin) {
-                params.model = bluetangoAdmin_1.bluetangoAdminModel;
+                params.model = models_1.bluetangoAdminModel;
                 query = {
                     where: {
                         id: user.uid,
@@ -193,11 +197,11 @@ class AuthService {
                     id: user.uid,
                 }
             };
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
             let comparePassword = yield appUtils.comparePassword(params.old_password, admin.password);
             if (comparePassword) {
                 params.password = yield appUtils.bcryptPassword(params.new_password);
-                params.model = bluetangoAdmin_1.bluetangoAdminModel;
+                params.model = models_1.bluetangoAdminModel;
                 yield queryService.updateData(params, query);
                 return true;
             }
@@ -220,7 +224,7 @@ class AuthService {
                 }
             };
             query.raw = true;
-            let admin = yield queryService.selectOne(bluetangoAdmin_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
             if (admin) {
                 let token = yield tokenResponse.bluetangoForgotPasswordTokenResponse(admin);
                 const mailParams = {};
@@ -246,7 +250,7 @@ class AuthService {
     resetPassword(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.password = yield appUtils.bcryptPassword(params.password);
-            params.model = bluetangoAdmin_1.bluetangoAdminModel;
+            params.model = models_1.bluetangoAdminModel;
             let query = {
                 where: {
                     id: user.uid
@@ -281,6 +285,17 @@ class AuthService {
             catch (error) {
                 throw new Error(error);
             }
+        });
+    }
+    deleteAdmin(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                where: {
+                    id: params.admin_id
+                }
+            };
+            const coach = yield queryService.deleteData(models_1.bluetangoAdminModel, query);
+            return coach;
         });
     }
 }

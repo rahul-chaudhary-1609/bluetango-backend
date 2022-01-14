@@ -113,12 +113,14 @@ class CoachService {
                 coach.since = (_a = coach.since) === null || _a === void 0 ? void 0 : _a.createdAt;
             }
             let topCoaches = [];
+            // console.log("topFiveSessionTaker",topFiveSessionTaker)
             if (params.searchKey && params.searchKey.trim()) {
-                topCoaches = topFiveSessionTaker.filter(coach => coach.coach.name.toLowerCase().includes(params.searchKey.toLowerCase())).slice(0, 5);
+                topCoaches = topFiveSessionTaker.filter(coach => { var _a; return (_a = coach.coach) === null || _a === void 0 ? void 0 : _a.name.toLowerCase().includes(params.searchKey.toLowerCase()); }).slice(0, 5);
             }
             else {
                 topCoaches = topFiveSessionTaker.slice(0, 5);
             }
+            // console.log("topCoaches",topCoaches)
             return {
                 totalCoach: coachCount,
                 avgFreeSession: coachCount ? totalFreeSessions / coachCount : 0,
