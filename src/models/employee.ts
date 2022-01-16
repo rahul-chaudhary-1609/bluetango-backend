@@ -53,10 +53,10 @@ export const employeeModel: any = sequelize.define("employee", {
     date_of_birth: {
         type: DataTypes.DATEONLY,
     },
-    employee_code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    // employee_code: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // },
     profile_pic_url: {
         type: DataTypes.STRING,
     },

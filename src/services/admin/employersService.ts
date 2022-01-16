@@ -101,11 +101,12 @@ export class EmployersService {
                     return false;
                 }
             } else {
-                if (!params.password) {
-                    throw new Error(constants.MESSAGES.password_not_provided)
-                }
-                const password = params.password
-                params.password = await appUtils.bcryptPassword(params.password);
+                // if (!params.password) {
+                //     throw new Error(constants.MESSAGES.password_not_provided)
+                // }
+                // const password = params.password
+                const password=await helperFunction.generaePassword();
+                params.password = await appUtils.bcryptPassword(password);
                 //params.first_time_login_datetime = new Date();
                 const employer = await employersModel.create(params);
                 const mailParams = <any>{};
@@ -808,11 +809,12 @@ export class EmployersService {
                     return false;
                 }
             } else {
-                if (!params.password) {
-                    throw new Error(constants.MESSAGES.password_not_provided)
-                }
-                const password = params.password
-                params.password = await appUtils.bcryptPassword(params.password);
+                // if (!params.password) {
+                //     throw new Error(constants.MESSAGES.password_not_provided)
+                // }
+                // const password = params.password
+                const password=await helperFunction.generaePassword();
+                params.password = await appUtils.bcryptPassword(password);
                 const coach = await helperFunction.convertPromiseToObject( await coachManagementModel.create(params));
                 const mailParams = <any>{};
                 mailParams.to = params.email;

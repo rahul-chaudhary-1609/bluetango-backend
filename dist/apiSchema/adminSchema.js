@@ -134,23 +134,23 @@ exports.addEditEmployers = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8).optional()
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        // .required()
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }),
+    // password: Joi.string().min(8).optional()
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // // .required()
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     industry_type: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
-    thought_of_the_day: joi_1.default.string().optional()
+    contact_name: joi_1.default.string().required(),
 });
 exports.addSubscriptionPlan = joi_1.default.object({
     plan_name: joi_1.default.string().required(),
@@ -177,18 +177,18 @@ exports.addEditCoach = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8).optional()
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        // .required()
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }),
+    // password: Joi.string().min(8).optional()
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // // .required()
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     description: joi_1.default.string().required(),

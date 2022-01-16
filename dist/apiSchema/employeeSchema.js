@@ -34,7 +34,7 @@ exports.login = joi_1.default.object({
     }),
     password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -99,7 +99,14 @@ exports.updateProfile = joi_1.default.object({
     country_code: joi_1.default.string().max(5).optional(),
     date_of_birth: joi_1.default.string().optional(),
     accomplishments: joi_1.default.string().optional(),
-    profile_pic_url: joi_1.default.string().optional()
+    profile_pic_url: joi_1.default.string().optional(),
+    prev_employers: joi_1.default.array().items(joi_1.default.object().keys({
+        prev_employer: joi_1.default.string().required(),
+        prev_department: joi_1.default.string().required(),
+        prev_designation: joi_1.default.string().required(),
+        prev_date_of_joining: joi_1.default.string().required(),
+        prev_exit: joi_1.default.string().required(),
+    })).optional(),
 });
 exports.getListOfTeamMemberByManagerId = joi_1.default.object({
     limit: joi_1.default.string().optional(),

@@ -54,10 +54,10 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     date_of_birth: {
         type: sequelize_1.DataTypes.DATEONLY,
     },
-    employee_code: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
+    // employee_code: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // },
     profile_pic_url: {
         type: sequelize_1.DataTypes.STRING,
     },

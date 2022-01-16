@@ -12,7 +12,7 @@ export const login = Joi.object({
     }),
   password: Joi.string().min(8)
   .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
   .required()
   .messages({
     "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -81,29 +81,29 @@ export const addEditEmployee = Joi.object ({
   id: Joi.string().optional(),
   name: Joi.string().required(),
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-  password: Joi.string().min(8)
-  .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-  .messages({
-    "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-    "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-    "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-    "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-  }).optional(),
+  // password: Joi.string().min(8)
+  // .max(15)
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // .messages({
+  //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+  //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+  //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+  //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+  // }).optional(),
   country_code: Joi.string().required(),
   phone_number: Joi.string().required(),
   current_department_id: Joi.string().required(), 
   current_designation: Joi.string().optional(),
-  employee_code: Joi.string().required(),
-  prev_employers:Joi.array().items(Joi.object().keys({
-      prev_employer: Joi.string().required(),
-      prev_department: Joi.string().required(),
-      prev_designation: Joi.string().required(),
-      prev_date_of_joining: Joi.string().required(),
-      prev_exit: Joi.string().required(),
-  })).optional(),
+  // employee_code: Joi.string().required(),
+  // prev_employers:Joi.array().items(Joi.object().keys({
+  //     prev_employer: Joi.string().required(),
+  //     prev_department: Joi.string().required(),
+  //     prev_designation: Joi.string().required(),
+  //     prev_date_of_joining: Joi.string().required(),
+  //     prev_exit: Joi.string().required(),
+  // })).optional(),
   prev_employer: Joi.string().optional(),
   prev_department: Joi.string().optional(),
   prev_designation: Joi.string().optional(),

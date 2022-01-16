@@ -362,13 +362,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "password",
-                        "in": "formData",
-                        "description": "password",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "country_code",
                         "in": "formData",
                         "description": "country code",
@@ -390,9 +383,9 @@
                         "type": "string"
                     },
                     {
-                        "name": "thought_of_the_day",
+                        "name": "contact_name",
                         "in": "formData",
-                        "description": "industry type",
+                        "description": "contact_name",
                         "required": false,
                         "type": "string"
                     }
@@ -1174,9 +1167,6 @@
                                     "type": "string"
                                 },
                                 "email": {
-                                    "type": "string"
-                                },
-                                "password": {
                                     "type": "string"
                                 },
                                 "country_code": {
@@ -2918,7 +2908,7 @@
                 ],
                 "description": "Employee update profile",
                 "consumes": [
-                    "application/x-www-form-urlencoded"
+                    "application/json"
                 ],
                 "parameters": [
                     {
@@ -2929,46 +2919,56 @@
                         "type": "string"
                     },
                     {
-                        "name": "name",
-                        "in": "formData",
-                        "description": "name",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "phone_number",
-                        "in": "formData",
-                        "description": "phone_number",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "country_code",
-                        "in": "formData",
-                        "description": "country_code",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "date_of_birth",
-                        "in": "formData",
-                        "description": "date_of_birth: YYYY-MM-DD",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "accomplishments",
-                        "in": "formData",
-                        "description": "accomplishments",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "profile_pic_url",
-                        "in": "formData",
-                        "description": "profile_pic_url",
-                        "required": false,
-                        "type": "string"
+                        "name": "body",
+                        "in": "body",
+                        "description": "1. date_of_birth formate must be YYYY-MM-DD\n2. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "country_code": {
+                                    "type": "string"
+                                },
+                                "phone_number": {
+                                    "type": "string"
+                                },
+                                "date_of_birth": {
+                                    "type": "string"
+                                },
+                                "accomplishments": {
+                                    "type": "string"
+                                },
+                                "profile_pic_url": {
+                                    "type": "string"
+                                },
+                                "prev_employers": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "prev_employer": {
+                                                "type": "string"
+                                            },
+                                            "prev_department": {
+                                                "type": "string"
+                                            },
+                                            "prev_designation": {
+                                                "type": "string"
+                                            },
+                                            "prev_date_of_joining": {
+                                                "type": "string"
+                                            },
+                                            "prev_exit": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {}
@@ -6042,7 +6042,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\temployee_code\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
+                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -6059,9 +6059,6 @@
                                 "email": {
                                     "type": "string"
                                 },
-                                "password": {
-                                    "type": "string"
-                                },
                                 "country_code": {
                                     "type": "string"
                                 },
@@ -6076,32 +6073,6 @@
                                 },
                                 "current_date_of_joining": {
                                     "type": "string"
-                                },
-                                "employee_code": {
-                                    "type": "string"
-                                },
-                                "prev_employers": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "prev_employer": {
-                                                "type": "string"
-                                            },
-                                            "prev_department": {
-                                                "type": "string"
-                                            },
-                                            "prev_designation": {
-                                                "type": "string"
-                                            },
-                                            "prev_date_of_joining": {
-                                                "type": "string"
-                                            },
-                                            "prev_exit": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
                                 },
                                 "is_manager": {
                                     "type": "number"

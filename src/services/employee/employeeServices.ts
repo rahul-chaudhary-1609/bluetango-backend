@@ -403,7 +403,7 @@ export class EmployeeServices {
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employee = await employeeModel.findOne({
-            attributes: ['id', 'name','employee_code','profile_pic_url'],
+            attributes: ['id', 'name','profile_pic_url'],
             where: {
                 id:user.uid
             },

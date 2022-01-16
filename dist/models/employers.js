@@ -18,6 +18,9 @@ exports.employersModel = connection_1.sequelize.define("employers", {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    contact_name: {
+        type: sequelize_1.DataTypes.STRING,
+    },
     email: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,

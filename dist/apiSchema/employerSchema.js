@@ -35,7 +35,7 @@ exports.login = joi_1.default.object({
     }),
     password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -100,29 +100,29 @@ exports.addEditEmployee = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8)
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }).optional(),
+    // password: Joi.string().min(8)
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }).optional(),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     current_department_id: joi_1.default.string().required(),
     current_designation: joi_1.default.string().optional(),
-    employee_code: joi_1.default.string().required(),
-    prev_employers: joi_1.default.array().items(joi_1.default.object().keys({
-        prev_employer: joi_1.default.string().required(),
-        prev_department: joi_1.default.string().required(),
-        prev_designation: joi_1.default.string().required(),
-        prev_date_of_joining: joi_1.default.string().required(),
-        prev_exit: joi_1.default.string().required(),
-    })).optional(),
+    // employee_code: Joi.string().required(),
+    // prev_employers:Joi.array().items(Joi.object().keys({
+    //     prev_employer: Joi.string().required(),
+    //     prev_department: Joi.string().required(),
+    //     prev_designation: Joi.string().required(),
+    //     prev_date_of_joining: Joi.string().required(),
+    //     prev_exit: Joi.string().required(),
+    // })).optional(),
     prev_employer: joi_1.default.string().optional(),
     prev_department: joi_1.default.string().optional(),
     prev_designation: joi_1.default.string().optional(),
