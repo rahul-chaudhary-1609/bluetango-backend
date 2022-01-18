@@ -1208,6 +1208,32 @@
                 },
                 "coach_charge": {
                   "type": "number"
+                },
+                "social_media_handles": {
+                  "type": "object",
+                  "properties": {
+                    "facebook": {
+                      "type": "string"
+                    },
+                    "twitter": {
+                      "type": "string"
+                    },
+                    "linkedin": {
+                      "type": "string"
+                    },
+                    "instagram": {
+                      "type": "string"
+                    },
+                    "google": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "website": {
+                  "type": "string"
+                },
+                "document_url": {
+                  "type": "string"
                 }
               }
             }
@@ -9924,8 +9950,8 @@
             "required": true,
             "type": "number",
             "enum": [
-             0,
-             1
+              0,
+              1
             ]
           },
           {
@@ -9963,8 +9989,8 @@
             "required": false,
             "type": "number",
             "enum": [
-             0,
-             1
+              0,
+              1
             ]
           },
           {
