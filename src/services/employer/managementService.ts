@@ -136,33 +136,33 @@ export class EmployeeManagement {
         
         params.current_employer_id = user.uid;
         if (!existingUser) {
-            let isEmployeeCodeExist = null;
-            if (params.id) {
-                isEmployeeCodeExist = await employeeModel.findOne({
-                    where: {
-                        employee_code: params.employee_code,
-                        current_employer_id: params.current_employer_id,
-                        status: {
-                            [Op.in]: [0, 1]
-                        },
-                        id: {
-                            [Op.ne]: params.id
-                        }
-                    }
-                });
-            } else {
-                isEmployeeCodeExist = await employeeModel.findOne({
-                    where: {
-                        employee_code: params.employee_code,
-                        current_employer_id: params.current_employer_id,
-                        status: {
-                            [Op.in]: [0, 1]
-                        }
-                    }
-                });
-            }
+            // let isEmployeeCodeExist = null;
+            // if (params.id) {
+            //     isEmployeeCodeExist = await employeeModel.findOne({
+            //         where: {
+            //             // employee_code: params.employee_code,
+            //             current_employer_id: params.current_employer_id,
+            //             status: {
+            //                 [Op.in]: [0, 1]
+            //             },
+            //             id: {
+            //                 [Op.ne]: params.id
+            //             }
+            //         }
+            //     });
+            // } else {
+            //     isEmployeeCodeExist = await employeeModel.findOne({
+            //         where: {
+            //             // employee_code: params.employee_code,
+            //             current_employer_id: params.current_employer_id,
+            //             status: {
+            //                 [Op.in]: [0, 1]
+            //             }
+            //         }
+            //     });
+            // }
 
-            if (!isEmployeeCodeExist) {
+            // if (!isEmployeeCodeExist) {
 
                 if (params.is_manager == 1) {
                     if (!params.manager_team_name) {
@@ -257,8 +257,9 @@ export class EmployeeManagement {
                         return false;
                     }
                 } else {
-                    let password = params.password;
-                    params.password = await appUtils.bcryptPassword(params.password);
+                    // let password = params.password;
+                    let password=await helperFunction.generaePassword();
+                    params.password = await appUtils.bcryptPassword(password);
                     let employeeRes = await employeeModel.create(params);
 
                     if (params.manager_id) {
@@ -306,9 +307,9 @@ export class EmployeeManagement {
 
                     return employeeRes;
                 }
-            } else {
-                throw new Error(constants.MESSAGES.employee_code_already_registered);
-            }
+            // } else {
+            //     throw new Error(constants.MESSAGES.employee_code_already_registered);
+            // }
 
         } else {
             throw new Error(constants.MESSAGES.email_phone_already_registered);
@@ -762,14 +763,22 @@ export class EmployeeManagement {
         }
     }
 
-    public async getAttributes(user:any){
-        let attribute=await attributeModel.findAndCountAll({
+    public async getAttributes(params:any,user:any){
+
+        let query:any={
             where:{
                 employer_id:user.uid,
                 status:[constants.STATUS.active,constants.STATUS.inactive],                
             },
             order: [["createdAt", "DESC"]]
-        })
+        }
+
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+        }
+        let attribute=await attributeModel.findAndCountAll(query);
 
         if(attribute){
             return await helperFunction.convertPromiseToObject(attribute);

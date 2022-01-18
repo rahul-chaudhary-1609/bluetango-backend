@@ -276,6 +276,7 @@ export class GoalServices {
             //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
             goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
             goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
+            goal.sortValue=parseFloat(((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2))
             
             if(params.search_string && params.search_string.trim()){
                 let isFound=false;
@@ -295,7 +296,10 @@ export class GoalServices {
         }
 
         rows=[...filteredRows];
+        rows.sort((a,b)=>b.sortValue-a.sortValue);
         count=rows.length;
+
+        rows=rows.slice(offset,offset+limit);
 
         return { count, rows}
     }
@@ -914,11 +918,13 @@ export class GoalServices {
             //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
             goal.completionTeamAverageValue=(comepletedGoalMeasureValue/goalAssignCount).toFixed(2);
             goal.completionTeamAveragePercentage=((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2)+"%";
+            goal.sortValue=parseFloat(((comepletedGoalMeasureValue*100)/(totalGoalMeasure*goalAssignCount)).toFixed(2));
 
             delete goal.team_goal_assigns;
 
         }
 
+        goals.sort((a,b)=>b.sortValue-a.sortValue);
         
         return goals
 

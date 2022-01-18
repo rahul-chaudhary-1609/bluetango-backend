@@ -96,7 +96,7 @@ employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, multerPa
 /* add Edit Attributes */
 employerRoute.post("/addAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addAttributes), managementController.addAttributes);
 /* get Attributes */
-employerRoute.get("/getAttributes", tokenValidator.validateEmployerToken, managementController.getAttributes);
+employerRoute.get("/getAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateQueryParams(employerSchema.getAttributes), managementController.getAttributes);
 /* get Attribute details */
 employerRoute.get("/getAttributeDetails/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.getAttributeDetails), managementController.getAttributeDetails);
 /* delete Attribute */

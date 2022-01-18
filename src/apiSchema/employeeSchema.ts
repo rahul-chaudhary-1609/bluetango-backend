@@ -13,7 +13,7 @@ export const login = Joi.object({
   ),
   password: Joi.string().min(8)
   .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
   .required()
   .messages({
     "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -84,7 +84,14 @@ export const updateProfile = Joi.object({
   country_code: Joi.string().max(5).optional(),
   date_of_birth: Joi.string().optional(),
   accomplishments: Joi.string().optional(),
-  profile_pic_url: Joi.string().optional()
+  profile_pic_url: Joi.string().optional(),
+  prev_employers:Joi.array().items(Joi.object().keys({
+      prev_employer: Joi.string().required(),
+      prev_department: Joi.string().required(),
+      prev_designation: Joi.string().required(),
+      prev_date_of_joining: Joi.string().required(),
+      prev_exit: Joi.string().required(),
+  })).optional(),
 })
 
 export const getListOfTeamMemberByManagerId = Joi.object({
@@ -181,6 +188,12 @@ export const sendChatDisconnectNotification = Joi.object({
 
 export const contactUs = Joi.object({
   message: Joi.string().required(),
+})
+
+export const getAchievements = Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
 })
 
 export const getAchievementById = Joi.object({

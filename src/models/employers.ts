@@ -17,6 +17,9 @@ export const employersModel: any = sequelize.define("employers", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    contact_name: {
+        type: DataTypes.STRING,
+    },
     email: {
         type: DataTypes.STRING,
         allowNull: true,

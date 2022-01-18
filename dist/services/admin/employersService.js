@@ -128,11 +128,12 @@ class EmployersService {
                     }
                 }
                 else {
-                    if (!params.password) {
-                        throw new Error(constants.MESSAGES.password_not_provided);
-                    }
-                    const password = params.password;
-                    params.password = yield appUtils.bcryptPassword(params.password);
+                    // if (!params.password) {
+                    //     throw new Error(constants.MESSAGES.password_not_provided)
+                    // }
+                    // const password = params.password
+                    const password = yield helperFunction.generaePassword();
+                    params.password = yield appUtils.bcryptPassword(password);
                     //params.first_time_login_datetime = new Date();
                     const employer = yield models_1.employersModel.create(params);
                     const mailParams = {};
@@ -775,11 +776,12 @@ class EmployersService {
                     }
                 }
                 else {
-                    if (!params.password) {
-                        throw new Error(constants.MESSAGES.password_not_provided);
-                    }
-                    const password = params.password;
-                    params.password = yield appUtils.bcryptPassword(params.password);
+                    // if (!params.password) {
+                    //     throw new Error(constants.MESSAGES.password_not_provided)
+                    // }
+                    // const password = params.password
+                    const password = yield helperFunction.generaePassword();
+                    params.password = yield appUtils.bcryptPassword(password);
                     const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.create(params));
                     const mailParams = {};
                     mailParams.to = params.email;

@@ -384,7 +384,7 @@ class EmployeeServices {
             employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let employee = yield employee_1.employeeModel.findOne({
-                attributes: ['id', 'name', 'employee_code', 'profile_pic_url'],
+                attributes: ['id', 'name', 'profile_pic_url'],
                 where: {
                     id: user.uid
                 },

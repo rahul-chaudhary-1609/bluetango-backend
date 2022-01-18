@@ -193,7 +193,7 @@ class EmployeeController {
     getAttributes(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield employeeService.getAttributes(req.user);
+                const responseFromService = yield employeeService.getAttributes(req.query, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (error) {
