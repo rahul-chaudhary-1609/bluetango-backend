@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAdmin = exports.sendChatNotification = exports.getChatList = exports.getChatRoomId = exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
+exports.getrolesAndAdmins = exports.updateAdminAndRoleStatus = exports.updateAdminAndRole = exports.deleteRole = exports.viewRoleDetails = exports.deleteAdmin = exports.sendChatNotification = exports.getChatList = exports.getChatRoomId = exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -194,5 +194,31 @@ exports.sendChatNotification = joi_1.default.object({
 });
 exports.deleteAdmin = joi_1.default.object({
     admin_id: joi_1.default.number().required(),
+});
+exports.viewRoleDetails = joi_1.default.object({
+    role_id: joi_1.default.number().required()
+});
+exports.deleteRole = joi_1.default.object({
+    role_id: joi_1.default.number().required(),
+});
+exports.updateAdminAndRole = joi_1.default.object({
+    admins: joi_1.default.array().items({
+        id: joi_1.default.number().required(),
+        email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
+        name: joi_1.default.string().required(),
+    }),
+    id: joi_1.default.number().required(),
+    role_name: joi_1.default.string(),
+    module_wise_permissions: joi_1.default.array().items({ module: joi_1.default.string().required().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'), permissions: joi_1.default.array().required() }),
+});
+exports.updateAdminAndRoleStatus = joi_1.default.object({
+    status: joi_1.default.number().required().valid(0, 1),
+    id: joi_1.default.number().required()
+});
+exports.getrolesAndAdmins = joi_1.default.object({
+    status: joi_1.default.number().optional().valid(0, 1),
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
 });
 //# sourceMappingURL=bluetangoAdminSchema.js.map

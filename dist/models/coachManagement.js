@@ -89,6 +89,17 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
         defaultValue: 1,
         comment: '1=>BX,2=>BT'
     },
+    social_media_handles: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true,
+    },
+    website: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    document_url: {
+        type: sequelize_1.DataTypes.TEXT,
+    },
 }, {
     tableName: "coach_management"
 });
