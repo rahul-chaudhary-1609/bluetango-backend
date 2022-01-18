@@ -203,6 +203,12 @@ export const getAttributeDetails = Joi.object({
   attribute_id:Joi.number().required(),
 })
 
+export const getAttributes = Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
 export const deleteAttribute = Joi.object({
   attribute_id:Joi.number().required(),
 })

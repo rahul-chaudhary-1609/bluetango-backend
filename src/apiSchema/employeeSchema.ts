@@ -190,6 +190,12 @@ export const contactUs = Joi.object({
   message: Joi.string().required(),
 })
 
+export const getAchievements = Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
 export const getAchievementById = Joi.object({
   achievement_id: Joi.number().required(),
 })

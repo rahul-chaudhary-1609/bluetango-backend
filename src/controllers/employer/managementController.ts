@@ -155,7 +155,7 @@ export class EmployeeController {
     */
      public async getAttributes(req: any, res: any) {
         try {
-            const responseFromService = await employeeService.getAttributes( req.user);
+            const responseFromService = await employeeService.getAttributes(req.query,req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 
         } catch (error) {

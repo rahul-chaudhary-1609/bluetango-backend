@@ -261,7 +261,7 @@ employeeRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateEm
 
 //achievement API's
 /* get achievements */
-employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);
+employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateQueryParams(employeeSchema.getAchievements), achievementController.getAchievements);
 
 /* get achievement by id */
 employeeRoute.get("/getAchievementById/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementById),achievementController.getAchievementById);

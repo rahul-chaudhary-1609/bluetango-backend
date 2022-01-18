@@ -763,14 +763,22 @@ export class EmployeeManagement {
         }
     }
 
-    public async getAttributes(user:any){
-        let attribute=await attributeModel.findAndCountAll({
+    public async getAttributes(params:any,user:any){
+
+        let query:any={
             where:{
                 employer_id:user.uid,
                 status:[constants.STATUS.active,constants.STATUS.inactive],                
             },
             order: [["createdAt", "DESC"]]
-        })
+        }
+
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+        }
+        let attribute=await attributeModel.findAndCountAll(query);
 
         if(attribute){
             return await helperFunction.convertPromiseToObject(attribute);

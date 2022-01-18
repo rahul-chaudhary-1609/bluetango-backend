@@ -655,15 +655,21 @@ class EmployeeManagement {
             }
         });
     }
-    getAttributes(user) {
+    getAttributes(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let attribute = yield attributes_1.attributeModel.findAndCountAll({
+            let query = {
                 where: {
                     employer_id: user.uid,
                     status: [constants.STATUS.active, constants.STATUS.inactive],
                 },
                 order: [["createdAt", "DESC"]]
-            });
+            };
+            if (!params.is_pagination || params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset,
+                    query.limit = limit;
+            }
+            let attribute = yield attributes_1.attributeModel.findAndCountAll(query);
             if (attribute) {
                 return yield helperFunction.convertPromiseToObject(attribute);
             }
