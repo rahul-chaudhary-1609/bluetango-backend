@@ -183,6 +183,9 @@ export const addEditCoach = Joi.object ({
   coach_specialization_category_ids:Joi.array().optional(),
   employee_rank_ids:Joi.array().optional(),
   coach_charge:Joi.number().optional(),
+  social_media_handles: Joi.object().allow(null).optional(),
+  website: Joi.string().allow("", null).optional(),
+  document_url: Joi.string().allow("", null).optional()
 })
 
 export const listFeedback = Joi.object ({

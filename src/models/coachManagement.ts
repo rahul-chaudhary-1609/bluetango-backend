@@ -88,6 +88,17 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
         defaultValue: 1,
         comment: '1=>BX,2=>BT'
     },
+    social_media_handles: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    website: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    document_url: {
+        type: DataTypes.TEXT,
+    },
 
 },
     {
