@@ -57,7 +57,7 @@ class AuthController {
     }
     /**
     * add sub admin
-    * @param req :[name, email, password, confirmPassword]
+    * @param req :[]
     * @param res
     */
     addAdmin(req, res) {
@@ -180,6 +180,99 @@ class AuthController {
             try {
                 const responseFromService = yield authService.deleteAdmin(req.params);
                 const msg = constants.MESSAGES.admin_deleted;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * view role details
+    * @param req :role_id
+    * @param res
+    */
+    viewRoleDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.viewRoleDetails(req.query);
+                const msg = constants.MESSAGES.role_details_fetched;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * delete role
+    * @param req :role_id
+    * @param res
+    */
+    deleteRole(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.deleteRole(req.params);
+                const msg = constants.MESSAGES.role_deleted;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * update Admin And Role
+    * @param req :[]
+    * @param res
+    */
+    updateAdminAndRole(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // if(req.user.user_role != constants.USER_ROLE.super_admin) {
+                //     throw new Error(constants.MESSAGES.invalid_admin)
+                // }
+                const responseFromService = yield authService.updateAdminAndRole(req.body);
+                const msg = constants.MESSAGES.admin_And_role_updated;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+   * update Admin And RoleS tatus
+   * @param req :[]
+   * @param res
+   */
+    updateAdminAndRoleStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.updateAdminAndRoleStatus(req.body);
+                const msg = constants.MESSAGES.admin_and_role_status;
+                appUtils.successResponse(res, responseFromService, msg);
+            }
+            catch (error) {
+                console.log(error);
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+   * get roles And Admins
+   * @param req :[]
+   * @param res
+   */
+    getrolesAndAdmins(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getrolesAndAdmins(req.query);
+                const msg = constants.MESSAGES.role_fetched;
                 appUtils.successResponse(res, responseFromService, msg);
             }
             catch (error) {

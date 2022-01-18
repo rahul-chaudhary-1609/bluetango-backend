@@ -101,5 +101,15 @@ bluetangoAdminRoute.put("/performAction", joiSchemaValidation.validateBody(admin
 bluetangoAdminRoute.get("/getAvailabileCoaches", tokenValidator.validateBluetangoAdminToken, SessionManagementController.getAvailabileCoaches);
 /* delete Admin */
 bluetangoAdminRoute.delete("/deleteAdmin/:admin_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteAdmin), authController.deleteAdmin);
+/* role view */
+bluetangoAdminRoute.get("/viewRoleDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.viewRoleDetails), authController.viewRoleDetails);
+/* delete Admin */
+bluetangoAdminRoute.delete("/deleteRole/:role_id", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateParams(adminSchema.deleteRole), authController.deleteRole);
+/* update admin and role Admin */
+bluetangoAdminRoute.put("/updateAdminAndRole", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRole), authController.updateAdminAndRole);
+/* update role status */
+bluetangoAdminRoute.put("/updateAdminAndRoleStatus", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRoleStatus), authController.updateAdminAndRoleStatus);
+/* get roles And Admins */
+bluetangoAdminRoute.get("/getrolesAndAdmins", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.getrolesAndAdmins), authController.getrolesAndAdmins);
 module.exports = bluetangoAdminRoute;
 //# sourceMappingURL=bluetangoAdminRoute.js.map
