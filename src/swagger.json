@@ -10062,6 +10062,34 @@
         ],
         "responses": {}
       }
+    },
+    "/coach/getStaticContent": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "get Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {}

@@ -7,6 +7,8 @@ import { coachManagementModel } from "../../models/coachManagement";
 import { employeeRanksModel } from "../../models/employeeRanks";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
+import {staticContentModel} from "../../models/staticContent"
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -192,7 +194,15 @@ export class AuthService {
                 }
             }
         })
-
+        let totalSessions= await employeeCoachSessionsModel.findAndCountAll({
+            where:{
+                coach_id:coach.id,
+                status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            }
+        })
+        let freeSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==1).map(obj => obj.employee_id)) ];
+        let paidSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==2).map(obj => obj.employee_id)) ];
+        coach.conversionRate = (paidSessionsCount.length/freeSessionsCount.length);
         coach.average_rating=0;
         if(coach.rating_count>0){
             coach.average_rating=parseFloat((parseInt(totalRating)/coach.rating_count).toFixed(0));
@@ -274,7 +284,15 @@ export class AuthService {
         return await helperFunction.uploadFile(params, folderName);
     }
 
-
+/*
+  *get static content
+  */
+  public async getStaticContent(params: any) {
+    return await queryService.selectOne(staticContentModel, {
+        where: { id: 1 },
+        attributes: [`${params.contentType}`]
+    })
+}
 }
 
 

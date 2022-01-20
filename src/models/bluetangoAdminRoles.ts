@@ -23,6 +23,10 @@ export const bluetangoAdminRolesModel: any = sequelize.define("bluetango_admin_r
         type: DataTypes.ARRAY(DataTypes.JSONB),
         allowNull:true,
     },
+    last_activity: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
 },
     {
         tableName: "bluetango_admin_roles"

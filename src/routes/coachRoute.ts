@@ -117,6 +117,7 @@ coachRoute.put("/updateZoomMeetingDuration",tokenValidator.validateCoachToken, j
 
 /* end Zoom Meeting */
 coachRoute.put("/endZoomMeeting",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
-
+/* get static content */
+coachRoute.get("/getStaticContent", tokenValidator.validateCoachToken, authController.getStaticContent);
 
 export = coachRoute;

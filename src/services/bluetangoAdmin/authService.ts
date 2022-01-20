@@ -64,6 +64,7 @@ export class AuthService {
         if (role) {
             throw new Error(constants.MESSAGES.role_already_exist);
         }
+        Params.last_activity = new Date();
         let newRole = await queryService.addData(bluetangoAdminRolesModel, Params);
         let AlreadyExistAdmins = [];
         let created = [];
@@ -313,13 +314,15 @@ export class AuthService {
             if (role) {
                 throw new Error(constants.MESSAGES.role_already_exist);
             }
-            await queryService.updateData({ model: bluetangoAdminRolesModel, role_name: Params.role_name }, { where: { id: Params.id } })
+            await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date(), role_name: Params.role_name }, { where: { id: Params.id } })
         }
         if (Params.module_wise_permissions) {
-            await queryService.updateData({ model: bluetangoAdminRolesModel, module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } })
+            await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date(), module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } })
         }
         let AlreadyExistAdmins = [];
         let updated = [];
+        if (Params.admins) {
+            await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date() }, { where: { id: Params.id } })
         for (let params of Params.admins) {
             params.email = params.email.toLowerCase();
             let query: any = {
@@ -351,6 +354,7 @@ export class AuthService {
                 AlreadyExistAdmins.push(params)
             }
         }
+    }
         return { updated_admins: updated, Already_exist_admins: AlreadyExistAdmins }
     }
     /**
@@ -358,7 +362,7 @@ export class AuthService {
    @param {} params pass all parameters from request
    */
     public async updateAdminAndRoleStatus(params: any) {
-        await queryService.updateData({ model: bluetangoAdminRolesModel, status: params.status }, { where: { id: params.id } })
+        await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date(), status: params.status }, { where: { id: params.id } })
         return await queryService.updateData({ model: bluetangoAdminModel, status: params.status }, { where: { id: params.id } })
 
     }
@@ -413,7 +417,7 @@ export class AuthService {
                 }
             ],
             distinct: true,
-            attributes: ["id", "role_name", "status", "module_wise_permissions"],
+            attributes: ["id", "role_name", "status", "module_wise_permissions","last_activity"],
             order: [
                 ['role_name', 'ASC'],
             ],
