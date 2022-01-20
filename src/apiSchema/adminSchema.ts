@@ -247,6 +247,7 @@ export const listEmployeeCoachSessions= Joi.object ({
   status:Joi.number().optional(),
   employeeRankId:Joi.number().optional(),
   sessionType:Joi.number().optional(),
+  employer_ids:Joi.array().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
 })

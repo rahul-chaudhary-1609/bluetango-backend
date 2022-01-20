@@ -1072,8 +1072,16 @@ export class EmployersService {
                     }
                 }
             })
-
+            let totalSessions= await employeeCoachSessionsModel.findAndCountAll({
+                where:{
+                    coach_id:coach.id,
+                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                }
+            })
+            let freeSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==1).map(obj => obj.employee_id)) ];
+            let paidSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==2).map(obj => obj.employee_id)) ];
             coach.average_rating=0;
+            coach.conversionRate = (paidSessionsCount.length/freeSessionsCount.length);
             if(coach.rating_count>0){
                 coach.average_rating=parseFloat((parseInt(totalRating)/coach.rating_count).toFixed(0));
             }

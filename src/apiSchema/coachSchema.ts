@@ -22,7 +22,8 @@ export const login = Joi.object({
             "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
             "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
         }),
-    device_token: Joi.string().optional()
+    device_token: Joi.string().optional(),
+    app_id: Joi.number().optional().valid(1,2)
 });
 
 export const forgotPassword = Joi.object({
@@ -33,6 +34,7 @@ export const forgotPassword = Joi.object({
             }
         ),
     user_role: Joi.string().regex(new RegExp("^(?=.*[1-5])")).required(),
+    app_id: Joi.number().optional().valid(1,2)
 });
 
 export const resetPassword = Joi.object({

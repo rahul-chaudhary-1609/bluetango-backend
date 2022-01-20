@@ -2592,6 +2592,16 @@
             ]
           },
           {
+            "name": "employer_ids",
+            "in": "query",
+            "description": "employer_ids",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",
@@ -7144,6 +7154,13 @@
             "description": "device_token",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "app_id",
+            "in": "formData",
+            "description": "app_id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -7175,6 +7192,13 @@
             "enum": [
               5
             ]
+          },
+          {
+            "name": "app_id",
+            "in": "formData",
+            "description": "app_id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}

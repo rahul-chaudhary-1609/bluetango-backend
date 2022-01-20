@@ -309,12 +309,13 @@ export class CoachService {
     }
 
     public async listEmployeeCoachSessions(params:any){
-
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
         employeeCoachSessionsModel.hasOne(employeeModel,{foreignKey:"id",sourceKey:"employee_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
+        employeeModel.hasOne(employersModel,{foreignKey:"id",sourceKey:"current_employer_id",targetKey:"id"})
+
 
         let where=<any>{
             // status:{
@@ -371,6 +372,9 @@ export class CoachService {
                  date:params.date, 
             }
         }
+        if(params.employer_ids){
+            employeeWhere["current_employer_id"]=params.employer_ids
+        }
 
         if(params.status){
             if([constants.EMPLOYEE_COACH_SESSION_STATUS.pending, constants.EMPLOYEE_COACH_SESSION_STATUS.accepted].includes(parseInt(params.status))){
@@ -414,6 +418,10 @@ export class CoachService {
                         attributes:['id','name'],
                         required:true,
                         where:employeeWhere,
+                        include: [{
+                            model: employersModel,
+                            attributes: []
+                        }]
                     },
                     {
                         model:coachManagementModel,
@@ -429,7 +437,31 @@ export class CoachService {
                 ],
                 limit,
                 offset,
-                order: [["createdAt", "DESC"]]
+                order: [["createdAt", "DESC"]],
+                attributes: [ "id",
+                "coach_id",
+                "employee_id",
+                "employee_rank_id",
+                "coach_specialization_category_id",
+                "query",
+                "coach_rating",
+                "date",
+                "start_time",
+                "end_time",
+                "slot_id",
+                "call_duration",
+                "comment",
+                "cancelled_by",
+                "cancel_reason",
+                "amount",
+                "type",
+                "is_rating_skipped",
+                "status","details","action_by",
+                "action",
+                "request_received_date",
+                "timeline",
+                "createdAt",
+                "updatedAt",[Sequelize.col('employee.employer.name'), 'employer_name']]
             })
         )
 
@@ -444,6 +476,7 @@ export class CoachService {
         employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{foreignKey:"id",sourceKey:"coach_specialization_category_id",targetKey:"id"})
+        employeeModel.hasOne(employersModel,{foreignKey:"id",sourceKey:"current_employer_id",targetKey:"id"})
 
         let session=await helperFunction.convertPromiseToObject(
             await employeeCoachSessionsModel.findOne({
@@ -458,6 +491,10 @@ export class CoachService {
                         model:employeeModel,
                         attributes:['id','name'],
                         required:true,
+                        include: [{
+                            model: employersModel,
+                            attributes: []
+                        }]
                     },
                     {
                         model:coachManagementModel,
@@ -473,6 +510,30 @@ export class CoachService {
                         required:true,
                     }
                 ],
+                attributes: [ "id",
+                "coach_id",
+                "employee_id",
+                "employee_rank_id",
+                "coach_specialization_category_id",
+                "query",
+                "coach_rating",
+                "date",
+                "start_time",
+                "end_time",
+                "slot_id",
+                "call_duration",
+                "comment",
+                "cancelled_by",
+                "cancel_reason",
+                "amount",
+                "type",
+                "is_rating_skipped",
+                "status","details","action_by",
+                "action",
+                "request_received_date",
+                "timeline",
+                "createdAt",
+                "updatedAt",[Sequelize.col('employee.employer.name'), 'employer_name']]
             })
         )
 

@@ -19,12 +19,17 @@ export class AuthService {
     */
     public async login(params: any) {
 
-        let existingUser = await coachManagementModel.findOne({
+        let existingUser = await coachManagementModel.findAll({
             where: {
-                email: params.username.toLowerCase()
+                email: params.username.toLowerCase(),
+                app_id:params.app_id || [1,2]
             },
             order: [["createdAt", "DESC"]]
         });
+        if(existingUser && existingUser.length>1){
+            throw new Error(constants.MESSAGES.select_appId);
+        }
+        existingUser=existingUser[0]
         if (!_.isEmpty(existingUser) && existingUser.status == 0) {
             throw new Error(constants.MESSAGES.deactivate_account);
         } else if (!_.isEmpty(existingUser) && existingUser.status == 2) {
@@ -70,16 +75,20 @@ export class AuthService {
         const qry = <any>{
             where: {
                 email: params.email.toLowerCase(),
-                status: { [Op.ne]: 2 }
+                status: { [Op.ne]: 2 },
+                app_id:params.app_id || [1,2]
             }
         };
 
         if (params.user_role == constants.USER_ROLE.coach) {
-            existingUser = await coachManagementModel.findOne(qry);
+            existingUser = await coachManagementModel.findAll(qry);
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }
-
+        if(existingUser && existingUser.length>1){
+            throw new Error(constants.MESSAGES.select_appId);
+        }
+        existingUser=existingUser[0]
         if (!_.isEmpty(existingUser)) {
             // params.country_code = existingUser.country_code;
             let token = await tokenResponse.forgotPasswordTokenResponse(existingUser, params.user_role);
@@ -87,7 +96,7 @@ export class AuthService {
             mailParams.to = params.email;
             mailParams.html = `Hi ${existingUser.name}
                 <br> Click on the link below to reset your password
-                <br> ${process.env.WEB_HOST_URL}?token=${token.token}
+                <br> ${(existingUser.app_id==constants.COACH_APP_ID.BX ? process.env.WEB_HOST_URL_BX : process.env.WEB_HOST_URL_BT)}?token=${token.token}
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
             mailParams.subject = "Reset Password Request";
