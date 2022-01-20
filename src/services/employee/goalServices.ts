@@ -726,6 +726,7 @@ export class GoalServices {
             })
         }
 
+        quantitativeStats.sort((a,b)=>b.quantitative_stats_percent-a.quantitative_stats_percent);
 
 
         return {quantitativeStats};
@@ -763,6 +764,9 @@ export class GoalServices {
 
             })
         }
+
+        quantitativeStats.sort((a,b)=>b.quantitative_stats_percent-a.quantitative_stats_percent);
+        
         return { quantitativeStats };
 
     }

@@ -677,6 +677,7 @@ class GoalServices {
             for (let goal of quantitativeStatsOfGoals) {
                 quantitativeStats.push(Object.assign(Object.assign({}, goal), { quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`, quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100 }));
             }
+            quantitativeStats.sort((a, b) => b.quantitative_stats_percent - a.quantitative_stats_percent);
             return { quantitativeStats };
         });
     }
@@ -704,6 +705,7 @@ class GoalServices {
             for (let goal of quantitativeStatsOfGoals) {
                 quantitativeStats.push(Object.assign(Object.assign({}, goal), { quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`, quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100 }));
             }
+            quantitativeStats.sort((a, b) => b.quantitative_stats_percent - a.quantitative_stats_percent);
             return { quantitativeStats };
         });
     }
