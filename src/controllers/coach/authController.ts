@@ -127,6 +127,20 @@ export class AuthController {
             next(e)
         }
     }
+     /**
+      * get static content
+      * @param req :
+      * @param res 
+      */
+      public async getStaticContent(req: any, res: any) {
+        try {
+            const responseFromService = await authService.getStaticContent(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
 
 
 }

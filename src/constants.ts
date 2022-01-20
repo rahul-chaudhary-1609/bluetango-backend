@@ -198,7 +198,8 @@ export const MESSAGES = {
   role_deleted:"Role deleted successfully",
   admin_And_role_updated:"Admin and role details updated successfully",
   admin_and_role_status:"Admin and role status updated successfully",
-  role_fetched:"Roles fetched successfully"
+  role_fetched:"Roles fetched successfully",
+  select_appId:"Select BluXinga or BlueTango for login"
 
   
 }
