@@ -305,6 +305,7 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(models_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
             let where = {
             // status:{
             //     [Op.notIn]:[constants.STATUS.deleted]
@@ -343,6 +344,9 @@ class CoachService {
             if (params.date) {
                 where = Object.assign(Object.assign({}, where), { date: params.date });
             }
+            if (params.employer_ids) {
+                employeeWhere["current_employer_id"] = params.employer_ids;
+            }
             if (params.status) {
                 if ([constants.EMPLOYEE_COACH_SESSION_STATUS.pending, constants.EMPLOYEE_COACH_SESSION_STATUS.accepted].includes(parseInt(params.status))) {
                     where = Object.assign(Object.assign({}, where), { status: {
@@ -370,6 +374,10 @@ class CoachService {
                         attributes: ['id', 'name'],
                         required: true,
                         where: employeeWhere,
+                        include: [{
+                                model: models_1.employersModel,
+                                attributes: []
+                            }]
                     },
                     {
                         model: coachManagement_1.coachManagementModel,
@@ -385,7 +393,31 @@ class CoachService {
                 ],
                 limit,
                 offset,
-                order: [["createdAt", "DESC"]]
+                order: [["createdAt", "DESC"]],
+                attributes: ["id",
+                    "coach_id",
+                    "employee_id",
+                    "employee_rank_id",
+                    "coach_specialization_category_id",
+                    "query",
+                    "coach_rating",
+                    "date",
+                    "start_time",
+                    "end_time",
+                    "slot_id",
+                    "call_duration",
+                    "comment",
+                    "cancelled_by",
+                    "cancel_reason",
+                    "amount",
+                    "type",
+                    "is_rating_skipped",
+                    "status", "details", "action_by",
+                    "action",
+                    "request_received_date",
+                    "timeline",
+                    "createdAt",
+                    "updatedAt", [Sequelize.col('employee.employer.name'), 'employer_name']]
             }));
             if (sessions.count == 0)
                 throw new Error(constants.MESSAGES.no_session);
@@ -398,6 +430,7 @@ class CoachService {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachSpecializationCategories_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(models_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
             let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
                 where: {
                     id: params.session_id,
@@ -407,6 +440,10 @@ class CoachService {
                         model: models_1.employeeModel,
                         attributes: ['id', 'name'],
                         required: true,
+                        include: [{
+                                model: models_1.employersModel,
+                                attributes: []
+                            }]
                     },
                     {
                         model: coachManagement_1.coachManagementModel,
@@ -422,6 +459,30 @@ class CoachService {
                         required: true,
                     }
                 ],
+                attributes: ["id",
+                    "coach_id",
+                    "employee_id",
+                    "employee_rank_id",
+                    "coach_specialization_category_id",
+                    "query",
+                    "coach_rating",
+                    "date",
+                    "start_time",
+                    "end_time",
+                    "slot_id",
+                    "call_duration",
+                    "comment",
+                    "cancelled_by",
+                    "cancel_reason",
+                    "amount",
+                    "type",
+                    "is_rating_skipped",
+                    "status", "details", "action_by",
+                    "action",
+                    "request_received_date",
+                    "timeline",
+                    "createdAt",
+                    "updatedAt", [Sequelize.col('employee.employer.name'), 'employer_name']]
             }));
             if (!session)
                 throw new Error(constants.MESSAGES.no_session);

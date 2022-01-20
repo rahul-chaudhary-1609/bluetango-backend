@@ -168,6 +168,22 @@ class AuthController {
             }
         });
     }
+    /**
+     * get static content
+     * @param req :
+     * @param res
+     */
+    getStaticContent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getStaticContent(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;
 //# sourceMappingURL=authController.js.map
