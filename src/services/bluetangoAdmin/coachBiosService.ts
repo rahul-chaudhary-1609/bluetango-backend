@@ -88,7 +88,8 @@ export class BiosService {
     public async getBios(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let bios = await queryService.selectAndCountAll(coachBiosModel, {}, {})
-        return bios.rows = bios.rows.slice(offset, offset + limit);
+        bios.rows = bios.rows.slice(offset, offset + limit);
+        return bios
 
 
     }
