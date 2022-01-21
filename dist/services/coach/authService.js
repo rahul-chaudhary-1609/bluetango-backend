@@ -41,7 +41,7 @@ const coachManagement_1 = require("../../models/coachManagement");
 const employeeRanks_1 = require("../../models/employeeRanks");
 const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
 const employeeCoachSession_1 = require("../../models/employeeCoachSession");
-const staticContent_1 = require("../../models/staticContent");
+const index_1 = require("../../models/index");
 const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -61,7 +61,7 @@ class AuthService {
                 order: [["createdAt", "DESC"]]
             });
             if (existingUser && existingUser.length > 1) {
-                throw new Error(constants.MESSAGES.select_appId);
+                return { is_both: 1 };
             }
             existingUser = existingUser[0];
             if (!lodash_1.default.isEmpty(existingUser) && existingUser.status == 0) {
@@ -118,7 +118,7 @@ class AuthService {
                 throw new Error(constants.MESSAGES.user_not_found);
             }
             if (existingUser && existingUser.length > 1) {
-                throw new Error(constants.MESSAGES.select_appId);
+                return { is_both: 1 };
             }
             existingUser = existingUser[0];
             if (!lodash_1.default.isEmpty(existingUser)) {
@@ -296,10 +296,22 @@ class AuthService {
       */
     getStaticContent(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield queryService.selectOne(staticContent_1.staticContentModel, {
+            return yield queryService.selectOne(index_1.staticContentModel, {
                 where: { id: 1 },
                 attributes: [`${params.contentType}`]
             });
+        });
+    }
+    /*
+              * get all Bios
+              * @param : token
+              */
+    getBios(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let bios = yield queryService.selectAndCountAll(index_1.coachBiosModel, {}, {});
+            bios.rows = bios.rows.slice(offset, offset + limit);
+            return bios;
         });
     }
 }
