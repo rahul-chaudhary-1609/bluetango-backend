@@ -133,6 +133,7 @@ exports.addSlot = joi_1.default.object({
     timings: joi_1.default.array().items(joi_1.default.object().keys({
         start_time: joi_1.default.string().required(),
         end_time: joi_1.default.string().required(),
+        is_available: joi_1.default.number().required()
     })).required(),
     type: joi_1.default.number().required(),
     day: joi_1.default.number().optional(),

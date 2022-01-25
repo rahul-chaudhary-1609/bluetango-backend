@@ -369,11 +369,23 @@ class AuthService {
                         }
                     };
                     let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
-                    if (!admin) {
-                        if (params.id) {
+                    if (admin) {
+                        if (params.id && params.id == admin.id) {
                             yield queryService.updateData({ model: models_1.bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } });
+                            updated.push(params);
                         }
                         else {
+                            AlreadyExistAdmins.push(params);
+                            break;
+                        }
+                    }
+                    else {
+                        if (params.id) {
+                            yield queryService.updateData({ model: models_1.bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } });
+                            updated.push(params);
+                        }
+                        else {
+                            updated.push(params);
                             params.role_id = Params.id;
                             let password = yield helperFunction.generaePassword();
                             params.admin_role = constants.USER_ROLE.sub_admin;
@@ -398,11 +410,38 @@ class AuthService {
                             mailParams.name = "BlueTango";
                             yield helperFunction.sendEmail(mailParams);
                         }
-                        updated.push(params);
                     }
-                    else {
-                        AlreadyExistAdmins.push(params);
-                    }
+                    // if (!admin) {
+                    //     if (params.id) {
+                    //         await queryService.updateData({ model: bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } })
+                    //     } else {
+                    //         params.role_id = Params.id
+                    //         let password = await helperFunction.generaePassword();
+                    //         params.admin_role = constants.USER_ROLE.sub_admin;
+                    //         params.password = await appUtils.bcryptPassword(password);
+                    //         let newAdmin = await queryService.addData(bluetangoAdminModel, params);
+                    //         newAdmin = newAdmin.get({ plain: true });
+                    //         let token = await tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                    //         newAdmin.token = token;
+                    //         delete newAdmin.password;
+                    //         delete newAdmin.reset_pass_otp;
+                    //         delete newAdmin.reset_pass_expiry;
+                    //         const mailParams = <any>{};
+                    //         mailParams.to = params.email;
+                    //         mailParams.html = `Hi  ${params.name}
+                    // <br>Use the given credentials for login into the admin pannel :
+                    // <br><b> Web URL</b>: ${process.env.BLUETANGO_WEB_URL} <br>
+                    // <br> email : ${params.email}
+                    // <br> password : ${password}
+                    // `;
+                    //         mailParams.subject = "Subadmin Login Credentials";
+                    //         mailParams.name = "BlueTango"
+                    //         await helperFunction.sendEmail(mailParams);
+                    //     }
+                    //     updated.push(params)
+                    // } else {
+                    //     AlreadyExistAdmins.push(params)
+                    // }
                 }
             }
             return { updated_admins: updated, Already_exist_admins: AlreadyExistAdmins };

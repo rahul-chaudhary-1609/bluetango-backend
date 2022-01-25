@@ -46,7 +46,6 @@ class CoachService {
     addSlot(params, user) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("add slot params1", params);
             if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
                 throw new Error(constants.MESSAGES.coach_schedule_day_required);
             if (params.type == constants.COACH_SCHEDULE_TYPE.custom && ((_a = params.custom_dates) === null || _a === void 0 ? void 0 : _a.length) == 0)
@@ -63,12 +62,12 @@ class CoachService {
             }
             switch (parseInt(params.time_capture_type)) {
                 case constants.TIME_CAPTURE_TYPE.available: {
-                    var validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
+                    let validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
                     return validslotss;
                     break;
                 }
                 case constants.TIME_CAPTURE_TYPE.unavailable: {
-                    var validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
+                    let validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
                     return validslotss;
                     break;
                 }
@@ -159,7 +158,7 @@ class CoachService {
                     slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss");
                 });
             });
-            console.log(params.slots);
+            console.log("llllllllllllllll", params.slots);
             for (let slot of params.slots) {
                 let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
                     where: {
