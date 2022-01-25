@@ -209,21 +209,35 @@ exports.calculate_time_slot = (start_time, end_time, interval) => {
     }
     return time_slots;
 };
-exports.validateUnavailableTime = (busyslots, slots) => {
+exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
     var validSlots = [];
-    for (let i = 0; i < busyslots.length; i++) {
+    var unavaibaleSlots = [];
+    for (let i = 0; i < timeSlots.length; i++) {
         slots.filter((value, index, array) => {
-            if (exports.parseTime(busyslots[i].start_time) <= exports.parseTime(value.start_time) && exports.parseTime(busyslots[i].end_time) > exports.parseTime(value.start_time) || exports.parseTime(busyslots[i].start_time) < exports.parseTime(value.end_time) && exports.parseTime(busyslots[i].end_time) >= exports.parseTime(value.end_time)) {
+            if (exports.parseTime(timeSlots[i].start_time) <= exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) > exports.parseTime(value.start_time) || exports.parseTime(timeSlots[i].start_time) < exports.parseTime(value.end_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time)) {
                 validSlots.push(index);
             }
         });
     }
-    validSlots.map((value) => {
-        slots[value] = null;
-    });
-    slots = slots.filter(function (el) {
-        return el != null;
-    });
-    return slots;
+    if (time_capture_type == 1) {
+        [...new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value]);
+            slots[value] = null;
+        });
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: unavaibaleSlots, unavailableSlots: slots };
+    }
+    else {
+        [...new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value]);
+            slots[value] = null;
+        });
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: slots, unavailableSlots: unavaibaleSlots };
+    }
 };
 //# sourceMappingURL=appUtils.js.map
