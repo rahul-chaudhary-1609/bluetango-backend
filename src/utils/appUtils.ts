@@ -191,21 +191,35 @@ export const calculate_time_slot = (start_time: any, end_time: any, interval: an
     }
     return time_slots;
 }
-export const validateUnavailableTime = (busyslots, slots) => {
+export const validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
     var validSlots = [];
-    for (let i = 0; i < busyslots.length; i++) {
+    var unavaibaleSlots = [];
+    for (let i = 0; i < timeSlots.length; i++) {
         slots.filter((value, index, array) => {
-            if (parseTime(busyslots[i].start_time) <= parseTime(value.start_time) && parseTime(busyslots[i].end_time) > parseTime(value.start_time) || parseTime(busyslots[i].start_time) < parseTime(value.end_time) && parseTime(busyslots[i].end_time) >= parseTime(value.end_time)) {
+            if (parseTime(timeSlots[i].start_time) <= parseTime(value.start_time) && parseTime(timeSlots[i].end_time) > parseTime(value.start_time) || parseTime(timeSlots[i].start_time) < parseTime(value.end_time) && parseTime(timeSlots[i].end_time) >= parseTime(value.end_time)) {
                 validSlots.push(index);
             }
         })
     }
-    validSlots.map((value) => {
-        slots[value] = null;
+    if (time_capture_type == 1) {
+        [... new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value])
+            slots[value] = null;
 
-    })
-    slots = slots.filter(function (el) {
-        return el != null;
-    });
-    return slots;
+        })
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: unavaibaleSlots, unavailableSlots: slots }
+    } else {
+        [... new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value])
+            slots[value] = null;
+
+        })
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: slots, unavailableSlots: unavaibaleSlots }
+    }
 }

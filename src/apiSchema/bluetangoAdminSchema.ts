@@ -193,7 +193,7 @@ export const deleteRole = Joi.object({
 });
 export const updateAdminAndRole = Joi.object({
   admins: Joi.array().items({
-    id: Joi.number().required(),
+    id: Joi.number(),
     email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
     name: Joi.string().required(),
   }),
