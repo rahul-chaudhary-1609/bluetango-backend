@@ -29,29 +29,26 @@ export class CoachService {
         //// new automatically created slots
         let Slots;
         let validslots = [];
-        let time;
+        Slots = await appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration)
+        for (let i = 0; i < Slots.length; i++) {
+            if (Slots[i + 1]) {
+                validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] })
+            }
+        }
         switch (parseInt(params.time_capture_type)) {
             case constants.TIME_CAPTURE_TYPE.available: {
-                for (time of params.timings) {
-                    Slots = await appUtils.calculate_time_slot(appUtils.parseTime(time.start_time), appUtils.parseTime(time.end_time), params.session_duration)
-                    for (let i = 0; i < Slots.length; i++) {
-                        if (Slots[i + 1]) {
-                            validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] })
-                        }
-                    }
-                }
+                var validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
+                return validslotss;
+                break;
             }
             case constants.TIME_CAPTURE_TYPE.unavailable: {
-                Slots = await appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration)
-                for (let i = 0; i < Slots.length; i++) {
-                    if (Slots[i + 1]) {
-                        validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] })
-                    }
-                }
-                validslots = await appUtils.validateUnavailableTime(params.timings, validslots)
+                var validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
+                return validslotss;
+                break;
             }
             case constants.TIME_CAPTURE_TYPE.previewed: {
                 validslots = params.timings;
+                break;
             }
         }
         ///////
