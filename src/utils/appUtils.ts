@@ -19,7 +19,7 @@ export const errorResponse = (res: any, error: any, errorCode: any, message = co
     }
     response.success = false;
     response.status = errorCode;
-    response.body = {data : error};
+    response.body = { data: error };
     return res.status(response.status).send(response);
 };
 
@@ -27,7 +27,7 @@ export const errorResponse = (res: any, error: any, errorCode: any, message = co
 export const successResponse = (res: any, params: any, message: any) => {
     let response = { ...constants.defaultServerResponse };
     response.success = true;
-    response.body = {data : params};
+    response.body = { data: params };
     response.message = message;
     response.status = <number>200;
     return res.status(response.status).send(response);
@@ -84,7 +84,7 @@ export const currentUnixTimeStamp = () => {
 */
 export const getUnixTimeStamp = (date: any, n: number) => {
     var d = new Date(date);
-    return d.getTime() + n*60000;
+    return d.getTime() + n * 60000;
 }
 
 
@@ -117,8 +117,8 @@ export const jsonSegregate = async (jsonData: any) => {
 
 export const validateJsonString = (text: string) => {
     if (/^[\],:{}\s]*$/.test(text.replace(/\\["\\\/bfnrtu]/g, '@').
-    replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-    replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
         return true
     } else {
         return false
@@ -161,4 +161,51 @@ export const formatPassedAwayTime = (data: any) => {
         }
     }
     return formatedData
+}
+export const createTimeSlots = (data: any) => {
+
+}
+export const parseTime = (s: any) => {
+    let c = s.split(':');
+    return parseInt(c[0]) * 60 + parseInt(c[1]);
+}
+
+const convertHours = (mins: any) => {
+    let hour = Math.floor(mins / 60);
+    let Mins = mins % 60;
+    let converted = pad(hour, 2) + ':' + pad(Mins, 2);
+    return converted;
+}
+
+const pad = (str: any, max: any) => {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+}
+
+export const calculate_time_slot = (start_time: any, end_time: any, interval: any) => {
+    let i, formatted_time;
+    let time_slots = new Array();
+    for (let i = start_time; i <= end_time; i = i + interval) {
+        formatted_time = convertHours(i);
+        time_slots.push(formatted_time);
+    }
+    return time_slots;
+}
+export const validateUnavailableTime = (busyslots, slots) => {
+    var validSlots = [];
+    for (let i = 0; i < busyslots.length; i++) {
+        slots.filter((value, index, array) => {
+            if (parseTime(busyslots[i].start_time) <= parseTime(value.start_time) && parseTime(busyslots[i].end_time) > parseTime(value.start_time) || parseTime(busyslots[i].start_time) < parseTime(value.end_time) && parseTime(busyslots[i].end_time) >= parseTime(value.end_time)) {
+                validSlots.push(index);
+            }
+        })
+    }
+    validSlots.map((value) => {
+        slots[value] = null;
+
+    })
+    slots = slots.filter(function (el) {
+        return el != null;
+    });
+    return slots;
 }

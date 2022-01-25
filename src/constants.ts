@@ -473,3 +473,12 @@ export const COACH_APP_ID={
   BX:1,
   BT:2,
 }
+export const TIME_CAPTURE_TYPE={
+  available:1,
+  unavailable:2,
+  previewed:3
+}
+export const DEFAAULT_START_END_TIME={
+  start_time:"06:00",
+  end_time:"24:00",
+}

@@ -22,19 +22,26 @@ export class AuthService {
     */
     public async login(params: any) {
         params.email = params.email.toLowerCase();
-        let query: any = {
-            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url'],
-            where: {
+        bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id',as: 'role' });
+        params.email = params.email.toLowerCase();
+           let where: any = {
                 email: params.email,
                 status: {
                     [Op.ne]: constants.STATUS.deleted
                 }
             }
-        }
-
-        query.raw = true;
-
-        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
+        let admin = await queryService.selectOne(bluetangoAdminModel, {
+            where: where,
+            include: [
+                {
+                    model: bluetangoAdminRolesModel,
+                    required: true,
+                    attributes: [],
+                    as: 'role'
+                }
+            ],
+            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url',"role_id",[Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
+        })
         if (admin) {
             let comparePassword = await appUtils.comparePassword(params.password, admin.password);
             if (comparePassword) {
