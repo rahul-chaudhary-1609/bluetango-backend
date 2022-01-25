@@ -210,7 +210,7 @@ export const validateUnavailableTime = (timeSlots, slots, time_capture_type) => 
         slots = slots.filter(function (el) {
             return el != null;
         });
-        return { availableSlots: unavaibaleSlots, unavailableSlots: slots }
+        return { availableSlots: unavaibaleSlots.map(v => ({...v, is_available: 1})), unavailableSlots: slots.map(v => ({...v, is_available: 2})) }
     } else {
         [... new Set(validSlots)].map((value) => {
             unavaibaleSlots.push(slots[value])
@@ -220,6 +220,6 @@ export const validateUnavailableTime = (timeSlots, slots, time_capture_type) => 
         slots = slots.filter(function (el) {
             return el != null;
         });
-        return { availableSlots: slots, unavailableSlots: unavaibaleSlots }
+        return { availableSlots: slots.map(v => ({...v, is_available: 1})), unavailableSlots: unavaibaleSlots.map(v => ({...v, is_available: 2})) }
     }
 }
