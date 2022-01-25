@@ -16,9 +16,6 @@ export class CoachService {
     constructor() { }
 
     public async addSlot(params: any, user: any) {
-
-        console.log("add slot params1", params);
-
         if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
             throw new Error(constants.MESSAGES.coach_schedule_day_required)
 
@@ -37,12 +34,12 @@ export class CoachService {
         }
         switch (parseInt(params.time_capture_type)) {
             case constants.TIME_CAPTURE_TYPE.available: {
-                var validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
+                let validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
                 return validslotss;
                 break;
             }
             case constants.TIME_CAPTURE_TYPE.unavailable: {
-                var validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
+                let validslotss = await appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type)
                 return validslotss;
                 break;
             }
@@ -143,7 +140,7 @@ export class CoachService {
                 slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
             })
         })
-        console.log(params.slots)
+        console.log("llllllllllllllll",params.slots)
         for (let slot of params.slots) {
 
             let schedule = await coachScheduleModel.findOne({
