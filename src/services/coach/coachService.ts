@@ -8,73 +8,102 @@ import { coachSpecializationCategoriesModel } from "../../models/coachSpecializa
 import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
 import { employeeRanksModel } from "../../models/employeeRanks";
 const Sequelize = require('sequelize');
-const moment =require("moment");
+const moment = require("moment");
 var Op = Sequelize.Op;
+import * as appUtils from "../../utils/appUtils";
 
 export class CoachService {
-    constructor(){}
+    constructor() { }
 
-    public async addSlot(params:any,user:any){
+    public async addSlot(params: any, user: any) {
 
-        console.log("add slot params1",params);
+        console.log("add slot params1", params);
 
-        if(params.type==constants.COACH_SCHEDULE_TYPE.weekly && !params.day) 
+        if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
             throw new Error(constants.MESSAGES.coach_schedule_day_required)
 
-        if(params.type==constants.COACH_SCHEDULE_TYPE.custom && params.custom_dates?.length==0) 
+        if (params.type == constants.COACH_SCHEDULE_TYPE.custom && params.custom_dates?.length == 0)
             throw new Error(constants.MESSAGES.coach_schedule_custom_dates_required)
 
-        let dates=[];
-
-        switch(parseInt(params.type)){
+        let dates = [];
+        //// new automatically created slots
+        let Slots;
+        let validslots = [];
+        let time;
+        switch (parseInt(params.time_capture_type)) {
+            case constants.TIME_CAPTURE_TYPE.available: {
+                for (time of params.timings) {
+                    Slots = await appUtils.calculate_time_slot(appUtils.parseTime(time.start_time), appUtils.parseTime(time.end_time), params.session_duration)
+                    for (let i = 0; i < Slots.length; i++) {
+                        if (Slots[i + 1]) {
+                            validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] })
+                        }
+                    }
+                }
+            }
+            case constants.TIME_CAPTURE_TYPE.unavailable: {
+                Slots = await appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration)
+                for (let i = 0; i < Slots.length; i++) {
+                    if (Slots[i + 1]) {
+                        validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] })
+                    }
+                }
+                validslots = await appUtils.validateUnavailableTime(params.timings, validslots)
+            }
+            case constants.TIME_CAPTURE_TYPE.previewed: {
+                validslots = params.timings;
+            }
+        }
+        ///////
+        switch (parseInt(params.type)) {
             case constants.COACH_SCHEDULE_TYPE.does_not_repeat:
                 dates.push(params.date)
                 break
-            
-            case constants.COACH_SCHEDULE_TYPE.daily:{
-                let start=new Date(params.date);
-                let end=new Date(params.date);
-                end.setFullYear(start.getFullYear()+1)
 
-                while (start<end) {
+            case constants.COACH_SCHEDULE_TYPE.daily: {
+                let start = new Date(params.date);
+                let end = new Date(params.date);
+                end.setFullYear(start.getFullYear() + 1)
+
+                while (start < end) {
                     dates.push(moment(start).format("YYYY-MM-DD"))
-                    start.setDate(start.getDate()+1)
+                    start.setDate(start.getDate() + 1)
                 }
                 break
             }
-            case constants.COACH_SCHEDULE_TYPE.every_week_day:{
-                let start=new Date(params.date);
-                let end=new Date(params.date);
-                end.setFullYear(start.getFullYear()+1)
+            case constants.COACH_SCHEDULE_TYPE.every_week_day: {
+                let start = new Date(params.date);
+                let end = new Date(params.date);
+                end.setFullYear(start.getFullYear() + 1)
 
-                while (start<end) {
-                    if(![constants.COACH_SCHEDULE_DAY.saturday,constants.COACH_SCHEDULE_DAY.sunday].includes(parseInt(moment(start).format('d')))){
+                while (start < end) {
+                    if (![constants.COACH_SCHEDULE_DAY.saturday, constants.COACH_SCHEDULE_DAY.sunday].includes(parseInt(moment(start).format('d')))) {
                         dates.push(moment(start).format("YYYY-MM-DD"))
                     }
-                    start.setDate(start.getDate()+1)
+                    start.setDate(start.getDate() + 1)
                 }
                 break
             }
-            case constants.COACH_SCHEDULE_TYPE.weekly:{
-                let start=new Date(params.date);
-                let end=new Date(params.date);
-                end.setFullYear(start.getFullYear()+1)
+            case constants.COACH_SCHEDULE_TYPE.weekly: {
+                let start = new Date(params.date);
+                let end = new Date(params.date);
+                end.setFullYear(start.getFullYear() + 1)
 
-                while (start<end) {
-                    if(params.day==parseInt(moment(start).format('d'))){
+                while (start < end) {
+                    if (params.day == parseInt(moment(start).format('d'))) {
                         dates.push(moment(start).format("YYYY-MM-DD"))
                     }
-                    start.setDate(start.getDate()+1)
+                    start.setDate(start.getDate() + 1)
                 }
                 break
             }
-            case constants.COACH_SCHEDULE_TYPE.custom:{
-                let start=new Date(params.date);
-                let end=new Date(params.custom_date);
+            case constants.COACH_SCHEDULE_TYPE.custom: {
+                let start = new Date(params.date);
+                let end = new Date(params.custom_date);
 
-                while (start<=end) {
+                while (start <= end) {
                     dates.push(moment(start).format("YYYY-MM-DD"))
-                    start.setDate(start.getDate()+1)
+                    start.setDate(start.getDate() + 1)
                 }
                 break
             }
@@ -86,71 +115,73 @@ export class CoachService {
             // }
         }
 
-        let schedules=[];
-        let slot_time_group_id=await helperFunction.getUniqueSlotTimeGroupId();
+        let schedules = [];
+        let slot_time_group_id = await helperFunction.getUniqueSlotTimeGroupId();
 
-        let slots=params.slots;
+        let slots = validslots;
+        params.slots = validslots;
 
-        slots.forEach((slot)=>{
-            Object.keys(slot).forEach((key)=>{
-                slot[key]=slot[key].replace(/:/g,"")
+        slots.forEach((slot) => {
+            Object.keys(slot).forEach((key) => {
+                slot[key] = slot[key].replace(/:/g, "")
             })
         })
 
-        slots.forEach((slot1,index1)=>{
-            if(!(slot1.start_time<slot1.end_time)){
-                throw new Error(constants.MESSAGES.coach_schedule_start_greater_or_equal_end)
-            }
-            Object.keys(slot1).forEach((key)=>{
-                slots.forEach((slot2,index2)=>{
-                    if(slot1[key]>=slot2.start_time && slot1[key]<=slot2.end_time && index1!=index2){
-                        throw new Error(constants.MESSAGES.coach_schedule_overlaped)
-                    }
-                })
+        // slots.forEach((slot1, index1) => {
+        //     if (!(slot1.start_time < slot1.end_time)) {
+        //         throw new Error(constants.MESSAGES.coach_schedule_start_greater_or_equal_end)
+        //     }
+        //     Object.keys(slot1).forEach((key) => {
+        //         slots.forEach((slot2, index2) => {
+        //             console.log(slot1[key],slot2.start_time,slot1[key],slot2.end_time,index1,index2)
+        //             if (slot1[key] >= slot2.start_time && slot1[key] <= slot2.end_time && index1 != index2) {
+        //                 throw new Error(constants.MESSAGES.coach_schedule_overlaped)
+        //             }
+        //         })
+        //     })
+        // })
+
+        slots.forEach((slot) => {
+            Object.keys(slot).forEach((key) => {
+                slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
             })
         })
+        console.log(params.slots)
+        for (let slot of params.slots) {
 
-        slots.forEach((slot)=>{
-            Object.keys(slot).forEach((key)=>{
-                slot[key]=moment(slot[key],"HHmmss").format("HH:mm:ss")
-            })
-        })
-
-        for(let slot of params.slots){
-
-            let schedule=await coachScheduleModel.findOne({
-                where:{
-                    coach_id:user.uid,
-                    date:{
-                        [Op.in]:dates,
+            let schedule = await coachScheduleModel.findOne({
+                where: {
+                    coach_id: user.uid,
+                    date: {
+                        [Op.in]: dates,
                     },
-                    [Op.or]:[
+                    [Op.or]: [
                         {
-                            start_time:{
-                                [Op.between]:[
+                            start_time: {
+                                [Op.between]: [
                                     slot.start_time,
                                     slot.end_time,
                                 ]
                             },
                         },
                         {
-                            end_time:{
-                                [Op.between]:[
+                            end_time: {
+                                [Op.between]: [
                                     slot.start_time,
                                     slot.end_time,
                                 ]
                             },
                         },
                         {
-                            [Op.and]:[
+                            [Op.and]: [
                                 {
-                                    start_time:{
-                                        [Op.lte]:slot.start_time,
+                                    start_time: {
+                                        [Op.lte]: slot.start_time,
                                     },
                                 },
                                 {
-                                    end_time:{
-                                        [Op.gte]:slot.end_time,
+                                    end_time: {
+                                        [Op.gte]: slot.end_time,
                                     },
                                 },
                             ],
@@ -160,61 +191,61 @@ export class CoachService {
                     //     [Op.notIn]:[constants.COACH_SCHEDULE_STATUS.passed]
                     // }
                 }
-        
+
             })
 
-            if(schedule) throw new Error(constants.MESSAGES.coach_schedule_already_exist)
+            if (schedule) throw new Error(constants.MESSAGES.coach_schedule_already_exist)
 
-            let slot_date_group_id=await helperFunction.getUniqueSlotDateGroupId();
+            let slot_date_group_id = await helperFunction.getUniqueSlotDateGroupId();
 
-            for(let date of dates){
+            for (let date of dates) {
 
                 schedules.push({
                     slot_date_group_id,
                     slot_time_group_id,
-                    coach_id:user.uid,
+                    coach_id: user.uid,
                     date,
-                    start_time:slot.start_time,
-                    end_time:slot.end_time,
-                    type:params.type,
-                    day:params.type==constants.COACH_SCHEDULE_TYPE.weekly? params.day : null,
-                    custom_date:params.type==constants.COACH_SCHEDULE_TYPE.custom? params.custom_date :null,
-                    custom_dates:null,
+                    start_time: slot.start_time,
+                    end_time: slot.end_time,
+                    type: params.type,
+                    day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
+                    custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
+                    custom_dates: null,
                 })
 
             }
 
         }
 
-        if(schedules.length<1000){
+        if (schedules.length < 1000) {
             await coachScheduleModel.bulkCreate(schedules)
 
             return true;
-        }else{
-            let size=schedules.length;
-            let start=0;
-            let end=999;
-            
-            while (size>0) {
-                await coachScheduleModel.bulkCreate(schedules.slice(start,end))
-                start=start+999;
-                end=end+999;
-                size=size-999;
+        } else {
+            let size = schedules.length;
+            let start = 0;
+            let end = 999;
+
+            while (size > 0) {
+                await coachScheduleModel.bulkCreate(schedules.slice(start, end))
+                start = start + 999;
+                end = end + 999;
+                size = size - 999;
             }
 
             return true;
         }
-        
+
     }
 
-    public async getSlots(params:any,user:any){
+    public async getSlots(params: any, user: any) {
 
-        console.log("params",params)
+        console.log("params", params)
 
-        let where=<any>{
-            coach_id:user.uid,
-            status:{
-                [Op.notIn]:[constants.COACH_SCHEDULE_STATUS.passed]
+        let where = <any>{
+            coach_id: user.uid,
+            status: {
+                [Op.notIn]: [constants.COACH_SCHEDULE_STATUS.passed]
             }
         }
 
@@ -224,8 +255,8 @@ export class CoachService {
         if (params.filter_key) {
             if (params.filter_key == "Daily") {
                 where = {
-                  ...where,
-                  date:moment(new Date()).format("YYYY-MM-DD"),
+                    ...where,
+                    date: moment(new Date()).format("YYYY-MM-DD"),
                 };
             } else if (params.filter_key == "Weekly") {
                 start_date = helperFunction.getMonday(start_date);
@@ -233,8 +264,8 @@ export class CoachService {
                 end_date.setDate(start_date.getDate() + 6);
                 where = {
                     ...where,
-                    date:{
-                        [Op.between]:[
+                    date: {
+                        [Op.between]: [
                             moment(start_date).format("YYYY-MM-DD"),
                             moment(end_date).format("YYYY-MM-DD")
                         ]
@@ -245,13 +276,13 @@ export class CoachService {
                 end_date.setMonth(start_date.getMonth() + 1)
                 end_date.setDate(1)
                 end_date.setDate(end_date.getDate() - 1)
-            
+
                 where = {
                     ...where,
-                    date:{
-                        [Op.between]:[
-                        moment(start_date).format("YYYY-MM-DD"),
-                        moment(end_date).format("YYYY-MM-DD")
+                    date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
                         ]
                     }
                 };
@@ -261,233 +292,233 @@ export class CoachService {
                 end_date.setDate(1)
                 end_date.setMonth(0)
                 end_date.setFullYear(end_date.getFullYear() + 1)
-                end_date.setDate(end_date.getDate()-1)
+                end_date.setDate(end_date.getDate() - 1)
                 where = {
                     ...where,
-                    date:{
-                        [Op.between]:[
-                          moment(start_date).format("YYYY-MM-DD"),
-                          moment(end_date).format("YYYY-MM-DD")
+                    date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
                         ]
                     }
                 };
-            }     
-        } else if((params.day && params.month && params.year) || params.date){
+            }
+        } else if ((params.day && params.month && params.year) || params.date) {
             where = {
                 ...where,
-                date:params.date || `${params.year}-${params.month}-${params.day}`,
+                date: params.date || `${params.year}-${params.month}-${params.day}`,
             };
-        } else if(params.week && params.year){
+        } else if (params.week && params.year) {
             where = {
-                [Op.and]:[
+                [Op.and]: [
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
-                    Sequelize.where(Sequelize.fn("date_part","week",Sequelize.col("date")),"=",params.week),
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                    Sequelize.where(Sequelize.fn("date_part", "week", Sequelize.col("date")), "=", params.week),
                 ]
             };
-        } else if(params.month && params.year){
+        } else if (params.month && params.year) {
             where = {
-                [Op.and]:[
+                [Op.and]: [
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
-                    Sequelize.where(Sequelize.fn("date_part","month",Sequelize.col("date")),"=",params.month),
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                    Sequelize.where(Sequelize.fn("date_part", "month", Sequelize.col("date")), "=", params.month),
                 ]
             };
-        } else if(params.year){
+        } else if (params.year) {
             where = {
-                [Op.and]:[
+                [Op.and]: [
                     {
                         ...where,
                     },
-                    Sequelize.where(Sequelize.fn("date_part","year",Sequelize.col("date")),"=",params.year),
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
                 ]
             };
-        }else{
+        } else {
             start_date.setDate(1)
             end_date.setMonth(start_date.getMonth() + 1)
             end_date.setDate(1)
             end_date.setDate(end_date.getDate() - 1)
-            
+
             where = {
                 ...where,
-                date:{
-                    [Op.between]:[
+                date: {
+                    [Op.between]: [
                         moment(start_date).format("YYYY-MM-DD"),
                         moment(end_date).format("YYYY-MM-DD")
                     ]
                 }
             };
-        }       
+        }
 
         return await helperFunction.convertPromiseToObject(
             await coachScheduleModel.findAndCountAll({
                 where,
-                order:[["date", "ASC"],["start_time", "ASC"]]
+                order: [["date", "ASC"], ["start_time", "ASC"]]
             })
         )
     }
 
-    public async getSlot(params:any){
+    public async getSlot(params: any) {
 
-        let schedule=await helperFunction.convertPromiseToObject(
+        let schedule = await helperFunction.convertPromiseToObject(
             await coachScheduleModel.findByPk(parseInt(params.slot_id))
         )
 
-        if(!schedule) throw new Error(constants.MESSAGES.no_coach_schedule)
+        if (!schedule) throw new Error(constants.MESSAGES.no_coach_schedule)
 
         return schedule
     }
 
-    public async deleteSlot(params:any){
+    public async deleteSlot(params: any) {
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual && !params.slot_id) throw new Error(constants.MESSAGES.slot_id_required)
+        if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual && !params.slot_id) throw new Error(constants.MESSAGES.slot_id_required)
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.date && !params.slot_date_group_id) throw new Error(constants.MESSAGES.slot_date_group_id_required);
+        if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type == constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.date && !params.slot_date_group_id) throw new Error(constants.MESSAGES.slot_date_group_id_required);
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type==constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id) throw new Error(constants.MESSAGES.slot_time_group_id_required);
+        if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.group_type == constants.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE.time && !params.slot_time_group_id) throw new Error(constants.MESSAGES.slot_time_group_id_required);
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && !params.current_date) throw new Error(constants.MESSAGES.slot_group_delete_date_required);
+        if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && !params.current_date) throw new Error(constants.MESSAGES.slot_group_delete_date_required);
 
-        if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual){
-            let schedule=await coachScheduleModel.findByPk(parseInt(params.slot_id));
+        if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.individual) {
+            let schedule = await coachScheduleModel.findByPk(parseInt(params.slot_id));
 
-            if(!schedule) throw new Error(constants.MESSAGES.no_coach_schedule)
+            if (!schedule) throw new Error(constants.MESSAGES.no_coach_schedule)
 
             schedule.destroy();
-            
 
-        } else if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_date_group_id) {
+
+        } else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_date_group_id) {
             let schedules = await coachScheduleModel.findAll({
-                where:{
-                    slot_date_group_id:params.slot_date_group_id,
-                    date:{
-                        [Op.gte]:params.current_date,
+                where: {
+                    slot_date_group_id: params.slot_date_group_id,
+                    date: {
+                        [Op.gte]: params.current_date,
                     }
                 }
             });
 
-            if(schedules.length==0) throw new Error(constants.MESSAGES.no_coach_schedule)
+            if (schedules.length == 0) throw new Error(constants.MESSAGES.no_coach_schedule)
 
             await coachScheduleModel.destroy({
-                where:{
-                    slot_date_group_id:params.slot_date_group_id,
-                    date:{
-                        [Op.gte]:params.current_date,
+                where: {
+                    slot_date_group_id: params.slot_date_group_id,
+                    date: {
+                        [Op.gte]: params.current_date,
                     }
                 }
             });
 
-        }else if(params.type==constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
+        } else if (params.type == constants.COACH_SCHEDULE_SLOT_DELETE_TYPE.group && params.slot_time_group_id) {
             let schedules = await coachScheduleModel.findAll({
-                where:{
-                    slot_time_group_id:params.slot_time_group_id,
-                    date:{
-                        [Op.gte]:params.current_date,
+                where: {
+                    slot_time_group_id: params.slot_time_group_id,
+                    date: {
+                        [Op.gte]: params.current_date,
                     }
                 }
             });
 
-            if(schedules.length==0) throw new Error(constants.MESSAGES.no_coach_schedule)
+            if (schedules.length == 0) throw new Error(constants.MESSAGES.no_coach_schedule)
 
             await coachScheduleModel.destroy({
-                where:{
-                    slot_time_group_id:params.slot_time_group_id,
-                    date:{
-                        [Op.gte]:params.current_date,
+                where: {
+                    slot_time_group_id: params.slot_time_group_id,
+                    date: {
+                        [Op.gte]: params.current_date,
                     }
                 }
             });
-        }       
+        }
 
         return true;
     }
 
-    public async getSessionRequests(params:any,user:any){
-        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+    public async getSessionRequests(params: any, user: any) {
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        if(params.datetime){
-            let sessions=await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAll({
-                        where:{
-                            coach_id:user.uid,
-                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        }
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
                     }
+                }
                 )
             )
 
-            for(let session of sessions){
-                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
-                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
 
                 let duration = moment.duration(endTime.diff(startTime));
-                let secondDiff=Math.ceil(duration.asSeconds())
+                let secondDiff = Math.ceil(duration.asSeconds())
 
-                if(secondDiff<=0){
+                if (secondDiff <= 0) {
                     await employeeCoachSessionsModel.update({
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
-                    },{
-                        where:{
-                            id:session.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    }, {
+                        where: {
+                            id: session.id,
                         }
                     })
                 }
             }
         }
 
-        let query=<any>{
-            order: [["date"],["start_time"]]
+        let query = <any>{
+            order: [["date"], ["start_time"]]
         }
-        query.where={
-            coach_id:user.uid,
-            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-        }
-        
-        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
-            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-            query.offset=offset;
-            query.limit=limit;        
+        query.where = {
+            coach_id: user.uid,
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
         }
 
-        query.include=[
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset = offset;
+            query.limit = limit;
+        }
+
+        query.include = [
             {
-                model:employeeModel,
-                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                model: employeeModel,
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
             },
             {
-                model:coachSpecializationCategoriesModel,
-                attributes:['id', 'name', 'description'],
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
             },
             {
-                model:employeeRanksModel,
-                attributes:['id', 'name', 'description'],
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
             }
         ]
 
-        let sessions=await helperFunction.convertPromiseToObject(
+        let sessions = await helperFunction.convertPromiseToObject(
             await employeeCoachSessionsModel.findAndCountAll(query)
         )
 
-        for(let session of sessions.rows){
-            session.chatRoom=await helperFunction.convertPromiseToObject(
+        for (let session of sessions.rows) {
+            session.chatRoom = await helperFunction.convertPromiseToObject(
                 await chatRealtionMappingInRoomModel.findOne({
-                    where:{
-                        user_id:session.employee_id,
-                        other_user_id:session.coach_id,
-                        type:constants.CHAT_ROOM_TYPE.coach,
-                        status:constants.STATUS.active,
+                    where: {
+                        user_id: session.employee_id,
+                        other_user_id: session.coach_id,
+                        type: constants.CHAT_ROOM_TYPE.coach,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            if(session.chatRoom){
-                session.chatRoom.user=await helperFunction.convertPromiseToObject(
+            if (session.chatRoom) {
+                session.chatRoom.user = await helperFunction.convertPromiseToObject(
                     await employeeModel.findOne({
                         attributes: ['id', 'name', 'profile_pic_url', 'status'],
                         where: {
@@ -496,7 +527,7 @@ export class CoachService {
                     })
                 )
 
-                session.chatRoom.other_user=await helperFunction.convertPromiseToObject(
+                session.chatRoom.other_user = await helperFunction.convertPromiseToObject(
                     await coachManagementModel.findOne({
                         attributes: ['id', 'name', ['image', 'profile_pic_url']],
                         where: {
@@ -510,138 +541,138 @@ export class CoachService {
         return sessions;
     }
 
-    public async acceptSessionRequest(params:any,user:any){
-        console.log("acceptSessionRequest",params,user)
-        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+    public async acceptSessionRequest(params: any, user: any) {
+        console.log("acceptSessionRequest", params, user)
+        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session)
         }
 
-        if(session.coach_id!=user.uid){
+        if (session.coach_id != user.uid) {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        params.session=await helperFunction.convertPromiseToObject(session);
+        params.session = await helperFunction.convertPromiseToObject(session);
 
-        session.details=await helperFunction.scheduleZoomMeeting(params);
-        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;      
+        session.details = await helperFunction.scheduleZoomMeeting(params);
+        session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
 
         session.save();
-        
+
         return await helperFunction.convertPromiseToObject(session);
     }
 
-    public async rejectSessionRequest(params:any,user:any){
-        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+    public async rejectSessionRequest(params: any, user: any) {
+        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session)
         }
 
-        if(session.coach_id!=user.uid){
+        if (session.coach_id != user.uid) {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
+        session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
         session.save();
 
-        let slot=await coachScheduleModel.findByPk(parseInt(session.slot_id));
-        slot.status=constants.COACH_SCHEDULE_STATUS.available;
-        slot.save();    
-        
-        return await helperFunction.convertPromiseToObject(session);    
+        let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
+        slot.status = constants.COACH_SCHEDULE_STATUS.available;
+        slot.save();
+
+        return await helperFunction.convertPromiseToObject(session);
     }
 
-    public async getAcceptedSessions(params:any,user:any){
-        console.log("getAcceptedSessions",params,user)
-        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+    public async getAcceptedSessions(params: any, user: any) {
+        console.log("getAcceptedSessions", params, user)
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        if(params.datetime){
-            let sessions=await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAll({
-                        where:{
-                            coach_id:user.uid,
-                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        }
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
                     }
+                }
                 )
             )
 
-            for(let session of sessions){
-                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
-                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
 
                 let duration = moment.duration(endTime.diff(startTime));
-                let secondDiff=Math.ceil(duration.asSeconds())
+                let secondDiff = Math.ceil(duration.asSeconds())
 
-                if(secondDiff<=0){
+                if (secondDiff <= 0) {
                     let startTime = moment(session.start_time, "HH:mm:ss");
                     let endTime = moment(session.end_time, "HH:mm:ss");
 
                     let duration = moment.duration(endTime.diff(startTime));
-                    
+
                     await employeeCoachSessionsModel.update({
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                         //call_duration:Math.ceil(duration.asMinutes()),
-                    },{
-                        where:{
-                            id:session.id,
+                    }, {
+                        where: {
+                            id: session.id,
                         }
                     })
                 }
             }
         }
 
-        let query=<any>{
-            order: [["date"],["start_time"]]
+        let query = <any>{
+            order: [["date"], ["start_time"]]
         }
-        query.where={
-            coach_id:user.uid,
-            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-        }
-        
-        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
-            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-            query.offset=offset;
-            query.limit=limit;        
+        query.where = {
+            coach_id: user.uid,
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
         }
 
-        query.include=[
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset = offset;
+            query.limit = limit;
+        }
+
+        query.include = [
             {
-                model:employeeModel,
-                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                model: employeeModel,
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
             },
             {
-                model:coachSpecializationCategoriesModel,
-                attributes:['id', 'name', 'description'],
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
             },
             {
-                model:employeeRanksModel,
-                attributes:['id', 'name', 'description'],
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
             }
         ]
 
-        let sessions=await helperFunction.convertPromiseToObject(
+        let sessions = await helperFunction.convertPromiseToObject(
             await employeeCoachSessionsModel.findAndCountAll(query)
         )
 
-        for(let session of sessions.rows){
-            session.chatRoom=await helperFunction.convertPromiseToObject(
+        for (let session of sessions.rows) {
+            session.chatRoom = await helperFunction.convertPromiseToObject(
                 await chatRealtionMappingInRoomModel.findOne({
-                    where:{
-                        user_id:session.employee_id,
-                        other_user_id:session.coach_id,
-                        type:constants.CHAT_ROOM_TYPE.coach,
-                        status:constants.STATUS.active,
+                    where: {
+                        user_id: session.employee_id,
+                        other_user_id: session.coach_id,
+                        type: constants.CHAT_ROOM_TYPE.coach,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            if(session.chatRoom){
-                session.chatRoom.user=await helperFunction.convertPromiseToObject(
+            if (session.chatRoom) {
+                session.chatRoom.user = await helperFunction.convertPromiseToObject(
                     await employeeModel.findOne({
                         attributes: ['id', 'name', 'profile_pic_url', 'status'],
                         where: {
@@ -650,7 +681,7 @@ export class CoachService {
                     })
                 )
 
-                session.chatRoom.other_user=await helperFunction.convertPromiseToObject(
+                session.chatRoom.other_user = await helperFunction.convertPromiseToObject(
                     await coachManagementModel.findOne({
                         attributes: ['id', 'name', ['image', 'profile_pic_url']],
                         where: {
@@ -664,184 +695,184 @@ export class CoachService {
         return sessions;
     }
 
-    public async cancelSession(params:any,user:any){
-        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+    public async cancelSession(params: any, user: any) {
+        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session)
         }
 
-        if(session.coach_id!=user.uid){
+        if (session.coach_id != user.uid) {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        params.session=await helperFunction.convertPromiseToObject(session);
+        params.session = await helperFunction.convertPromiseToObject(session);
 
-        if(params.datetime){
-            let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
-            let endTime=moment(`${params.session.date} ${params.session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+        if (params.datetime) {
+            let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+            let endTime = moment(`${params.session.date} ${params.session.end_time}`, "YYYY-MM-DD HH:mm:ss")
 
             let duration = moment.duration(endTime.diff(startTime));
-            let secondDiff=Math.ceil(duration.asSeconds())
+            let secondDiff = Math.ceil(duration.asSeconds())
 
-            if(secondDiff<=0){
+            if (secondDiff <= 0) {
                 throw new Error(constants.MESSAGES.zoom_meeting_coach_cancel_error)
             }
         }
 
         await helperFunction.cancelZoomMeeting(params);
 
-        session.status=constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
-        session.cancel_reason=params.cancel_reason;
-        session.cancelled_by=constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
+        session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.cancel_reason = params.cancel_reason;
+        session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.coach;
         session.save();
 
-        let slot=await coachScheduleModel.findByPk(parseInt(session.slot_id));
-        slot.status=constants.COACH_SCHEDULE_STATUS.available;
+        let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
+        slot.status = constants.COACH_SCHEDULE_STATUS.available;
         slot.save();
-        
-        return await helperFunction.convertPromiseToObject(session);    
+
+        return await helperFunction.convertPromiseToObject(session);
     }
 
-    public async listSessionHistory(params:any,user:any){
-        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+    public async listSessionHistory(params: any, user: any) {
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        if(params.datetime){
-            let sessions=await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAll({
-                        where:{
-                            coach_id:user.uid,
-                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                        }
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
                     }
+                }
                 )
             )
 
-            for(let session of sessions){
-                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
-                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
 
                 let duration = moment.duration(endTime.diff(startTime));
-                let secondDiff=Math.ceil(duration.asSeconds())
+                let secondDiff = Math.ceil(duration.asSeconds())
 
-                if(secondDiff<=0){
+                if (secondDiff <= 0) {
                     await employeeCoachSessionsModel.update({
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
-                    },{
-                        where:{
-                            id:session.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    }, {
+                        where: {
+                            id: session.id,
                         }
                     })
                 }
-            }            
+            }
 
-            sessions=await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAll({
-                        where:{
-                            coach_id:user.uid,
-                            status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                        }
+            sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
                     }
+                }
                 )
             )
 
-            for(let session of sessions){
-                let startTime=moment(`${params.datetime}`,"YYYY-MM-DD HH:mm:ss")
-                let endTime=moment(`${session.date} ${session.end_time}`,"YYYY-MM-DD HH:mm:ss")
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
 
                 let duration = moment.duration(endTime.diff(startTime));
-                let secondDiff=Math.ceil(duration.asSeconds())
+                let secondDiff = Math.ceil(duration.asSeconds())
 
-                if(secondDiff<=0){
+                if (secondDiff <= 0) {
                     let startTime = moment(session.start_time, "HH:mm:ss");
                     let endTime = moment(session.end_time, "HH:mm:ss");
 
                     let duration = moment.duration(endTime.diff(startTime));
 
                     await employeeCoachSessionsModel.update({
-                        status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                        call_duration:Math.ceil(duration.asMinutes()),
-                    },{
-                        where:{
-                            id:session.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration: Math.ceil(duration.asMinutes()),
+                    }, {
+                        where: {
+                            id: session.id,
                         }
                     })
                 }
             }
         }
 
-        let query=<any>{
-            order: [["date","DESC"],["start_time","DESC"]]
+        let query = <any>{
+            order: [["date", "DESC"], ["start_time", "DESC"]]
         }
-        query.where={
-            coach_id:user.uid,
-            status:{
-                [Op.in]:[
+        query.where = {
+            coach_id: user.uid,
+            status: {
+                [Op.in]: [
                     constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                     constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
                     constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
                 ]
             },
         }
-        
-        if(params.is_pagination && params.is_pagination==constants.IS_PAGINATION.yes){
+
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
             let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-            query.offset=offset;
-            query.limit=limit;        
+            query.offset = offset;
+            query.limit = limit;
         }
 
-        query.include=[
+        query.include = [
             {
-                model:employeeModel,
-                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                model: employeeModel,
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
             },
             {
-                model:coachSpecializationCategoriesModel,
-                attributes:['id', 'name', 'description'],
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
             },
             {
-                model:employeeRanksModel,
-                attributes:['id', 'name', 'description'],
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
             }
         ]
 
         return await helperFunction.convertPromiseToObject(
-                    await employeeCoachSessionsModel.findAndCountAll(query)
-                )
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
     }
 
-    public async getSessionHistoryDetails(params:any){
-        employeeCoachSessionsModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel,{ foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
-        employeeCoachSessionsModel.hasOne(employeeRanksModel,{ foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+    public async getSessionHistoryDetails(params: any) {
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
 
-        let query=<any>{}
-        query.where={
-            id:params.session_id,
+        let query = <any>{}
+        query.where = {
+            id: params.session_id,
         }
 
-        query.include=[
+        query.include = [
             {
-                model:employeeModel,
-                attributes:['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                model: employeeModel,
+                attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
             },
             {
-                model:coachSpecializationCategoriesModel,
-                attributes:['id', 'name', 'description'],
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
             },
             {
-                model:employeeRanksModel,
-                attributes:['id', 'name', 'description'],
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
             }
         ]
 
-        let session=await helperFunction.convertPromiseToObject(
+        let session = await helperFunction.convertPromiseToObject(
             await employeeCoachSessionsModel.findOne(query)
         );
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session);
         }
 
@@ -849,43 +880,43 @@ export class CoachService {
 
     }
 
-    public async updateZoomMeetingDuration(params:any,user:any){
+    public async updateZoomMeetingDuration(params: any, user: any) {
 
-        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session)
         }
 
-        if(session.coach_id!=user.uid){
+        if (session.coach_id != user.uid) {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        params.session=await helperFunction.convertPromiseToObject(session);
+        params.session = await helperFunction.convertPromiseToObject(session);
 
-        params.extendingMinutes=5;
+        params.extendingMinutes = 5;
 
         await helperFunction.updateZoomMeetingDuration(params);
-        
+
         return true;
     }
 
-    public async endZoomMeeting(params:any,user:any){
+    public async endZoomMeeting(params: any, user: any) {
 
-        let session=await employeeCoachSessionsModel.findByPk(params.session_id);
+        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
 
-        if(!session){
+        if (!session) {
             throw new Error(constants.MESSAGES.no_session)
         }
 
-        if(session.coach_id!=user.uid){
+        if (session.coach_id != user.uid) {
             throw new Error(constants.MESSAGES.session_not_belogs_to_coach)
         }
 
-        params.session=await helperFunction.convertPromiseToObject(session);
+        params.session = await helperFunction.convertPromiseToObject(session);
 
         await helperFunction.endZoomMeeting(params);
-        
+
         return true;
     }
 

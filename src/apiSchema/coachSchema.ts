@@ -124,7 +124,7 @@ export const addSlot= Joi.object({
     date: Joi.string().required(),
     // start_time: Joi.string().required(),
     // end_time: Joi.string().required(),
-    slots:Joi.array().items(Joi.object().keys({
+    timings:Joi.array().items(Joi.object().keys({
         start_time: Joi.string().required(),
         end_time: Joi.string().required(),
     })).required(),
@@ -132,6 +132,8 @@ export const addSlot= Joi.object({
     day: Joi.number().optional(),
     custom_date:Joi.string().optional(),
     custom_dates:Joi.array().optional(),
+    session_duration:Joi.number().required(),
+    time_capture_type:Joi.number().valid(1,2,3).required()
 })
 
 export const getSlots= Joi.object({
