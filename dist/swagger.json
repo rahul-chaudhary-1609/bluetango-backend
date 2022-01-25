@@ -7519,7 +7519,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tdate\n\tstart_time\n\tend_time\n\ttype",
+                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n7.time_capture_type:1=>available, 2=>unavailable, 3=>previewed slots",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -7527,7 +7527,22 @@
                                 "date": {
                                     "type": "string"
                                 },
-                                "slots": {
+                                "type": {
+                                    "type": "number"
+                                },
+                                "session_duration": {
+                                    "type": "number"
+                                },
+                                "time_capture_type": {
+                                    "type": "number"
+                                },
+                                "day": {
+                                    "type": "number"
+                                },
+                                "custom_date": {
+                                    "type": "string"
+                                },
+                                "timings": {
                                     "type": "array",
                                     "items": {
                                         "type": "object",
@@ -7540,15 +7555,6 @@
                                             }
                                         }
                                     }
-                                },
-                                "type": {
-                                    "type": "number"
-                                },
-                                "day": {
-                                    "type": "number"
-                                },
-                                "custom_date": {
-                                    "type": "string"
                                 },
                                 "custom_dates": {
                                     "type": "array",

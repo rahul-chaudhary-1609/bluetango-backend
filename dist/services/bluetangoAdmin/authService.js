@@ -50,17 +50,26 @@ class AuthService {
     login(params) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            let query = {
-                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url'],
-                where: {
-                    email: params.email,
-                    status: {
-                        [Op.ne]: constants.STATUS.deleted
-                    }
+            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
+            params.email = params.email.toLowerCase();
+            let where = {
+                email: params.email,
+                status: {
+                    [Op.ne]: constants.STATUS.deleted
                 }
             };
-            query.raw = true;
-            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, {
+                where: where,
+                include: [
+                    {
+                        model: models_1.bluetangoAdminRolesModel,
+                        required: true,
+                        attributes: [],
+                        as: 'role'
+                    }
+                ],
+                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
+            });
             if (admin) {
                 let comparePassword = yield appUtils.comparePassword(params.password, admin.password);
                 if (comparePassword) {

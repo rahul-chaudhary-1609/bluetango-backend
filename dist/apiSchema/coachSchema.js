@@ -130,7 +130,7 @@ exports.addSlot = joi_1.default.object({
     date: joi_1.default.string().required(),
     // start_time: Joi.string().required(),
     // end_time: Joi.string().required(),
-    slots: joi_1.default.array().items(joi_1.default.object().keys({
+    timings: joi_1.default.array().items(joi_1.default.object().keys({
         start_time: joi_1.default.string().required(),
         end_time: joi_1.default.string().required(),
     })).required(),
@@ -138,6 +138,8 @@ exports.addSlot = joi_1.default.object({
     day: joi_1.default.number().optional(),
     custom_date: joi_1.default.string().optional(),
     custom_dates: joi_1.default.array().optional(),
+    session_duration: joi_1.default.number().required(),
+    time_capture_type: joi_1.default.number().valid(1, 2, 3).required()
 });
 exports.getSlots = joi_1.default.object({
     filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
