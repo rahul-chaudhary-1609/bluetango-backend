@@ -50,7 +50,8 @@ class AuthService {
     login(params) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
+            // bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
+            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
             params.email = params.email.toLowerCase();
             let where = {
                 email: params.email,
@@ -65,10 +66,10 @@ class AuthService {
                         model: models_1.bluetangoAdminRolesModel,
                         required: true,
                         attributes: [],
-                        as: 'role'
                     }
                 ],
-                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
+                // attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
+                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions']],
             });
             if (admin) {
                 let comparePassword = yield appUtils.comparePassword(params.password, admin.password);
