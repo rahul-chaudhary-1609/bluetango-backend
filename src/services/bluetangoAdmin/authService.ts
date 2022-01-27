@@ -12,6 +12,7 @@ var Op = Sequelize.Op;
 
 bluetangoAdminModel.belongsTo(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
 bluetangoAdminRolesModel.hasMany(bluetangoAdminModel, { foreignKey: 'role_id', onDelete: 'cascade', hooks: true });
+bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
 
 export class AuthService {
     constructor() { }
@@ -21,8 +22,6 @@ export class AuthService {
     @param {} params pass all parameters from request
     */
     public async login(params: any) {
-        params.email = params.email.toLowerCase();
-        bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
         params.email = params.email.toLowerCase();
         let where: any = {
             email: params.email,
