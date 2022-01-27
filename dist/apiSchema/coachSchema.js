@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -133,7 +133,7 @@ exports.addSlot = joi_1.default.object({
     timings: joi_1.default.array().items(joi_1.default.object().keys({
         start_time: joi_1.default.string().required(),
         end_time: joi_1.default.string().required(),
-        is_available: joi_1.default.number().required()
+        is_available: joi_1.default.number()
     })).required(),
     type: joi_1.default.number().required(),
     day: joi_1.default.number().optional(),
@@ -199,5 +199,9 @@ exports.updateZoomMeetingDuration = joi_1.default.object({
 });
 exports.endZoomMeeting = joi_1.default.object({
     session_id: joi_1.default.number().required(),
+});
+exports.getChatRoomId = joi_1.default.object({
+    other_user_id: joi_1.default.string().required(),
+    type: joi_1.default.number(),
 });
 //# sourceMappingURL=coachSchema.js.map

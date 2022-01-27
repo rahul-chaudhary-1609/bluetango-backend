@@ -104,7 +104,7 @@ class CoachController {
     deleteCoach(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield coachService.deleteCoach(req.body);
+                const responseFromService = yield coachService.deleteCoach(req.params);
                 const msg = constants.MESSAGES.success;
                 appUtils.successResponse(res, responseFromService, msg);
             }

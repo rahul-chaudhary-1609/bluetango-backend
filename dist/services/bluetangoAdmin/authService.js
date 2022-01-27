@@ -41,6 +41,7 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 models_1.bluetangoAdminModel.belongsTo(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
 models_1.bluetangoAdminRolesModel.hasMany(models_1.bluetangoAdminModel, { foreignKey: 'role_id', onDelete: 'cascade', hooks: true });
+models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
 class AuthService {
     constructor() { }
     /**
@@ -506,7 +507,7 @@ class AuthService {
                     {
                         model: models_1.bluetangoAdminModel,
                         required: true,
-                        attributes: ["id", "name", "email"],
+                        attributes: ["id", "name", "email", "admin_role"],
                     }
                 ],
                 distinct: true,

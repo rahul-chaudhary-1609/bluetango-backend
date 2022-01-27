@@ -66,7 +66,7 @@ bluetangoAdminRoute.put("/editCoach", tokenValidator.validateBluetangoAdminToken
 /* get coach deatils */
 bluetangoAdminRoute.get("/getCoachDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachDetails), coachController.getCoachDetails);
 /* delete Coach*/
-bluetangoAdminRoute.delete("/deleteCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.deleteCoach), coachController.deleteCoach);
+bluetangoAdminRoute.delete("/deleteCoach/:coach_id", tokenValidator.validateBluetangoAdminToken, coachController.deleteCoach);
 /* block Unblock Coach*/
 bluetangoAdminRoute.put("/blockUnblockCoach", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.blockUnblockCoach), coachController.blockUnblockCoach);
 /* list Coach Specialization Categories*/
