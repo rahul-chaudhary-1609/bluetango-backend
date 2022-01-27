@@ -25,7 +25,7 @@ export const chatRealtionMappingInRoomModel: any = sequelize.define("chat_relati
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: "0=>employee, 1=> coach, 2=> group"
+        comment: "0=>employee, 1=> coach, 2=> group, 3=> BT_admin"
     },
     chat_session_id: {
         type:DataTypes.STRING,

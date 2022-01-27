@@ -68,7 +68,7 @@ export class CoachController {
 
     public async deleteCoach(req: any, res: any) {
         try {
-            const responseFromService = await coachService.deleteCoach(req.body);
+            const responseFromService = await coachService.deleteCoach(req.params);
             const msg = constants.MESSAGES.success;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {

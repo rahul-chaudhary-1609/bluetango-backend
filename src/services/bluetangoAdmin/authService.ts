@@ -475,7 +475,7 @@ export class AuthService {
                 {
                     model: bluetangoAdminModel,
                     required: true,
-                    attributes: ["id", "name", "email"],
+                    attributes: ["id", "name", "email","admin_role"],
                 }
             ],
             distinct: true,

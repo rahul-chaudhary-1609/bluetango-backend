@@ -206,3 +206,7 @@ export const updateZoomMeetingDuration=Joi.object({
 export const endZoomMeeting=Joi.object({
     session_id:Joi.number().required(),
 })
+export const getChatRoomId = Joi.object({
+    other_user_id: Joi.string().required(),
+    type: Joi.number(),
+  })
