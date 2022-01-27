@@ -127,7 +127,7 @@ export const addSlot= Joi.object({
     timings:Joi.array().items(Joi.object().keys({
         start_time: Joi.string().required(),
         end_time: Joi.string().required(),
-        is_available:Joi.number().required()
+        is_available:Joi.number()
     })).required(),
     type: Joi.number().required(),
     day: Joi.number().optional(),
@@ -206,3 +206,7 @@ export const updateZoomMeetingDuration=Joi.object({
 export const endZoomMeeting=Joi.object({
     session_id:Joi.number().required(),
 })
+export const getChatRoomId = Joi.object({
+    other_user_id: Joi.string().required(),
+    type: Joi.number(),
+  })

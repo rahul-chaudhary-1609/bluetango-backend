@@ -116,7 +116,10 @@ export class CoachService {
         params.slots = validslots;
 
         slots.forEach((slot) => {
-            Object.keys(slot).forEach((key) => {
+            let keys=Object.keys(slot)
+            let index = keys.indexOf("is_available");
+            keys.splice(index, 1);
+            keys.forEach((key) => {
                 slot[key] = slot[key].replace(/:/g, "")
             })
         })
@@ -136,13 +139,14 @@ export class CoachService {
         // })
 
         slots.forEach((slot) => {
-            Object.keys(slot).forEach((key) => {
+            let keys=Object.keys(slot)
+            let index = keys.indexOf("is_available");
+            keys.splice(index, 1);
+            keys.forEach((key) => {
                 slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
             })
         })
-        console.log("llllllllllllllll",params.slots)
         for (let slot of params.slots) {
-
             let schedule = await coachScheduleModel.findOne({
                 where: {
                     coach_id: user.uid,
@@ -187,7 +191,6 @@ export class CoachService {
                 }
 
             })
-
             if (schedule) throw new Error(constants.MESSAGES.coach_schedule_already_exist)
 
             let slot_date_group_id = await helperFunction.getUniqueSlotDateGroupId();
@@ -205,6 +208,7 @@ export class CoachService {
                     day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
                     custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
                     custom_dates: null,
+                    is_available:slot.is_available
                 })
 
             }

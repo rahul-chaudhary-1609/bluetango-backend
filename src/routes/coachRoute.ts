@@ -121,4 +121,7 @@ coachRoute.put("/endZoomMeeting",tokenValidator.validateCoachToken, joiSchemaVal
 coachRoute.get("/getStaticContent", tokenValidator.validateCoachToken, authController.getStaticContent);
 /* get Bios */
 coachRoute.get("/getBios", tokenValidator.validateCoachToken, authController.getBios);
+/* get chat room id */
+coachRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getChatRoomId), chatController.getChatRoomId);
+
 export = coachRoute;

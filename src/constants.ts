@@ -199,7 +199,8 @@ export const MESSAGES = {
   admin_And_role_updated:"Admin and role details updated successfully",
   admin_and_role_status:"Admin and role status updated successfully",
   role_fetched:"Roles fetched successfully",
-  select_appId:"Select BluXinga or BlueTango for login"
+  select_appId:"Select BluXinga or BlueTango for login",
+  only_employee_or_BT_Admin_chat: "You can initiate chat either with employee or with a admin",
 
   
 }
@@ -319,6 +320,7 @@ export const NOTIFICATION_RECIEVER_TYPE = {
 export const CHAT_USER_TYPE = {
   employee: 1,
   coach: 2,
+  BT_admin:3
 }
 
 export const BLUETANGO_CHAT_USER_TYPE = {
@@ -341,6 +343,7 @@ export const CHAT_ROOM_TYPE = {
   employee: 0,
   coach: 1,
   group:2,
+  BT_admin:3
 }
 
 export const EMPLOYER_SUBSCRIPTION_TYPE = {

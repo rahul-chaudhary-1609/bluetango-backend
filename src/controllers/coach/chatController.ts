@@ -168,7 +168,19 @@ export class ChatController {
             next(e)
         }
     }
-
+/**
+    * get chat room id
+    * @param req :[]
+    * @param res 
+    */
+ public async getChatRoomId(req: any, res: any, next: any) {
+    try {
+        const responseFromService = await chatServices.getChatRoomId(req.query, req.user);
+        appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+    } catch (e) {
+        next(e)
+    }
+}
     
     
 }
