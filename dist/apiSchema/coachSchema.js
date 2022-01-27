@@ -44,7 +44,8 @@ exports.login = joi_1.default.object({
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     }),
-    device_token: joi_1.default.string().optional()
+    device_token: joi_1.default.string().optional(),
+    app_id: joi_1.default.number().optional().valid(1, 2)
 });
 exports.forgotPassword = joi_1.default.object({
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
@@ -52,6 +53,7 @@ exports.forgotPassword = joi_1.default.object({
         "string.pattern.base": constants.MESSAGES.invalid_email
     }),
     user_role: joi_1.default.string().regex(new RegExp("^(?=.*[1-5])")).required(),
+    app_id: joi_1.default.number().optional().valid(1, 2)
 });
 exports.resetPassword = joi_1.default.object({
     password: joi_1.default.string().min(8)
@@ -128,14 +130,17 @@ exports.addSlot = joi_1.default.object({
     date: joi_1.default.string().required(),
     // start_time: Joi.string().required(),
     // end_time: Joi.string().required(),
-    slots: joi_1.default.array().items(joi_1.default.object().keys({
+    timings: joi_1.default.array().items(joi_1.default.object().keys({
         start_time: joi_1.default.string().required(),
         end_time: joi_1.default.string().required(),
+        is_available: joi_1.default.number().required()
     })).required(),
     type: joi_1.default.number().required(),
     day: joi_1.default.number().optional(),
     custom_date: joi_1.default.string().optional(),
     custom_dates: joi_1.default.array().optional(),
+    session_duration: joi_1.default.number().required(),
+    time_capture_type: joi_1.default.number().valid(1, 2, 3).required()
 });
 exports.getSlots = joi_1.default.object({
     filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),

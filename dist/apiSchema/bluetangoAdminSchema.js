@@ -203,7 +203,7 @@ exports.deleteRole = joi_1.default.object({
 });
 exports.updateAdminAndRole = joi_1.default.object({
     admins: joi_1.default.array().items({
-        id: joi_1.default.number().required(),
+        id: joi_1.default.number(),
         email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
         name: joi_1.default.string().required(),
     }),

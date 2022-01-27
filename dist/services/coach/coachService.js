@@ -40,17 +40,43 @@ const employeeRanks_1 = require("../../models/employeeRanks");
 const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
+const appUtils = __importStar(require("../../utils/appUtils"));
 class CoachService {
     constructor() { }
     addSlot(params, user) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("add slot params1", params);
             if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
                 throw new Error(constants.MESSAGES.coach_schedule_day_required);
             if (params.type == constants.COACH_SCHEDULE_TYPE.custom && ((_a = params.custom_dates) === null || _a === void 0 ? void 0 : _a.length) == 0)
                 throw new Error(constants.MESSAGES.coach_schedule_custom_dates_required);
             let dates = [];
+            //// new automatically created slots
+            let Slots;
+            let validslots = [];
+            Slots = yield appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration);
+            for (let i = 0; i < Slots.length; i++) {
+                if (Slots[i + 1]) {
+                    validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] });
+                }
+            }
+            switch (parseInt(params.time_capture_type)) {
+                case constants.TIME_CAPTURE_TYPE.available: {
+                    let validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
+                    return validslotss;
+                    break;
+                }
+                case constants.TIME_CAPTURE_TYPE.unavailable: {
+                    let validslotss = yield appUtils.validateUnavailableTime(params.timings, validslots, params.time_capture_type);
+                    return validslotss;
+                    break;
+                }
+                case constants.TIME_CAPTURE_TYPE.previewed: {
+                    validslots = params.timings;
+                    break;
+                }
+            }
+            ///////
             switch (parseInt(params.type)) {
                 case constants.COACH_SCHEDULE_TYPE.does_not_repeat:
                     dates.push(params.date);
@@ -107,29 +133,32 @@ class CoachService {
             }
             let schedules = [];
             let slot_time_group_id = yield helperFunction.getUniqueSlotTimeGroupId();
-            let slots = params.slots;
+            let slots = validslots;
+            params.slots = validslots;
             slots.forEach((slot) => {
                 Object.keys(slot).forEach((key) => {
                     slot[key] = slot[key].replace(/:/g, "");
                 });
             });
-            slots.forEach((slot1, index1) => {
-                if (!(slot1.start_time < slot1.end_time)) {
-                    throw new Error(constants.MESSAGES.coach_schedule_start_greater_or_equal_end);
-                }
-                Object.keys(slot1).forEach((key) => {
-                    slots.forEach((slot2, index2) => {
-                        if (slot1[key] >= slot2.start_time && slot1[key] <= slot2.end_time && index1 != index2) {
-                            throw new Error(constants.MESSAGES.coach_schedule_overlaped);
-                        }
-                    });
-                });
-            });
+            // slots.forEach((slot1, index1) => {
+            //     if (!(slot1.start_time < slot1.end_time)) {
+            //         throw new Error(constants.MESSAGES.coach_schedule_start_greater_or_equal_end)
+            //     }
+            //     Object.keys(slot1).forEach((key) => {
+            //         slots.forEach((slot2, index2) => {
+            //             console.log(slot1[key],slot2.start_time,slot1[key],slot2.end_time,index1,index2)
+            //             if (slot1[key] >= slot2.start_time && slot1[key] <= slot2.end_time && index1 != index2) {
+            //                 throw new Error(constants.MESSAGES.coach_schedule_overlaped)
+            //             }
+            //         })
+            //     })
+            // })
             slots.forEach((slot) => {
                 Object.keys(slot).forEach((key) => {
                     slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss");
                 });
             });
+            console.log("llllllllllllllll", params.slots);
             for (let slot of params.slots) {
                 let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
                     where: {

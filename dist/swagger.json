@@ -2592,6 +2592,16 @@
                         ]
                     },
                     {
+                        "name": "employer_ids",
+                        "in": "query",
+                        "description": "employer_ids",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
+                    },
+                    {
                         "name": "offset",
                         "in": "query",
                         "description": "page",
@@ -7144,6 +7154,13 @@
                         "description": "device_token",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "app_id",
+                        "in": "formData",
+                        "description": "app_id",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}
@@ -7175,6 +7192,13 @@
                         "enum": [
                             5
                         ]
+                    },
+                    {
+                        "name": "app_id",
+                        "in": "formData",
+                        "description": "app_id",
+                        "required": false,
+                        "type": "number"
                     }
                 ],
                 "responses": {}
@@ -7495,7 +7519,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tdate\n\tstart_time\n\tend_time\n\ttype",
+                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n7.time_capture_type:1=>available, 2=>unavailable, 3=>previewed slots",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -7503,7 +7527,22 @@
                                 "date": {
                                     "type": "string"
                                 },
-                                "slots": {
+                                "type": {
+                                    "type": "number"
+                                },
+                                "session_duration": {
+                                    "type": "number"
+                                },
+                                "time_capture_type": {
+                                    "type": "number"
+                                },
+                                "day": {
+                                    "type": "number"
+                                },
+                                "custom_date": {
+                                    "type": "string"
+                                },
+                                "timings": {
                                     "type": "array",
                                     "items": {
                                         "type": "object",
@@ -7516,15 +7555,6 @@
                                             }
                                         }
                                     }
-                                },
-                                "type": {
-                                    "type": "number"
-                                },
-                                "day": {
-                                    "type": "number"
-                                },
-                                "custom_date": {
-                                    "type": "string"
                                 },
                                 "custom_dates": {
                                     "type": "array",
@@ -10019,6 +10049,69 @@
                         "in": "query",
                         "description": "enter the search key",
                         "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "page",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "page size",
+                        "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/getStaticContent": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "get Static Content",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "contentType",
+                        "in": "query",
+                        "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/getBios": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "description": "get bluetango coach bios",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
                         "type": "string"
                     },
                     {

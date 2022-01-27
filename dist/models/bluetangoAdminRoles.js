@@ -24,6 +24,10 @@ exports.bluetangoAdminRolesModel = connection_1.sequelize.define("bluetango_admi
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
         allowNull: true,
     },
+    last_activity: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
+    },
 }, {
     tableName: "bluetango_admin_roles"
 });

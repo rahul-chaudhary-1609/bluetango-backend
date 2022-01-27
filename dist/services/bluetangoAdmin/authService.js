@@ -50,17 +50,27 @@ class AuthService {
     login(params) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            let query = {
-                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url'],
-                where: {
-                    email: params.email,
-                    status: {
-                        [Op.ne]: constants.STATUS.deleted
-                    }
+            // bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
+            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
+            params.email = params.email.toLowerCase();
+            let where = {
+                email: params.email,
+                status: {
+                    [Op.ne]: constants.STATUS.deleted
                 }
             };
-            query.raw = true;
-            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, {
+                where: where,
+                include: [
+                    {
+                        model: models_1.bluetangoAdminRolesModel,
+                        required: true,
+                        attributes: [],
+                    }
+                ],
+                // attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
+                attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions']],
+            });
             if (admin) {
                 let comparePassword = yield appUtils.comparePassword(params.password, admin.password);
                 if (comparePassword) {
@@ -93,6 +103,7 @@ class AuthService {
             if (role) {
                 throw new Error(constants.MESSAGES.role_already_exist);
             }
+            Params.last_activity = new Date();
             let newRole = yield queryService.addData(models_1.bluetangoAdminRolesModel, Params);
             let AlreadyExistAdmins = [];
             let created = [];
@@ -339,42 +350,99 @@ class AuthService {
                 if (role) {
                     throw new Error(constants.MESSAGES.role_already_exist);
                 }
-                yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, role_name: Params.role_name }, { where: { id: Params.id } });
+                yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, last_activity: new Date(), role_name: Params.role_name }, { where: { id: Params.id } });
             }
             if (Params.module_wise_permissions) {
-                yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } });
+                yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, last_activity: new Date(), module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } });
             }
             let AlreadyExistAdmins = [];
             let updated = [];
-            for (let params of Params.admins) {
-                params.email = params.email.toLowerCase();
-                let query = {
-                    where: {
-                        email: params.email,
-                        status: {
-                            [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+            if (Params.admins) {
+                yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, last_activity: new Date() }, { where: { id: Params.id } });
+                for (let params of Params.admins) {
+                    params.email = params.email.toLowerCase();
+                    let query = {
+                        where: {
+                            email: params.email,
+                            status: {
+                                [Op.in]: [constants.STATUS.active, constants.STATUS.inactive]
+                            }
+                        }
+                    };
+                    let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+                    if (admin) {
+                        if (params.id && params.id == admin.id) {
+                            yield queryService.updateData({ model: models_1.bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } });
+                            updated.push(params);
+                        }
+                        else {
+                            AlreadyExistAdmins.push(params);
+                            break;
                         }
                     }
-                };
-                let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
-                if (!admin) {
-                    yield queryService.updateData({ model: models_1.bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } });
-                    // const mailParams = <any>{};
-                    // mailParams.to = params.email;
-                    // mailParams.html = `Hi  ${params.name}
-                    // <br>Your credential has been updated
+                    else {
+                        if (params.id) {
+                            yield queryService.updateData({ model: models_1.bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } });
+                            updated.push(params);
+                        }
+                        else {
+                            updated.push(params);
+                            params.role_id = Params.id;
+                            let password = yield helperFunction.generaePassword();
+                            params.admin_role = constants.USER_ROLE.sub_admin;
+                            params.password = yield appUtils.bcryptPassword(password);
+                            let newAdmin = yield queryService.addData(models_1.bluetangoAdminModel, params);
+                            newAdmin = newAdmin.get({ plain: true });
+                            let token = yield tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                            newAdmin.token = token;
+                            delete newAdmin.password;
+                            delete newAdmin.reset_pass_otp;
+                            delete newAdmin.reset_pass_expiry;
+                            const mailParams = {};
+                            mailParams.to = params.email;
+                            mailParams.html = `Hi  ${params.name}
+                <br>Use the given credentials for login into the admin pannel :
+                
+                <br><b> Web URL</b>: ${process.env.BLUETANGO_WEB_URL} <br>
+                <br> email : ${params.email}
+                <br> password : ${password}
+                `;
+                            mailParams.subject = "Subadmin Login Credentials";
+                            mailParams.name = "BlueTango";
+                            yield helperFunction.sendEmail(mailParams);
+                        }
+                    }
+                    // if (!admin) {
+                    //     if (params.id) {
+                    //         await queryService.updateData({ model: bluetangoAdminModel, name: params.name, email: params.email }, { where: { id: params.id } })
+                    //     } else {
+                    //         params.role_id = Params.id
+                    //         let password = await helperFunction.generaePassword();
+                    //         params.admin_role = constants.USER_ROLE.sub_admin;
+                    //         params.password = await appUtils.bcryptPassword(password);
+                    //         let newAdmin = await queryService.addData(bluetangoAdminModel, params);
+                    //         newAdmin = newAdmin.get({ plain: true });
+                    //         let token = await tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                    //         newAdmin.token = token;
+                    //         delete newAdmin.password;
+                    //         delete newAdmin.reset_pass_otp;
+                    //         delete newAdmin.reset_pass_expiry;
+                    //         const mailParams = <any>{};
+                    //         mailParams.to = params.email;
+                    //         mailParams.html = `Hi  ${params.name}
                     // <br>Use the given credentials for login into the admin pannel :
                     // <br><b> Web URL</b>: ${process.env.BLUETANGO_WEB_URL} <br>
                     // <br> email : ${params.email}
-                    // <br> password : "Use exisiting password"
+                    // <br> password : ${password}
                     // `;
-                    // mailParams.subject = "Subadmin Login Credentials";
-                    // mailParams.name = "BlueTango"
-                    // await helperFunction.sendEmail(mailParams);
-                    updated.push(params);
-                }
-                else {
-                    AlreadyExistAdmins.push(params);
+                    //         mailParams.subject = "Subadmin Login Credentials";
+                    //         mailParams.name = "BlueTango"
+                    //         await helperFunction.sendEmail(mailParams);
+                    //     }
+                    //     updated.push(params)
+                    // } else {
+                    //     AlreadyExistAdmins.push(params)
+                    // }
                 }
             }
             return { updated_admins: updated, Already_exist_admins: AlreadyExistAdmins };
@@ -386,7 +454,7 @@ class AuthService {
    */
     updateAdminAndRoleStatus(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, status: params.status }, { where: { id: params.id } });
+            yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, last_activity: new Date(), status: params.status }, { where: { id: params.id } });
             return yield queryService.updateData({ model: models_1.bluetangoAdminModel, status: params.status }, { where: { id: params.id } });
         });
     }
@@ -442,7 +510,7 @@ class AuthService {
                     }
                 ],
                 distinct: true,
-                attributes: ["id", "role_name", "status", "module_wise_permissions"],
+                attributes: ["id", "role_name", "status", "module_wise_permissions", "last_activity"],
                 order: [
                     ['role_name', 'ASC'],
                 ],
