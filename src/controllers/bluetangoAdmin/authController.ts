@@ -133,7 +133,7 @@ export class AuthController {
     */
     public async deleteAdmin(req: any, res: any) {
         try {
-            const responseFromService = await authService.deleteAdmin(req.params);
+            const responseFromService = await authService.deleteAdmin(req.params, req.user);
             const msg = constants.MESSAGES.admin_deleted;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
@@ -163,7 +163,7 @@ export class AuthController {
     */
     public async deleteRole(req: any, res: any) {
         try {
-            const responseFromService = await authService.deleteRole(req.params);
+            const responseFromService = await authService.deleteRole(req.params, req.user);
             const msg = constants.MESSAGES.role_deleted;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {
