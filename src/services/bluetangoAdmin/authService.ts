@@ -280,7 +280,10 @@ export class AuthService {
             throw new Error(error);
         }
     }
-    public async deleteAdmin(params: any) {
+    public async deleteAdmin(params: any, user: any) {
+        if (user.uid == params.admin_id) {
+            throw new Error(constants.MESSAGES.admin_him_self_delete);
+        }
         let query: any = {
             where: {
                 id: params.admin_id
@@ -305,7 +308,16 @@ export class AuthService {
         })
         return roleDetails;
     }
-    public async deleteRole(params: any) {
+    public async deleteRole(params: any, user: any) {
+        let Query: any = {
+            where: {
+                id: user.uid
+            }
+        };
+        let admin: any = await queryService.selectOne(bluetangoAdminModel, Query);
+        if (admin && admin.role_id == params.role_id) {
+            throw new Error(constants.MESSAGES.admin_role_delete);
+        }
         let query: any = {
             where: {
                 id: params.role_id
@@ -469,13 +481,23 @@ export class AuthService {
         if (params.status) {
             Where["status"] = params.status
         }
+        if (params.module) {
+            Where["module_wise_permissions"]={
+                    $contains:[{module: params.module}]
+                }
+        }
         let roles = await queryService.selectAndCountAll(bluetangoAdminRolesModel, {
             where: Where,
             include: [
                 {
                     model: bluetangoAdminModel,
                     required: true,
-                    attributes: ["id", "name", "email","admin_role"],
+                    attributes: ["id", "name", "email", "admin_role"],
+                    where: {
+                        admin_role: {
+                            [Op.ne]: constants.USER_ROLE.super_admin.toString()
+                        }
+                    }
                 }
             ],
             distinct: true,

@@ -10045,6 +10045,16 @@
             ]
           },
           {
+            "name": "module",
+            "in": "query",
+            "description": "'Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Dashboard", "Coach Administration", "Administration Management", "Static Content", "Session Content"
+            ]
+          },
+          {
             "name": "searchKey",
             "in": "query",
             "description": "enter the search key",

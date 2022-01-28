@@ -210,4 +210,6 @@ export const getrolesAndAdmins=Joi.object({
   searchKey: Joi.string().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
+  module: Joi.string().optional().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'),
+
 })
