@@ -220,5 +220,6 @@ exports.getrolesAndAdmins = joi_1.default.object({
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
+    module: joi_1.default.string().optional().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'),
 });
 //# sourceMappingURL=bluetangoAdminSchema.js.map

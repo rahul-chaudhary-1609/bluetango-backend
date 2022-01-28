@@ -300,8 +300,11 @@ class AuthService {
             }
         });
     }
-    deleteAdmin(params) {
+    deleteAdmin(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (user.uid == params.admin_id) {
+                throw new Error(constants.MESSAGES.admin_him_self_delete);
+            }
             let query = {
                 where: {
                     id: params.admin_id
@@ -329,8 +332,17 @@ class AuthService {
             return roleDetails;
         });
     }
-    deleteRole(params) {
+    deleteRole(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let Query = {
+                where: {
+                    id: user.uid
+                }
+            };
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, Query);
+            if (admin && admin.role_id == params.role_id) {
+                throw new Error(constants.MESSAGES.admin_role_delete);
+            }
             let query = {
                 where: {
                     id: params.role_id
@@ -501,6 +513,11 @@ class AuthService {
             if (params.status) {
                 Where["status"] = params.status;
             }
+            if (params.module) {
+                Where["module_wise_permissions"] = {
+                    $contains: [{ module: params.module }]
+                };
+            }
             let roles = yield queryService.selectAndCountAll(models_1.bluetangoAdminRolesModel, {
                 where: Where,
                 include: [
@@ -508,6 +525,11 @@ class AuthService {
                         model: models_1.bluetangoAdminModel,
                         required: true,
                         attributes: ["id", "name", "email", "admin_role"],
+                        where: {
+                            admin_role: {
+                                [Op.ne]: constants.USER_ROLE.super_admin.toString()
+                            }
+                        }
                     }
                 ],
                 distinct: true,
