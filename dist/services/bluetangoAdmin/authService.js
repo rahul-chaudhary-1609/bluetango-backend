@@ -513,11 +513,6 @@ class AuthService {
             if (params.status) {
                 Where["status"] = params.status;
             }
-            if (params.module) {
-                Where["module_wise_permissions"] = {
-                    $contains: [{ module: params.module }]
-                };
-            }
             let roles = yield queryService.selectAndCountAll(models_1.bluetangoAdminRolesModel, {
                 where: Where,
                 include: [
@@ -537,9 +532,18 @@ class AuthService {
                 order: [
                     ['role_name', 'ASC'],
                 ],
-                limit: limit,
-                offset: offset
             }, {});
+            if (params.module) {
+                roles.rows = roles.rows.map((elem) => {
+                    if (elem.module_wise_permissions.some(e => e.module === params.module))
+                        return elem;
+                });
+                roles.rows = roles.rows.filter(function (el) {
+                    return el != null;
+                });
+            }
+            roles.count = roles.rows.length;
+            roles.rows = roles.rows.slice(offset, offset + limit);
             return roles;
         });
     }
