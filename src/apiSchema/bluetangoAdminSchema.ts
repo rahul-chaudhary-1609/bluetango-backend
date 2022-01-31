@@ -46,13 +46,15 @@ export const addBios = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().required(),
   coach_id: Joi.number().required(),
-  image: Joi.string().required()
+  image: Joi.string().required(),
+  fileName:Joi.string()
 });
 export const updateBios = Joi.object({
   id: Joi.number().required(),
   name: Joi.string(),
   description: Joi.string(),
-  image: Joi.string()
+  image: Joi.string(),
+  fileName:Joi.string()
 });
 
 export const updateProfile = Joi.object({

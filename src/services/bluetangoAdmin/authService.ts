@@ -122,16 +122,20 @@ export class AuthService {
     }
 
     public async getProfile(user: any) {
-        let query: any = {
-            attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt', 'role_id'],
+        bluetangoAdminModel.hasOne(bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
+        let admin = await queryService.selectOne(bluetangoAdminModel, {
             where: {
                 id: user.uid,
-            }
-        }
-
-        let admin: any = await queryService.selectOne(bluetangoAdminModel, query);
-
-
+            },
+            include: [
+                {
+                    model: bluetangoAdminRolesModel,
+                    required: true,
+                    attributes: []
+                }
+            ],
+            attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt', 'role_id', [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions'],[Sequelize.col('bluetango_admin_role.role_name'), 'role_name']],
+        })
         return admin;
     }
 
