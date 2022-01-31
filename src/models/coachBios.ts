@@ -28,10 +28,14 @@ export const coachBiosModel: any = sequelize.define("coach_bios", {
     image: {
         type: DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    fileName: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
 },
     {
         tableName: "coach_bios"
     }
 );
-coachBiosModel.sync({ alter: false });
+coachBiosModel.sync({ alter: true });
