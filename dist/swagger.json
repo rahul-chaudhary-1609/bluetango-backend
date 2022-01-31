@@ -9438,6 +9438,13 @@
                         "description": "image",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "fileName",
+                        "in": "formData",
+                        "description": "file name",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -9485,6 +9492,13 @@
                         "name": "image",
                         "in": "formData",
                         "description": "image",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileName",
+                        "in": "formData",
+                        "description": "file name",
                         "required": false,
                         "type": "string"
                     }

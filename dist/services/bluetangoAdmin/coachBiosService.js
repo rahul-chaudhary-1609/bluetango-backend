@@ -114,7 +114,9 @@ class BiosService {
     getBios(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let bios = yield queryService.selectAndCountAll(models_1.coachBiosModel, {}, {});
+            let bios = yield queryService.selectAndCountAll(models_1.coachBiosModel, { order: [
+                    ['id', 'ASC'],
+                ], }, {});
             bios.rows = bios.rows.slice(offset, offset + limit);
             return bios;
         });

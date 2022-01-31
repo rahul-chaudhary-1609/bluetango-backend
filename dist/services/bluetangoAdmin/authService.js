@@ -154,13 +154,20 @@ class AuthService {
     }
     getProfile(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = {
-                attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt', 'role_id'],
+            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, {
                 where: {
                     id: user.uid,
-                }
-            };
-            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+                },
+                include: [
+                    {
+                        model: models_1.bluetangoAdminRolesModel,
+                        required: true,
+                        attributes: []
+                    }
+                ],
+                attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt', 'role_id', [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions'], [Sequelize.col('bluetango_admin_role.role_name'), 'role_name']],
+            });
             return admin;
         });
     }

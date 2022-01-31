@@ -69,13 +69,15 @@ exports.addBios = joi_1.default.object({
     name: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
     coach_id: joi_1.default.number().required(),
-    image: joi_1.default.string().required()
+    image: joi_1.default.string().required(),
+    fileName: joi_1.default.string()
 });
 exports.updateBios = joi_1.default.object({
     id: joi_1.default.number().required(),
     name: joi_1.default.string(),
     description: joi_1.default.string(),
-    image: joi_1.default.string()
+    image: joi_1.default.string(),
+    fileName: joi_1.default.string()
 });
 exports.updateProfile = joi_1.default.object({
     name: joi_1.default.string().required(),
