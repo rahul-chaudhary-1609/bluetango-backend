@@ -449,8 +449,8 @@ export class AuthService {
         let where: any = {}
         let Where: any = {}
         let role_ids;
-        let AdminData = await this.getProfile({ uid: user.uid })
-        Where["id"] = { [Op.ne]: AdminData.role_id }
+        // let AdminData = await this.getProfile({ uid: user.uid })
+        // Where["id"] = { [Op.ne]: AdminData.role_id }
         if (params.searchKey && params.searchKey.trim()) {
             where = {
                 [Op.or]: [
@@ -478,10 +478,10 @@ export class AuthService {
                 attributes: ["role_id"]
             }, {}))].map(rolId => rolId.role_id);
             role_ids = [...new Set(role_ids.concat(roleId2))]
-            const index = role_ids.indexOf(AdminData.role_id);
-            if (index > -1) {
-                role_ids.splice(index, 1);
-            }
+            // const index = role_ids.indexOf(AdminData.role_id);
+            // if (index > -1) {
+            //     role_ids.splice(index, 1);
+            // }
             Where["id"] = role_ids
         }
         if (params.status) {
