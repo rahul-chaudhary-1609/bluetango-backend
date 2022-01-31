@@ -85,9 +85,9 @@ bluetangoAdminRoute.post("/sendChatNotification", tokenValidator.validateBluetan
 
 
 /*  add Bios */
-bluetangoAdminRoute.post("/addBios", upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
+bluetangoAdminRoute.post("/addBios", joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
 /* update Bios */
-bluetangoAdminRoute.put("/updateBios", upload.single('image'), joiSchemaValidation.validateBody(adminSchema.updateBios), tokenValidator.validateBluetangoAdminToken, biosController.updateBios);
+bluetangoAdminRoute.put("/updateBios", joiSchemaValidation.validateBody(adminSchema.updateBios), tokenValidator.validateBluetangoAdminToken, biosController.updateBios);
 /* delete Bios */
 bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
 /* get Bios */
@@ -116,5 +116,7 @@ bluetangoAdminRoute.put("/updateAdminAndRole", tokenValidator.validateBluetangoA
 bluetangoAdminRoute.put("/updateAdminAndRoleStatus", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRoleStatus), authController.updateAdminAndRoleStatus);
 /* get roles And Admins */
 bluetangoAdminRoute.get("/getrolesAndAdmins", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.getrolesAndAdmins), authController.getrolesAndAdmins);
+/* get Bio detail */
+bluetangoAdminRoute.get("/getBiosDetails", tokenValidator.validateBluetangoAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachBiosDetails), biosController.getBiosDetails);
 
 export = bluetangoAdminRoute;

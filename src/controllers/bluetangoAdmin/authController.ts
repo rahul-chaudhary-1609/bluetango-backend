@@ -211,7 +211,7 @@ export class AuthController {
     */
       public async getrolesAndAdmins(req: any, res: any) {
         try {
-            const responseFromService = await authService.getrolesAndAdmins(req.query);
+            const responseFromService = await authService.getrolesAndAdmins(req.query,req.user);
             const msg = constants.MESSAGES.role_fetched;
             appUtils.successResponse(res, responseFromService, msg);
         } catch (error) {

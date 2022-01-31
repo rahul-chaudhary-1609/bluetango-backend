@@ -45,13 +45,14 @@ export const resetPassword = Joi.object({
 export const addBios = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().required(),
-  coach_id: Joi.number().required()
+  coach_id: Joi.number().required(),
+  image: Joi.string().required()
 });
 export const updateBios = Joi.object({
   id: Joi.number().required(),
-  admin_id: Joi.number().required(),
   name: Joi.string(),
-  description: Joi.string()
+  description: Joi.string(),
+  image: Joi.string()
 });
 
 export const updateProfile = Joi.object({
@@ -212,4 +213,7 @@ export const getrolesAndAdmins=Joi.object({
   offset: Joi.number().optional(),
   module: Joi.string().optional().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'),
 
+})
+export const getCoachBiosDetails = Joi.object({
+  id: Joi.number().required()
 })
