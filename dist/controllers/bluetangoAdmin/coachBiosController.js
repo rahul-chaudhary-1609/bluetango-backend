@@ -44,7 +44,7 @@ class BiosController {
     addBios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield biosService.addBios(req.body, req.file, req.user);
+                const responseFromService = yield biosService.addBios(req.body, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosAdded);
             }
             catch (error) {
@@ -60,7 +60,7 @@ class BiosController {
     updateBios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield biosService.updateBios(req.body, req.file, req.user);
+                const responseFromService = yield biosService.updateBios(req.body, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosUpdated);
             }
             catch (error) {
@@ -94,6 +94,22 @@ class BiosController {
             try {
                 const responseFromService = yield biosService.getBios(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * get coach bio details
+    * @param req :
+    * @param res
+    */
+    getBiosDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield biosService.getBiosDetails(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.coach_bios_detail);
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);

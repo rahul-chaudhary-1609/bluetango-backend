@@ -46,7 +46,7 @@ class BiosService {
        * add Bios
        * @param : token
        */
-    addBios(params, file, user) {
+    addBios(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let qry = { where: {} };
             qry.where = {
@@ -55,10 +55,6 @@ class BiosService {
             qry.raw = true;
             let existingBios = yield queryService.selectOne(models_1.coachBiosModel, qry);
             if (lodash_1.default.isEmpty(existingBios)) {
-                if (file) {
-                    let profilePic = yield helperFunction.uploadFile(file, "bios_profile_pic");
-                    params.image = profilePic;
-                }
                 params.admin_id = user.uid;
                 let bios = yield queryService.addData(models_1.coachBiosModel, params);
                 return bios;
@@ -72,7 +68,7 @@ class BiosService {
       * update Bios
       * @param : token
       */
-    updateBios(params, file, user) {
+    updateBios(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let qry = { where: {} };
             qry.where = {
@@ -81,15 +77,6 @@ class BiosService {
             qry.raw = true;
             let existingBios = yield queryService.selectOne(models_1.coachBiosModel, qry);
             if (!lodash_1.default.isEmpty(existingBios)) {
-                if (file) {
-                    let profilePic = yield helperFunction.uploadFile(file, "bios_profile_pic");
-                    params.image = profilePic;
-                    let fileName = path_1.default.parse(existingBios.image).base;
-                    const Params = {
-                        Key: "bios_profile_pic/" + fileName
-                    };
-                    yield helperFunction.deleteFile(Params);
-                }
                 params.admin_id = user.uid;
                 let bios = yield models_1.coachBiosModel.update(params, { returning: true, where: { id: params.id } });
                 return bios;
@@ -129,6 +116,21 @@ class BiosService {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let bios = yield queryService.selectAndCountAll(models_1.coachBiosModel, {}, {});
             bios.rows = bios.rows.slice(offset, offset + limit);
+            return bios;
+        });
+    }
+    /*
+         * get Bio details
+         * @param : token
+         */
+    getBiosDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                where: {
+                    id: params.id
+                }
+            };
+            let bios = yield queryService.selectOne(models_1.coachBiosModel, query);
             return bios;
         });
     }

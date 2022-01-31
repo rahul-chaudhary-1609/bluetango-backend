@@ -80,9 +80,9 @@ bluetangoAdminRoute.get("/getChatList", tokenValidator.validateBluetangoAdminTok
 /* send video/audio chat notification*/
 bluetangoAdminRoute.post("/sendChatNotification", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.sendChatNotification), chatController.sendChatNotification);
 /*  add Bios */
-bluetangoAdminRoute.post("/addBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
+bluetangoAdminRoute.post("/addBios", joiSchemaValidation.validateBody(adminSchema.addBios), tokenValidator.validateBluetangoAdminToken, biosController.addBios);
 /* update Bios */
-bluetangoAdminRoute.put("/updateBios", multerParser_1.upload.single('image'), joiSchemaValidation.validateBody(adminSchema.updateBios), tokenValidator.validateBluetangoAdminToken, biosController.updateBios);
+bluetangoAdminRoute.put("/updateBios", joiSchemaValidation.validateBody(adminSchema.updateBios), tokenValidator.validateBluetangoAdminToken, biosController.updateBios);
 /* delete Bios */
 bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
 /* get Bios */
@@ -111,5 +111,7 @@ bluetangoAdminRoute.put("/updateAdminAndRole", tokenValidator.validateBluetangoA
 bluetangoAdminRoute.put("/updateAdminAndRoleStatus", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.updateAdminAndRoleStatus), authController.updateAdminAndRoleStatus);
 /* get roles And Admins */
 bluetangoAdminRoute.get("/getrolesAndAdmins", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateBody(adminSchema.getrolesAndAdmins), authController.getrolesAndAdmins);
+/* get Bio detail */
+bluetangoAdminRoute.get("/getBiosDetails", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getCoachBiosDetails), biosController.getBiosDetails);
 module.exports = bluetangoAdminRoute;
 //# sourceMappingURL=bluetangoAdminRoute.js.map

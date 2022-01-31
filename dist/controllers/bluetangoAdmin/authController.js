@@ -271,7 +271,7 @@ class AuthController {
     getrolesAndAdmins(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield authService.getrolesAndAdmins(req.query);
+                const responseFromService = yield authService.getrolesAndAdmins(req.query, req.user);
                 const msg = constants.MESSAGES.role_fetched;
                 appUtils.successResponse(res, responseFromService, msg);
             }

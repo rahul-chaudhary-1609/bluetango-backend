@@ -223,7 +223,8 @@ exports.MESSAGES = {
     select_appId: "Select BluXinga or BlueTango for login",
     only_employee_or_BT_Admin_chat: "You can initiate chat either with employee or with a admin",
     admin_him_self_delete: "Admin will not remove himself",
-    admin_role_delete: "Admin cannot delete his own role"
+    admin_role_delete: "Admin cannot delete his own role",
+    coach_bios_detail: "Coach Bio details fetched successfully",
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
