@@ -9437,7 +9437,7 @@
             "in": "formData",
             "description": "image",
             "required": true,
-            "type": "file"
+            "type": "string"
           }
         ],
         "responses": {}
@@ -9463,14 +9463,7 @@
           {
             "name": "id",
             "in": "formData",
-            "description": "id",
-            "required": true,
-            "type": "number"
-          },
-          {
-            "name": "admin_id",
-            "in": "formData",
-            "description": "admin_id",
+            "description": "bio id",
             "required": true,
             "type": "number"
           },
@@ -9493,7 +9486,7 @@
             "in": "formData",
             "description": "image",
             "required": false,
-            "type": "file"
+            "type": "string"
           }
         ],
         "responses": {}
@@ -10176,6 +10169,34 @@
               0,
               1
             ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getBiosDetails": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get bio details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "bios id",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}

@@ -13,7 +13,7 @@ export class BiosService {
        * add Bios
        * @param : token
        */
-    public async addBios(params: any, file: any, user: any) {
+    public async addBios(params: any, user: any) {
         let qry = <any>{ where: {} };
         qry.where = {
             coach_id: params.coach_id,
@@ -21,10 +21,6 @@ export class BiosService {
         qry.raw = true;
         let existingBios = await queryService.selectOne(coachBiosModel, qry)
         if (_.isEmpty(existingBios)) {
-            if (file) {
-                let profilePic = await helperFunction.uploadFile(file, "bios_profile_pic");
-                params.image = profilePic;
-            }
             params.admin_id = user.uid;
             let bios = await queryService.addData(coachBiosModel, params)
             return bios;
@@ -36,7 +32,7 @@ export class BiosService {
       * update Bios
       * @param : token
       */
-    public async updateBios(params: any, file: any, user: any) {
+    public async updateBios(params: any, user: any) {
         let qry = <any>{ where: {} };
         qry.where = {
             id: params.id,
@@ -44,15 +40,6 @@ export class BiosService {
         qry.raw = true;
         let existingBios = await queryService.selectOne(coachBiosModel, qry)
         if (!_.isEmpty(existingBios)) {
-            if (file) {
-                let profilePic = await helperFunction.uploadFile(file, "bios_profile_pic");
-                params.image = profilePic;
-                let fileName = path.parse(existingBios.image).base;
-                const Params = {
-                    Key: "bios_profile_pic/" + fileName
-                };
-                await helperFunction.deleteFile(Params)
-            }
             params.admin_id = user.uid;
             let bios = await coachBiosModel.update(
                 params,
@@ -92,5 +79,18 @@ export class BiosService {
         return bios
 
 
+    }
+    /*
+         * get Bio details
+         * @param : token
+         */
+    public async getBiosDetails(params: any) {
+        let query: any = {
+            where: {
+                id: params.id
+            }
+        }
+        let bios = await queryService.selectOne(coachBiosModel, query)
+        return bios;
     }
 }

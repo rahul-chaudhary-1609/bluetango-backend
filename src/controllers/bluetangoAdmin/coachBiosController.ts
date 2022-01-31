@@ -17,7 +17,7 @@ export class BiosController {
       */
     public async addBios(req: any, res: any) {
         try {
-            const responseFromService = await biosService.addBios(req.body, req.file, req.user);
+            const responseFromService = await biosService.addBios(req.body, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosAdded);
 
         } catch (error) {
@@ -31,7 +31,7 @@ export class BiosController {
       */
     public async updateBios(req: any, res: any) {
         try {
-            const responseFromService = await biosService.updateBios(req.body, req.file, req.user);
+            const responseFromService = await biosService.updateBios(req.body, req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.biosUpdated);
 
         } catch (error) {
@@ -61,6 +61,20 @@ export class BiosController {
         try {
             const responseFromService = await biosService.getBios(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+     /**
+     * get coach bio details
+     * @param req :
+     * @param res 
+     */
+      public async getBiosDetails(req: any, res: any) {
+        try {
+            const responseFromService = await biosService.getBiosDetails(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.coach_bios_detail);
 
         } catch (error) {
             appUtils.errorResponse(res, error, constants.code.error_code);
