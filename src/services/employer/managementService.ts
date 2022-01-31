@@ -445,7 +445,8 @@ export class EmployeeManagement {
             await employeeRanksModel.findAndCountAll({
                 where:{
                     status:constants.STATUS.active,
-                }
+                },
+                order:[["name","ASC"]]
             })
         )
 
