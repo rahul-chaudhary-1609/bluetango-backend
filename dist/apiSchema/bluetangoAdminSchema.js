@@ -229,7 +229,7 @@ exports.getCoachBiosDetails = joi_1.default.object({
     id: joi_1.default.number().required()
 });
 exports.getBios = joi_1.default.object({
-    searchKey: joi_1.default.string().allow(null, '').required(),
+    searchKey: joi_1.default.string().allow(null, '').optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
 });

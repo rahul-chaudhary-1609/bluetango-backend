@@ -221,7 +221,7 @@ export const getCoachBiosDetails = Joi.object({
 })
 
 export const getBios = Joi.object({
-  searchKey: Joi.string().allow(null,'').required(),
+  searchKey: Joi.string().allow(null,'').optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
 })

@@ -9419,13 +9419,6 @@
             "type": "number"
           },
           {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "description",
             "in": "formData",
             "description": "description",
@@ -9473,13 +9466,6 @@
             "description": "bio id",
             "required": true,
             "type": "number"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
-            "required": false,
-            "type": "string"
           },
           {
             "name": "description",
