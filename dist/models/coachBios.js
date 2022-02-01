@@ -18,10 +18,10 @@ exports.coachBiosModel = connection_1.sequelize.define("coach_bios", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    name: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-    },
+    // name: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true,
+    // },
     description: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,

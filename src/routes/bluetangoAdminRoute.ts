@@ -91,7 +91,7 @@ bluetangoAdminRoute.put("/updateBios", joiSchemaValidation.validateBody(adminSch
 /* delete Bios */
 bluetangoAdminRoute.delete("/deleteBios/:id", tokenValidator.validateBluetangoAdminToken, biosController.deleteBios);
 /* get Bios */
-bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, biosController.getBios);
+bluetangoAdminRoute.get("/getBios", tokenValidator.validateBluetangoAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getBios), biosController.getBios);
 /* add static content */
 bluetangoAdminRoute.put("/addStaticContent", joiSchemaValidation.validateBody(adminSchema.updateStaticContent), tokenValidator.validateBluetangoAdminToken, staticContentController.addStaticContent);
 /* get static content */

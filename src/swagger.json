@@ -9552,6 +9552,13 @@
             "type": "string"
           },
           {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search key",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",

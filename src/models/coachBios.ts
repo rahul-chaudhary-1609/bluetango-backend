@@ -17,10 +17,10 @@ export const coachBiosModel: any = sequelize.define("coach_bios", {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
+    // name: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true,
+    // },
     description: {
         type: DataTypes.TEXT,
         allowNull: true,

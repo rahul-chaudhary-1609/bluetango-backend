@@ -1,4 +1,4 @@
-import { coachBiosModel } from "../../models";
+import { coachBiosModel,coachManagementModel } from "../../models";
 import _ from "lodash";
 import * as helperFunction from "../../utils/helperFunction";
 import * as constants from "../../constants";
@@ -74,12 +74,35 @@ export class BiosService {
           */
     public async getBios(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let bios = await queryService.selectAndCountAll(coachBiosModel, {order: [
-            ['id', 'ASC'],
-        ],}, {})
-        bios.rows = bios.rows.slice(offset, offset + limit);
-        return bios
+        coachBiosModel.belongsTo(coachManagementModel,{foreignKey:"coach_id"});
+        let query=<any>{
+            include:[
+                {
+                    model:coachManagementModel,
+                    attributes:['id','name'],
+                    required:true,
+                }
+            ],
+            offset,
+            limit
+        }
+        
+        if(params.searchKey && params.searchKey.trim()){
+            query.include[0].where={
+                name:{
+                    [Op.iLike]:`%${params.searchKey.trim()}%`
+                }
+            }
+        }
+        // let bios = await queryService.selectAndCountAll(coachBiosModel, {order: [
+        //     ['id', 'ASC'],
+        // ],}, {})
+        // bios.rows = bios.rows.slice(offset, offset + limit);
+        // return bios
 
+        let bios=await queryService.selectAndCountAll(coachBiosModel,query);
+
+        return bios;
 
     }
     /*
@@ -87,10 +110,18 @@ export class BiosService {
          * @param : token
          */
     public async getBiosDetails(params: any) {
+        coachBiosModel.belongsTo(coachManagementModel,{foreignKey:"coach_id"});
         let query: any = {
             where: {
                 id: params.id
-            }
+            },
+            include:[
+                {
+                    model:coachManagementModel,
+                    attributes:['id','name'],
+                    required:true,
+                }
+            ],
         }
         let bios = await queryService.selectOne(coachBiosModel, query)
         return bios;

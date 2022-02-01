@@ -114,10 +114,31 @@ class BiosService {
     getBios(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let bios = yield queryService.selectAndCountAll(models_1.coachBiosModel, { order: [
-                    ['id', 'ASC'],
-                ], }, {});
-            bios.rows = bios.rows.slice(offset, offset + limit);
+            models_1.coachBiosModel.belongsTo(models_1.coachManagementModel, { foreignKey: "coach_id" });
+            let query = {
+                include: [
+                    {
+                        model: models_1.coachManagementModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    }
+                ],
+                offset,
+                limit
+            };
+            if (params.searchKey && params.searchKey.trim()) {
+                query.include[0].where = {
+                    name: {
+                        [Op.iLike]: `%${params.searchKey.trim()}%`
+                    }
+                };
+            }
+            // let bios = await queryService.selectAndCountAll(coachBiosModel, {order: [
+            //     ['id', 'ASC'],
+            // ],}, {})
+            // bios.rows = bios.rows.slice(offset, offset + limit);
+            // return bios
+            let bios = yield queryService.selectAndCountAll(models_1.coachBiosModel, query);
             return bios;
         });
     }
@@ -127,10 +148,18 @@ class BiosService {
          */
     getBiosDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            models_1.coachBiosModel.belongsTo(models_1.coachManagementModel, { foreignKey: "coach_id" });
             let query = {
                 where: {
                     id: params.id
-                }
+                },
+                include: [
+                    {
+                        model: models_1.coachManagementModel,
+                        attributes: ['id', 'name'],
+                        required: true,
+                    }
+                ],
             };
             let bios = yield queryService.selectOne(models_1.coachBiosModel, query);
             return bios;

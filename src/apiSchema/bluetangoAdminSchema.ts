@@ -43,7 +43,7 @@ export const resetPassword = Joi.object({
     })
 });
 export const addBios = Joi.object({
-  name: Joi.string().required(),
+  // name: Joi.string().optional(),
   description: Joi.string().required(),
   coach_id: Joi.number().required(),
   image: Joi.string().required(),
@@ -51,7 +51,7 @@ export const addBios = Joi.object({
 });
 export const updateBios = Joi.object({
   id: Joi.number().required(),
-  name: Joi.string(),
+  // name: Joi.string(),
   description: Joi.string(),
   image: Joi.string(),
   fileName:Joi.string()
@@ -67,7 +67,7 @@ export const updateProfile = Joi.object({
 export const changePassword = Joi.object({
   old_password: Joi.string().min(8)
     .max(15)
-    .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
     .required()
     .messages({
       "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -218,4 +218,10 @@ export const getrolesAndAdmins=Joi.object({
 })
 export const getCoachBiosDetails = Joi.object({
   id: Joi.number().required()
+})
+
+export const getBios = Joi.object({
+  searchKey: Joi.string().allow(null,'').required(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
 })
