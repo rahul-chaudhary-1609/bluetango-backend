@@ -7,6 +7,7 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 import path from 'path'
 import * as queryService from '../../queryService/bluetangoAdmin/queryService';
+import { notificationModel } from "../../models/notification";
 
 employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
 employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id", as: 'team_level' })
@@ -113,7 +114,7 @@ export class SessionManagementService {
     /*
 *perform action on sessions
 */
-    public async performAction(params: any) {
+    public async performAction(params: any,user:any) {
         let Sessions = await this.getSessionDetail(params)
         params.model = employeeCoachSessionsModel
         params.action_by = 3;
@@ -147,26 +148,44 @@ export class SessionManagementService {
                     {
                         model: coachManagementModel,
                         required: true,
-                        attributes: ["name", "device_token"],
+                        attributes: ["id","name", "device_token"],
                     },
                     {
                         model: employeeModel,
                         required: true,
-                        attributes: ["name"],
+                        attributes: ["id","name"],
                     },
                 ],
                 raw: true,
             })
-            let notificationData = <any>{
-                title: 'Sesssion assigned by admin',
-                body: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+            //add notification 
+            let notificationObj = <any>{
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: session.coach_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                type: constants.NOTIFICATION_TYPE.session_reassigned,
                 data: {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData:{id:user.uid},
                 },
             }
-            await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+            
+            await notificationModel.create(notificationObj);
+
+            let notificationData = <any>{
+                title: 'Sesssion assigned by admin',
+                message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_reassigned,
+                    title: 'Sesssion assigned by admin',
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData:{id:user.uid},
+                },
+            }
+            await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
 
             let mailParams = <any>{};
             mailParams.to = Sessions.email;

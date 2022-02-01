@@ -309,7 +309,7 @@ const sendNotification = async (params: any) => {
         sender_id: coach.id,
         reciever_id: coach.id,
         reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
-        type: constants.NOTIFICATION_TYPE.meeting_about_to_end,
+        type: params.notificationType,
         data: {
             type: params.notificationType,
             title: params.title,
@@ -404,15 +404,27 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
 
             let startDuration = moment.duration(currentTime.diff(startTime));
             let endDuration = moment.duration(endTime.diff(currentTime));
+            let leftToStartDuration=moment.duration(startTime.diff(currentTime));
 
             let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
+            let diffToStartInSeconds = Math.ceil(leftToStartDuration.asSeconds());
 
-            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds)
+            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds,"/n",diffToStartInSeconds)
 
             if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.free) {
 
-                if (diffFromStartInSeconds == 1200) {
+                if (diffToStartInSeconds == 600) {
+                    let params = <any>{
+                        notificationType: constants.NOTIFICATION_TYPE.session_with_in_10_min,
+                        session,
+                        title: `Reminder`,
+                        body: `Next Session in 10 minutes`,
+                        isEmployee: true,
+                    }
+
+                    await sendNotification(params);
+                } else if (diffFromStartInSeconds == 1200) {
                     let params = <any>{
                         session,
                     }
@@ -459,7 +471,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
 
     });
 
-    console.log("Delete Meeting Remaining Time Notification Job has started!")
+    console.log("Meeting Remaining Time Notification Job has started!")
 
     return true;
 }

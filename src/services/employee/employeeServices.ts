@@ -954,6 +954,26 @@ export class EmployeeServices {
                     let coach = await helperFunction.convertPromiseToObject(
                         await coachManagementModel.findByPk(parseInt(params.coach_id))
                     )
+
+                    delete employee.password;
+
+                    //add notification 
+                    let notificationObj = <any>{
+                        type_id: session.id,
+                        sender_id: user.uid,
+                        reciever_id: params.coach_id,
+                        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                        type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                        data: {
+                            type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                            title: 'New coaching session request',
+                            message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                            senderEmployeeData:employee,
+                        },
+                    }
+                    
+                    await notificationModel.create(notificationObj);
+
                     //send push notification
                     let notificationData = <any>{
                         title: 'New coaching session request',
@@ -962,6 +982,7 @@ export class EmployeeServices {
                             type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
                             title: 'New coaching session request',
                             message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                            senderEmployeeData:employee,
                         },
                     }
                     await helperFunction.sendFcmNotification([coach.device_token], notificationData);
@@ -1120,21 +1141,20 @@ export class EmployeeServices {
     public async cancelSession(params: any, user: any) {
         employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
         employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-        let session = await queryService.selectOne(employeeCoachSessionsModel, {
+        let session = await employeeCoachSessionsModel.findOne({
             where: { id: params.session_id },
             include: [
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["name", "device_token"],
+                    attributes: ["id","name", "device_token"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["name"],
+                    attributes: ["id","name","device_token"],
                 },
             ],
-            raw: true,
         })
         if (!session) {
             throw new Error(constants.MESSAGES.no_session)
@@ -1170,17 +1190,36 @@ export class EmployeeServices {
         let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
         slot.status = constants.COACH_SCHEDULE_STATUS.available;
         slot.save();
-        //send push notification
-        let notificationData = <any>{
-            title: 'Sesssion cancelled by employee',
-            body: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`,
+
+        //add notification 
+        let notificationObj = <any>{
+            type_id: session.id,
+            sender_id: user.uid,
+            reciever_id: session.coach_id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+            type: constants.NOTIFICATION_TYPE.cancel_session,
             data: {
                 type: constants.NOTIFICATION_TYPE.cancel_session,
                 title: 'Sesssion cancelled by employee',
-                message: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`
+                message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.employee,
             },
         }
-        await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+        
+        await notificationModel.create(notificationObj);
+        //send push notification
+        let notificationData = <any>{
+            title: 'Sesssion cancelled by employee',
+            body: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+            data: {
+                type: constants.NOTIFICATION_TYPE.cancel_session,
+                title: 'Sesssion cancelled by employee',
+                message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.employee,
+            },
+        }
+        await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
+        
         return await helperFunction.convertPromiseToObject(session);
     }
 
