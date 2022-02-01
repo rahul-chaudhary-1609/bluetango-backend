@@ -307,6 +307,12 @@ export const NOTIFICATION_TYPE = {
   goal_submit_reminder: 18,
   meeting_about_to_end: 19,
   update_meeting_duration: 20,
+  new_coaching_session_request:21,
+  cancel_session:22,
+  session_completed:23,
+  session_with_in_10_min:24,
+  session_reassigned:25
+
 }
 
 export const BLUETANGO_NOTIFICATION_TYPE = {
