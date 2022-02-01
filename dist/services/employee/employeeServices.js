@@ -843,7 +843,7 @@ class EmployeeServices {
                             title: 'New coaching session request',
                             body: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
                             data: {
-                                type: constants.NOTIFICATION_TYPE.expiration_of_free_trial,
+                                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
                                 title: 'New coaching session request',
                                 message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
                             },
@@ -1018,7 +1018,7 @@ class EmployeeServices {
                 title: 'Sesssion cancelled by employee',
                 body: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`,
                 data: {
-                    type: constants.NOTIFICATION_TYPE.other,
+                    type: constants.NOTIFICATION_TYPE.cancel_session,
                     title: 'Sesssion cancelled by employee',
                     message: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`
                 },

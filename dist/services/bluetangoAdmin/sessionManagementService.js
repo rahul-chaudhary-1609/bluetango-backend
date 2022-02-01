@@ -166,14 +166,45 @@ class SessionManagementService {
             params.request_received_date = Date.now();
             let sessions = yield queryService.updateData(params, { returning: true, where: { id: params.id } });
             yield queryService.updateData({ model: models_1.coachScheduleModel, status: 2 }, { where: { id: params.slot_id } });
-            let mailParams = {};
-            mailParams.to = Sessions.email;
-            mailParams.html = `Hi  ${Sessions.name}
+            //send push notification
+            if (Number(params.action) == 4) {
+                models_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+                models_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+                let session = yield queryService.selectAndCountAll(models_1.employeeCoachSessionsModel, {
+                    where: { id: params.id },
+                    include: [
+                        {
+                            model: models_1.coachManagementModel,
+                            required: true,
+                            attributes: ["name", "device_token"],
+                        },
+                        {
+                            model: models_1.employeeModel,
+                            required: true,
+                            attributes: ["name"],
+                        },
+                    ],
+                    raw: true,
+                });
+                let notificationData = {
+                    title: 'Sesssion assigned by admin',
+                    body: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.session_reassigned,
+                        title: 'Sesssion assigned by admin',
+                        message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    },
+                };
+                yield helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+                let mailParams = {};
+                mailParams.to = Sessions.email;
+                mailParams.html = `Hi  ${Sessions.name}
                 <br>A new session is assigned to you by admin with session id:${Sessions.id}
                 `;
-            mailParams.subject = "Session Assign";
-            mailParams.name = "BlueTango";
-            //await helperFunction.sendEmail(mailParams);
+                mailParams.subject = "Session Assign";
+                mailParams.name = "BlueTango";
+                //await helperFunction.sendEmail(mailParams);
+            }
             return sessions;
         });
     }
