@@ -1,4 +1,4 @@
-import { employeeCoachSessionsModel, coachManagementModel, employeeRanksModel, coachSpecializationCategoriesModel, coachScheduleModel } from "../../models";
+import { employeeCoachSessionsModel, coachManagementModel, employeeRanksModel, coachSpecializationCategoriesModel, coachScheduleModel, employeeModel } from "../../models";
 import _ from "lodash";
 import * as helperFunction from "../../utils/helperFunction";
 import * as appUtils from "../../utils/appUtils"
@@ -22,7 +22,7 @@ export class SessionManagementService {
     public async getSessionList(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {}
-        let Where: any = {app_id:constants.COACH_APP_ID.BT}
+        let Where: any = { app_id: constants.COACH_APP_ID.BT }
         let Wheres: any = {}
 
         if (params.searchKey && params.searchKey.trim()) {
@@ -86,7 +86,7 @@ export class SessionManagementService {
                     model: coachManagementModel,
                     required: true,
                     attributes: [],
-                    where:{app_id:constants.COACH_APP_ID.BT}
+                    where: { app_id: constants.COACH_APP_ID.BT }
                 },
                 {
                     model: employeeRanksModel,
@@ -104,8 +104,8 @@ export class SessionManagementService {
             raw: true,
             attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category']]
         })
-        if(sessions){
-        return appUtils.formatPassedAwayTime([sessions])[0];
+        if (sessions) {
+            return appUtils.formatPassedAwayTime([sessions])[0];
         }
         return sessions
     }
@@ -137,14 +137,46 @@ export class SessionManagementService {
         params.request_received_date = Date.now()
         let sessions = await queryService.updateData(params, { returning: true, where: { id: params.id } })
         await queryService.updateData({ model: coachScheduleModel, status: 2 }, { where: { id: params.slot_id } })
-        let mailParams = <any>{};
-        mailParams.to = Sessions.email;
-        mailParams.html = `Hi  ${Sessions.name}
+        //send push notification
+        if (Number(params.action) == 4) {
+            employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+            employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+            let session = await queryService.selectAndCountAll(employeeCoachSessionsModel, {
+                where: { id: params.id },
+                include: [
+                    {
+                        model: coachManagementModel,
+                        required: true,
+                        attributes: ["name", "device_token"],
+                    },
+                    {
+                        model: employeeModel,
+                        required: true,
+                        attributes: ["name"],
+                    },
+                ],
+                raw: true,
+            })
+            let notificationData = <any>{
+                title: 'Sesssion assigned by admin',
+                body: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_reassigned,
+                    title: 'Sesssion assigned by admin',
+                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                },
+            }
+            await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+
+            let mailParams = <any>{};
+            mailParams.to = Sessions.email;
+            mailParams.html = `Hi  ${Sessions.name}
                 <br>A new session is assigned to you by admin with session id:${Sessions.id}
                 `;
-        mailParams.subject = "Session Assign";
-        mailParams.name = "BlueTango"
-        //await helperFunction.sendEmail(mailParams);
+            mailParams.subject = "Session Assign";
+            mailParams.name = "BlueTango"
+            //await helperFunction.sendEmail(mailParams);
+        }
         return sessions
 
     }
@@ -153,70 +185,70 @@ export class SessionManagementService {
 */
     public async getAvailabileCoaches(params: any) {
         let Sessions = await this.getSessionDetail(params)
-        let availableCoaches: any = {rows:[],count:0};
-        if(Sessions){
-        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where: any = {}
-        let Where: any = {app_id:constants.COACH_APP_ID.BT}
+        let availableCoaches: any = { rows: [], count: 0 };
+        if (Sessions) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            let where: any = {}
+            let Where: any = { app_id: constants.COACH_APP_ID.BT }
 
-        where = {
-            date: [Sessions.date],
-            [Op.or]: [
-                // {
-                //     start_time: {
-                //         [Op.between]: [
-                //             Sessions.start_time,
-                //             Sessions.end_time,
-                //         ]
-                //     },
-                // },
-                // {
-                //     end_time: {
-                //         [Op.between]: [
-                //             Sessions.start_time,
-                //             Sessions.end_time,
-                //         ]
-                //     },
-                // },
-                {
-                    [Op.and]: [
-                        {
-                            start_time: {
-                                [Op.lte]: Sessions.start_time,
+            where = {
+                date: [Sessions.date],
+                [Op.or]: [
+                    // {
+                    //     start_time: {
+                    //         [Op.between]: [
+                    //             Sessions.start_time,
+                    //             Sessions.end_time,
+                    //         ]
+                    //     },
+                    // },
+                    // {
+                    //     end_time: {
+                    //         [Op.between]: [
+                    //             Sessions.start_time,
+                    //             Sessions.end_time,
+                    //         ]
+                    //     },
+                    // },
+                    {
+                        [Op.and]: [
+                            {
+                                start_time: {
+                                    [Op.lte]: Sessions.start_time,
+                                },
                             },
-                        },
-                        {
-                            end_time: {
-                                [Op.gte]: Sessions.end_time,
+                            {
+                                end_time: {
+                                    [Op.gte]: Sessions.end_time,
+                                },
                             },
-                        },
-                    ],
-                }
-            ]
+                        ],
+                    }
+                ]
+            }
+            Where["coach_specialization_category_ids"] = { [Op.contains]: [Sessions.coach_specialization_category_id] }
+            Where["employee_rank_ids"] = { [Op.contains]: [Sessions.employee_rank_id] }
+            availableCoaches = await queryService.selectAndCountAll(coachScheduleModel, {
+                where: where,
+                include: [
+                    {
+                        model: coachManagementModel,
+                        where: Where,
+                        required: true,
+                        attributes: [],
+                    }
+                ],
+                raw: true,
+                attributes: ["id", "date", "start_time", "end_time", "coach_id", "status", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('coach_management.phone_number'), 'phone_number']]
+            }, {})
+            availableCoaches.rows.forEach((element, index, arr) => {
+                arr[index]["coach_specialization_category"] = Sessions.coach_specialization_category
+                arr[index]["team_level"] = Sessions.team_level,
+                    arr[index]["session_id"] = Sessions.id
+            });
+            availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
+            return availableCoaches;
         }
-        Where["coach_specialization_category_ids"] = { [Op.contains]: [Sessions.coach_specialization_category_id] }
-        Where["employee_rank_ids"] = { [Op.contains]: [Sessions.employee_rank_id] }
-        availableCoaches = await queryService.selectAndCountAll(coachScheduleModel, {
-            where: where,
-            include: [
-                {
-                    model: coachManagementModel,
-                    where: Where,
-                    required: true,
-                    attributes: [],
-                }
-            ],
-            raw: true,
-            attributes: ["id", "date", "start_time", "end_time", "coach_id", "status", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('coach_management.phone_number'), 'phone_number']]
-        }, {})
-        availableCoaches.rows.forEach((element, index, arr) => {
-            arr[index]["coach_specialization_category"] = Sessions.coach_specialization_category
-            arr[index]["team_level"] = Sessions.team_level,
-                arr[index]["session_id"] = Sessions.id
-        });
-        availableCoaches.rows = availableCoaches.rows.slice(offset, offset + limit);
         return availableCoaches;
-    }
-    return availableCoaches;
     }
 }
