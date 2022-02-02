@@ -204,6 +204,7 @@ export const MESSAGES = {
   admin_him_self_delete: "Admin will not remove himself",
   admin_role_delete:"Admin cannot delete his own role",
   coach_bios_detail: "Coach Bio details fetched successfully",
+  invalid_toke:"Invalid token"
 
 
 }
