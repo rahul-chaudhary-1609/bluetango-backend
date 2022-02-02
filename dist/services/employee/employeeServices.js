@@ -865,6 +865,14 @@ class EmployeeServices {
                             },
                         };
                         yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
+                        let mailParams = {};
+                        mailParams.to = coach.email;
+                        mailParams.html = `Hi  ${coach.name}
+                        <br>A new session request is created by ${employee.name}
+                        `;
+                        mailParams.subject = "New Session Request";
+                        mailParams.name = "BlueXinga";
+                        yield helperFunction.sendEmail(mailParams);
                     }
                     return session;
                 }

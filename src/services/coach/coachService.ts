@@ -551,12 +551,12 @@ export class CoachService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name", "device_token"],
+                    attributes: ["id","name","email", "device_token"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","device_token"],
+                    attributes: ["id","name","email","device_token"],
                 },
             ],
         })
@@ -605,6 +605,15 @@ export class CoachService {
         }
         await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
 
+        let mailParams = <any>{};
+        mailParams.to = session.employee.email;
+        mailParams.html = `Hi  ${session.employee.name}
+            <br>Your session request is Accepted by ${session.coach_management.name}
+            `;
+        mailParams.subject = "Session Request Accepted";
+        mailParams.name = "BlueXinga"
+        await helperFunction.sendEmail(mailParams);
+
 
         return await helperFunction.convertPromiseToObject(session);
     }
@@ -619,12 +628,12 @@ export class CoachService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name", "device_token"],
+                    attributes: ["id","name","email", "device_token"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","device_token"],
+                    attributes: ["id","name","email","device_token"],
                 },
             ],
         })
@@ -672,6 +681,15 @@ export class CoachService {
             },
         }
         await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
+
+        let mailParams = <any>{};
+        mailParams.to = session.employee.email;
+        mailParams.html = `Hi  ${session.employee.name}
+            <br>Your session request is rejected by ${session.coach_management.name}
+            `;
+        mailParams.subject = "Session Request Rejected";
+        mailParams.name = "BlueXinga"
+        await helperFunction.sendEmail(mailParams);
 
 
         return await helperFunction.convertPromiseToObject(session);

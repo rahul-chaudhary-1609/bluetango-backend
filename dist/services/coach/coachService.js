@@ -504,12 +504,12 @@ class CoachService {
                     {
                         model: models_1.coachManagementModel,
                         required: true,
-                        attributes: ["id", "name", "device_token"],
+                        attributes: ["id", "name", "email", "device_token"],
                     },
                     {
                         model: models_1.employeeModel,
                         required: true,
-                        attributes: ["id", "name", "device_token"],
+                        attributes: ["id", "name", "email", "device_token"],
                     },
                 ],
             });
@@ -550,6 +550,14 @@ class CoachService {
                 },
             };
             yield helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
+            let mailParams = {};
+            mailParams.to = session.employee.email;
+            mailParams.html = `Hi  ${session.employee.name}
+            <br>Your session request is Accepted by ${session.coach_management.name}
+            `;
+            mailParams.subject = "Session Request Accepted";
+            mailParams.name = "BlueXinga";
+            yield helperFunction.sendEmail(mailParams);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
@@ -564,12 +572,12 @@ class CoachService {
                     {
                         model: models_1.coachManagementModel,
                         required: true,
-                        attributes: ["id", "name", "device_token"],
+                        attributes: ["id", "name", "email", "device_token"],
                     },
                     {
                         model: models_1.employeeModel,
                         required: true,
-                        attributes: ["id", "name", "device_token"],
+                        attributes: ["id", "name", "email", "device_token"],
                     },
                 ],
             });
@@ -611,6 +619,14 @@ class CoachService {
                 },
             };
             yield helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
+            let mailParams = {};
+            mailParams.to = session.employee.email;
+            mailParams.html = `Hi  ${session.employee.name}
+            <br>Your session request is rejected by ${session.coach_management.name}
+            `;
+            mailParams.subject = "Session Request Rejected";
+            mailParams.name = "BlueXinga";
+            yield helperFunction.sendEmail(mailParams);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
