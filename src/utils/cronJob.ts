@@ -298,33 +298,19 @@ export const scheduleDeleteNotificationJob = async () => {
 
 const sendNotification = async (params: any) => {
 
-    let coach = await helperFunction.convertPromiseToObject(
-        await coachManagementModel.findByPk(params.session.coach_id)
-    )
+    if (params.isCoach) {
+        let coach = await helperFunction.convertPromiseToObject(
+            await coachManagementModel.findByPk(params.session.coach_id)
+        )
 
-    delete coach.password;
+        delete coach.password;
 
-    let notificationObj = <any>{
-        type_id: coach.id,
-        sender_id: coach.id,
-        reciever_id: coach.id,
-        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
-        type: params.notificationType,
-        data: {
+        let notificationObj = <any>{
+            type_id: params.session.id,
+            sender_id: coach.id,
+            reciever_id: coach.id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
             type: params.notificationType,
-            title: params.title,
-            message: params.body,
-            senderEmplyeeData: coach,
-            session: params.session,
-        },
-    }
-    await notificationModel.create(notificationObj);
-
-    if (coach.device_token) {
-        //send push notification
-        let notificationData = <any>{
-            title: params.title,
-            body: params.body,
             data: {
                 type: params.notificationType,
                 title: params.title,
@@ -333,7 +319,23 @@ const sendNotification = async (params: any) => {
                 session: params.session,
             },
         }
-        await helperFunction.sendFcmNotification([coach.device_token], notificationData);
+        await notificationModel.create(notificationObj);
+
+        if (coach.device_token) {
+            //send push notification
+            let notificationData = <any>{
+                title: params.title,
+                body: params.body,
+                data: {
+                    type: params.notificationType,
+                    title: params.title,
+                    message: params.body,
+                    senderEmplyeeData: coach,
+                    session: params.session,
+                },
+            }
+            await helperFunction.sendFcmNotification([coach.device_token], notificationData);
+        }
     }
 
     if (params.isEmployee) {
@@ -343,8 +345,8 @@ const sendNotification = async (params: any) => {
 
         delete employee.password;
 
-        notificationObj = <any>{
-            type_id: employee.id,
+        let notificationObj = <any>{
+            type_id: params.session.id,
             sender_id: employee.id,
             reciever_id: employee.id,
             reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -378,7 +380,7 @@ const sendNotification = async (params: any) => {
 
 }
 
-export const scheduleMeetingRemainingTimeNotificationJob = async () => {
+export const scheduleMeetingSessionNotificationJob = async () => {
     schedule.scheduleJob('* * * * *', async () => {
 
         let sessions = await helperFunction.convertPromiseToObject(
@@ -421,6 +423,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
                         title: `Reminder`,
                         body: `Next Session in 10 minutes`,
                         isEmployee: true,
+                        isCoach:true,
                     }
 
                     await sendNotification(params);
@@ -437,6 +440,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
                         title: `Meeting duration updated`,
                         body: `We are extending the duration of the meeting by ${extendingMinutes} minutes. It will automatically disconnect after ${extendingMinutes} minutes`,
                         isEmployee: false,
+                        isCoach:true,
                     }
                     await sendNotification(params);
                     params.extendingMinutes = extendingMinutes;
@@ -449,6 +453,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
                         title: `Reminder`,
                         body: `Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee: true,
+                        isCoach:true,
                     }
 
                     await sendNotification(params);
@@ -462,6 +467,7 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
                         title: `Reminder`,
                         body: `Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee: true,
+                        isCoach:true,
                     }
 
                     await sendNotification(params);
@@ -469,54 +475,91 @@ export const scheduleMeetingRemainingTimeNotificationJob = async () => {
             }
         }
 
+        let current_time=moment(new Date()).tz(constants.TIME_ZONE).format("YYYY-MM-DD HH:mm:ss")
+
+        if (current_time) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        date: {
+                            [Op.gte]: moment(new Date()).tz(constants.TIME_ZONE).format("YYYY-MM-DD")
+                        },
+                        status: [
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        ]
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${current_time}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    if(session.status==constants.EMPLOYEE_COACH_SESSION_STATUS.pending)
+                    {
+                        await employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        })
+
+                        let params = <any>{
+                            notificationType: constants.NOTIFICATION_TYPE.session_rejected,
+                            session,
+                            title: `Info`,
+                            body: `Session Rejected`,
+                            isEmployee: true,
+                            isCoach:false,
+                        }
+    
+                        await sendNotification(params);
+
+                    }else if(session.status==constants.EMPLOYEE_COACH_SESSION_STATUS.accepted){
+                        let startTime = moment(session.start_time, "HH:mm:ss");
+                        let endTime = moment(session.end_time, "HH:mm:ss");
+
+                        let duration = moment.duration(endTime.diff(startTime));
+
+                        await employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                            call_duration: Math.ceil(duration.asMinutes()),
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        })
+
+                        let params = <any>{
+                            notificationType: constants.NOTIFICATION_TYPE.session_completed,
+                            session,
+                            title: `Info`,
+                            body: `Session Completed`,
+                            isEmployee: true,
+                            isCoach:true,
+                        }
+    
+                        await sendNotification(params);
+                    }
+                }
+            }
+
+        }
+
     });
 
-    console.log("Meeting Remaining Time Notification Job has started!")
+    console.log("Meeting sessions Notification Job has started!")
 
     return true;
 }
 
-// export const scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = async()=> {
-//     schedule.scheduleJob('0 */24 * * *', async ()=> {
-
-
-//         employeeCoachSessionsModel.update({
-//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-//             },{
-//                 where:{
-//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-//                     date:{
-//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-//                     },
-//                     end_time:{
-//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
-//                     }
-//                 }
-//             }
-//         )
-
-//         employeeCoachSessionsModel.update({
-//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-//             },{
-//                 where:{
-//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-//                     date:{
-//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-//                     },
-//                     end_time:{
-//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
-//                     }
-//                 }
-//             }
-//         )
-
-
-//     });
-
-//     console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
-
-//     return true;
-// }
 /*
 *perform action on sessions
 */

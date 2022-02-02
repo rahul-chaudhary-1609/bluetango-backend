@@ -41,6 +41,7 @@ const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
 const appUtils = __importStar(require("../../utils/appUtils"));
+const notification_1 = require("../../models/notification");
 class CoachService {
     constructor() { }
     addSlot(params, user) {
@@ -494,7 +495,24 @@ class CoachService {
     acceptSessionRequest(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("acceptSessionRequest", params, user);
-            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            // let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
+                where: { id: params.session_id },
+                include: [
+                    {
+                        model: models_1.coachManagementModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                    {
+                        model: models_1.employeeModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                ],
+            });
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
@@ -505,12 +523,56 @@ class CoachService {
             session.details = yield helperFunction.scheduleZoomMeeting(params);
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
             session.save();
+            //add notification 
+            let notificationObj = {
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: session.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: constants.NOTIFICATION_TYPE.session_accepted,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_accepted,
+                    title: 'Sesssion accepted by coach',
+                    message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield notification_1.notificationModel.create(notificationObj);
+            //send push notification
+            let notificationData = {
+                title: 'Sesssion accepted by coach',
+                body: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_accepted,
+                    title: 'Sesssion accepted by coach',
+                    message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
     rejectSessionRequest(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            // let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
+                where: { id: params.session_id },
+                include: [
+                    {
+                        model: models_1.coachManagementModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                    {
+                        model: models_1.employeeModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                ],
+            });
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
@@ -522,6 +584,33 @@ class CoachService {
             let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
             slot.status = constants.COACH_SCHEDULE_STATUS.available;
             slot.save();
+            //add notification 
+            let notificationObj = {
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: session.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: constants.NOTIFICATION_TYPE.session_rejected,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_rejected,
+                    title: 'Sesssion rejected by coach',
+                    message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield notification_1.notificationModel.create(notificationObj);
+            //send push notification
+            let notificationData = {
+                title: 'Sesssion rejected by coach',
+                message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.session_rejected,
+                    title: 'Sesssion rejected by coach',
+                    message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
@@ -613,7 +702,24 @@ class CoachService {
     }
     cancelSession(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            // let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
+                where: { id: params.session_id },
+                include: [
+                    {
+                        model: models_1.coachManagementModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                    {
+                        model: models_1.employeeModel,
+                        required: true,
+                        attributes: ["id", "name", "device_token"],
+                    },
+                ],
+            });
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
@@ -638,6 +744,33 @@ class CoachService {
             let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
             slot.status = constants.COACH_SCHEDULE_STATUS.available;
             slot.save();
+            //add notification 
+            let notificationObj = {
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: session.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: constants.NOTIFICATION_TYPE.cancel_session,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.cancel_session,
+                    title: 'Sesssion cancelled by coach',
+                    message: `${session.coach_management.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield notification_1.notificationModel.create(notificationObj);
+            //send push notification
+            let notificationData = {
+                title: 'Sesssion cancelled by coach',
+                body: `${session.coach_management.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.cancel_session,
+                    title: 'Sesssion cancelled by coach',
+                    message: `${session.coach_management.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.coach_management,
+                },
+            };
+            yield helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }

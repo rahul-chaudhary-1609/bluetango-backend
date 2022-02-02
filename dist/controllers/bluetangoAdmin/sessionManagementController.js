@@ -76,7 +76,7 @@ class SessionManagementController {
     performAction(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield sessionManagement.performAction(req.body);
+                const responseFromService = yield sessionManagement.performAction(req.body, req.user);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.action_success);
             }
             catch (error) {

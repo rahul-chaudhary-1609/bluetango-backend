@@ -11,8 +11,7 @@ import {
     scheduleFreeTrialExpirationNotificationJob,
     scheduleGoalSubmitReminderNotificationJob,
     scheduleDeleteNotificationJob,
-    // scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob,
-    scheduleMeetingRemainingTimeNotificationJob
+    scheduleMeetingSessionNotificationJob
 } from "./utils/cronJob"
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
@@ -105,11 +104,10 @@ require("./routes")(app);
 /*Initialize Listner*/
 var server = app.listen(port, async () => {
     console.log('Listening on port: ', port);
-    await scheduleFreeTrialExpirationNotificationJob();
-    await scheduleGoalSubmitReminderNotificationJob();
-    await scheduleDeleteNotificationJob();
-    // await scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob();
-    await scheduleMeetingRemainingTimeNotificationJob();
+    // await scheduleFreeTrialExpirationNotificationJob();
+    // await scheduleGoalSubmitReminderNotificationJob();
+    // await scheduleDeleteNotificationJob();
+    // await scheduleMeetingSessionNotificationJob();
 
 }).on('error', (e) => {
     console.log('Error happened: ', e.message)

@@ -542,7 +542,24 @@ export class CoachService {
 
     public async acceptSessionRequest(params: any, user: any) {
         console.log("acceptSessionRequest", params, user)
-        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+        // let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        let session = await employeeCoachSessionsModel.findOne({
+            where: { id: params.session_id },
+            include: [
+                {
+                    model: coachManagementModel,
+                    required: true,
+                    attributes: ["id","name", "device_token"],
+                },
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ["id","name","device_token"],
+                },
+            ],
+        })
 
         if (!session) {
             throw new Error(constants.MESSAGES.no_session)
@@ -559,11 +576,58 @@ export class CoachService {
 
         session.save();
 
+        //add notification 
+        let notificationObj = <any>{
+            type_id: session.id,
+            sender_id: user.uid,
+            reciever_id: session.employee_id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+            type: constants.NOTIFICATION_TYPE.session_accepted,
+            data: {
+                type: constants.NOTIFICATION_TYPE.session_accepted,
+                title: 'Sesssion accepted by coach',
+                message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.coach_management,
+            },
+        }
+        
+        await notificationModel.create(notificationObj);
+        //send push notification
+        let notificationData = <any>{
+            title: 'Sesssion accepted by coach',
+            body: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+            data: {
+                type: constants.NOTIFICATION_TYPE.session_accepted,
+                title: 'Sesssion accepted by coach',
+                message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.coach_management,
+            },
+        }
+        await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
+
+
         return await helperFunction.convertPromiseToObject(session);
     }
 
     public async rejectSessionRequest(params: any, user: any) {
-        let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+        // let session = await employeeCoachSessionsModel.findByPk(params.session_id);
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        let session = await employeeCoachSessionsModel.findOne({
+            where: { id: params.session_id },
+            include: [
+                {
+                    model: coachManagementModel,
+                    required: true,
+                    attributes: ["id","name", "device_token"],
+                },
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ["id","name","device_token"],
+                },
+            ],
+        })
 
         if (!session) {
             throw new Error(constants.MESSAGES.no_session)
@@ -579,6 +643,36 @@ export class CoachService {
         let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
         slot.status = constants.COACH_SCHEDULE_STATUS.available;
         slot.save();
+
+        //add notification 
+        let notificationObj = <any>{
+            type_id: session.id,
+            sender_id: user.uid,
+            reciever_id: session.employee_id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+            type: constants.NOTIFICATION_TYPE.session_rejected,
+            data: {
+                type: constants.NOTIFICATION_TYPE.session_rejected,
+                title: 'Sesssion rejected by coach',
+                message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.coach_management,
+            },
+        }
+        
+        await notificationModel.create(notificationObj);
+        //send push notification
+        let notificationData = <any>{
+            title: 'Sesssion rejected by coach',
+            message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+            data: {
+                type: constants.NOTIFICATION_TYPE.session_rejected,
+                title: 'Sesssion rejected by coach',
+                message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData:session.coach_management,
+            },
+        }
+        await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
+
 
         return await helperFunction.convertPromiseToObject(session);
     }
