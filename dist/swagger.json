@@ -7519,7 +7519,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n7.time_capture_type:1=>available, 2=>unavailable, 3=>previewed slots",
+                        "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n7.time_capture_type:1=>available previewed slots, 2=>unavailable previewed slots, 3=>submit previewed slots with available and unavailable slots",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -9109,7 +9109,7 @@
                 "responses": {}
             }
         },
-        "/bluetango-admin/deleteCoach": {
+        "/bluetango-admin/deleteCoach/{coach_id}": {
             "delete": {
                 "tags": [
                     "Bluetango Admin"
@@ -9128,7 +9128,7 @@
                     },
                     {
                         "name": "coach_id",
-                        "in": "formData",
+                        "in": "path",
                         "description": "coach id",
                         "required": true,
                         "type": "integer"
@@ -9419,13 +9419,6 @@
                         "type": "number"
                     },
                     {
-                        "name": "name",
-                        "in": "formData",
-                        "description": "name",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
                         "name": "description",
                         "in": "formData",
                         "description": "description",
@@ -9437,7 +9430,14 @@
                         "in": "formData",
                         "description": "image",
                         "required": true,
-                        "type": "file"
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileName",
+                        "in": "formData",
+                        "description": "file name",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -9463,23 +9463,9 @@
                     {
                         "name": "id",
                         "in": "formData",
-                        "description": "id",
+                        "description": "bio id",
                         "required": true,
                         "type": "number"
-                    },
-                    {
-                        "name": "admin_id",
-                        "in": "formData",
-                        "description": "admin_id",
-                        "required": true,
-                        "type": "number"
-                    },
-                    {
-                        "name": "name",
-                        "in": "formData",
-                        "description": "name",
-                        "required": false,
-                        "type": "string"
                     },
                     {
                         "name": "description",
@@ -9493,7 +9479,14 @@
                         "in": "formData",
                         "description": "image",
                         "required": false,
-                        "type": "file"
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileName",
+                        "in": "formData",
+                        "description": "file name",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
@@ -9542,6 +9535,13 @@
                         "in": "header",
                         "description": "Enter jwt token for authentication",
                         "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "searchKey",
+                        "in": "query",
+                        "description": "search key",
+                        "required": false,
                         "type": "string"
                     },
                     {
@@ -10045,6 +10045,16 @@
                         ]
                     },
                     {
+                        "name": "module",
+                        "in": "query",
+                        "description": "'Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "Dashboard", "Coach Administration", "Administration Management", "Static Content", "Session Content"
+                        ]
+                    },
+                    {
                         "name": "searchKey",
                         "in": "query",
                         "description": "enter the search key",
@@ -10126,6 +10136,73 @@
                         "in": "query",
                         "description": "page size",
                         "required": false,
+                        "type": "number"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/coach/getChatRoomId": {
+            "get": {
+                "tags": [
+                    "CoachChat"
+                ],
+                "description": "get chat room id",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "other_user_id",
+                        "in": "query",
+                        "description": "other_user_id",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "0=> employee,1=> BT_admin",
+                        "required": false,
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/bluetango-admin/getBiosDetails": {
+            "get": {
+                "tags": [
+                    "Bluetango Admin"
+                ],
+                "description": "get bio details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "bios id",
+                        "required": true,
                         "type": "number"
                     }
                 ],

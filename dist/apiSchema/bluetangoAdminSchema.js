@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getrolesAndAdmins = exports.updateAdminAndRoleStatus = exports.updateAdminAndRole = exports.deleteRole = exports.viewRoleDetails = exports.deleteAdmin = exports.sendChatNotification = exports.getChatList = exports.getChatRoomId = exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
+exports.getBios = exports.getCoachBiosDetails = exports.getrolesAndAdmins = exports.updateAdminAndRoleStatus = exports.updateAdminAndRole = exports.deleteRole = exports.viewRoleDetails = exports.deleteAdmin = exports.sendChatNotification = exports.getChatList = exports.getChatRoomId = exports.listEmployeeRanks = exports.listCoachSpecializationCategories = exports.blockUnblockCoach = exports.deleteCoach = exports.getCoachDetails = exports.getCoachList = exports.editCoach = exports.addCoach = exports.performAction = exports.updateStaticContent = exports.changePassword = exports.updateProfile = exports.updateBios = exports.addBios = exports.resetPassword = exports.forgetPassword = exports.addAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -66,15 +66,18 @@ exports.resetPassword = joi_1.default.object({
     })
 });
 exports.addBios = joi_1.default.object({
-    name: joi_1.default.string().required(),
+    // name: Joi.string().optional(),
     description: joi_1.default.string().required(),
-    coach_id: joi_1.default.number().required()
+    coach_id: joi_1.default.number().required(),
+    image: joi_1.default.string().required(),
+    fileName: joi_1.default.string()
 });
 exports.updateBios = joi_1.default.object({
     id: joi_1.default.number().required(),
-    admin_id: joi_1.default.number().required(),
-    name: joi_1.default.string(),
-    description: joi_1.default.string()
+    // name: Joi.string(),
+    description: joi_1.default.string(),
+    image: joi_1.default.string(),
+    fileName: joi_1.default.string()
 });
 exports.updateProfile = joi_1.default.object({
     name: joi_1.default.string().required(),
@@ -85,7 +88,7 @@ exports.updateProfile = joi_1.default.object({
 exports.changePassword = joi_1.default.object({
     old_password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -218,6 +221,15 @@ exports.updateAdminAndRoleStatus = joi_1.default.object({
 exports.getrolesAndAdmins = joi_1.default.object({
     status: joi_1.default.number().optional().valid(0, 1),
     searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+    module: joi_1.default.string().optional().valid('Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'),
+});
+exports.getCoachBiosDetails = joi_1.default.object({
+    id: joi_1.default.number().required()
+});
+exports.getBios = joi_1.default.object({
+    searchKey: joi_1.default.string().allow(null, '').optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
 });

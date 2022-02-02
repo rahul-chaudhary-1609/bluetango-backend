@@ -63,6 +63,7 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const authService = new authService_1.AuthService();
 class EmployeeServices {
     constructor() { }
@@ -836,6 +837,18 @@ class EmployeeServices {
                     if (session) {
                         slot.status = constants.COACH_SCHEDULE_STATUS.booked;
                         slot.save();
+                        let coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findByPk(parseInt(params.coach_id)));
+                        //send push notification
+                        let notificationData = {
+                            title: 'New coaching session request',
+                            body: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                            data: {
+                                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                                title: 'New coaching session request',
+                                message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                            },
+                        };
+                        yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
                     }
                     return session;
                 }
@@ -956,7 +969,24 @@ class EmployeeServices {
     }
     cancelSession(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findByPk(params.session_id);
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let session = yield queryService.selectOne(employeeCoachSession_1.employeeCoachSessionsModel, {
+                where: { id: params.session_id },
+                include: [
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        required: true,
+                        attributes: ["name", "device_token"],
+                    },
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ["name"],
+                    },
+                ],
+                raw: true,
+            });
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
             }
@@ -983,6 +1013,17 @@ class EmployeeServices {
             let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
             slot.status = constants.COACH_SCHEDULE_STATUS.available;
             slot.save();
+            //send push notification
+            let notificationData = {
+                title: 'Sesssion cancelled by employee',
+                body: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.cancel_session,
+                    title: 'Sesssion cancelled by employee',
+                    message: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`
+                },
+            };
+            yield helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }

@@ -6,7 +6,7 @@ import * as appUtils from "../../utils/appUtils";
 import * as tokenResponse from "../../utils/tokenResponse";
 import * as helperFunction from "../../utils/helperFunction";
 import * as queryService from '../../queryService/bluetangoAdmin/queryService';
-import { coachManagementModel } from "../../models";
+import { coachManagementModel,coachBiosModel, } from "../../models";
 import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
 import { employeeRanksModel } from "../../models/employeeRanks";
 import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
@@ -555,6 +555,14 @@ export class CoachService {
         }
 
         const coach = await queryService.deleteData(coachManagementModel,query);
+
+        query={
+            where : {
+                coach_id: params.coach_id
+            }
+        }
+
+        await queryService.deleteData(coachBiosModel,query);
 
         return coach;
 

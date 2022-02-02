@@ -471,6 +471,12 @@ class CoachService {
                 }
             };
             const coach = yield queryService.deleteData(models_1.coachManagementModel, query);
+            query = {
+                where: {
+                    coach_id: params.coach_id
+                }
+            };
+            yield queryService.deleteData(models_1.coachBiosModel, query);
             return coach;
         });
     }

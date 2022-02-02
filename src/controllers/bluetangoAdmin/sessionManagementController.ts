@@ -44,7 +44,7 @@ export class SessionManagementController {
   */
     public async performAction(req: any, res: any) {
         try {
-            const responseFromService = await sessionManagement.performAction(req.body);
+            const responseFromService = await sessionManagement.performAction(req.body,req.user);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.action_success);
 
         } catch (error) {

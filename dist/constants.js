@@ -220,7 +220,11 @@ exports.MESSAGES = {
     admin_And_role_updated: "Admin and role details updated successfully",
     admin_and_role_status: "Admin and role status updated successfully",
     role_fetched: "Roles fetched successfully",
-    select_appId: "Select BluXinga or BlueTango for login"
+    select_appId: "Select BluXinga or BlueTango for login",
+    only_employee_or_BT_Admin_chat: "You can initiate chat either with employee or with a admin",
+    admin_him_self_delete: "Admin will not remove himself",
+    admin_role_delete: "Admin cannot delete his own role",
+    coach_bios_detail: "Coach Bio details fetched successfully",
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
@@ -311,6 +315,11 @@ exports.NOTIFICATION_TYPE = {
     goal_submit_reminder: 18,
     meeting_about_to_end: 19,
     update_meeting_duration: 20,
+    new_coaching_session_request: 21,
+    cancel_session: 22,
+    session_completed: 23,
+    session_with_in_10_min: 24,
+    session_reassigned: 25
 };
 exports.BLUETANGO_NOTIFICATION_TYPE = {
     text_chat: 1
@@ -324,6 +333,7 @@ exports.NOTIFICATION_RECIEVER_TYPE = {
 exports.CHAT_USER_TYPE = {
     employee: 1,
     coach: 2,
+    BT_admin: 3
 };
 exports.BLUETANGO_CHAT_USER_TYPE = {
     admin: 1,
@@ -342,6 +352,7 @@ exports.CHAT_ROOM_TYPE = {
     employee: 0,
     coach: 1,
     group: 2,
+    BT_admin: 3
 };
 exports.EMPLOYER_SUBSCRIPTION_TYPE = {
     free: 0,

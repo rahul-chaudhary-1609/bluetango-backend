@@ -409,7 +409,8 @@ class EmployeeManagement {
             let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll({
                 where: {
                     status: constants.STATUS.active,
-                }
+                },
+                order: [["name", "ASC"]]
             }));
             if (ranks.count == 0) {
                 throw new Error(constants.MESSAGES.no_employee_rank);

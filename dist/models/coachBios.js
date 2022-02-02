@@ -18,10 +18,10 @@ exports.coachBiosModel = connection_1.sequelize.define("coach_bios", {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    name: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: true,
-    },
+    // name: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true,
+    // },
     description: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
@@ -29,9 +29,13 @@ exports.coachBiosModel = connection_1.sequelize.define("coach_bios", {
     image: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    fileName: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
+    },
 }, {
     tableName: "coach_bios"
 });
-exports.coachBiosModel.sync({ alter: false });
+exports.coachBiosModel.sync({ alter: true });
 //# sourceMappingURL=coachBios.js.map

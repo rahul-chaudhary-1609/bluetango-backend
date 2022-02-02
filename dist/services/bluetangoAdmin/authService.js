@@ -41,6 +41,7 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 models_1.bluetangoAdminModel.belongsTo(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
 models_1.bluetangoAdminRolesModel.hasMany(models_1.bluetangoAdminModel, { foreignKey: 'role_id', onDelete: 'cascade', hooks: true });
+models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id', as: 'role' });
 class AuthService {
     constructor() { }
     /**
@@ -153,13 +154,20 @@ class AuthService {
     }
     getProfile(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let query = {
-                attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt'],
+            models_1.bluetangoAdminModel.hasOne(models_1.bluetangoAdminRolesModel, { foreignKey: 'id', sourceKey: "role_id", targetKey: 'id' });
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, {
                 where: {
                     id: user.uid,
-                }
-            };
-            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, query);
+                },
+                include: [
+                    {
+                        model: models_1.bluetangoAdminRolesModel,
+                        required: true,
+                        attributes: []
+                    }
+                ],
+                attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'thought_of_the_day', 'profile_pic_url', 'createdAt', 'updatedAt', 'role_id', [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions'], [Sequelize.col('bluetango_admin_role.role_name'), 'role_name']],
+            });
             return admin;
         });
     }
@@ -299,8 +307,11 @@ class AuthService {
             }
         });
     }
-    deleteAdmin(params) {
+    deleteAdmin(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (user.uid == params.admin_id) {
+                throw new Error(constants.MESSAGES.admin_him_self_delete);
+            }
             let query = {
                 where: {
                     id: params.admin_id
@@ -328,8 +339,17 @@ class AuthService {
             return roleDetails;
         });
     }
-    deleteRole(params) {
+    deleteRole(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
+            let Query = {
+                where: {
+                    id: user.uid
+                }
+            };
+            let admin = yield queryService.selectOne(models_1.bluetangoAdminModel, Query);
+            if (admin && admin.role_id == params.role_id) {
+                throw new Error(constants.MESSAGES.admin_role_delete);
+            }
             let query = {
                 where: {
                     id: params.role_id
@@ -462,12 +482,14 @@ class AuthService {
    * get roles And Admins
    @param {} params pass all parameters from request
    */
-    getrolesAndAdmins(params) {
+    getrolesAndAdmins(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             let where = {};
             let Where = {};
             let role_ids;
+            // let AdminData = await this.getProfile({ uid: user.uid })
+            // Where["id"] = { [Op.ne]: AdminData.role_id }
             if (params.searchKey && params.searchKey.trim()) {
                 where = {
                     [Op.or]: [
@@ -495,6 +517,10 @@ class AuthService {
                         attributes: ["role_id"]
                     }, {}))].map(rolId => rolId.role_id);
                 role_ids = [...new Set(role_ids.concat(roleId2))];
+                // const index = role_ids.indexOf(AdminData.role_id);
+                // if (index > -1) {
+                //     role_ids.splice(index, 1);
+                // }
                 Where["id"] = role_ids;
             }
             if (params.status) {
@@ -506,7 +532,12 @@ class AuthService {
                     {
                         model: models_1.bluetangoAdminModel,
                         required: true,
-                        attributes: ["id", "name", "email"],
+                        attributes: ["id", "name", "email", "admin_role"],
+                        where: {
+                            admin_role: {
+                                [Op.ne]: constants.USER_ROLE.super_admin.toString()
+                            }
+                        }
                     }
                 ],
                 distinct: true,
@@ -514,9 +545,18 @@ class AuthService {
                 order: [
                     ['role_name', 'ASC'],
                 ],
-                limit: limit,
-                offset: offset
             }, {});
+            if (params.module) {
+                roles.rows = roles.rows.map((elem) => {
+                    if (elem.module_wise_permissions.some(e => e.module === params.module))
+                        return elem;
+                });
+                roles.rows = roles.rows.filter(function (el) {
+                    return el != null;
+                });
+            }
+            roles.count = roles.rows.length;
+            roles.rows = roles.rows.slice(offset, offset + limit);
             return roles;
         });
     }
