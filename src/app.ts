@@ -11,7 +11,8 @@ import {
     scheduleFreeTrialExpirationNotificationJob,
     scheduleGoalSubmitReminderNotificationJob,
     scheduleDeleteNotificationJob,
-    scheduleMeetingSessionNotificationJob
+    scheduleMeetingSessionNotificationJob,
+    scheduleSystemActionOnSessions
 } from "./utils/cronJob"
 //import json2csv from 'json2csv';
 //const json2csv = require('json2csv');
@@ -108,6 +109,7 @@ var server = app.listen(port, async () => {
     // await scheduleGoalSubmitReminderNotificationJob();
     // await scheduleDeleteNotificationJob();
     // await scheduleMeetingSessionNotificationJob();
+    // await scheduleSystemActionOnSessions();
 
 }).on('error', (e) => {
     console.log('Error happened: ', e.message)

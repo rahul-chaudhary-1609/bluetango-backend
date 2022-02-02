@@ -621,102 +621,40 @@ const randomsSessionSchedule = async (params: any) => {
     return sessions
 
 }
-
-// schedule.scheduleJob('/5 * * * * *', async () => {
-//     let sessions = await queryService.selectAll(employeeCoachSessionsModel, {
-//         where: { action: { [Op.in]: [1, 2, 3, 4] }, status: 1 },
-//         raw: true,
-//         attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "status", "type", "action_by", "request_received_date"]
-//     }, {})
-//     sessions.forEach((ele, index, arr) => {
-//         let received_date = new Date(ele.request_received_date).setHours(new Date(ele.request_received_date).getHours() + 24)
-//         let current_date = Date.now()
-//         let params: any = {}
-//         switch (ele.action) {
-//             case 1:
-//                 //for automatic expire
-//                 if (received_date < current_date) {
-//                     params.id = ele.id
-//                     params.action = 3
-//                     return sessionExpire(params)
-//                 }
-//             case 2:
-//                 //for declined session reassign
-//                 if (current_date < ele.date) {
-//                     params.id = ele.id
-//                     params.action_by = 0;
-//                     return randomsSessionSchedule(params)
-//                 }
-//             case 3:
-//                 //for expired session reassign
-//                 if (current_date < ele.date) {
-//                     params.id = ele.id
-//                     params.action_by = 0;
-//                     return randomsSessionSchedule(params)
-//                 }
-//         }
-//     });
-// });
-
-
-// schedule.scheduleJob('* * * * * *', async () => {
-//     employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
-//     employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-//     let sessions = await queryService.selectAndCountAll(employeeCoachSessionsModel, {
-//         where: {  status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted },
-//         include: [
-//             {
-//                 model: coachManagementModel,
-//                 required: true,
-//                 attributes: ["name", "device_token"],
-//             },
-//             {
-//                 model: employeeModel,
-//                 required: true,
-//                 attributes: ["name"],
-//             },
-//         ],
-//         raw: true,
-//     })
-//     for (let session of sessions) {
-//         let startTime =  moment().format('YYYY-MM-DD HH:mm:ss');
-//         let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
-//         let duration = moment.duration(endTime.diff(startTime));
-//         let secondDiff = Math.ceil(duration.asSeconds())
-//         if (secondDiff <= 0) {
-//             let startTime = moment(session.start_time, "HH:mm:ss");
-//             let endTime = moment(session.end_time, "HH:mm:ss");
-//             let duration = moment.duration(endTime.diff(startTime));
-//             await employeeCoachSessionsModel.update({
-//                 status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-//             }, {
-//                 where: {
-//                     id: session.id,
-//                 }
-//             })
-//             //send push notification
-//         let notificationData = <any>{
-//             title: 'Sesssion completed',
-//             body: `${session["employee.name"]} has completed session on ${session.date} at ${session.end_time}`,
-//             data: {
-//                 type: constants.NOTIFICATION_TYPE.session_completed,
-//                 title: 'Sesssion completed',
-//                 message: `${session["employee.name"]} has completed session on ${session.date} at ${session.end_time}`
-//             },
-//         }
-//         await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
-//         }
-//         if(secondDiff <= 600 && secondDiff >= 0){
-//             let notificationData = <any>{
-//                 title: 'Next session in 10 minutes',
-//                 body: `${session["employee.name"]} has a session on ${session.date} at ${session.start_time}`,
-//                 data: {
-//                     type: constants.NOTIFICATION_TYPE.session_with_in_10_min,
-//                     title: 'Next session in 10 minutes',
-//                     message: `${session["employee.name"]} has a session on ${session.date} at ${session.start_time}`
-//                 },
-//             }
-//             await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
-//         }
-//     }
-// });
+export const scheduleSystemActionOnSessions = async () => {
+schedule.scheduleJob('/5 * * * * *', async () => {
+    let sessions = await queryService.selectAll(employeeCoachSessionsModel, {
+        where: { action: { [Op.in]: [1, 2, 3, 4] }, status: 1 },
+        raw: true,
+        attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "status", "type", "action_by", "request_received_date"]
+    }, {})
+    sessions.forEach((ele, index, arr) => {
+        let received_date = new Date(ele.request_received_date).setHours(new Date(ele.request_received_date).getHours() + 24)
+        let current_date = Date.now()
+        let params: any = {}
+        switch (ele.action) {
+            case 1:
+                //for automatic expire
+                if (received_date < current_date) {
+                    params.id = ele.id
+                    params.action = 3
+                    return sessionExpire(params)
+                }
+            case 2:
+                //for declined session reassign
+                if (current_date < ele.date) {
+                    params.id = ele.id
+                    params.action_by = 0;
+                    return randomsSessionSchedule(params)
+                }
+            case 3:
+                //for expired session reassign
+                if (current_date < ele.date) {
+                    params.id = ele.id
+                    params.action_by = 0;
+                    return randomsSessionSchedule(params)
+                }
+        }
+    });
+});
+}
