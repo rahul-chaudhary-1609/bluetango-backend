@@ -120,7 +120,7 @@ export const clearChat = Joi.object({
     chat_room_id: Joi.number().required()
 })
 
-export const addSlot= Joi.object({
+export const addEditSlot= Joi.object({
     date: Joi.string().required(),
     // start_time: Joi.string().required(),
     // end_time: Joi.string().required(),
@@ -134,7 +134,8 @@ export const addSlot= Joi.object({
     custom_date:Joi.string().optional(),
     custom_dates:Joi.array().optional(),
     session_duration:Joi.number().required(),
-    time_capture_type:Joi.number().valid(1,2,3).required()
+    time_capture_type:Joi.number().valid(1,2,3).required(),
+    is_update:Joi.boolean()
 })
 
 export const getSlots= Joi.object({
