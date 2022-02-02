@@ -16,9 +16,9 @@ export class CoachController {
     * @param req :[]
     * @param res 
     */
-    public async addSlot(req: any, res: any, next: any) {
+    public async addEditSlot(req: any, res: any, next: any) {
         try {
-            const responseFromService = await coachService.addSlot(req.body,req.user);
+            const responseFromService = await coachService.addEditSlot(req.body,req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

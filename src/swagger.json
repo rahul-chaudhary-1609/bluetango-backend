@@ -7499,12 +7499,12 @@
         "responses": {}
       }
     },
-    "/coach/addSlot": {
+    "/coach/addEditSlot": {
       "post": {
         "tags": [
           "Coach"
         ],
-        "description": "api to add slot",
+        "description": "api to add/edit slot",
         "consumes": [
           "application/json"
         ],
@@ -7519,7 +7519,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n7.time_capture_type:1=>available previewed slots, 2=>unavailable previewed slots, 3=>submit previewed slots with available and unavailable slots",
+            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n\ttime_capture_type:1=>available previewed slots, 2=>unavailable previewed slots, 3=>submit previewed slots with available and unavailable slots\n\tis_update:true is required if you want to update existing slots",
             "required": true,
             "schema": {
               "type": "object",
@@ -7538,6 +7538,10 @@
                 },
                 "day": {
                   "type": "number"
+                },
+                "is_update": {
+                  "type": "boolean",
+                  "default":false
                 },
                 "custom_date": {
                   "type": "string"

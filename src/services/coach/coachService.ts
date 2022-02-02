@@ -11,12 +11,13 @@ const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
 import * as appUtils from "../../utils/appUtils";
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
 import { notificationModel } from "../../models/notification";
 
 export class CoachService {
     constructor() { }
 
-    public async addSlot(params: any, user: any) {
+    public async addEditSlot(params: any, user: any) {
         if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
             throw new Error(constants.MESSAGES.coach_schedule_day_required)
 
@@ -147,6 +148,14 @@ export class CoachService {
                 slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
             })
         })
+        if(params.is_update){
+            await queryService.deleteData(coachScheduleModel, {  where: {
+                coach_id: user.uid,
+                date: {
+                    [Op.in]: dates,
+                }
+            } })
+        }
         for (let slot of params.slots) {
             let schedule = await coachScheduleModel.findOne({
                 where: {

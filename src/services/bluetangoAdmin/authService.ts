@@ -51,6 +51,7 @@ export class AuthService {
                 if (admin.status == constants.STATUS.active) {
                     delete admin.password;
                     let token = await tokenResponse.bluetangoAdminTokenResponse(admin);
+                    await queryService.updateData({ model: bluetangoAdminModel, token:token.token }, { where: { id: admin.id } })
                     admin.token = token;
                     return admin;
                 } else {
@@ -97,6 +98,7 @@ export class AuthService {
                 let newAdmin = await queryService.addData(bluetangoAdminModel, params);
                 newAdmin = newAdmin.get({ plain: true });
                 let token = await tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                await queryService.updateData({ model: bluetangoAdminModel, token:token.token }, { where: { id: newAdmin.id } })
                 newAdmin.token = token;
                 delete newAdmin.password;
                 delete newAdmin.reset_pass_otp;
@@ -344,6 +346,7 @@ export class AuthService {
         }
         if (Params.module_wise_permissions) {
             await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date(), module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } })
+            await queryService.updateData({ model: bluetangoAdminModel, token:null }, { where: { role_id: Params.id } })
         }
         let AlreadyExistAdmins = [];
         let updated = [];
@@ -381,6 +384,7 @@ export class AuthService {
                         let newAdmin = await queryService.addData(bluetangoAdminModel, params);
                         newAdmin = newAdmin.get({ plain: true });
                         let token = await tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                        await queryService.updateData({ model: bluetangoAdminModel, token:token.token }, { where: { id: newAdmin.id } })
                         newAdmin.token = token;
                         delete newAdmin.password;
                         delete newAdmin.reset_pass_otp;
