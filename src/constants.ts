@@ -309,11 +309,12 @@ export const NOTIFICATION_TYPE = {
   meeting_about_to_end: 19,
   update_meeting_duration: 20,
   new_coaching_session_request:21,
-  cancel_session:22,
-  session_completed:23,
-  session_with_in_10_min:24,
-  session_reassigned:25
-
+  session_accepted:22,
+  session_rejected:23,
+  cancel_session:24,
+  session_reassigned:25,
+  session_with_in_10_min:26,
+  session_completed:27, 
 }
 
 export const BLUETANGO_NOTIFICATION_TYPE = {

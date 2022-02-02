@@ -36,6 +36,7 @@ const constants = __importStar(require("../../constants"));
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
+const notification_1 = require("../../models/notification");
 models_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
 models_1.employeeCoachSessionsModel.hasOne(models_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id", as: 'team_level' });
 models_1.employeeCoachSessionsModel.hasOne(models_1.coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id", as: 'coach_specialization_category' });
@@ -140,7 +141,7 @@ class SessionManagementService {
     /*
 *perform action on sessions
 */
-    performAction(params) {
+    performAction(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let Sessions = yield this.getSessionDetail(params);
             params.model = models_1.employeeCoachSessionsModel;
@@ -176,26 +177,42 @@ class SessionManagementService {
                         {
                             model: models_1.coachManagementModel,
                             required: true,
-                            attributes: ["name", "device_token"],
+                            attributes: ["id", "name", "device_token"],
                         },
                         {
                             model: models_1.employeeModel,
                             required: true,
-                            attributes: ["name"],
+                            attributes: ["id", "name"],
                         },
                     ],
                     raw: true,
                 });
-                let notificationData = {
-                    title: 'Sesssion assigned by admin',
-                    body: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                //add notification 
+                let notificationObj = {
+                    type_id: session.id,
+                    sender_id: user.uid,
+                    reciever_id: session.coach_id,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    type: constants.NOTIFICATION_TYPE.session_reassigned,
                     data: {
                         type: constants.NOTIFICATION_TYPE.session_reassigned,
                         title: 'Sesssion assigned by admin',
-                        message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                        message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                        senderEmployeeData: { id: user.uid },
                     },
                 };
-                yield helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+                yield notification_1.notificationModel.create(notificationObj);
+                let notificationData = {
+                    title: 'Sesssion assigned by admin',
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.session_reassigned,
+                        title: 'Sesssion assigned by admin',
+                        message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                        senderEmployeeData: { id: user.uid },
+                    },
+                };
+                yield helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
                 let mailParams = {};
                 mailParams.to = Sessions.email;
                 mailParams.html = `Hi  ${Sessions.name}

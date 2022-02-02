@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleMeetingRemainingTimeNotificationJob = exports.scheduleDeleteNotificationJob = exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
+exports.scheduleMeetingSessionNotificationJob = exports.scheduleDeleteNotificationJob = exports.scheduleGoalSubmitReminderNotificationJob = exports.scheduleFreeTrialExpirationNotificationJob = void 0;
 const constants = __importStar(require("../constants"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
 const models_1 = require("../models");
@@ -275,28 +275,15 @@ exports.scheduleDeleteNotificationJob = () => __awaiter(void 0, void 0, void 0, 
     return true;
 });
 const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function* () {
-    let coach = yield helperFunction.convertPromiseToObject(yield models_1.coachManagementModel.findByPk(params.session.coach_id));
-    delete coach.password;
-    let notificationObj = {
-        type_id: coach.id,
-        sender_id: coach.id,
-        reciever_id: coach.id,
-        reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
-        type: constants.NOTIFICATION_TYPE.meeting_about_to_end,
-        data: {
+    if (params.isCoach) {
+        let coach = yield helperFunction.convertPromiseToObject(yield models_1.coachManagementModel.findByPk(params.session.coach_id));
+        delete coach.password;
+        let notificationObj = {
+            type_id: params.session.id,
+            sender_id: coach.id,
+            reciever_id: coach.id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
             type: params.notificationType,
-            title: params.title,
-            message: params.body,
-            senderEmplyeeData: coach,
-            session: params.session,
-        },
-    };
-    yield notification_1.notificationModel.create(notificationObj);
-    if (coach.device_token) {
-        //send push notification
-        let notificationData = {
-            title: params.title,
-            body: params.body,
             data: {
                 type: params.notificationType,
                 title: params.title,
@@ -305,13 +292,28 @@ const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function*
                 session: params.session,
             },
         };
-        yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
+        yield notification_1.notificationModel.create(notificationObj);
+        if (coach.device_token) {
+            //send push notification
+            let notificationData = {
+                title: params.title,
+                body: params.body,
+                data: {
+                    type: params.notificationType,
+                    title: params.title,
+                    message: params.body,
+                    senderEmplyeeData: coach,
+                    session: params.session,
+                },
+            };
+            yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
+        }
     }
     if (params.isEmployee) {
         let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(params.session.employee_id));
         delete employee.password;
-        notificationObj = {
-            type_id: employee.id,
+        let notificationObj = {
+            type_id: params.session.id,
             sender_id: employee.id,
             reciever_id: employee.id,
             reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -342,7 +344,7 @@ const sendNotification = (params) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 });
-exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.scheduleMeetingSessionNotificationJob = () => __awaiter(void 0, void 0, void 0, function* () {
     schedule.scheduleJob('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
         let sessions = yield helperFunction.convertPromiseToObject(yield index_1.employeeCoachSessionsModel.findAll({
             where: {
@@ -362,11 +364,24 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
             let endTime = moment_1.default(session.end_time, "HH:mm:ss");
             let startDuration = moment_1.default.duration(currentTime.diff(startTime));
             let endDuration = moment_1.default.duration(endTime.diff(currentTime));
+            let leftToStartDuration = moment_1.default.duration(startTime.diff(currentTime));
             let diffFromStartInSeconds = Math.ceil(startDuration.asSeconds());
             let diffToEndInSeconds = Math.ceil(endDuration.asSeconds());
-            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds);
+            let diffToStartInSeconds = Math.ceil(leftToStartDuration.asSeconds());
+            console.log(currentTime, "\n", startTime, "\n", endTime, "\n", "\n", diffFromStartInSeconds, "\n", diffToEndInSeconds, "/n", diffToStartInSeconds);
             if (session.type == constants.EMPLOYEE_COACH_SESSION_TYPE.free) {
-                if (diffFromStartInSeconds == 1200) {
+                if (diffToStartInSeconds == 600) {
+                    let params = {
+                        notificationType: constants.NOTIFICATION_TYPE.session_with_in_10_min,
+                        session,
+                        title: `Reminder`,
+                        body: `Next Session in 10 minutes`,
+                        isEmployee: true,
+                        isCoach: true,
+                    };
+                    yield sendNotification(params);
+                }
+                else if (diffFromStartInSeconds == 1200) {
                     let params = {
                         session,
                     };
@@ -380,6 +395,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                         title: `Meeting duration updated`,
                         body: `We are extending the duration of the meeting by ${extendingMinutes} minutes. It will automatically disconnect after ${extendingMinutes} minutes`,
                         isEmployee: false,
+                        isCoach: true,
                     };
                     yield sendNotification(params);
                     params.extendingMinutes = extendingMinutes;
@@ -392,6 +408,7 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                         title: `Reminder`,
                         body: `Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee: true,
+                        isCoach: true,
                     };
                     yield sendNotification(params);
                 }
@@ -404,49 +421,78 @@ exports.scheduleMeetingRemainingTimeNotificationJob = () => __awaiter(void 0, vo
                         title: `Reminder`,
                         body: `Ongoing zoom meeting duration will end in 5 minutes`,
                         isEmployee: true,
+                        isCoach: true,
                     };
                     yield sendNotification(params);
                 }
             }
         }
+        let current_time = moment_1.default(new Date()).tz(constants.TIME_ZONE).format("YYYY-MM-DD HH:mm:ss");
+        if (current_time) {
+            let sessions = yield helperFunction.convertPromiseToObject(yield index_1.employeeCoachSessionsModel.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: moment_1.default(new Date()).tz(constants.TIME_ZONE).format("YYYY-MM-DD")
+                    },
+                    status: [
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                    ]
+                }
+            }));
+            for (let session of sessions) {
+                let startTime = moment_1.default(`${current_time}`, "YYYY-MM-DD HH:mm:ss");
+                let endTime = moment_1.default(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss");
+                let duration = moment_1.default.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds());
+                if (secondDiff <= 0) {
+                    if (session.status == constants.EMPLOYEE_COACH_SESSION_STATUS.pending) {
+                        yield index_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                        let params = {
+                            notificationType: constants.NOTIFICATION_TYPE.session_rejected,
+                            session,
+                            title: `Info`,
+                            body: `Session Rejected`,
+                            isEmployee: true,
+                            isCoach: false,
+                        };
+                        yield sendNotification(params);
+                    }
+                    else if (session.status == constants.EMPLOYEE_COACH_SESSION_STATUS.accepted) {
+                        let startTime = moment_1.default(session.start_time, "HH:mm:ss");
+                        let endTime = moment_1.default(session.end_time, "HH:mm:ss");
+                        let duration = moment_1.default.duration(endTime.diff(startTime));
+                        yield index_1.employeeCoachSessionsModel.update({
+                            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                            call_duration: Math.ceil(duration.asMinutes()),
+                        }, {
+                            where: {
+                                id: session.id,
+                            }
+                        });
+                        let params = {
+                            notificationType: constants.NOTIFICATION_TYPE.session_completed,
+                            session,
+                            title: `Info`,
+                            body: `Session Completed`,
+                            isEmployee: true,
+                            isCoach: true,
+                        };
+                        yield sendNotification(params);
+                    }
+                }
+            }
+        }
     }));
-    console.log("Delete Meeting Remaining Time Notification Job has started!");
+    console.log("Meeting sessions Notification Job has started!");
     return true;
 });
-// export const scheduleMarkEmployeeCoachSessionAsComepletedOrRejetctedJob = async()=> {
-//     schedule.scheduleJob('0 */24 * * *', async ()=> {
-//         employeeCoachSessionsModel.update({
-//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-//             },{
-//                 where:{
-//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-//                     date:{
-//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-//                     },
-//                     end_time:{
-//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
-//                     }
-//                 }
-//             }
-//         )
-//         employeeCoachSessionsModel.update({
-//                 status:constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
-//             },{
-//                 where:{
-//                     status:constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-//                     date:{
-//                         [Op.lt]:moment(new Date()).format("YYYY-MM-DD")
-//                     },
-//                     end_time:{
-//                         [Op.lt]:moment(new Date()).format("HH:mm:ss")
-//                     }
-//                 }
-//             }
-//         )
-//     });
-//     console.log("schedule Mark Employee Coach Session As Comepleted Or Rejetcted Job has started!")
-//     return true;
-// }
 /*
 *perform action on sessions
 */

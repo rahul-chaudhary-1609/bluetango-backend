@@ -63,7 +63,6 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const authService = new authService_1.AuthService();
 class EmployeeServices {
     constructor() { }
@@ -838,6 +837,22 @@ class EmployeeServices {
                         slot.status = constants.COACH_SCHEDULE_STATUS.booked;
                         slot.save();
                         let coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findByPk(parseInt(params.coach_id)));
+                        delete employee.password;
+                        //add notification 
+                        let notificationObj = {
+                            type_id: session.id,
+                            sender_id: user.uid,
+                            reciever_id: params.coach_id,
+                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                            type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                            data: {
+                                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                                title: 'New coaching session request',
+                                message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                                senderEmployeeData: employee,
+                            },
+                        };
+                        yield notification_1.notificationModel.create(notificationObj);
                         //send push notification
                         let notificationData = {
                             title: 'New coaching session request',
@@ -846,9 +861,18 @@ class EmployeeServices {
                                 type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
                                 title: 'New coaching session request',
                                 message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                                senderEmployeeData: employee,
                             },
                         };
                         yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
+                        let mailParams = {};
+                        mailParams.to = coach.email;
+                        mailParams.html = `Hi  ${coach.name}
+                        <br>A new session request is created by ${employee.name}
+                        `;
+                        mailParams.subject = "New Session Request";
+                        mailParams.name = "BlueXinga";
+                        yield helperFunction.sendEmail(mailParams);
                     }
                     return session;
                 }
@@ -971,21 +995,20 @@ class EmployeeServices {
         return __awaiter(this, void 0, void 0, function* () {
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            let session = yield queryService.selectOne(employeeCoachSession_1.employeeCoachSessionsModel, {
+            let session = yield employeeCoachSession_1.employeeCoachSessionsModel.findOne({
                 where: { id: params.session_id },
                 include: [
                     {
                         model: coachManagement_1.coachManagementModel,
                         required: true,
-                        attributes: ["name", "device_token"],
+                        attributes: ["id", "name", "device_token"],
                     },
                     {
                         model: employee_1.employeeModel,
                         required: true,
-                        attributes: ["name"],
+                        attributes: ["id", "name", "device_token"],
                     },
                 ],
-                raw: true,
             });
             if (!session) {
                 throw new Error(constants.MESSAGES.no_session);
@@ -1013,17 +1036,33 @@ class EmployeeServices {
             let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
             slot.status = constants.COACH_SCHEDULE_STATUS.available;
             slot.save();
-            //send push notification
-            let notificationData = {
-                title: 'Sesssion cancelled by employee',
-                body: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`,
+            //add notification 
+            let notificationObj = {
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: session.coach_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                type: constants.NOTIFICATION_TYPE.cancel_session,
                 data: {
                     type: constants.NOTIFICATION_TYPE.cancel_session,
                     title: 'Sesssion cancelled by employee',
-                    message: `${session["employee.name"]} has cancelled session on ${session.date} at ${session.start_time}`
+                    message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.employee,
                 },
             };
-            yield helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+            yield notification_1.notificationModel.create(notificationObj);
+            //send push notification
+            let notificationData = {
+                title: 'Sesssion cancelled by employee',
+                body: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.cancel_session,
+                    title: 'Sesssion cancelled by employee',
+                    message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                    senderEmployeeData: session.employee,
+                },
+            };
+            yield helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
             return yield helperFunction.convertPromiseToObject(session);
         });
     }
