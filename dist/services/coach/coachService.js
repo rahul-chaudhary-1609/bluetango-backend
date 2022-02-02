@@ -41,10 +41,11 @@ const Sequelize = require('sequelize');
 const moment = require("moment");
 var Op = Sequelize.Op;
 const appUtils = __importStar(require("../../utils/appUtils"));
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const notification_1 = require("../../models/notification");
 class CoachService {
     constructor() { }
-    addSlot(params, user) {
+    addEditSlot(params, user) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             if (params.type == constants.COACH_SCHEDULE_TYPE.weekly && !params.day)
@@ -165,6 +166,14 @@ class CoachService {
                     slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss");
                 });
             });
+            if (params.is_update) {
+                yield queryService.deleteData(coachSchedule_1.coachScheduleModel, { where: {
+                        coach_id: user.uid,
+                        date: {
+                            [Op.in]: dates,
+                        }
+                    } });
+            }
             for (let slot of params.slots) {
                 let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
                     where: {

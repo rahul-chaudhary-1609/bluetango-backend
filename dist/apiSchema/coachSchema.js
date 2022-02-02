@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addEditSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -126,7 +126,7 @@ exports.updateEmployerDeviceToken = joi_1.default.object({
 exports.clearChat = joi_1.default.object({
     chat_room_id: joi_1.default.number().required()
 });
-exports.addSlot = joi_1.default.object({
+exports.addEditSlot = joi_1.default.object({
     date: joi_1.default.string().required(),
     // start_time: Joi.string().required(),
     // end_time: Joi.string().required(),
@@ -140,7 +140,8 @@ exports.addSlot = joi_1.default.object({
     custom_date: joi_1.default.string().optional(),
     custom_dates: joi_1.default.array().optional(),
     session_duration: joi_1.default.number().required(),
-    time_capture_type: joi_1.default.number().valid(1, 2, 3).required()
+    time_capture_type: joi_1.default.number().valid(1, 2, 3).required(),
+    is_update: joi_1.default.boolean()
 });
 exports.getSlots = joi_1.default.object({
     filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
