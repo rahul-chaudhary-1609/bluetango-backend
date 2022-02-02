@@ -78,6 +78,7 @@ class AuthService {
                     if (admin.status == constants.STATUS.active) {
                         delete admin.password;
                         let token = yield tokenResponse.bluetangoAdminTokenResponse(admin);
+                        yield queryService.updateData({ model: models_1.bluetangoAdminModel, token: token.token }, { where: { id: admin.id } });
                         admin.token = token;
                         return admin;
                     }
@@ -127,6 +128,7 @@ class AuthService {
                     let newAdmin = yield queryService.addData(models_1.bluetangoAdminModel, params);
                     newAdmin = newAdmin.get({ plain: true });
                     let token = yield tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                    yield queryService.updateData({ model: models_1.bluetangoAdminModel, token: token.token }, { where: { id: newAdmin.id } });
                     newAdmin.token = token;
                     delete newAdmin.password;
                     delete newAdmin.reset_pass_otp;
@@ -374,6 +376,7 @@ class AuthService {
             }
             if (Params.module_wise_permissions) {
                 yield queryService.updateData({ model: models_1.bluetangoAdminRolesModel, last_activity: new Date(), module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } });
+                yield queryService.updateData({ model: models_1.bluetangoAdminModel, token: null }, { where: { role_id: Params.id } });
             }
             let AlreadyExistAdmins = [];
             let updated = [];
@@ -414,6 +417,7 @@ class AuthService {
                             let newAdmin = yield queryService.addData(models_1.bluetangoAdminModel, params);
                             newAdmin = newAdmin.get({ plain: true });
                             let token = yield tokenResponse.bluetangoAdminTokenResponse(newAdmin);
+                            yield queryService.updateData({ model: models_1.bluetangoAdminModel, token: token.token }, { where: { id: newAdmin.id } });
                             newAdmin.token = token;
                             delete newAdmin.password;
                             delete newAdmin.reset_pass_otp;

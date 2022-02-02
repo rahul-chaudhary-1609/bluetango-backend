@@ -75,7 +75,7 @@ coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, multerParser_1.upload.single('file'), authController.uploadFile);
 /* add Slot */
-coachRoute.post("/addSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.addSlot), coachController.addSlot);
+coachRoute.post("/addEditSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.addEditSlot), coachController.addEditSlot);
 /* get Slots */
 coachRoute.get("/getSlots", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlots), coachController.getSlots);
 /*get Slot */

@@ -41,10 +41,10 @@ class CoachController {
     * @param req :[]
     * @param res
     */
-    addSlot(req, res, next) {
+    addEditSlot(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const responseFromService = yield coachService.addSlot(req.body, req.user);
+                const responseFromService = yield coachService.addEditSlot(req.body, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

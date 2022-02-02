@@ -78,6 +78,11 @@ exports.validateBluetangoAdminToken = (req, res, next) => __awaiter(void 0, void
         const token = req.headers.authorization;
         const decoded = jsonwebtoken_1.default.verify(token, process.env.BLUETANGO_ADMIN_SECRET_KEY || constants.BLUETANGO_ADMIN_SECRET_KEY);
         const admin = yield queryServices.selectOne(bluetangoAdmin_1.bluetangoAdminModel, { where: { id: decoded.id } });
+        if (admin.token != token) {
+            response.status = 401;
+            response.message = constants.MESSAGES.invalid_toke;
+            return res.status(response.status).send(response);
+        }
         if (admin.status == constants.STATUS.inactive) {
             response.status = 401;
             response.message = constants.MESSAGES.deactivate_account;
