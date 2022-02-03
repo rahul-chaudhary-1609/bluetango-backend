@@ -230,7 +230,8 @@ class CoachService {
                         day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
                         custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
                         custom_dates: null,
-                        is_available: slot.is_available
+                        is_available: slot.is_available,
+                        status: slot.is_available
                     });
                 }
             }
@@ -944,6 +945,32 @@ class CoachService {
             params.session = yield helperFunction.convertPromiseToObject(session);
             yield helperFunction.endZoomMeeting(params);
             return true;
+        });
+    }
+    updateSlotAvailability(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = {};
+            if (params.event_type == 0) {
+                where = {
+                    coach_id: user.uid,
+                    date: {
+                        [Op.in]: [params.date],
+                    }
+                };
+            }
+            else {
+                where = {
+                    coach_id: user.uid,
+                    date: {
+                        [Op.gte]: params.date,
+                    }
+                };
+            }
+            for (let slot of params.timings) {
+                where.start_time = { [Op.in]: [slot.start_time] };
+                where.end_time = { [Op.in]: [slot.end_time] };
+                yield queryService.updateData({ model: coachSchedule_1.coachScheduleModel, status: params.is_available, is_available: params.is_available }, { where: where });
+            }
         });
     }
 }

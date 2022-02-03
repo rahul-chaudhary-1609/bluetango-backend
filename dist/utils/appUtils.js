@@ -227,7 +227,7 @@ exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
         slots = slots.filter(function (el) {
             return el != null;
         });
-        return { availableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: 1 }))), unavailableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: 2 }))) };
+        return { availableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.available }))), unavailableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.unavailable }))) };
     }
     else {
         [...new Set(validSlots)].map((value) => {
@@ -237,7 +237,7 @@ exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
         slots = slots.filter(function (el) {
             return el != null;
         });
-        return { availableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: 1 }))), unavailableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: 2 }))) };
+        return { availableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.available }))), unavailableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.unavailable }))) };
     }
 };
 //# sourceMappingURL=appUtils.js.map

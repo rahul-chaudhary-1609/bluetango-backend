@@ -211,3 +211,11 @@ export const getChatRoomId = Joi.object({
     other_user_id: Joi.string().required(),
     type: Joi.number(),
   })
+export const updateSlotAvailability= Joi.object({
+    date: Joi.string().required(),
+    timings:Joi.array().items(Joi.object().keys({
+    start_time: Joi.string().required(),
+    end_time: Joi.string().required()})).required(),
+    is_available:Joi.number().valid(1,4).required(),
+    event_type:Joi.number().valid(0,1).required()
+})

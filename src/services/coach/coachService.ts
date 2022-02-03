@@ -218,7 +218,8 @@ export class CoachService {
                     day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
                     custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
                     custom_dates: null,
-                    is_available:slot.is_available
+                    is_available:slot.is_available,
+                    status:slot.is_available
                 })
 
             }
@@ -1086,5 +1087,29 @@ export class CoachService {
 
         return true;
     }
+    public async updateSlotAvailability(params: any, user: any) {
+        let where: any = {}
+        if(params.event_type==0){
+            where= {
+                coach_id: user.uid,
+                date: {
+                    [Op.in]: [params.date],
+                }
+            }
+        }else{
+            where= {
+                coach_id: user.uid,
+                date: {
+                    [Op.gte]: params.date,
+                  }
+            }
+        }
+        for (let slot of params.timings) {
+            where.start_time={ [Op.in]:[slot.start_time]};
+            where.end_time={[Op.in]:[slot.end_time]};
+            await queryService.updateData({model:coachScheduleModel,status:params.is_available,is_available:params.is_available}, {where: where })
+
+    }
+}
 
 }
