@@ -130,7 +130,7 @@ export const addEditSlot= Joi.object({
         is_available:Joi.number()
     })).required(),
     type: Joi.number().required(),
-    day: Joi.number().optional(),
+    day: Joi.array().optional(),
     custom_date:Joi.string().optional(),
     custom_dates:Joi.array().optional(),
     session_duration:Joi.number().required(),

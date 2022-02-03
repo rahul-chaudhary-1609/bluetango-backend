@@ -392,6 +392,7 @@ export const getCoachList= Joi.object({
   is_pagination:Joi.number().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
+  weekly: Joi.number().optional().valid(1),
 })
 
 export const getSlots= Joi.object({

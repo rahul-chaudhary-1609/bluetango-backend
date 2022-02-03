@@ -86,9 +86,11 @@ export class CoachService {
                 end.setFullYear(start.getFullYear() + 1)
 
                 while (start < end) {
-                    if (params.day == parseInt(moment(start).format('d'))) {
+                    for(let d=0;d<params.day.length;d++){
+                    if (params.day[d] == parseInt(moment(start).format('d'))) {
                         dates.push(moment(start).format("YYYY-MM-DD"))
                     }
+                }
                     start.setDate(start.getDate() + 1)
                 }
                 break
@@ -202,11 +204,8 @@ export class CoachService {
 
             })
             if (schedule) throw new Error(constants.MESSAGES.coach_schedule_already_exist)
-
             let slot_date_group_id = await helperFunction.getUniqueSlotDateGroupId();
-
             for (let date of dates) {
-
                 schedules.push({
                     slot_date_group_id,
                     slot_time_group_id,
@@ -221,27 +220,21 @@ export class CoachService {
                     is_available:slot.is_available,
                     status:slot.is_available
                 })
-
             }
-
         }
-
         if (schedules.length < 1000) {
             await coachScheduleModel.bulkCreate(schedules)
-
             return true;
         } else {
             let size = schedules.length;
             let start = 0;
             let end = 999;
-
             while (size > 0) {
                 await coachScheduleModel.bulkCreate(schedules.slice(start, end))
                 start = start + 999;
                 end = end + 999;
                 size = size - 999;
             }
-
             return true;
         }
 
@@ -1091,6 +1084,7 @@ export class CoachService {
         let where: any = {}
         if(params.event_type==0){
             where= {
+                status:{ [Op.in]:[1,4]},
                 coach_id: user.uid,
                 date: {
                     [Op.in]: [params.date],
@@ -1098,6 +1092,7 @@ export class CoachService {
             }
         }else{
             where= {
+                status:{ [Op.in]:[1,4]},
                 coach_id: user.uid,
                 date: {
                     [Op.gte]: params.date,

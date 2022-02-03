@@ -588,7 +588,28 @@ export class EmployeeServices {
             }
 
         }
-
+        let dates = []
+        if (params.weekly) {
+            let start = new Date();
+            let end = new Date(new Date().setDate(new Date().getDate() + 6));
+            while (start <= end) {
+                dates.push(moment(start).format("YYYY-MM-DD"))
+                start.setDate(start.getDate() + 1)
+            }
+            let slots = await coachScheduleModel.findAll(
+                {
+                    status:constants.COACH_SCHEDULE_STATUS.available,
+                    date: {
+                        [Op.in]: [dates],
+                    }
+                }
+            )
+            var coach_ids = slots.map(ele => ele.coach_id)
+            coach_ids = [...new Set(coach_ids)];
+            where["id"] = {
+                [Op.in]: coach_ids
+            }
+        }
         if (employee) {
             where["employee_rank_ids"] = {
                 [Op.contains]: [employee.employee_rank_id]
@@ -968,10 +989,10 @@ export class EmployeeServices {
                             type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
                             title: 'New coaching session request',
                             message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
-                            senderEmployeeData:employee,
+                            senderEmployeeData: employee,
                         },
                     }
-                    
+
                     await notificationModel.create(notificationObj);
 
                     //send push notification
@@ -982,7 +1003,7 @@ export class EmployeeServices {
                             type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
                             title: 'New coaching session request',
                             message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
-                            senderEmployeeData:employee,
+                            senderEmployeeData: employee,
                         },
                     }
                     await helperFunction.sendFcmNotification([coach.device_token], notificationData);
@@ -1156,12 +1177,12 @@ export class EmployeeServices {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name", "device_token"],
+                    attributes: ["id", "name", "device_token"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","device_token"],
+                    attributes: ["id", "name", "device_token"],
                 },
             ],
         })
@@ -1211,10 +1232,10 @@ export class EmployeeServices {
                 type: constants.NOTIFICATION_TYPE.cancel_session,
                 title: 'Sesssion cancelled by employee',
                 message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.employee,
+                senderEmployeeData: session.employee,
             },
         }
-        
+
         await notificationModel.create(notificationObj);
         //send push notification
         let notificationData = <any>{
@@ -1224,11 +1245,11 @@ export class EmployeeServices {
                 type: constants.NOTIFICATION_TYPE.cancel_session,
                 title: 'Sesssion cancelled by employee',
                 message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.employee,
+                senderEmployeeData: session.employee,
             },
         }
         await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
-        
+
         return await helperFunction.convertPromiseToObject(session);
     }
 
