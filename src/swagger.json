@@ -10212,6 +10212,61 @@
         ],
         "responses": {}
       }
+    },
+    "/coach/updateSlotAvailability": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to update Slot Availability",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Date format should be: YYYY-MM-DD\n\t is_available is required 1<= for available,4<= for unavailable\n\tevent_type is requires 0<= for current data 1<= for following days\n\ttimings is required",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "is_available": {
+                  "type": "number"
+                },
+                "event_type": {
+                  "type": "number"
+                },
+                "timings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string"
+                      },
+                      "end_time": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {}

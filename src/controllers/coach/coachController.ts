@@ -132,5 +132,18 @@ export class CoachController {
             next(e)
         }
     }
+     /**
+    * updateSlotAvailability
+    * @param req :[]
+    * @param res 
+    */
+      public async updateSlotAvailability(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.updateSlotAvailability(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 
 }

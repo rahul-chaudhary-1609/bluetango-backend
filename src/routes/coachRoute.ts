@@ -123,5 +123,6 @@ coachRoute.get("/getStaticContent", tokenValidator.validateCoachToken, authContr
 coachRoute.get("/getBios", tokenValidator.validateCoachToken, authController.getBios);
 /* get chat room id */
 coachRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getChatRoomId), chatController.getChatRoomId);
-
+/* update Slots availability */
+coachRoute.post("/updateSlotAvailability",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateSlotAvailability), coachController.updateSlotAvailability);
 export = coachRoute;
