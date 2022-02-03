@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addEditSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.updateSlotAvailability = exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addEditSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -204,5 +204,14 @@ exports.endZoomMeeting = joi_1.default.object({
 exports.getChatRoomId = joi_1.default.object({
     other_user_id: joi_1.default.string().required(),
     type: joi_1.default.number(),
+});
+exports.updateSlotAvailability = joi_1.default.object({
+    date: joi_1.default.string().required(),
+    timings: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required()
+    })).required(),
+    is_available: joi_1.default.number().valid(1, 4).required(),
+    event_type: joi_1.default.number().valid(0, 1).required()
 });
 //# sourceMappingURL=coachSchema.js.map

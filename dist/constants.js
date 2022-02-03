@@ -423,6 +423,7 @@ exports.COACH_SCHEDULE_STATUS = {
     available: 1,
     booked: 2,
     passed: 3,
+    unavailable: 4,
 };
 exports.COACH_SCHEDULE_TYPE = {
     does_not_repeat: 1,
