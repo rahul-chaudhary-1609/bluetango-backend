@@ -110,8 +110,10 @@ class CoachService {
                     let end = new Date(params.date);
                     end.setFullYear(start.getFullYear() + 1);
                     while (start < end) {
-                        if (params.day == parseInt(moment(start).format('d'))) {
-                            dates.push(moment(start).format("YYYY-MM-DD"));
+                        for (let d = 0; d < params.day.length; d++) {
+                            if (params.day[d] == parseInt(moment(start).format('d'))) {
+                                dates.push(moment(start).format("YYYY-MM-DD"));
+                            }
                         }
                         start.setDate(start.getDate() + 1);
                     }
@@ -952,6 +954,7 @@ class CoachService {
             let where = {};
             if (params.event_type == 0) {
                 where = {
+                    status: { [Op.in]: [1, 4] },
                     coach_id: user.uid,
                     date: {
                         [Op.in]: [params.date],
@@ -960,6 +963,7 @@ class CoachService {
             }
             else {
                 where = {
+                    status: { [Op.in]: [1, 4] },
                     coach_id: user.uid,
                     date: {
                         [Op.gte]: params.date,

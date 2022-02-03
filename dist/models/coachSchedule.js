@@ -41,7 +41,7 @@ exports.coachScheduleModel = connection_1.sequelize.define("coach_schedules", {
         comment: '1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom'
     },
     day: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
         allowNull: true,
         comment: '0=>sunday, 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday'
     },

@@ -352,6 +352,7 @@ exports.getCoachList = joi_1.default.object({
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
+    weekly: joi_1.default.number().optional().valid(1),
 });
 exports.getSlots = joi_1.default.object({
     coach_id: joi_1.default.number().required(),

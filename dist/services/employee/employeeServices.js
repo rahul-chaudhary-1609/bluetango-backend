@@ -545,6 +545,26 @@ class EmployeeServices {
                     throw new Error(constants.MESSAGES.no_coach_with_specialization_category);
                 }
             }
+            let dates = [];
+            if (params.weekly) {
+                let start = new Date();
+                let end = new Date(new Date().setDate(new Date().getDate() + 6));
+                while (start <= end) {
+                    dates.push(moment(start).format("YYYY-MM-DD"));
+                    start.setDate(start.getDate() + 1);
+                }
+                let slots = yield coachSchedule_1.coachScheduleModel.findAll({
+                    status: constants.COACH_SCHEDULE_STATUS.available,
+                    date: {
+                        [Op.in]: [dates],
+                    }
+                });
+                var coach_ids = slots.map(ele => ele.coach_id);
+                coach_ids = [...new Set(coach_ids)];
+                where["id"] = {
+                    [Op.in]: coach_ids
+                };
+            }
             if (employee) {
                 where["employee_rank_ids"] = {
                     [Op.contains]: [employee.employee_rank_id]
