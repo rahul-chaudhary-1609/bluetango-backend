@@ -136,7 +136,7 @@ exports.addEditSlot = joi_1.default.object({
         is_available: joi_1.default.number()
     })).required(),
     type: joi_1.default.number().required(),
-    day: joi_1.default.number().optional(),
+    day: joi_1.default.array().optional(),
     custom_date: joi_1.default.string().optional(),
     custom_dates: joi_1.default.array().optional(),
     session_duration: joi_1.default.number().required(),
