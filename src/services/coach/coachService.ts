@@ -86,11 +86,11 @@ export class CoachService {
                 end.setFullYear(start.getFullYear() + 1)
 
                 while (start < end) {
-                    for(let d=0;d<params.day.length;d++){
-                    if (params.day[d] == parseInt(moment(start).format('d'))) {
-                        dates.push(moment(start).format("YYYY-MM-DD"))
+                    for (let d = 0; d < params.day.length; d++) {
+                        if (params.day[d] == parseInt(moment(start).format('d'))) {
+                            dates.push(moment(start).format("YYYY-MM-DD"))
+                        }
                     }
-                }
                     start.setDate(start.getDate() + 1)
                 }
                 break
@@ -120,7 +120,7 @@ export class CoachService {
         params.slots = validslots;
 
         slots.forEach((slot) => {
-            let keys=Object.keys(slot)
+            let keys = Object.keys(slot)
             let index = keys.indexOf("is_available");
             keys.splice(index, 1);
             keys.forEach((key) => {
@@ -143,20 +143,34 @@ export class CoachService {
         // })
 
         slots.forEach((slot) => {
-            let keys=Object.keys(slot)
+            let keys = Object.keys(slot)
             let index = keys.indexOf("is_available");
             keys.splice(index, 1);
             keys.forEach((key) => {
                 slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
             })
         })
-        if(params.is_update){
-            await queryService.deleteData(coachScheduleModel, {  where: {
-                coach_id: user.uid,
-                date: {
-                    [Op.in]: dates,
+        if (params.is_update) {
+            let bookedSlots = await queryService.selectAndCountAll(coachScheduleModel, {
+                where: {
+                    coach_id: user.uid,
+                    status: constants.COACH_SCHEDULE_STATUS.booked,
+                    date: {
+                        [Op.in]: dates,
+                    }
                 }
-            } })
+            }, {})
+            if (bookedSlots.count >= 1) {
+                return { bookedSlots: bookedSlots };
+            }
+            await queryService.deleteData(coachScheduleModel, {
+                where: {
+                    coach_id: user.uid,
+                    date: {
+                        [Op.in]: dates,
+                    }
+                }
+            })
         }
         for (let slot of params.slots) {
             let schedule = await coachScheduleModel.findOne({
@@ -217,8 +231,8 @@ export class CoachService {
                     day: params.type == constants.COACH_SCHEDULE_TYPE.weekly ? params.day : null,
                     custom_date: params.type == constants.COACH_SCHEDULE_TYPE.custom ? params.custom_date : null,
                     custom_dates: null,
-                    is_available:slot.is_available,
-                    status:slot.is_available
+                    is_available: slot.is_available,
+                    status: slot.is_available
                 })
             }
         }
@@ -554,12 +568,12 @@ export class CoachService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name","email", "device_token"],
+                    attributes: ["id", "name", "email", "device_token", "app_id"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","email","device_token"],
+                    attributes: ["id", "name", "email", "device_token"],
                 },
             ],
         })
@@ -573,10 +587,27 @@ export class CoachService {
         }
 
         params.session = await helperFunction.convertPromiseToObject(session);
-
         session.details = await helperFunction.scheduleZoomMeeting(params);
         session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
-
+        if (session.coach_management.app_id == constants.COACH_APP_ID.BT) {
+            if (session.timeline) {
+                session.timeline = [...session.timeline, {
+                    "name": session.coach_management.name,
+                    "request_received": session.request_received_date,
+                    "status": "Sent",
+                    "action": constants.SESSION_ACTION.accepted,
+                    "action_by": constants.ACTION_BY.coach
+                }]
+            } else {
+                session.timeline = [{
+                    "name": session.coach_management.name,
+                    "request_received": session.request_received_date,
+                    "status": "Sent",
+                    "action": constants.SESSION_ACTION.accepted,
+                    "action_by": constants.ACTION_BY.coach
+                }]
+            }
+        }
         session.save();
 
         //add notification 
@@ -590,10 +621,10 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.session_accepted,
                 title: 'Sesssion accepted by coach',
                 message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
-        
+
         await notificationModel.create(notificationObj);
         //send push notification
         let notificationData = <any>{
@@ -603,7 +634,7 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.session_accepted,
                 title: 'Sesssion accepted by coach',
                 message: `${session.coach_management.name} has accepted session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
         await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
@@ -631,12 +662,12 @@ export class CoachService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name","email", "device_token"],
+                    attributes: ["id", "name", "email", "device_token", "app_id"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","email","device_token"],
+                    attributes: ["id", "name", "email", "device_token"],
                 },
             ],
         })
@@ -650,8 +681,26 @@ export class CoachService {
         }
 
         session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
+        if (session.coach_management.app_id == constants.COACH_APP_ID.BT) {
+            if (session.timeline) {
+                session.timeline = [...session.timeline, {
+                    "name": session.coach_management.name,
+                    "request_received": session.request_received_date,
+                    "status": "Sent",
+                    "action": constants.SESSION_ACTION.declined,
+                    "action_by": constants.ACTION_BY.coach
+                }]
+            } else {
+                session.timeline = [{
+                    "name": session.coach_management.name,
+                    "request_received": session.request_received_date,
+                    "status": "Sent",
+                    "action": constants.SESSION_ACTION.declined,
+                    "action_by": constants.ACTION_BY.coach
+                }]
+            }
+        }
         session.save();
-
         let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
         slot.status = constants.COACH_SCHEDULE_STATUS.available;
         slot.save();
@@ -667,10 +716,10 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.session_rejected,
                 title: 'Sesssion rejected by coach',
                 message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
-        
+
         await notificationModel.create(notificationObj);
         //send push notification
         let notificationData = <any>{
@@ -680,7 +729,7 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.session_rejected,
                 title: 'Sesssion rejected by coach',
                 message: `${session.coach_management.name} has rejected session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
         await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
@@ -820,12 +869,12 @@ export class CoachService {
                 {
                     model: coachManagementModel,
                     required: true,
-                    attributes: ["id","name", "device_token"],
+                    attributes: ["id", "name", "device_token"],
                 },
                 {
                     model: employeeModel,
                     required: true,
-                    attributes: ["id","name","device_token"],
+                    attributes: ["id", "name", "device_token"],
                 },
             ],
         })
@@ -874,10 +923,10 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.cancel_session,
                 title: 'Sesssion cancelled by coach',
                 message: `${session.coach_management.name} has cancelled session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
-        
+
         await notificationModel.create(notificationObj);
         //send push notification
         let notificationData = <any>{
@@ -887,7 +936,7 @@ export class CoachService {
                 type: constants.NOTIFICATION_TYPE.cancel_session,
                 title: 'Sesssion cancelled by coach',
                 message: `${session.coach_management.name} has cancelled session on ${session.date} at ${session.start_time}`,
-                senderEmployeeData:session.coach_management,
+                senderEmployeeData: session.coach_management,
             },
         }
         await helperFunction.sendFcmNotification([session.employee.device_token], notificationData);
@@ -1082,29 +1131,29 @@ export class CoachService {
     }
     public async updateSlotAvailability(params: any, user: any) {
         let where: any = {}
-        if(params.event_type==0){
-            where= {
-                status:{ [Op.in]:[1,4]},
+        if (params.event_type == 0) {
+            where = {
+                status: { [Op.in]: [1, 4] },
                 coach_id: user.uid,
                 date: {
                     [Op.in]: [params.date],
                 }
             }
-        }else{
-            where= {
-                status:{ [Op.in]:[1,4]},
+        } else {
+            where = {
+                status: { [Op.in]: [1, 4] },
                 coach_id: user.uid,
                 date: {
                     [Op.gte]: params.date,
-                  }
+                }
             }
         }
         for (let slot of params.timings) {
-            where.start_time={ [Op.in]:[slot.start_time]};
-            where.end_time={[Op.in]:[slot.end_time]};
-            await queryService.updateData({model:coachScheduleModel,status:params.is_available,is_available:params.is_available}, {where: where })
+            where.start_time = { [Op.in]: [slot.start_time] };
+            where.end_time = { [Op.in]: [slot.end_time] };
+            await queryService.updateData({ model: coachScheduleModel, status: params.is_available, is_available: params.is_available }, { where: where })
 
+        }
     }
-}
 
 }

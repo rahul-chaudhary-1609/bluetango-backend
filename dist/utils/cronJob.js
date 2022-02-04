@@ -499,14 +499,14 @@ exports.scheduleMeetingSessionNotificationJob = () => __awaiter(void 0, void 0, 
 const sessionExpire = (params) => __awaiter(void 0, void 0, void 0, function* () {
     let Sessions = yield new sessionManagementService_1.SessionManagementService().getSessionDetail(params);
     params.model = index_1.employeeCoachSessionsModel;
-    params.action_by = 2;
+    params.action_by = constants.ACTION_BY.system;
     if (Sessions.timeline) {
         params.timeline = [...Sessions.timeline, {
                 "name": Sessions.name,
                 "request_received": Sessions.request_received_date,
                 "status": "Sent",
                 "action": Number(params.action),
-                "action_by": 2
+                "action_by": constants.ACTION_BY.system
             }];
     }
     else {
@@ -515,7 +515,7 @@ const sessionExpire = (params) => __awaiter(void 0, void 0, void 0, function* ()
                 "request_received": Sessions.request_received_date,
                 "status": "Sent",
                 "action": Number(params.action),
-                "action_by": 2
+                "action_by": constants.ACTION_BY.system
             }];
     }
     let sessions = yield queryService.updateData(params, { where: { id: params.id } });
@@ -531,7 +531,7 @@ const sessionExpire = (params) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const randomsSessionSchedule = (params) => __awaiter(void 0, void 0, void 0, function* () {
     let coaches = yield new sessionManagementService_1.SessionManagementService().getAvailabileCoaches(params);
-    coaches = coaches.find(elem => elem.status == 1);
+    coaches = coaches.rows.filter(elem => elem.status == 1);
     let random_index = Math.floor(Math.random() * coaches.length);
     coaches = coaches[random_index];
     params.model = index_1.employeeCoachSessionsModel;
@@ -540,6 +540,7 @@ const randomsSessionSchedule = (params) => __awaiter(void 0, void 0, void 0, fun
     params.end_time = coaches.end_time;
     params.slot_id = coaches.id;
     params.coach_id = coaches.coach_id;
+    params.request_received_date = Date.now();
     let sessions = yield queryService.updateData(params, { returning: true, where: { id: params.id } });
     yield queryService.updateData({ model: index_1.coachScheduleModel, status: 2 }, { where: { id: coaches.id } });
     let Sessions = yield new sessionManagementService_1.SessionManagementService().getSessionDetail(params);
@@ -554,9 +555,18 @@ const randomsSessionSchedule = (params) => __awaiter(void 0, void 0, void 0, fun
     return sessions;
 });
 exports.scheduleSystemActionOnSessions = () => __awaiter(void 0, void 0, void 0, function* () {
-    schedule.scheduleJob('/5 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    schedule.scheduleJob('*/20 * * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+        index_1.employeeCoachSessionsModel.hasOne(models_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
         let sessions = yield queryService.selectAll(index_1.employeeCoachSessionsModel, {
-            where: { action: { [Op.in]: [1, 2, 3, 4] }, status: 1 },
+            where: { action: { [Op.in]: [1, 2, 3, 4] }, status: { [Op.in]: [1, 3] } },
+            include: [
+                {
+                    model: models_1.coachManagementModel,
+                    required: true,
+                    attributes: [],
+                    where: { app_id: constants.COACH_APP_ID.BT }
+                }
+            ],
             raw: true,
             attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "status", "type", "action_by", "request_received_date"]
         }, {});
@@ -569,21 +579,21 @@ exports.scheduleSystemActionOnSessions = () => __awaiter(void 0, void 0, void 0,
                     //for automatic expire
                     if (received_date < current_date) {
                         params.id = ele.id;
-                        params.action = 3;
+                        params.action = constants.SESSION_ACTION.expired;
                         return sessionExpire(params);
                     }
                 case 2:
                     //for declined session reassign
-                    if (current_date < ele.date) {
+                    if (moment_1.default(current_date).format("YYYY-MM-DD") < ele.date) {
                         params.id = ele.id;
-                        params.action_by = 0;
+                        params.action_by = constants.ACTION_BY.pending;
                         return randomsSessionSchedule(params);
                     }
                 case 3:
                     //for expired session reassign
-                    if (current_date < ele.date) {
+                    if (moment_1.default(current_date).format("YYYY-MM-DD") < ele.date) {
                         params.id = ele.id;
-                        params.action_by = 0;
+                        params.action_by = constants.ACTION_BY.pending;
                         return randomsSessionSchedule(params);
                     }
             }
