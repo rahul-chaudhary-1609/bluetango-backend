@@ -497,3 +497,16 @@ export const DEFAAULT_START_END_TIME = {
   start_time: "06:00",
   end_time: "24:00",
 }
+export const SESSION_ACTION = {
+  pending:1,
+  declined:2,
+  expired:3,
+  reassigned:4,
+  accepted:5
+}
+export const ACTION_BY = {
+  pending:0,
+  coach:1,
+  system:2,
+  admin:3
+}

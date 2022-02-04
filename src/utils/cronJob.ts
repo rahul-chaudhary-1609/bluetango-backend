@@ -566,14 +566,14 @@ export const scheduleMeetingSessionNotificationJob = async () => {
 const sessionExpire = async (params: any) => {
     let Sessions = await new SessionManagementService().getSessionDetail(params)
     params.model = employeeCoachSessionsModel
-    params.action_by = 2;
+    params.action_by = constants.ACTION_BY.system;
     if (Sessions.timeline) {
         params.timeline = [...Sessions.timeline, {
             "name": Sessions.name,
             "request_received": Sessions.request_received_date,
             "status": "Sent",
             "action": Number(params.action),
-            "action_by": 2
+            "action_by": constants.ACTION_BY.system
         }]
     } else {
         params.timeline = [{
@@ -581,7 +581,7 @@ const sessionExpire = async (params: any) => {
             "request_received": Sessions.request_received_date,
             "status": "Sent",
             "action": Number(params.action),
-            "action_by": 2
+            "action_by": constants.ACTION_BY.system
         }]
     }
     let sessions = await queryService.updateData(params, { where: { id: params.id } })
@@ -598,7 +598,7 @@ const sessionExpire = async (params: any) => {
 }
 const randomsSessionSchedule = async (params: any) => {
     let coaches = await new SessionManagementService().getAvailabileCoaches(params)
-    coaches = coaches.find(elem => elem.status == 1)
+    coaches = coaches.rows.filter(elem => elem.status == 1)
     let random_index = Math.floor(Math.random() * coaches.length);
     coaches = coaches[random_index]
     params.model = employeeCoachSessionsModel
@@ -607,6 +607,7 @@ const randomsSessionSchedule = async (params: any) => {
     params.end_time = coaches.end_time
     params.slot_id = coaches.id
     params.coach_id = coaches.coach_id
+    params.request_received_date = Date.now()
     let sessions = await queryService.updateData(params, {returning: true, where: { id: params.id } })
     await queryService.updateData({ model: coachScheduleModel, status: 2 }, { where: { id: coaches.id } })
     let Sessions = await new SessionManagementService().getSessionDetail(params)
@@ -622,9 +623,18 @@ const randomsSessionSchedule = async (params: any) => {
 
 }
 export const scheduleSystemActionOnSessions = async () => {
-schedule.scheduleJob('/5 * * * * *', async () => {
+schedule.scheduleJob('*/20 * * * * *', async () => {
+    employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
     let sessions = await queryService.selectAll(employeeCoachSessionsModel, {
-        where: { action: { [Op.in]: [1, 2, 3, 4] }, status: 1 },
+        where: { action: { [Op.in]: [1, 2, 3, 4] }, status: { [Op.in]: [1,3] } },
+        include: [
+            {
+                model: coachManagementModel,
+                required: true,
+                attributes: [],
+                where: { app_id: constants.COACH_APP_ID.BT }
+            }
+        ],
         raw: true,
         attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "status", "type", "action_by", "request_received_date"]
     }, {})
@@ -637,21 +647,21 @@ schedule.scheduleJob('/5 * * * * *', async () => {
                 //for automatic expire
                 if (received_date < current_date) {
                     params.id = ele.id
-                    params.action = 3
+                    params.action = constants.SESSION_ACTION.expired
                     return sessionExpire(params)
                 }
             case 2:
                 //for declined session reassign
-                if (current_date < ele.date) {
+                if (moment(current_date).format("YYYY-MM-DD") < ele.date) {
                     params.id = ele.id
-                    params.action_by = 0;
+                    params.action_by = constants.ACTION_BY.pending;
                     return randomsSessionSchedule(params)
                 }
             case 3:
                 //for expired session reassign
-                if (current_date < ele.date) {
+                if (moment(current_date).format("YYYY-MM-DD") < ele.date) {
                     params.id = ele.id
-                    params.action_by = 0;
+                    params.action_by = constants.ACTION_BY.pending;
                     return randomsSessionSchedule(params)
                 }
         }
