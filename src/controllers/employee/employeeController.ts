@@ -24,6 +24,15 @@ export class EmployeeController {
         }
     }
 
+    public async getEmployeeCountGroupByEnergy(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getEmployeeCountGroupByEnergy(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
     /**
     * viewDetailsEmployee
     * @param req :[]

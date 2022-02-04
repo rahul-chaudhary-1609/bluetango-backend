@@ -2825,6 +2825,27 @@
         "responses": {}
       }
     },
+    "/employee/getEmployeeCountGroupByEnergy": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "get Employee Count Group By Energy",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/viewDetailsEmployee": {
       "get": {
         "tags": [
@@ -10154,6 +10175,27 @@
             "description": "page size",
             "required": false,
             "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getUnseenChatNotificationCount": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "get Unseen Chat Notification Count",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}

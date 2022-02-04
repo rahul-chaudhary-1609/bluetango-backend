@@ -107,6 +107,38 @@ export class EmployeeServices {
 
     }
 
+
+    public async getEmployeeCountGroupByEnergy(params: any, user: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
+        // managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+
+        let teamMembersData = await helperFunction.convertPromiseToObject(await employeeModel.findAll({
+            attributes: ['energy_id', [Sequelize.fn("COUNT",Sequelize.col('employee.id')),"employeeCount"] ],
+            where: { status: 1 },            
+            include: [
+                {
+                    model: managerTeamMemberModel,
+                    required: true,
+                    attributes: [],
+                    where: { manager_id: user.uid },
+                },
+                {
+                    model: emojiModel,
+                    required: false,
+                    attributes: ['image_url', 'caption'],
+                }
+            ],
+            group:[['"employee.energy_id"'],['"emoji.id"']],
+
+        })
+        );
+
+        return teamMembersData;
+
+    }
+
     /*
     * function to get details of employee
     */
