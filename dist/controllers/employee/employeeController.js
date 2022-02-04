@@ -52,6 +52,17 @@ class EmployeeController {
             }
         });
     }
+    getEmployeeCountGroupByEnergy(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeServices.getEmployeeCountGroupByEnergy(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
     /**
     * viewDetailsEmployee
     * @param req :[]

@@ -1104,7 +1104,40 @@ export class CoachService {
             where.end_time={[Op.in]:[slot.end_time]};
             await queryService.updateData({model:coachScheduleModel,status:params.is_available,is_available:params.is_available}, {where: where })
 
+        }
     }
-}
+
+    public async getUnseenChatNotificationCount(user: any) {
+
+        let count= (await helperFunction.convertPromiseToObject(await notificationModel.count({
+            where: {
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                type: [
+                    constants.NOTIFICATION_TYPE.message,
+                ],
+                status: 1,
+            },
+            group: ['type_id']
+        }))).length;
+
+
+        await notificationModel.update({
+            status: 0,
+        }, {
+            where: {
+                status: 1,
+                type: [
+                    constants.NOTIFICATION_TYPE.message,
+                ],
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+            }
+        })
+
+
+        return {count}
+
+    }
 
 }

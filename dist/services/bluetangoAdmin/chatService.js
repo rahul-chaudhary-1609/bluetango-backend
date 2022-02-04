@@ -35,6 +35,7 @@ const bluetangoChatRoom_1 = require("../../models/bluetangoChatRoom");
 const coachManagement_1 = require("../../models/coachManagement");
 const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
 const bluetangoAdmin_1 = require("../../models/bluetangoAdmin");
+const notification_1 = require("../../models/notification");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class ChatServices {
@@ -203,27 +204,27 @@ class ChatServices {
             delete senderEmployeeData.password;
             let newNotification = null;
             //add notification 
-            // let notificationObj = <any>{
-            //     type_id: params.chat_room_id,
-            //     sender_id: user.uid,
-            //     reciever_id: recieverId,
-            //     reciever_type: chatRoomData.type == constants.CHAT_ROOM_TYPE.coach ? constants.NOTIFICATION_RECIEVER_TYPE.coach : constants.NOTIFICATION_RECIEVER_TYPE.employee,
-            //     type: constants.NOTIFICATION_TYPE.message,
-            //     data: {
-            //         type: constants.NOTIFICATION_TYPE.message,
-            //         title: 'Message',
-            //         message: params.message || `Message from ${senderEmployeeData.name}`,
-            //         chat_room_id: params.chat_room_id,
-            //         senderEmployeeData
-            //     },
-            // }
-            // newNotification = await notificationModel.create(notificationObj);
+            let notificationObj = {
+                type_id: params.chat_room_id,
+                sender_id: user.uid,
+                reciever_id: recieverId,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                type: constants.NOTIFICATION_TYPE.message,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.message,
+                    title: 'Message',
+                    message: params.message || `Message from ${senderEmployeeData.name}`,
+                    chat_room_id: params.chat_room_id,
+                    senderEmployeeData
+                },
+            };
+            newNotification = yield notification_1.notificationModel.create(notificationObj);
             //send push notification
             let notificationData = {
                 title: 'Message',
                 body: `Message from ${senderEmployeeData.name}`,
                 data: {
-                    type: constants.BLUETANGO_NOTIFICATION_TYPE.text_chat,
+                    type: constants.NOTIFICATION_TYPE.message,
                     title: 'Message',
                     message: params.message || `Message from ${senderEmployeeData.name}`,
                     chat_room_id: params.chat_room_id,

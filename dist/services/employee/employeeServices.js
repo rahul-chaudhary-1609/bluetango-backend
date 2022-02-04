@@ -126,6 +126,33 @@ class EmployeeServices {
             return teamMembersData;
         });
     }
+    getEmployeeCountGroupByEnergy(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            // managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+            employee_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+            let teamMembersData = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findAll({
+                attributes: ['energy_id', [Sequelize.fn("COUNT", Sequelize.col('employee.id')), "employeeCount"]],
+                where: { status: 1 },
+                include: [
+                    {
+                        model: managerTeamMember_1.managerTeamMemberModel,
+                        required: true,
+                        attributes: [],
+                        where: { manager_id: user.uid },
+                    },
+                    {
+                        model: emoji_1.emojiModel,
+                        required: false,
+                        attributes: ['image_url', 'caption'],
+                    }
+                ],
+                group: [['"employee.energy_id"'], ['"emoji.id"']],
+            }));
+            return teamMembersData;
+        });
+    }
     /*
     * function to get details of employee
     */

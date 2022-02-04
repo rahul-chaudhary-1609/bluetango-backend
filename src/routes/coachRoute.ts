@@ -125,4 +125,9 @@ coachRoute.get("/getBios", tokenValidator.validateCoachToken, authController.get
 coachRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getChatRoomId), chatController.getChatRoomId);
 /* update Slots availability */
 coachRoute.post("/updateSlotAvailability",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateSlotAvailability), coachController.updateSlotAvailability);
+
+/* get Unseen Chat Notification Count */
+coachRoute.get("/getUnseenChatNotificationCount", tokenValidator.validateCoachToken, coachController.getUnseenChatNotificationCount);
+
+
 export = coachRoute;

@@ -137,9 +137,18 @@ export class CoachController {
     * @param req :[]
     * @param res 
     */
-      public async updateSlotAvailability(req: any, res: any, next: any) {
+    public async updateSlotAvailability(req: any, res: any, next: any) {
         try {
             const responseFromService = await coachService.updateSlotAvailability(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getUnseenChatNotificationCount(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await coachService.getUnseenChatNotificationCount(req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

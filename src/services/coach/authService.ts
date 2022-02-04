@@ -24,7 +24,8 @@ export class AuthService {
         let existingUser = await coachManagementModel.findAll({
             where: {
                 email: params.username.toLowerCase(),
-                app_id: params.app_id || [1, 2]
+                app_id: params.app_id || [constants.COACH_APP_ID.BX,constants.COACH_APP_ID.BT],
+                status:[constants.STATUS.active,constants.STATUS.inactive],
             },
             order: [["createdAt", "DESC"]]
         });

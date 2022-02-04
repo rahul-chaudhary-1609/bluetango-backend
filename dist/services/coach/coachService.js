@@ -977,6 +977,34 @@ class CoachService {
             }
         });
     }
+    getUnseenChatNotificationCount(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let count = (yield helperFunction.convertPromiseToObject(yield notification_1.notificationModel.count({
+                where: {
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                    ],
+                    status: 1,
+                },
+                group: ['type_id']
+            }))).length;
+            yield notification_1.notificationModel.update({
+                status: 0,
+            }, {
+                where: {
+                    status: 1,
+                    type: [
+                        constants.NOTIFICATION_TYPE.message,
+                    ],
+                    reciever_id: user.uid,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                }
+            });
+            return { count };
+        });
+    }
 }
 exports.CoachService = CoachService;
 //# sourceMappingURL=coachService.js.map

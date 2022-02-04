@@ -60,6 +60,8 @@ employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, multerPa
 // employee API
 /* get my profile route for employee */
 employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), employeeController.getListOfTeamMemberByManagerId);
+/* get Employee Count Group By Energy */
+employeeRoute.get("/getEmployeeCountGroupByEnergy", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCountGroupByEnergy);
 /* view details route for employee */
 employeeRoute.get("/viewDetailsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), employeeController.viewDetailsEmployee);
 /* search team meber for manager */
