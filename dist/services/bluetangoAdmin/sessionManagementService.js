@@ -145,14 +145,14 @@ class SessionManagementService {
         return __awaiter(this, void 0, void 0, function* () {
             let Sessions = yield this.getSessionDetail(params);
             params.model = models_1.employeeCoachSessionsModel;
-            params.action_by = 3;
+            params.action_by = constants.ACTION_BY.admin;
             if (Sessions.timeline) {
                 params.timeline = [...Sessions.timeline, {
                         "name": Sessions.name,
                         "request_received": Sessions.request_received_date,
                         "status": "Sent",
                         "action": Number(params.action),
-                        "action_by": 3
+                        "action_by": constants.ACTION_BY.admin
                     }];
             }
             else {
@@ -161,7 +161,7 @@ class SessionManagementService {
                         "request_received": Sessions.request_received_date,
                         "status": "Sent",
                         "action": Number(params.action),
-                        "action_by": 3
+                        "action_by": constants.ACTION_BY.admin
                     }];
             }
             params.request_received_date = Date.now();

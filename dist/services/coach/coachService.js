@@ -169,12 +169,26 @@ class CoachService {
                 });
             });
             if (params.is_update) {
-                yield queryService.deleteData(coachSchedule_1.coachScheduleModel, { where: {
+                let bookedSlots = yield queryService.selectAndCountAll(coachSchedule_1.coachScheduleModel, {
+                    where: {
+                        coach_id: user.uid,
+                        status: constants.COACH_SCHEDULE_STATUS.booked,
+                        date: {
+                            [Op.in]: dates,
+                        }
+                    }
+                }, {});
+                if (bookedSlots.count >= 1) {
+                    return { bookedSlots: bookedSlots };
+                }
+                yield queryService.deleteData(coachSchedule_1.coachScheduleModel, {
+                    where: {
                         coach_id: user.uid,
                         date: {
                             [Op.in]: dates,
                         }
-                    } });
+                    }
+                });
             }
             for (let slot of params.slots) {
                 let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
@@ -516,7 +530,7 @@ class CoachService {
                     {
                         model: models_1.coachManagementModel,
                         required: true,
-                        attributes: ["id", "name", "email", "device_token"],
+                        attributes: ["id", "name", "email", "device_token", "app_id"],
                     },
                     {
                         model: models_1.employeeModel,
@@ -534,6 +548,26 @@ class CoachService {
             params.session = yield helperFunction.convertPromiseToObject(session);
             session.details = yield helperFunction.scheduleZoomMeeting(params);
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.accepted;
+            if (session.coach_management.app_id == constants.COACH_APP_ID.BT) {
+                if (session.timeline) {
+                    session.timeline = [...session.timeline, {
+                            "name": session.coach_management.name,
+                            "request_received": session.request_received_date,
+                            "status": "Sent",
+                            "action": constants.SESSION_ACTION.accepted,
+                            "action_by": constants.ACTION_BY.coach
+                        }];
+                }
+                else {
+                    session.timeline = [{
+                            "name": session.coach_management.name,
+                            "request_received": session.request_received_date,
+                            "status": "Sent",
+                            "action": constants.SESSION_ACTION.accepted,
+                            "action_by": constants.ACTION_BY.coach
+                        }];
+                }
+            }
             session.save();
             //add notification 
             let notificationObj = {
@@ -584,7 +618,7 @@ class CoachService {
                     {
                         model: models_1.coachManagementModel,
                         required: true,
-                        attributes: ["id", "name", "email", "device_token"],
+                        attributes: ["id", "name", "email", "device_token", "app_id"],
                     },
                     {
                         model: models_1.employeeModel,
@@ -600,6 +634,26 @@ class CoachService {
                 throw new Error(constants.MESSAGES.session_not_belogs_to_coach);
             }
             session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.rejected;
+            if (session.coach_management.app_id == constants.COACH_APP_ID.BT) {
+                if (session.timeline) {
+                    session.timeline = [...session.timeline, {
+                            "name": session.coach_management.name,
+                            "request_received": session.request_received_date,
+                            "status": "Sent",
+                            "action": constants.SESSION_ACTION.declined,
+                            "action_by": constants.ACTION_BY.coach
+                        }];
+                }
+                else {
+                    session.timeline = [{
+                            "name": session.coach_management.name,
+                            "request_received": session.request_received_date,
+                            "status": "Sent",
+                            "action": constants.SESSION_ACTION.declined,
+                            "action_by": constants.ACTION_BY.coach
+                        }];
+                }
+            }
             session.save();
             let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(session.slot_id));
             slot.status = constants.COACH_SCHEDULE_STATUS.available;
