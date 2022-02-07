@@ -45,8 +45,8 @@ export class SessionManagementService {
             where["type"] = params.type
         }
 
-        if (params.team_level) {
-            Wheres["name"] = params.team_level
+        if (params.team_level_Id) {
+            Wheres["id"] = params.team_level_Id
         }
         let sessions = await queryService.selectAndCountAll(employeeCoachSessionsModel, {
             where: where,
