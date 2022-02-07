@@ -9730,11 +9730,11 @@
                         "type": "number"
                     },
                     {
-                        "name": "team_level",
+                        "name": "team_level_Id",
                         "in": "query",
-                        "description": "team_level",
+                        "description": "team_level_Id",
                         "required": false,
-                        "type": "string"
+                        "type": "number"
                     },
                     {
                         "name": "offset",

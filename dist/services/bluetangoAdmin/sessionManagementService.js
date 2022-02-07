@@ -70,8 +70,8 @@ class SessionManagementService {
             if (params.type) {
                 where["type"] = params.type;
             }
-            if (params.team_level) {
-                Wheres["name"] = params.team_level;
+            if (params.team_level_Id) {
+                Wheres["id"] = params.team_level_Id;
             }
             let sessions = yield queryService.selectAndCountAll(models_1.employeeCoachSessionsModel, {
                 where: where,
