@@ -346,13 +346,13 @@ exports.clearChat = joi_1.default.object({
 });
 exports.getCoachList = joi_1.default.object({
     searchKey: joi_1.default.string().allow(null, "").optional(),
+    coach_specialization_category_id: joi_1.default.number().optional(),
     sortBy: joi_1.default.number().optional(),
     filterBy: joi_1.default.number().optional(),
-    date: joi_1.default.string().allow(null, "").optional(),
+    date: joi_1.default.string().required(),
     is_pagination: joi_1.default.number().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
-    weekly: joi_1.default.number().optional().valid(1),
 });
 exports.getSlots = joi_1.default.object({
     coach_id: joi_1.default.number().required(),
