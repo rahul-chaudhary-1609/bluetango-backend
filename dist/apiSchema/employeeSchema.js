@@ -369,11 +369,11 @@ exports.getSlot = joi_1.default.object({
 exports.createSessionRequest = joi_1.default.object({
     slot_id: joi_1.default.number().required(),
     query: joi_1.default.string().required(),
-    coach_id: joi_1.default.number().required(),
+    app_id: joi_1.default.number().required(),
     coach_specialization_category_id: joi_1.default.number().required(),
     date: joi_1.default.string().required(),
     start_time: joi_1.default.string().required(),
-    end_time: joi_1.default.string().allow(null, '').optional(),
+    end_time: joi_1.default.string().required(),
 });
 exports.getSessions = joi_1.default.object({
     datetime: joi_1.default.string().optional(),

@@ -879,85 +879,135 @@ class EmployeeServices {
     createSessionRequest(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
-            let slot = yield coachSchedule_1.coachScheduleModel.findByPk(parseInt(params.slot_id));
-            if (!slot) {
-                throw new Error(constants.MESSAGES.no_coach_schedule);
-            }
-            else {
-                if (slot.status != constants.COACH_SCHEDULE_STATUS.available) {
+            let slot = null;
+            if (params.app_id == constants.COACH_APP_ID.BX) {
+                slot = yield coachSchedule_1.coachScheduleModel.findOne({
+                    where: {
+                        id: params.slot_id
+                    },
+                    raw: true,
+                });
+                if (!slot) {
+                    throw new Error(constants.MESSAGES.no_coach_schedule);
+                }
+                else if (slot.status != constants.COACH_SCHEDULE_STATUS.available) {
                     throw new Error(constants.MESSAGES.coach_schedule_not_available);
                 }
-                else {
-                    let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
-                        where: {
-                            employee_id: user.uid,
-                            type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
-                            status: {
-                                [Op.in]: [
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
-                                    constants.EMPLOYEE_COACH_SESSION_STATUS.completed
-                                ]
-                            }
-                        }
-                    });
-                    let employeeCoachSessionObj = {
-                        coach_id: params.coach_id,
-                        employee_id: user.uid,
-                        employee_rank_id: employee.employee_rank_id,
-                        coach_specialization_category_id: params.coach_specialization_category_id,
+            }
+            else {
+                coachSchedule_1.coachScheduleModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+                let slots = yield helperFunction.convertPromiseToObject(yield coachSchedule_1.coachScheduleModel.findAll({
+                    where: {
                         date: params.date,
                         start_time: params.start_time,
-                        end_time: params.end_time || null,
-                        slot_id: params.slot_id,
-                        type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
-                        query: params.query,
-                    };
-                    let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
-                    if (session) {
-                        slot.status = constants.COACH_SCHEDULE_STATUS.booked;
-                        slot.save();
-                        let coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findByPk(parseInt(params.coach_id)));
-                        delete employee.password;
-                        //add notification 
-                        let notificationObj = {
-                            type_id: session.id,
-                            sender_id: user.uid,
-                            reciever_id: params.coach_id,
-                            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
-                            type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
-                            data: {
-                                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
-                                title: 'New coaching session request',
-                                message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
-                                senderEmployeeData: employee,
-                            },
-                        };
-                        yield notification_1.notificationModel.create(notificationObj);
-                        //send push notification
-                        let notificationData = {
-                            title: 'New coaching session request',
-                            body: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
-                            data: {
-                                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
-                                title: 'New coaching session request',
-                                message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
-                                senderEmployeeData: employee,
-                            },
-                        };
-                        yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
-                        let mailParams = {};
-                        mailParams.to = coach.email;
-                        mailParams.html = `Hi  ${coach.name}
-                        <br>A new session request is created by ${employee.name}
-                        `;
-                        mailParams.subject = "New Session Request";
-                        mailParams.name = "BlueXinga";
-                        yield helperFunction.sendEmail(mailParams);
-                    }
-                    return session;
+                        end_time: params.end_time,
+                        status: constants.COACH_SCHEDULE_STATUS.available,
+                    },
+                    include: [
+                        {
+                            model: coachManagement_1.coachManagementModel,
+                            required: true,
+                            attributes: ["id", "name"],
+                            where: {
+                                app_id: constants.COACH_APP_ID.BT,
+                                status: constants.STATUS.active
+                            }
+                        }
+                    ]
+                }));
+                if (slots.length > 0) {
+                    slots = slots.sort((slotA, slotB) => {
+                        if (slotA.coach_management.name < slotB.coach_management.name) {
+                            return -1;
+                        }
+                        else if (slotA.coach_management.name > slotB.coach_management.name) {
+                            return 1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    });
+                    slot = slots[0];
+                }
+                else {
+                    throw new Error(constants.MESSAGES.coach_schedule_not_available);
                 }
             }
+            let employeeSessionCount = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                where: {
+                    employee_id: user.uid,
+                    type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                    status: {
+                        [Op.in]: [
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                            constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                        ]
+                    }
+                }
+            });
+            let employeeCoachSessionObj = {
+                coach_id: slot.coach_id,
+                employee_id: user.uid,
+                employee_rank_id: employee.employee_rank_id,
+                coach_specialization_category_id: params.coach_specialization_category_id,
+                date: params.date,
+                start_time: params.start_time,
+                end_time: params.end_time || null,
+                slot_id: params.slot_id,
+                type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+                query: params.query,
+            };
+            let session = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.create(employeeCoachSessionObj));
+            if (session) {
+                // slot.status = constants.COACH_SCHEDULE_STATUS.booked;
+                // slot.save();
+                yield coachSchedule_1.coachScheduleModel.update({
+                    status: constants.COACH_SCHEDULE_STATUS.booked,
+                }, {
+                    where: {
+                        id: slot.id,
+                    }
+                });
+                let coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findByPk(parseInt(slot.coach_id)));
+                delete employee.password;
+                //add notification 
+                let notificationObj = {
+                    type_id: session.id,
+                    sender_id: user.uid,
+                    reciever_id: slot.coach_id,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                    type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                        title: 'New coaching session request',
+                        message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                        senderEmployeeData: employee,
+                    },
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                //send push notification
+                let notificationData = {
+                    title: 'New coaching session request',
+                    body: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                        title: 'New coaching session request',
+                        message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                        senderEmployeeData: employee,
+                    },
+                };
+                yield helperFunction.sendFcmNotification([coach.device_token], notificationData);
+                let mailParams = {};
+                mailParams.to = coach.email;
+                mailParams.html = `Hi  ${coach.name}
+                <br>A new session request is created by ${employee.name}
+                `;
+                mailParams.subject = "New Session Request";
+                mailParams.name = "BlueXinga";
+                yield helperFunction.sendEmail(mailParams);
+            }
+            return session;
         });
     }
     getSessions(params, user) {

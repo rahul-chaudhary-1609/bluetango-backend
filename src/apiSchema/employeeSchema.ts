@@ -412,11 +412,11 @@ export const getSlot= Joi.object({
 export const createSessionRequest= Joi.object({
   slot_id:Joi.number().required(),
   query:Joi.string().required(),
-  coach_id:Joi.number().required(),
+  app_id:Joi.number().required(),
   coach_specialization_category_id:Joi.number().required(),
   date:Joi.string().required(),
   start_time:Joi.string().required(),
-  end_time:Joi.string().allow(null,'').optional(),    
+  end_time:Joi.string().required(),   
 })
 
 

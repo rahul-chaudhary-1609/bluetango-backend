@@ -4489,11 +4489,12 @@
             "type": "string"
           },
           {
-            "name": "coach_id",
+            "name": "app_id",
             "in": "formData",
-            "description": "coach_id",
+            "description": "app_id: 1=>BX, 2=>BT",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "enum":[1,2]
           },
           {
             "name": "coach_specialization_category_id",
@@ -4520,7 +4521,7 @@
             "name": "end_time",
             "in": "formData",
             "description": "end_time format: HH:mm:ss",
-            "required": false,
+            "required": true,
             "type": "string"
           }
         ],
