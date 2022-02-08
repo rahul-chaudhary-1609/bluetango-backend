@@ -386,13 +386,13 @@ export const clearChat = Joi.object({
 
 export const getCoachList= Joi.object({
   searchKey: Joi.string().allow(null,"").optional(),
+  coach_specialization_category_id:Joi.number().optional(),
   sortBy: Joi.number().optional(),
   filterBy: Joi.number().optional(),
-  date: Joi.string().allow(null,"").optional(),
+  date: Joi.string().required(),
   is_pagination:Joi.number().optional(),
   limit: Joi.number().optional(),
   offset: Joi.number().optional(),
-  weekly: Joi.number().optional().valid(1),
 })
 
 export const getSlots= Joi.object({

@@ -582,6 +582,41 @@ export class EmployeeServices {
 
     }
 
+
+    private sortBySlotTime(list:any){
+        list.forEach((row) => {
+            row.available_slots?.forEach((slot) => {
+                Object.keys(slot).forEach((key) => {
+                    if (key == "start_time") {
+                        slot[key] = slot[key].replace(/:/g, "")
+                    }
+                })
+            })
+        })
+
+        // console.log("coachList",coachList.rows.forEach((row,index)=>{
+        //     console.log(`available_slot${index}`,row.available_slots)
+        // }))
+
+        list.sort((a, b) => a.available_slots[0]?.start_time - b.available_slots[0]?.start_time);
+
+        list.forEach((row) => {
+            row.available_slots?.forEach((slot) => {
+                Object.keys(slot).forEach((key) => {
+                    if (key == "start_time") {
+                        slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
+                    }
+                })
+            })
+        })
+
+        // console.log("coachList",coachList.rows.forEach((row,index)=>{
+        //     console.log(`available_slot${index}`,row.available_slots)
+        // }))
+
+        return list;
+    }
+
     /*
    * function to get coach list
    */
@@ -618,30 +653,37 @@ export class EmployeeServices {
                 // }
                 throw new Error(constants.MESSAGES.no_coach_with_specialization_category)
             }
+        }
+        
+        // let dates = []
+        // if (params.weekly) {
+        //     let start = new Date();
+        //     let end = new Date(new Date().setDate(new Date().getDate() + 6));
+        //     while (start <= end) {
+        //         dates.push(moment(start).format("YYYY-MM-DD"))
+        //         start.setDate(start.getDate() + 1)
+        //     }
+        //     let slots = await coachScheduleModel.findAll(
+        //         {
+        //             status:constants.COACH_SCHEDULE_STATUS.available,
+        //             date: {
+        //                 [Op.in]: [dates],
+        //             }
+        //         }
+        //     )
+        //     var coach_ids = slots.map(ele => ele.coach_id)
+        //     coach_ids = [...new Set(coach_ids)];
+        //     where["id"] = {
+        //         [Op.in]: coach_ids
+        //     }
+        // }
 
-        }
-        let dates = []
-        if (params.weekly) {
-            let start = new Date();
-            let end = new Date(new Date().setDate(new Date().getDate() + 6));
-            while (start <= end) {
-                dates.push(moment(start).format("YYYY-MM-DD"))
-                start.setDate(start.getDate() + 1)
-            }
-            let slots = await coachScheduleModel.findAll(
-                {
-                    status:constants.COACH_SCHEDULE_STATUS.available,
-                    date: {
-                        [Op.in]: [dates],
-                    }
-                }
-            )
-            var coach_ids = slots.map(ele => ele.coach_id)
-            coach_ids = [...new Set(coach_ids)];
-            where["id"] = {
-                [Op.in]: coach_ids
+        if(params.coach_specialization_category_id){
+            where["coach_specialization_category_ids"] = {
+                [Op.contains]: [params.coach_specialization_category_id],
             }
         }
+
         if (employee) {
             where["employee_rank_ids"] = {
                 [Op.contains]: [employee.employee_rank_id]
@@ -652,7 +694,7 @@ export class EmployeeServices {
 
         let query = <any>{
             where: where,
-            attributes: ["id", "name", 'description', "email", "phone_number", ['image', 'profile_pic_url'], "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
+            attributes: ["id", "name", 'description', "email", "phone_number", ['image', 'profile_pic_url'], "coach_specialization_category_ids", "employee_rank_ids", "coach_charge","app_id","social_media_handles","website"],
             order: [["id", "DESC"]]
         }
 
@@ -718,27 +760,32 @@ export class EmployeeServices {
             }
 
             if (params.filterBy) {
-                if (params.filterBy == 1) {
+                if (params.filterBy == 1 && params.date) {
                     slotsWhere = {
                         ...slotsWhere,
-                        date: {
-                            [Op.gte]: moment(new Date()).format("YYYY-MM-DD"),
-                        }
+                        [Op.and]:[
+                            {
+                                date: {
+                                    [Op.gte]: params.date,
+                                }
+                            },
+                            {
+                                date: {
+                                    [Op.lte]: moment(params.date,"YYYY-MM-DD").add(6,"days").format("YYYY-MM-DD"),
+                                }
+                            }
+                        ]
+                        
                     }
-                } else if (params.filterBy == 2) {
+                } else if (params.filterBy == 2 && params.date) {
                     slotsWhere = {
                         ...slotsWhere,
-                        date: moment(new Date()).format("YYYY-MM-DD"),
+                        date: params.date,
                     }
                 } else if (params.filterBy == 3 && params.date) {
                     slotsWhere = {
                         ...slotsWhere,
                         date: params.date,
-                    }
-                } else {
-                    slotsWhere = {
-                        ...slotsWhere,
-                        date: moment(new Date()).format("YYYY-MM-DD"),
                     }
                 }
             } else {
@@ -783,44 +830,37 @@ export class EmployeeServices {
         }
 
         if (params.sortBy && params.sortBy == 6) {
-            coachList.rows.forEach((row) => {
-                row.available_slots?.forEach((slot) => {
-                    Object.keys(slot).forEach((key) => {
-                        if (key == "start_time") {
-                            slot[key] = slot[key].replace(/:/g, "")
-                        }
-                    })
-                })
-            })
-
-            // console.log("coachList",coachList.rows.forEach((row,index)=>{
-            //     console.log(`available_slot${index}`,row.available_slots)
-            // }))
-
-            coachList.rows.sort((a, b) => a.available_slots[0]?.start_time - b.available_slots[0]?.start_time);
-
-            coachList.rows.forEach((row) => {
-                row.available_slots?.forEach((slot) => {
-                    Object.keys(slot).forEach((key) => {
-                        if (key == "start_time") {
-                            slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
-                        }
-                    })
-                })
-            })
-
-            // console.log("coachList",coachList.rows.forEach((row,index)=>{
-            //     console.log(`available_slot${index}`,row.available_slots)
-            // }))
+            coachList.rows=this.sortBySlotTime(coachList.rows);
         }
+
+        let coaches=<any>{
+            BT:null,
+            BX:{},            
+        }
+
+        coaches.BT=coachList.rows.filter((coach)=>coach.app_id==constants.COACH_APP_ID.BT).reduce((allBTCoach,coach)=>{
+            return{
+                count:allBTCoach.count+1,
+                available_slots:[...new Set([...allBTCoach.available_slots,...coach.available_slots])],
+                average_rating:allBTCoach.average_rating+coach.average_rating,
+                app_id:constants.COACH_APP_ID.BT,
+            }
+        }, {count:0, available_slots:[], average_rating:0, app_id:constants.COACH_APP_ID.BT});
+
+        if(coaches.BT.count>0){
+            coaches.BT.average_rating=parseFloat((coaches.BT.average_rating/coaches.BT.count).toFixed(2));
+        }
+
+        coaches.BX.rows=coachList.rows.filter((coach)=>coach.app_id==constants.COACH_APP_ID.BX);
+        coaches.BX.count = coaches.BX.rows.length;
 
         if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
             let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-            coachList.count = coachList.rows.length;
-            coachList.rows = coachList.rows.slice(offset, offset + limit);
+            coaches.BX.count = coaches.BX.rows.length;
+            coaches.BX.rows = coaches.BX.rows.slice(offset, offset + limit);
         }
 
-        return coachList;
+        return coaches;
     }
 
     public async getSlots(params: any) {
