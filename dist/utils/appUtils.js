@@ -31,13 +31,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateUnavailableTime = exports.calculate_time_slot = exports.parseTime = exports.createTimeSlots = exports.formatPassedAwayTime = exports.validateJsonString = exports.jsonSegregate = exports.comparePassword = exports.bcryptPassword = exports.getUnixTimeStamp = exports.currentUnixTimeStamp = exports.calcluateOtpTime = exports.CheckEmail = exports.gererateOtp = exports.successResponse = exports.errorResponse = void 0;
+exports.UploadExcelToJson = exports.validateUnavailableTime = exports.calculate_time_slot = exports.parseTime = exports.createTimeSlots = exports.formatPassedAwayTime = exports.validateJsonString = exports.jsonSegregate = exports.comparePassword = exports.bcryptPassword = exports.getUnixTimeStamp = exports.currentUnixTimeStamp = exports.calcluateOtpTime = exports.CheckEmail = exports.gererateOtp = exports.successResponse = exports.errorResponse = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../constants"));
 const randomstring = __importStar(require("randomstring"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
 const moment = require("moment");
+const excelToJson = require('convert-excel-to-json');
 /* function for sending the error response */
 exports.errorResponse = (res, error, errorCode, message = constants.MESSAGES.bad_request) => {
     let response = Object.assign({}, constants.defaultServerResponse);
@@ -240,4 +241,30 @@ exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
         return { availableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.available }))), unavailableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.unavailable }))) };
     }
 };
+exports.UploadExcelToJson = (path, headerRow, columnToKey) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(path, headerRow, columnToKey);
+        columnToKey['*'] = '{{columnHeader}}';
+        let result = excelToJson({
+            sourceFile: path,
+            columnToKey: columnToKey,
+            header: {
+                rows: headerRow
+            }
+        });
+        let columnKeyObj = {};
+        for (const value of Object.values(columnToKey)) {
+            columnKeyObj[`${value}`] = null;
+        }
+        delete columnKeyObj["{{columnHeader}}"];
+        result = (result && result[Object.keys(result)[0]]) ? result[Object.keys(result)[0]] : [];
+        result.forEach((element, index, array) => {
+            result[index] = Object.assign(Object.assign({}, columnKeyObj), element);
+        });
+        return result;
+    }
+    catch (err) {
+        return err;
+    }
+});
 //# sourceMappingURL=appUtils.js.map

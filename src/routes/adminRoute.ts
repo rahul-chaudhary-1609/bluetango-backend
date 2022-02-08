@@ -208,6 +208,9 @@ adminRoute.get("/listEmployeeCoachSessions", tokenValidator.validateAdminToken,j
 
 /* get Employee Coach Session */
 adminRoute.get("/getEmployeeCoachSession", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeCoachSession), coachController.getEmployeeCoachSession);
-
+/* upload thoughts */
+adminRoute.post("/uploadThoughts", tokenValidator.validateAdminToken, upload.single('thoughts'), employersController.uploadThoughts);
+/* download thoughts */
+adminRoute.get("/downloadThoughts", tokenValidator.validateAdminToken, employersController.downloadThoughts);
 
 export = adminRoute;

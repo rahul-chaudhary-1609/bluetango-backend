@@ -4,7 +4,6 @@ import * as appUtils from '../../utils/appUtils';
 import { deleteFile } from "../../middleware/multerParser";
 const json2csv = require('json2csv').parse;
 
-
 //Instantiates a Home services  
 const employersService = new EmployersService();
 
@@ -800,6 +799,38 @@ export class EmployersController {
             const advisor: any = await employersService.getFeedbackDetails(req.query);
             if (advisor) {
                 return appUtils.successResponse(res, advisor, constants.MESSAGES.success);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+     /**
+ * upload thoughts
+ */
+      public async uploadThoughts(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const thoughts: any = await employersService.uploadThoughts(req.body,req.file);
+            if (thoughts) {
+                return appUtils.successResponse(res, thoughts, constants.MESSAGES.thoughts_uploaded);
+            } else {
+                appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+            }
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+     /**
+ * download thoughts
+ */
+      public async downloadThoughts(req: any, res: any) {
+        try {
+            req.body.admin_id = req.user.uid;
+            const thoughts: any = await employersService.downloadThoughts(req,res);
+            if (thoughts) {
+                return appUtils.successResponse(res, thoughts, constants.MESSAGES.thoughts_downloaded);
             } else {
                 appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
             }

@@ -159,5 +159,9 @@ adminRoute.delete("/deleteEmployeeRank", tokenValidator.validateAdminToken, joiS
 adminRoute.get("/listEmployeeCoachSessions", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeCoachSessions), coachController.listEmployeeCoachSessions);
 /* get Employee Coach Session */
 adminRoute.get("/getEmployeeCoachSession", tokenValidator.validateAdminToken, joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeCoachSession), coachController.getEmployeeCoachSession);
+/* upload thoughts */
+adminRoute.post("/uploadThoughts", tokenValidator.validateAdminToken, multerParser_1.upload.single('thoughts'), employersController.uploadThoughts);
+/* download thoughts */
+adminRoute.get("/downloadThoughts", tokenValidator.validateAdminToken, employersController.downloadThoughts);
 module.exports = adminRoute;
 //# sourceMappingURL=adminRoute.js.map
