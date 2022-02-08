@@ -1,4 +1,4 @@
-import { employersModel, industryTypeModel, employeeModel, departmentModel, adminModel } from "../../models";
+import { employersModel, industryTypeModel, employeeModel, departmentModel, adminModel, thoughtsModel } from "../../models";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
 import { paymentManagementModel } from "../../models/paymentManagement";
 import { coachManagementModel } from "../../models/coachManagement";
@@ -27,6 +27,9 @@ const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+const excel = require("exceljs");
+const moment = require("moment");
+
 
 
 export class EmployersService {
@@ -57,7 +60,7 @@ export class EmployersService {
                 status: { [Op.in]: [0, 1] }
             };
         }
-        let existingUser=null;
+        let existingUser = null;
         if (params.id) {
             existingUser = await employersModel.findOne({
                 where: {
@@ -105,7 +108,7 @@ export class EmployersService {
                 //     throw new Error(constants.MESSAGES.password_not_provided)
                 // }
                 // const password = params.password
-                const password=await helperFunction.generaePassword();
+                const password = await helperFunction.generaePassword();
                 params.password = await appUtils.bcryptPassword(password);
                 //params.first_time_login_datetime = new Date();
                 const employer = await employersModel.create(params);
@@ -163,7 +166,7 @@ export class EmployersService {
                     separate: true,
                     attributes: ["id"],
                     where: {
-                        status:[0,1]
+                        status: [0, 1]
                     }
                 }
             ],
@@ -265,44 +268,44 @@ export class EmployersService {
 
         // let coachCount = coaches[0] ? coaches[0].length : 0
 
-        let where=<any>{
-            [Op.and]:[
+        let where = <any>{
+            [Op.and]: [
                 {
-                    status:constants.STATUS.active,
+                    status: constants.STATUS.active,
                 },
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
-                
+
             ]
         }
 
-        let employerCount=await employersModel.count({where})
+        let employerCount = await employersModel.count({ where })
 
-        let employeeCount=await employeeModel.count({where})
+        let employeeCount = await employeeModel.count({ where })
 
-        let coachCount=await coachManagementModel.count({where})
+        let coachCount = await coachManagementModel.count({ where })
 
-        where={
-            [Op.and]:[
+        where = {
+            [Op.and]: [
                 {
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                 },
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
-                
+
             ]
-            
+
         }
 
-        let totalCompletedSession=await employeeCoachSessionsModel.count({where})
+        let totalCompletedSession = await employeeCoachSessionsModel.count({ where })
 
-        let totalEarningBySession=await employeeCoachSessionsModel.sum('amount',{where})
+        let totalEarningBySession = await employeeCoachSessionsModel.sum('amount', { where })
 
-        where={
-            [Op.and]:[
+        where = {
+            [Op.and]: [
                 {
-                    status:{
-                        [Op.notIn]:[
+                    status: {
+                        [Op.notIn]: [
                             constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
                             constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
                         ]
@@ -310,34 +313,34 @@ export class EmployersService {
                 },
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
                 Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
-                
+
             ]
-            
+
         }
 
-        let totalScheduledSession=await employeeCoachSessionsModel.count({where})
+        let totalScheduledSession = await employeeCoachSessionsModel.count({ where })
 
-        employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
 
-        let topFiveSessionTaker=await helperFunction.convertPromiseToObject(
-                await employeeCoachSessionsModel.findAll({
-                attributes:[
+        let topFiveSessionTaker = await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAll({
+                attributes: [
                     'coach_id',
                     [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
                 ],
                 where,
-                group:['"employee_coach_sessions.coach_id"'],
+                group: ['"employee_coach_sessions.coach_id"'],
                 order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
-                limit:5,
+                limit: 5,
             })
         )
 
-        for(let coach of topFiveSessionTaker){
-            coach.coach=await helperFunction.convertPromiseToObject(
+        for (let coach of topFiveSessionTaker) {
+            coach.coach = await helperFunction.convertPromiseToObject(
                 await coachManagementModel.findOne({
-                    attributes:["id","name","email"],
-                    where:{
-                        id:coach.coach_id,
+                    attributes: ["id", "name", "email"],
+                    where: {
+                        id: coach.coach_id,
                     }
                 })
             )
@@ -346,12 +349,12 @@ export class EmployersService {
         return {
             employers: employerCount,
             employees: employeeCount,
-            coaches:coachCount,
+            coaches: coachCount,
             totalCompletedSession,
             totalEarningBySession,
             totalScheduledSession,
             topFiveSessionTaker
-         }
+        }
 
     }
 
@@ -372,7 +375,7 @@ export class EmployersService {
         let employer: any = {};
         let department: any = {};
         let employeeRank: any = {};
-    
+
         if (params.employerName) {
             employer = {
                 name: { [Op.iLike]: `%${params.employerName}%` },
@@ -400,8 +403,8 @@ export class EmployersService {
 
         whereCond["status"] = { [Op.or]: [0, 1] }
 
-        let employees=await helperFunction.convertPromiseToObject(
-             await employeeModel.findAndCountAll({
+        let employees = await helperFunction.convertPromiseToObject(
+            await employeeModel.findAndCountAll({
                 where: whereCond,
                 include: [
                     {
@@ -429,8 +432,8 @@ export class EmployersService {
             })
         )
 
-        for(let employee of employees.rows){
-            employee.total_completed_session=5;    
+        for (let employee of employees.rows) {
+            employee.total_completed_session = 5;
         }
 
         return employees;
@@ -649,7 +652,7 @@ export class EmployersService {
                         separate: true,
                         attributes: ["id", "name"],
                         where: {
-                            status:[0,1]
+                            status: [0, 1]
                         }
                     }]
                 },
@@ -712,8 +715,8 @@ export class EmployersService {
     public async employerDetails(params: any) {
         employersModel.hasMany(employeeModel, { foreignKey: "current_employer_id" })
         //employersModel.belongsTo(industryTypeModel, { foreignKey: "industry_type", as: "Industry_type" })
-       // employersModel.hasOne(industryTypeModel, { foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
-        
+        // employersModel.hasOne(industryTypeModel, { foreignKey: "id", sourceKey: "industry_type", targetKey: "id" })
+
         let where: any = {}
         where.id = params.employerId
 
@@ -726,7 +729,7 @@ export class EmployersService {
                     separate: true,
                     attributes: ["id"],
                     where: {
-                        status:[0,1]
+                        status: [0, 1]
                     }
                 }
                 // {
@@ -736,11 +739,11 @@ export class EmployersService {
                 // }
             ]
         })
-        
+
         if (employer) {
-        const industry = await industryTypeModel.findOne({where: {id: employer.industry_type}})
-        //employer.industry_name = industry.name            
-            return {employer, industry}
+            const industry = await industryTypeModel.findOne({ where: { id: employer.industry_type } })
+            //employer.industry_name = industry.name            
+            return { employer, industry }
         }
         else {
             throw new Error(constants.MESSAGES.employer_notFound);
@@ -762,7 +765,7 @@ export class EmployersService {
                 status: { [Op.in]: [0, 1] }
             };
         }
-        let existingUser=null;
+        let existingUser = null;
         if (params.id) {
             existingUser = await coachManagementModel.findOne({
                 where: {
@@ -776,7 +779,7 @@ export class EmployersService {
                     id: {
                         [Op.ne]: params.id
                     },
-                    app_id:constants.COACH_APP_ID.BX,
+                    app_id: constants.COACH_APP_ID.BX,
                 }
             });
         } else {
@@ -789,11 +792,11 @@ export class EmployersService {
                     status: {
                         [Op.in]: [0, 1]
                     },
-                    app_id:constants.COACH_APP_ID.BX,
+                    app_id: constants.COACH_APP_ID.BX,
                 }
             });
         }
-        console.log("existingUser",existingUser)
+        console.log("existingUser", existingUser)
         params.admin_id = user.uid;
         if (!existingUser) {
             if (params.id) {
@@ -813,9 +816,9 @@ export class EmployersService {
                 //     throw new Error(constants.MESSAGES.password_not_provided)
                 // }
                 // const password = params.password
-                const password=await helperFunction.generaePassword();
+                const password = await helperFunction.generaePassword();
                 params.password = await appUtils.bcryptPassword(password);
-                const coach = await helperFunction.convertPromiseToObject( await coachManagementModel.create(params));
+                const coach = await helperFunction.convertPromiseToObject(await coachManagementModel.create(params));
                 const mailParams = <any>{};
                 mailParams.to = params.email;
                 mailParams.html = `Hi  ${params.name}
@@ -829,37 +832,37 @@ export class EmployersService {
                 `;
 
                 delete coach.password;
-                coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+                coach.coach_specialization_categories = await helperFunction.convertPromiseToObject(
                     await coachSpecializationCategoriesModel.findAll({
-                        where:{
-                            id:{
-                                [Op.in]:coach.coach_specialization_category_ids || [],
+                        where: {
+                            id: {
+                                [Op.in]: coach.coach_specialization_category_ids || [],
                             },
-                            status:constants.STATUS.active,
+                            status: constants.STATUS.active,
                         },
-                        attributes:['name']
+                        attributes: ['name']
                     })
                 )
 
-                coach.coach_specialization_categories=coach.coach_specialization_categories.map(category=>category.name).join(', ');
+                coach.coach_specialization_categories = coach.coach_specialization_categories.map(category => category.name).join(', ');
 
                 delete coach.coach_specialization_category_ids;
 
-                coach.employee_ranks=await helperFunction.convertPromiseToObject(
+                coach.employee_ranks = await helperFunction.convertPromiseToObject(
                     await employeeRanksModel.findAll({
-                        where:{
-                            id:{
-                                [Op.in]:coach.employee_rank_ids || [],
+                        where: {
+                            id: {
+                                [Op.in]: coach.employee_rank_ids || [],
                             },
-                            status:constants.STATUS.active,
+                            status: constants.STATUS.active,
                         },
-                        attributes:['name']
+                        attributes: ['name']
                     })
                 )
 
-                coach.employee_ranks=coach.employee_ranks.map(rank=>rank.name).join(', ');
+                coach.employee_ranks = coach.employee_ranks.map(rank => rank.name).join(', ');
 
-                coach.fees_per_session=coach.coach_charge;
+                coach.fees_per_session = coach.coach_charge;
 
                 delete coach.id;
                 delete coach.admin_id;
@@ -876,17 +879,17 @@ export class EmployersService {
 
 
                 for (let key in coach) {
-        
-                    mailParams.html+= `<tr style="text-align: left;">
+
+                    mailParams.html += `<tr style="text-align: left;">
                             <th style="opacity: 0.9;">${key.split("_").map((ele) => {
-                                if (ele == "of" || ele == "in") return ele
-                                else return ele.charAt(0).toUpperCase() + ele.slice(1)
-                            }).join(" ")}</th>
+                        if (ele == "of" || ele == "in") return ele
+                        else return ele.charAt(0).toUpperCase() + ele.slice(1)
+                    }).join(" ")}</th>
                             <td style="opacity: 0.8;">:</td>
-                            <td style="opacity: 0.8;">${key=='image'?`<img src='${coach[key]}' />`:coach[key]}</td>
+                            <td style="opacity: 0.8;">${key == 'image' ? `<img src='${coach[key]}' />` : coach[key]}</td>
                         </tr>`
                 }
-                mailParams.html+=`</table>`;
+                mailParams.html += `</table>`;
 
                 mailParams.subject = "Coach Login Credentials";
                 await helperFunction.sendEmail(mailParams);
@@ -906,100 +909,100 @@ export class EmployersService {
 
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
         let where: any = {
-            app_id:constants.COACH_APP_ID.BX,
+            app_id: constants.COACH_APP_ID.BX,
         }
 
         if (params.searchKey) {
             where["name"] = { [Op.iLike]: `%${params.searchKey}%` }
         }
 
-        if(params.coach_specialization_category_id){
-            where["coach_specialization_category_ids"] = { 
-                        [Op.contains]: [params.coach_specialization_category_id] 
-                    }
+        if (params.coach_specialization_category_id) {
+            where["coach_specialization_category_ids"] = {
+                [Op.contains]: [params.coach_specialization_category_id]
+            }
         }
 
-        if(params.employee_rank_id){
-            where["employee_rank_ids"] = { 
-                        [Op.contains]: [params.employee_rank_id] 
-                    }
+        if (params.employee_rank_id) {
+            where["employee_rank_ids"] = {
+                [Op.contains]: [params.employee_rank_id]
+            }
         }
 
         where["status"] = constants.STATUS.active
 
-        let coachList= await helperFunction.convertPromiseToObject(
-             await coachManagementModel.findAndCountAll({
+        let coachList = await helperFunction.convertPromiseToObject(
+            await coachManagementModel.findAndCountAll({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
                 order: [["id", "DESC"]]
             })
         )
-        let c=0
-        for(let coach of coachList.rows){
-            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+        let c = 0
+        for (let coach of coachList.rows) {
+            coach.coach_specialization_categories = await helperFunction.convertPromiseToObject(
                 await coachSpecializationCategoriesModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.coach_specialization_category_ids || [],
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
                         },
-                        status:constants.STATUS.active,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+            coach.employee_ranks = await helperFunction.convertPromiseToObject(
                 await employeeRanksModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.employee_rank_ids || [],
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
                         },
-                        status:constants.STATUS.active,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            coach.total_completed_sessions=await employeeCoachSessionsModel.count({
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            coach.total_completed_sessions = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                 }
             })
 
-            let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                    coach_rating:{
-                        [Op.gte]:1
+            let totalRating = await employeeCoachSessionsModel.sum('coach_rating', {
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
                     }
                 }
             })
 
-            coach.rating_count=await employeeCoachSessionsModel.count({
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                    coach_rating:{
-                        [Op.gte]:1
+            coach.rating_count = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
                     }
                 }
             })
 
-            coach.average_rating=0;
-            if(coach.rating_count>0){
-                coach.average_rating=parseFloat((parseInt(totalRating)/coach.rating_count).toFixed(0));
-            }            
+            coach.average_rating = 0;
+            if (coach.rating_count > 0) {
+                coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
+            }
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
         }
 
-        if(params.rating){
-            let coachListFilteredByRating=coachList.rows.filter((coach)=>coach.average_rating==params.rating);
-            coachList.rows=[...coachListFilteredByRating];
-            coachList.count=coachListFilteredByRating.length;
+        if (params.rating) {
+            let coachListFilteredByRating = coachList.rows.filter((coach) => coach.average_rating == params.rating);
+            coachList.rows = [...coachListFilteredByRating];
+            coachList.count = coachListFilteredByRating.length;
         }
 
-        coachList.rows=coachList.rows.slice(offset,offset+limit);  
+        coachList.rows = coachList.rows.slice(offset, offset + limit);
 
         return coachList;
 
@@ -1013,77 +1016,77 @@ export class EmployersService {
 
         let where = {
             id: params.coachId,
-            status: [0,1]
+            status: [0, 1]
         }
         const coach = await helperFunction.convertPromiseToObject(
-                await coachManagementModel.findOne({
+            await coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
             })
         )
-        
+
         if (coach) {
 
-            coach.coach_specialization_categories=await helperFunction.convertPromiseToObject(
+            coach.coach_specialization_categories = await helperFunction.convertPromiseToObject(
                 await coachSpecializationCategoriesModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.coach_specialization_category_ids || [],
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
                         },
-                        status:constants.STATUS.active,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            coach.employee_ranks=await helperFunction.convertPromiseToObject(
+            coach.employee_ranks = await helperFunction.convertPromiseToObject(
                 await employeeRanksModel.findAll({
-                    where:{
-                        id:{
-                            [Op.in]:coach.employee_rank_ids || [],
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
                         },
-                        status:constants.STATUS.active,
+                        status: constants.STATUS.active,
                     }
                 })
             )
 
-            coach.total_completed_sessions=await employeeCoachSessionsModel.count({
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            coach.total_completed_sessions = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                 }
             })
 
-            let totalRating=await employeeCoachSessionsModel.sum('coach_rating',{
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                    coach_rating:{
-                        [Op.gte]:1
+            let totalRating = await employeeCoachSessionsModel.sum('coach_rating', {
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
                     }
                 }
             })
 
-            coach.rating_count=await employeeCoachSessionsModel.count({
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
-                    coach_rating:{
-                        [Op.gte]:1
+            coach.rating_count = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
                     }
                 }
             })
-            let totalSessions= await employeeCoachSessionsModel.findAndCountAll({
-                where:{
-                    coach_id:coach.id,
-                    status:constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            let totalSessions = await employeeCoachSessionsModel.findAndCountAll({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
                 }
             })
-            let freeSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==1).map(obj => obj.employee_id)) ];
-            let paidSessionsCount=[...new Set( totalSessions.rows.filter(ele=> ele.type==2).map(obj => obj.employee_id)) ];
-            coach.average_rating=0;
-            coach.conversionRate = (paidSessionsCount.length/freeSessionsCount.length);
-            if(coach.rating_count>0){
-                coach.average_rating=parseFloat((parseInt(totalRating)/coach.rating_count).toFixed(0));
+            let freeSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 1).map(obj => obj.employee_id))];
+            let paidSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 2).map(obj => obj.employee_id))];
+            coach.average_rating = 0;
+            coach.conversionRate = (paidSessionsCount.length / freeSessionsCount.length);
+            if (coach.rating_count > 0) {
+                coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
             }
             delete coach.coach_specialization_category_ids;
             delete coach.employee_rank_ids;
@@ -1250,7 +1253,7 @@ export class EmployersService {
         where.id = params.employeeId
 
         const employee = await helperFunction.convertPromiseToObject(
-             await employeeModel.findOne({
+            await employeeModel.findOne({
                 where: where,
                 include: [
                     {
@@ -1283,7 +1286,7 @@ export class EmployersService {
         )
 
         if (employee) {
-            employee.total_completed_session=5; 
+            employee.total_completed_session = 5;
             return employee
         }
         else {
@@ -1437,10 +1440,10 @@ export class EmployersService {
         let folderUploadPath = `src/upload`;
         let filename = `${params.title.split(" ")[0]}.png`
         //'https://bluexinga-dev.s3.amazonaws.com/other/1627306681317_+Pdfs+to+AWS+S3+Bucket+with+NodeJs%2C+AWS-SDK%2C+and+express-fileupload._360P.mp4'
-       
+
 
         await this.createThumbnail({ ...params, filename, folderUploadPath })
-        
+
         let fileParams = {
             path: path.join(__dirname, `../../../${folderUploadPath}/${filename}`),
             originalname: filename,
@@ -1450,10 +1453,10 @@ export class EmployersService {
         console.log("fileParams", fileParams)
 
         params.thumbnail_url = await helperFunction.uploadFile(fileParams, "thumbnails");
-        
+
         await deleteFile(filename);
 
-        console.log("params",params)
+        console.log("params", params)
 
         return await libraryManagementModel.create(params)
 
@@ -1679,25 +1682,25 @@ export class EmployersService {
         let where: any = {}
         where.id = params.uid
         where.status = 2
-        return await adminModel.findOne({where: where})
+        return await adminModel.findOne({ where: where })
     }
 
     /**
     * 
     * @param {} params pass all parameters from request
     */
-     public async listFeedback(params: any) {
+    public async listFeedback(params: any) {
 
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
-        let whereCondintion=<any>{
-            status:[constants.STATUS.active,constants.STATUS.inactive],
+        let whereCondintion = <any>{
+            status: [constants.STATUS.active, constants.STATUS.inactive],
         }
 
-        if(params.feedbackType){
-            whereCondintion={
+        if (params.feedbackType) {
+            whereCondintion = {
                 ...whereCondintion,
-                feedback_type:params.feedbackType,
+                feedback_type: params.feedbackType,
             }
         }
 
@@ -1710,70 +1713,70 @@ export class EmployersService {
         //     }
         // }  
 
-        let feedbacks= await helperFunction.convertPromiseToObject(await feedbackModel.findAndCountAll({
-            where:whereCondintion,
+        let feedbacks = await helperFunction.convertPromiseToObject(await feedbackModel.findAndCountAll({
+            where: whereCondintion,
             limit: limit,
             offset: offset,
             order: [["id", "DESC"]]
         }));
 
-        
 
-        if(feedbacks.count>0){
 
-            let filteredFeedbacks=[];
+        if (feedbacks.count > 0) {
 
-            for(let feedback of feedbacks.rows){
-                if(feedback.feedback_type==constants.FEEDBACK_TYPE.employee){
-                    feedback.user=await helperFunction.convertPromiseToObject(
+            let filteredFeedbacks = [];
+
+            for (let feedback of feedbacks.rows) {
+                if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                    feedback.user = await helperFunction.convertPromiseToObject(
                         await employeeModel.findOne({
-                            where:{
-                                id:feedback.user_id
+                            where: {
+                                id: feedback.user_id
                             },
-                            attributes:['id', 'name', 'email', 'phone_number']
+                            attributes: ['id', 'name', 'email', 'phone_number']
                         })
                     )
-                }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.employer){
-                    feedback.user=await helperFunction.convertPromiseToObject(
+                } else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                    feedback.user = await helperFunction.convertPromiseToObject(
                         await employersModel.findOne({
-                            where:{
-                                id:feedback.user_id
+                            where: {
+                                id: feedback.user_id
                             },
-                            attributes:['id', 'name', 'email', 'phone_number']
+                            attributes: ['id', 'name', 'email', 'phone_number']
                         })
                     )
-                }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.coach){
-                    feedback.user=await helperFunction.convertPromiseToObject(
+                } else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                    feedback.user = await helperFunction.convertPromiseToObject(
                         await coachManagementModel.findOne({
-                            where:{
-                                id:feedback.user_id
+                            where: {
+                                id: feedback.user_id
                             },
-                            attributes:['id', 'name', 'email', 'phone_number']
+                            attributes: ['id', 'name', 'email', 'phone_number']
                         })
                     )
-                }else{
-                    feedback.user=null;
+                } else {
+                    feedback.user = null;
                 }
 
-                if(params.searchKey && params.searchKey.trim()!=""){
-                    if(
+                if (params.searchKey && params.searchKey.trim() != "") {
+                    if (
                         feedback.message?.toLowerCase().includes(params.searchKey.toLowerCase()) ||
                         feedback.user?.name.toLowerCase().includes(params.searchKey.toLowerCase()) ||
                         feedback.user?.email.toLowerCase().includes(params.searchKey.toLowerCase())
-                    ){
+                    ) {
                         filteredFeedbacks.push(feedback);
                     }
                 }
             }
 
-            if(params.searchKey && params.searchKey.trim()!=""){
-                feedbacks.count=filteredFeedbacks.length;
-                feedbacks.rows=filteredFeedbacks;
+            if (params.searchKey && params.searchKey.trim() != "") {
+                feedbacks.count = filteredFeedbacks.length;
+                feedbacks.rows = filteredFeedbacks;
             }
 
         }
 
-        if(feedbacks.count==0) throw new Error(constants.MESSAGES.no_feedback);
+        if (feedbacks.count == 0) throw new Error(constants.MESSAGES.no_feedback);
 
         return feedbacks;
     }
@@ -1782,56 +1785,102 @@ export class EmployersService {
     * 
     * @param {} params pass all parameters from request
     */
-     public async getFeedbackDetails(params: any) {
+    public async getFeedbackDetails(params: any) {
 
-        let feedback= await helperFunction.convertPromiseToObject(await feedbackModel.findOne({
-            where:{
-                id:params.feedback_id
+        let feedback = await helperFunction.convertPromiseToObject(await feedbackModel.findOne({
+            where: {
+                id: params.feedback_id
             }
         }));
 
-        
 
-        if(feedback){
-            if(feedback.feedback_type==constants.FEEDBACK_TYPE.employee){
-                feedback.user=await helperFunction.convertPromiseToObject(
+
+        if (feedback) {
+            if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                feedback.user = await helperFunction.convertPromiseToObject(
                     await employeeModel.findOne({
-                        where:{
-                            id:feedback.user_id
+                        where: {
+                            id: feedback.user_id
                         },
-                        attributes:['id', 'name', 'email', 'phone_number']
+                        attributes: ['id', 'name', 'email', 'phone_number']
                     })
                 )
-            }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.employer){
-                feedback.user=await helperFunction.convertPromiseToObject(
+            } else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                feedback.user = await helperFunction.convertPromiseToObject(
                     await employersModel.findOne({
-                        where:{
-                            id:feedback.user_id
+                        where: {
+                            id: feedback.user_id
                         },
-                        attributes:['id', 'name', 'email', 'phone_number']
+                        attributes: ['id', 'name', 'email', 'phone_number']
                     })
                 )
-            }else if(feedback.feedback_type==constants.FEEDBACK_TYPE.coach){
-                feedback.user=await helperFunction.convertPromiseToObject(
+            } else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                feedback.user = await helperFunction.convertPromiseToObject(
                     await coachManagementModel.findOne({
-                        where:{
-                            id:feedback.user_id
+                        where: {
+                            id: feedback.user_id
                         },
-                        attributes:['id', 'name', 'email', 'phone_number']
+                        attributes: ['id', 'name', 'email', 'phone_number']
                     })
                 )
-            }else{
-                feedback.user=null;
-            }            
-        }else{
+            } else {
+                feedback.user = null;
+            }
+        } else {
             throw new Error(constants.MESSAGES.no_feedback)
         }
 
-            
+
 
         return feedback;
 
 
+    }
+    /**
+    * uploadThoughts
+    */
+    public async uploadThoughts(params: any, file: any) {
+        let thoughts = {
+            "A": "day",
+            "B": "thought"
+        }
+        let sheetData = await appUtils.UploadExcelToJson(file.path, 1, thoughts);
+        await thoughtsModel.destroy({
+            truncate: true,
+            force: true
+        });
+        await thoughtsModel.bulkCreate(sheetData)
+        return true;
+    }
+    /**
+    * download thoughts
+    */
+    public async downloadThoughts(req: any, res: any) {
+        let worksheet;
+        let Columns = [
+            { header: "Day", key: "day", width: 20 },
+            { header: "Thought of the Day", key: "thought", width: 20 }
+        ];
+        let excelData = await thoughtsModel.findAll({
+            attributes: ["day", "thought"]
+        })
+        let workbook = new excel.Workbook();
+        worksheet = workbook.addWorksheet('thoughts');
+        worksheet.columns = Columns;
+        let fName = "thoughts"
+        worksheet.addRows(excelData);
+        let filename = `${fName}-${moment().format('YYYYMMDD-HHmmss')}.xlsx`;
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + filename
+        );
+        return workbook.xlsx.write(res).then(function () {
+            res.status(200).end();
+        });
     }
 
 }

@@ -4,6 +4,7 @@ import * as randomstring from 'randomstring';
 import bcrypt from 'bcrypt';
 import * as helperFunction from '../utils/helperFunction';
 const moment = require("moment")
+const excelToJson = require('convert-excel-to-json');
 
 /* function for sending the error response */
 export const errorResponse = (res: any, error: any, errorCode: any, message = constants.MESSAGES.bad_request) => {
@@ -223,3 +224,28 @@ export const validateUnavailableTime = (timeSlots, slots, time_capture_type) => 
         return { availableSlots: slots.map(v => ({...v, is_available: constants.COACH_SCHEDULE_STATUS.available})), unavailableSlots: unavaibaleSlots.map(v => ({...v, is_available: constants.COACH_SCHEDULE_STATUS.unavailable})) }
     }
 }
+export const UploadExcelToJson=async(path, headerRow, columnToKey)=> {
+    try {
+        console.log(path, headerRow, columnToKey)
+      columnToKey['*'] = '{{columnHeader}}'
+      let result = excelToJson({
+        sourceFile: path,
+        columnToKey: columnToKey,
+        header: {
+          rows: headerRow
+        }
+      });
+      let columnKeyObj = {}
+      for (const value of Object.values(columnToKey)) {
+        columnKeyObj[`${value}`] = null
+      }
+      delete columnKeyObj["{{columnHeader}}"];
+      result = (result && result[Object.keys(result)[0]]) ? result[Object.keys(result)[0]] : [];
+      result.forEach((element, index, array) => {
+        result[index] = { ...columnKeyObj, ...element }
+      })
+      return result;
+    } catch (err) {
+      return err;
+    }
+  }

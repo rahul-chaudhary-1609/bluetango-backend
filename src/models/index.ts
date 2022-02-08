@@ -13,7 +13,7 @@ import {coachSpecializationCategoriesModel} from './coachSpecializationCategorie
 import {coachScheduleModel} from './coachSchedule'
 import {bluetangoAdminRolesModel}from './bluetangoAdminRoles'
 import {bluetangoAdminModel} from './bluetangoAdmin'
-
+import {thoughtsModel} from './thoughts'
 /* all associations put here to avoid duplicate association */
 employeeModel.hasOne(emojiModel,{ as: 'energy_emoji_data', foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
 employeeModel.hasOne(emojiModel,{ as: 'job_emoji_data', foreignKey: "id", sourceKey: "job_emoji_id", targetKey: "id" });
@@ -32,5 +32,6 @@ export {
     coachSpecializationCategoriesModel,
     coachScheduleModel,
     bluetangoAdminRolesModel,
-    bluetangoAdminModel
+    bluetangoAdminModel,
+    thoughtsModel
 }
