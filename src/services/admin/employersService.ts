@@ -1850,6 +1850,7 @@ export class EmployersService {
             force: true
         });
         await thoughtsModel.bulkCreate(sheetData)
+        await deleteFile(file.filename);
         return true;
     }
     /**
