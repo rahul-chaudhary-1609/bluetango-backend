@@ -4169,11 +4169,19 @@
             "type": "string"
           },
           {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "Enter search key",
+            "required": false,
+            "type": "number"
+          },
+          {
             "name": "sortBy",
             "in": "query",
             "description": " Default is 3. Options are:\n\t1=>newly_added_on_top,\n\t2=>old_on_top,\n\t3=>rating_high_to_low,\n\t4=>cost_high_to_low,\n\t5=>cost_low_to_high,\n\t6=>sooner_availability_on_top",
             "required": false,
             "type": "number",
+            "default":3,
             "enum": [
               1,
               2,
@@ -4186,9 +4194,10 @@
           {
             "name": "filterBy",
             "in": "query",
-            "description": " Default is 2. Options are:\n\t1=>all,\n\t2=>today,\n\t3=>custom_date",
+            "description": " Default is 2. Options are:\n\t1=>week,\n\t2=>today,\n\t3=>custom_date",
             "required": false,
             "type": "number",
+            "default":2,
             "enum": [
               1,
               2,
@@ -4198,8 +4207,8 @@
           {
             "name": "date",
             "in": "query",
-            "description": "Enter date to get specific coach availibility. (required if filterBy is 3)",
-            "required": false,
+            "description": "Enter date:\n\tstart date if filterBy is 1\n\tOR Date of today if filterBy is 2\n\tOR custom date if filter by is 3)",
+            "required": true,
             "type": "string"
           },
           {
@@ -4226,16 +4235,6 @@
             "description": "page size (required if is_pagination is 1)",
             "required": false,
             "type": "number"
-          },
-          {
-            "name": "weekly",
-            "in": "query",
-            "description": "Enter 1 for weekly filter",
-            "required": false,
-            "type": "number",
-            "enum": [
-              1
-            ]
           }
         ],
         "responses": {}
@@ -4490,11 +4489,12 @@
             "type": "string"
           },
           {
-            "name": "coach_id",
+            "name": "app_id",
             "in": "formData",
-            "description": "coach_id",
+            "description": "app_id: 1=>BX, 2=>BT",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "enum":[1,2]
           },
           {
             "name": "coach_specialization_category_id",
@@ -4521,7 +4521,7 @@
             "name": "end_time",
             "in": "formData",
             "description": "end_time format: HH:mm:ss",
-            "required": false,
+            "required": true,
             "type": "string"
           }
         ],
