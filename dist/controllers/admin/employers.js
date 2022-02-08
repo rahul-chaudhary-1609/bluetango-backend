@@ -949,6 +949,46 @@ class EmployersController {
             }
         });
     }
+    /**
+* upload thoughts
+*/
+    uploadThoughts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const thoughts = yield employersService.uploadThoughts(req.body, req.file);
+                if (thoughts) {
+                    return appUtils.successResponse(res, thoughts, constants.MESSAGES.thoughts_uploaded);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+* download thoughts
+*/
+    downloadThoughts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                req.body.admin_id = req.user.uid;
+                const thoughts = yield employersService.downloadThoughts(req, res);
+                if (thoughts) {
+                    return appUtils.successResponse(res, thoughts, constants.MESSAGES.thoughts_downloaded);
+                }
+                else {
+                    appUtils.errorResponse(res, constants.MESSAGES.exception_occured, constants.code.error_code);
+                }
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.EmployersController = EmployersController;
 //# sourceMappingURL=employers.js.map

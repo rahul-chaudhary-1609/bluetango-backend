@@ -52,6 +52,8 @@ const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+const excel = require("exceljs");
+const moment = require("moment");
 class EmployersService {
     constructor() { }
     /**
@@ -1689,6 +1691,51 @@ class EmployersService {
                 throw new Error(constants.MESSAGES.no_feedback);
             }
             return feedback;
+        });
+    }
+    /**
+    * uploadThoughts
+    */
+    uploadThoughts(params, file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let thoughts = {
+                "A": "day",
+                "B": "thought"
+            };
+            let sheetData = yield appUtils.UploadExcelToJson(file.path, 1, thoughts);
+            yield models_1.thoughtsModel.destroy({
+                truncate: true,
+                force: true
+            });
+            yield models_1.thoughtsModel.bulkCreate(sheetData);
+            yield multerParser_1.deleteFile(file.filename);
+            return true;
+        });
+    }
+    /**
+    * download thoughts
+    */
+    downloadThoughts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let worksheet;
+            let Columns = [
+                { header: "Day", key: "day", width: 20 },
+                { header: "Thought of the Day", key: "thought", width: 20 }
+            ];
+            let excelData = yield models_1.thoughtsModel.findAll({
+                attributes: ["day", "thought"]
+            });
+            let workbook = new excel.Workbook();
+            worksheet = workbook.addWorksheet('thoughts');
+            worksheet.columns = Columns;
+            let fName = "thoughts";
+            worksheet.addRows(excelData);
+            let filename = `${fName}-${moment().format('YYYYMMDD-HHmmss')}.xlsx`;
+            res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            res.setHeader("Content-Disposition", "attachment; filename=" + filename);
+            return workbook.xlsx.write(res).then(function () {
+                res.status(200).end();
+            });
         });
     }
 }
