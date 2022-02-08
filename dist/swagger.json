@@ -4169,11 +4169,19 @@
                         "type": "string"
                     },
                     {
+                        "name": "coach_specialization_category_id",
+                        "in": "query",
+                        "description": "Enter search key",
+                        "required": false,
+                        "type": "number"
+                    },
+                    {
                         "name": "sortBy",
                         "in": "query",
                         "description": " Default is 3. Options are:\n\t1=>newly_added_on_top,\n\t2=>old_on_top,\n\t3=>rating_high_to_low,\n\t4=>cost_high_to_low,\n\t5=>cost_low_to_high,\n\t6=>sooner_availability_on_top",
                         "required": false,
                         "type": "number",
+                        "default": 3,
                         "enum": [
                             1,
                             2,
@@ -4189,6 +4197,7 @@
                         "description": " Default is 2. Options are:\n\t1=>week,\n\t2=>today,\n\t3=>custom_date",
                         "required": false,
                         "type": "number",
+                        "default": 2,
                         "enum": [
                             1,
                             2,
