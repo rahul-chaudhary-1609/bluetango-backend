@@ -314,6 +314,7 @@ employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.val
 
 /* mark Goals As Primary */
 employeeRoute.put("/markGoalsAsPrimary", tokenValidator.validateEmployeeToken,joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
-
+/* /get thought */
+employeeRoute.get("/getThought",tokenValidator.validateEmployeeToken,joiSchemaValidation.validateQueryParams(employeeSchema.getThought), employeeController.getThought);
 
 export = employeeRoute;

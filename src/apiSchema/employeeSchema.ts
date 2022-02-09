@@ -457,3 +457,6 @@ export const skipRateSession=Joi.object({
 export const getNotRatedSessions=Joi.object({
   datetime:Joi.string().required(),
 })
+export const getThought=Joi.object({
+  date:Joi.string().required()
+})

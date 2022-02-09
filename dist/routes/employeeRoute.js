@@ -229,5 +229,7 @@ employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.
 employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.toggleGoalAsPrimary), goalController.toggleGoalAsPrimary);
 /* mark Goals As Primary */
 employeeRoute.put("/markGoalsAsPrimary", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
+/* /get thought */
+employeeRoute.get("/getThought", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getThought), employeeController.getThought);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

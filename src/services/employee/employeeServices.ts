@@ -32,7 +32,7 @@ var Op = Sequelize.Op;
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 import * as queryService from '../../queryService/bluetangoAdmin/queryService';
-
+import {thoughtsModel} from "../../models"
 const authService = new AuthService();
 
 export class EmployeeServices {
@@ -2226,6 +2226,47 @@ export class EmployeeServices {
 
 
         return goalSubmitReminders;
+    }
+    /**
+     * function to get thought
+     */
+     public async getThought(params:any) {
+        let dateobj= new Date(params.date) ;
+        let month = dateobj.getMonth() + 1;
+        let day = dateobj.getDate() ;
+        let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let where={
+            day: `${day} ${monthNames[month-1]}`
+        }
+        let thought=  await queryService.selectOne(thoughtsModel, {
+            where: where,
+        })
+        if(thought &&thought.thought!=null){
+            return thought;
+        }
+        else{
+            for(let i=0;i<11;i++){
+                if(month==1){
+                    month=13;
+                }
+                month--;
+                let thought=  await queryService.selectOne(thoughtsModel, {
+                    where: {day: `${day} ${monthNames[month-1]}`},
+                })
+                if(thought &&thought.thought!=null){
+                    return thought
+                }
+            }
+            month--;
+                for(let j=day-1;j>=1;j--){
+                    let thought=  await queryService.selectOne(thoughtsModel, {
+                        where: {day: `${j} ${monthNames[month-1]}`},
+                    })
+                    if(thought &&thought.thought!=null){
+                        return thought
+                    }
+                }
+        }
     }
 
 }

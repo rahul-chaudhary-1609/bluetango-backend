@@ -534,4 +534,16 @@ export class EmployeeController {
             next(e)
         }
     }
+     /**
+    * get thought
+    */
+      public async getThought(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeServices.getThought(req.query);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
 }
