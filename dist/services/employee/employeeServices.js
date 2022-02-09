@@ -63,6 +63,8 @@ const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
+const models_1 = require("../../models");
 const authService = new authService_1.AuthService();
 class EmployeeServices {
     constructor() { }
@@ -1890,6 +1892,49 @@ class EmployeeServices {
                 delete goalSubmitReminder.data.senderEmplyeeData;
             }
             return goalSubmitReminders;
+        });
+    }
+    /**
+     * function to get thought
+     */
+    getThought(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let dateobj = new Date(params.date);
+            let month = dateobj.getMonth() + 1;
+            let day = dateobj.getDate();
+            let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            let where = {
+                day: `${day} ${monthNames[month - 1]}`
+            };
+            let thought = yield queryService.selectOne(models_1.thoughtsModel, {
+                where: where,
+            });
+            if (thought && thought.thought != null) {
+                return thought;
+            }
+            else {
+                for (let i = 0; i < 11; i++) {
+                    if (month == 1) {
+                        month = 13;
+                    }
+                    month--;
+                    let thought = yield queryService.selectOne(models_1.thoughtsModel, {
+                        where: { day: `${day} ${monthNames[month - 1]}` },
+                    });
+                    if (thought && thought.thought != null) {
+                        return thought;
+                    }
+                }
+                month--;
+                for (let j = day - 1; j >= 1; j--) {
+                    let thought = yield queryService.selectOne(models_1.thoughtsModel, {
+                        where: { day: `${j} ${monthNames[month - 1]}` },
+                    });
+                    if (thought && thought.thought != null) {
+                        return thought;
+                    }
+                }
+            }
         });
     }
 }

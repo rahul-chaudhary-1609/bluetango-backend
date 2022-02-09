@@ -10371,6 +10371,34 @@
                 ],
                 "responses": {}
             }
+        },
+        "/employee/getThought": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "description": "Api to get thought",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "current date (Wed Feb 09 2022 17:38:17 GMT+0530 (India Standard Time))",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {}
