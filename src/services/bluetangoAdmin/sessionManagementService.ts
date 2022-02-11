@@ -66,7 +66,7 @@ export class SessionManagementService {
                 }
             ],
             raw: true,
-            attributes: ["id", "coach_id", "query", "date", "start_time", "action", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
+            attributes: ["id", "coach_id", "query", "date", "start_time", "action","slot_id", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
         }, {})
         sessions.rows = sessions.rows.slice(offset, offset + limit);
         sessions.rows = appUtils.formatPassedAwayTime(sessions.rows);
@@ -103,7 +103,7 @@ export class SessionManagementService {
                 }
             ],
             raw: true,
-            attributes: ["id", "query", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category']]
+            attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id","slot_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category',"query"]]
         })
         if (sessions) {
             return appUtils.formatPassedAwayTime([sessions])[0];
