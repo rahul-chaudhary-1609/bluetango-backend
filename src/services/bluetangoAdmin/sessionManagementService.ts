@@ -142,7 +142,7 @@ export class SessionManagementService {
         if (Number(params.action) == 4) {
             employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
             employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
-            let session = await queryService.selectAndCountAll(employeeCoachSessionsModel, {
+            let session = await queryService.selectOne(employeeCoachSessionsModel, {
                 where: { id: params.id },
                 include: [
                     {
@@ -168,7 +168,7 @@ export class SessionManagementService {
                 data: {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
                     senderEmployeeData:{id:user.uid},
                 },
             }
@@ -177,15 +177,15 @@ export class SessionManagementService {
 
             let notificationData = <any>{
                 title: 'Sesssion assigned by admin',
-                message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
                     senderEmployeeData:{id:user.uid},
                 },
             }
-            await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
+            await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
 
             let mailParams = <any>{};
             mailParams.to = Sessions.email;
