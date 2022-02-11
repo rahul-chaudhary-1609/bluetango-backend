@@ -77,6 +77,10 @@ exports.bluetangoAdminModel = connection_1.sequelize.define("bluetango_admins", 
         allowNull: false,
         comment: "FK to bluetango_admin_roles table"
     },
+    tokens: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true,
+    },
 }, {
     tableName: "bluetango_admins"
 });

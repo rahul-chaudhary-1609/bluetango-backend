@@ -43,7 +43,7 @@ export class AuthService {
                 }
             ],
             // attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('role.module_wise_permissions'), 'module_wise_permissions']],
-            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions']],
+            attributes: ['id', 'name', 'email', 'password', 'country_code', 'phone_number', 'admin_role', 'status', 'permissions', 'social_media_handles', 'profile_pic_url', "role_id", [Sequelize.col('bluetango_admin_role.module_wise_permissions'), 'module_wise_permissions'],"tokens"],
         })
         if (admin) {
             let comparePassword = await appUtils.comparePassword(params.password, admin.password);
@@ -51,7 +51,12 @@ export class AuthService {
                 if (admin.status == constants.STATUS.active) {
                     delete admin.password;
                     let token = await tokenResponse.bluetangoAdminTokenResponse(admin);
-                    await queryService.updateData({ model: bluetangoAdminModel, token:token.token }, { where: { id: admin.id } })
+                    let tokens=[];
+                    if(admin.tokens){
+                        admin.tokens.length=4;
+                        tokens=admin.tokens
+                    }
+                    await queryService.updateData({ model: bluetangoAdminModel, token:token.token,tokens:[token.token,...tokens] }, { where: { id: admin.id } })
                     admin.token = token;
                     return admin;
                 } else {
@@ -346,7 +351,7 @@ export class AuthService {
         }
         if (Params.module_wise_permissions) {
             await queryService.updateData({ model: bluetangoAdminRolesModel, last_activity: new Date(), module_wise_permissions: Params.module_wise_permissions }, { where: { id: Params.id } })
-            await queryService.updateData({ model: bluetangoAdminModel, token:null }, { where: { role_id: Params.id } })
+            await queryService.updateData({ model: bluetangoAdminModel, token:null,tokens:null }, { where: { role_id: Params.id } })
         }
         let AlreadyExistAdmins = [];
         let updated = [];
