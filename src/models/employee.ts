@@ -133,9 +133,17 @@ export const employeeModel: any = sequelize.define("employee", {
         allowNull: false,
         defaultValue:1,
     },
+    first_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    last_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 },
     {
         tableName: "employee"
     }
 );
-employeeModel.sync({ alter: false });
+employeeModel.sync({ alter: true });

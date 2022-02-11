@@ -111,6 +111,7 @@ class EmployeeManagement {
     addEditEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = (params.email).toLowerCase();
+            params.name = params.first_name + " " + params.last_name;
             if (params.current_department_id) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: params.current_department_id } });
                 if (!departmentExists)

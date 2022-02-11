@@ -134,8 +134,16 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         allowNull: false,
         defaultValue: 1,
     },
+    first_name: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    last_name: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     tableName: "employee"
 });
-exports.employeeModel.sync({ alter: false });
+exports.employeeModel.sync({ alter: true });
 //# sourceMappingURL=employee.js.map

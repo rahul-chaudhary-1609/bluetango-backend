@@ -155,8 +155,7 @@ export class SessionManagementService {
                         required: true,
                         attributes: ["id","name"],
                     },
-                ],
-                raw: true,
+                ]
             })
             //add notification 
             let notificationObj = <any>{
@@ -168,7 +167,7 @@ export class SessionManagementService {
                 data: {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                     senderEmployeeData:{id:user.uid},
                 },
             }
@@ -177,15 +176,15 @@ export class SessionManagementService {
 
             let notificationData = <any>{
                 title: 'Sesssion assigned by admin',
-                message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                 data: {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                     senderEmployeeData:{id:user.uid},
                 },
             }
-            await helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+            await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
 
             let mailParams = <any>{};
             mailParams.to = Sessions.email;

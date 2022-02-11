@@ -98,7 +98,9 @@ exports.changePassword = joi_1.default.object({
 });
 exports.addEditEmployee = joi_1.default.object({
     id: joi_1.default.string().optional(),
-    name: joi_1.default.string().required(),
+    //name: Joi.string().required(),
+    first_name: joi_1.default.string().required(),
+    last_name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
     // password: Joi.string().min(8)
     // .max(15)
