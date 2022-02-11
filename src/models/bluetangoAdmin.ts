@@ -76,6 +76,10 @@ export const bluetangoAdminModel: any = sequelize.define("bluetango_admins", {
         allowNull: false,
         comment: "FK to bluetango_admin_roles table"
       },
+    tokens: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
+    },
 },
     {
         tableName: "bluetango_admins"
