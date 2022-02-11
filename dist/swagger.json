@@ -6134,7 +6134,7 @@
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
+                        "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tfirst_name,last_name\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -6145,7 +6145,10 @@
                                 "manager_id": {
                                     "type": "number"
                                 },
-                                "name": {
+                                "first_name": {
+                                    "type": "string"
+                                },
+                                "last_name": {
                                     "type": "string"
                                 },
                                 "email": {

@@ -184,8 +184,7 @@ class SessionManagementService {
                             required: true,
                             attributes: ["id", "name"],
                         },
-                    ],
-                    raw: true,
+                    ]
                 });
                 //add notification 
                 let notificationObj = {
@@ -197,22 +196,22 @@ class SessionManagementService {
                     data: {
                         type: constants.NOTIFICATION_TYPE.session_reassigned,
                         title: 'Sesssion assigned by admin',
-                        message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                        message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                         senderEmployeeData: { id: user.uid },
                     },
                 };
                 yield notification_1.notificationModel.create(notificationObj);
                 let notificationData = {
                     title: 'Sesssion assigned by admin',
-                    message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                    message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                     data: {
                         type: constants.NOTIFICATION_TYPE.session_reassigned,
                         title: 'Sesssion assigned by admin',
-                        message: `Admin has assigned session for ${session["employee.name"]} on ${session.date} at ${session.start_time}`,
+                        message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
                         senderEmployeeData: { id: user.uid },
                     },
                 };
-                yield helperFunction.sendFcmNotification([session["coach_management.device_token"]], notificationData);
+                yield helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
                 let mailParams = {};
                 mailParams.to = Sessions.email;
                 mailParams.html = `Hi  ${Sessions.name}
