@@ -436,7 +436,7 @@ export class EmployeeServices {
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employee = await employeeModel.findOne({
-            attributes: ['id', 'name', 'profile_pic_url'],
+            attributes: ['id', 'name', 'profile_pic_url','address','technical_skills','qualifications','educations','references','previous_employment_history'],
             where: {
                 id: user.uid
             },
@@ -2061,7 +2061,7 @@ export class EmployeeServices {
         let folderPath = `./src/upload`;
         let fileNames = [
             `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
-            `/${employee.name.split(" ").join("_")}_${employee.id}.pdf`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type==1 ? "pdf":"docx"}`,
         ];
 
         fileNames.forEach(async (fileName) => {
@@ -2153,7 +2153,7 @@ export class EmployeeServices {
         let folderPath = `./src/upload`;
         let fileNames = [
             `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
-            `/${employee.name.split(" ").join("_")}_${employee.id}.docx`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type==1 ? "pdf":"docx"}`,
         ];
 
         fileNames.forEach(async (fileName) => {

@@ -141,6 +141,30 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    address: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    technical_skills: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
+    },
+    qualifications: {
+        type: DataTypes.ARRAY(DataTypes.JSONB),
+        allowNull:true,
+    },
+    educations: {
+        type: DataTypes.ARRAY(DataTypes.JSONB),
+        allowNull:true,
+    },
+    references: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
+    },
+    previous_employment_history: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 },
     {
         tableName: "employee"

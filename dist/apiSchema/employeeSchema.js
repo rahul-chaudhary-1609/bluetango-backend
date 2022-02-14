@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getThought = exports.getNotRatedSessions = exports.skipRateSession = exports.rateCoachSession = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getSessions = exports.createSessionRequest = exports.getSlot = exports.getSlots = exports.getCoachList = exports.clearChat = exports.markGoalsAsPrimary = exports.toggleGoalAsPrimary = exports.shareEmployeeCV = exports.getGoalCompletionAverageAsManager = exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.getAttributes = exports.getAttributeRatings = exports.addAttributeRatings = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.getAchievements = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getEmployeeCV = exports.getThought = exports.getNotRatedSessions = exports.skipRateSession = exports.rateCoachSession = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getSessions = exports.createSessionRequest = exports.getSlot = exports.getSlots = exports.getCoachList = exports.clearChat = exports.markGoalsAsPrimary = exports.toggleGoalAsPrimary = exports.shareEmployeeCV = exports.getGoalCompletionAverageAsManager = exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.getAttributes = exports.getAttributeRatings = exports.addAttributeRatings = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.getAchievements = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -107,6 +107,12 @@ exports.updateProfile = joi_1.default.object({
         prev_date_of_joining: joi_1.default.string().required(),
         prev_exit: joi_1.default.string().required(),
     })).optional(),
+    address: joi_1.default.string().optional(),
+    technical_skills: joi_1.default.array().optional(),
+    qualifications: joi_1.default.array().optional(),
+    educations: joi_1.default.array().optional(),
+    references: joi_1.default.array().optional(),
+    previous_employment_history: joi_1.default.array().optional()
 });
 exports.getListOfTeamMemberByManagerId = joi_1.default.object({
     limit: joi_1.default.string().optional(),
@@ -331,6 +337,7 @@ exports.shareEmployeeCV = joi_1.default.object({
     to_email: joi_1.default.string().required(),
     subject: joi_1.default.string().optional(),
     message: joi_1.default.string().optional(),
+    type: joi_1.default.number().required().valid(1, 2)
 });
 exports.toggleGoalAsPrimary = joi_1.default.object({
     team_goal_assign_id: joi_1.default.number().required(),
@@ -408,5 +415,8 @@ exports.getNotRatedSessions = joi_1.default.object({
 });
 exports.getThought = joi_1.default.object({
     date: joi_1.default.string().required()
+});
+exports.getEmployeeCV = joi_1.default.object({
+    type: joi_1.default.number().required().valid(1, 2)
 });
 //# sourceMappingURL=employeeSchema.js.map

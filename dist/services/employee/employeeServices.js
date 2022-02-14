@@ -413,7 +413,7 @@ class EmployeeServices {
             employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let employee = yield employee_1.employeeModel.findOne({
-                attributes: ['id', 'name', 'profile_pic_url'],
+                attributes: ['id', 'name', 'profile_pic_url', 'address', 'technical_skills', 'qualifications', 'educations', 'references', 'previous_employment_history'],
                 where: {
                     id: user.uid
                 },
@@ -1763,7 +1763,7 @@ class EmployeeServices {
             let folderPath = `./src/upload`;
             let fileNames = [
                 `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
-                `/${employee.name.split(" ").join("_")}_${employee.id}.pdf`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type == 1 ? "pdf" : "docx"}`,
             ];
             fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
                 if (fs.existsSync(folderPath + fileName)) {
@@ -1833,7 +1833,7 @@ class EmployeeServices {
             let folderPath = `./src/upload`;
             let fileNames = [
                 `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
-                `/${employee.name.split(" ").join("_")}_${employee.id}.docx`,
+                `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type == 1 ? "pdf" : "docx"}`,
             ];
             fileNames.forEach((fileName) => __awaiter(this, void 0, void 0, function* () {
                 if (fs.existsSync(folderPath + fileName)) {
