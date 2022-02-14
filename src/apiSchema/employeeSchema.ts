@@ -92,6 +92,12 @@ export const updateProfile = Joi.object({
       prev_date_of_joining: Joi.string().required(),
       prev_exit: Joi.string().required(),
   })).optional(),
+  address:Joi.string().optional(),
+  technical_skills:Joi.array().optional(),
+  qualifications:Joi.array().optional(),
+  educations:Joi.array().optional(),
+  references:Joi.array().optional(),
+  previous_employment_history:Joi.array().optional()
 })
 
 export const getListOfTeamMemberByManagerId = Joi.object({
@@ -367,6 +373,7 @@ export const shareEmployeeCV=Joi.object({
   to_email: Joi.string().required(),
   subject: Joi.string().optional(),
   message: Joi.string().optional(),
+  type:Joi.number().required().valid(1,2)
 });
 
 export const toggleGoalAsPrimary=Joi.object({
@@ -460,3 +467,6 @@ export const getNotRatedSessions=Joi.object({
 export const getThought=Joi.object({
   date:Joi.string().required()
 })
+export const getEmployeeCV=Joi.object({
+  type:Joi.number().required().valid(1,2)
+});

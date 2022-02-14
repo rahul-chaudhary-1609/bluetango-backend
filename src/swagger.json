@@ -3023,6 +3023,36 @@
                       }
                     }
                   }
+                },
+                "address": {
+                  "type": "string"
+                },
+                "technical_skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "qualifications": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "educations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "references": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "previous_employment_history": {
+                  "type": "array"
                 }
               }
             }
@@ -5127,6 +5157,13 @@
             "description": "Enter message of email",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "1--> pdf , 2--> docx",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -5148,6 +5185,13 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "1--> pdf , 2--> docx",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}

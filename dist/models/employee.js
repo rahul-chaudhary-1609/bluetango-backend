@@ -142,6 +142,30 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    address: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
+    technical_skills: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true
+    },
+    qualifications: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
+        allowNull: true,
+    },
+    educations: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
+        allowNull: true,
+    },
+    references: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true
+    },
+    previous_employment_history: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
 }, {
     tableName: "employee"
 });

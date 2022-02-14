@@ -41,7 +41,7 @@ employeeRoute.post("/employeeResetPassword",validators.trimmer, joiSchemaValidat
 employeeRoute.get("/getMyProfile", validators.trimmer, tokenValidator.validateEmployeeToken, authController.getMyProfile);
 
 /* update profile route for employee */
-employeeRoute.post("/updateProfile", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateProfile), authController.updateProfile);
+employeeRoute.post("/updateProfile", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateProfile), authController.updateProfile);
 
 /* upload file route for employee */
 employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, upload.single('file'), authController.uploadFile);
@@ -304,7 +304,7 @@ employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, toke
 employeeRoute.post("/shareEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.shareEmployeeCV),  employeeController.shareEmployeeCV);
 
 /* get Employee CV*/
-employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCV);
+employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken,joiSchemaValidation.validateBody(employeeSchema.getEmployeeCV), employeeController.getEmployeeCV);
 
 /* /get Goal Submit Reminders */
 employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
