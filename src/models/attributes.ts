@@ -22,11 +22,19 @@ export const attributeModel: any = sequelize.define("attributes", {
         allowNull: true,
     },
     status: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 1,
-    comment: '0=>inactive,1=>active,2=>deleted'
-},
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '0=>inactive,1=>active,2=>deleted'
+    },
+    particulars: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    guidance: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 },
     {
         tableName: "attributes"

@@ -45,6 +45,7 @@ const attributeRatings_1 = require("../../models/attributeRatings");
 const employeeRanks_1 = require("../../models/employeeRanks");
 const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
 var Op = Sequelize.Op;
+const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 class EmployeeManagement {
     constructor() { }
     /**
@@ -647,6 +648,8 @@ class EmployeeManagement {
                     employer_id: user.uid,
                     name: attribute.name,
                     comment: attribute.desc || null,
+                    particulars: attribute.particulars || null,
+                    guidance: attribute.guidance || null,
                 });
             }
             if (!duplicateAttribute) {
@@ -738,6 +741,20 @@ class EmployeeManagement {
             else {
                 throw new Error(constants.MESSAGES.attribute_not_found);
             }
+        });
+    }
+    /*
+   * get to add qualitative measurement details
+   */
+    getQualitativeMeasurementDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = { status: constants.STATUS.active };
+            if (params.name) {
+                where = Object.assign(Object.assign({}, where), { name: params.name });
+            }
+            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
+                where: where,
+            });
         });
     }
 }

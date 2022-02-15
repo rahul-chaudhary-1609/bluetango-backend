@@ -7061,6 +7061,12 @@
                                             },
                                             "desc": {
                                                 "type": "string"
+                                            },
+                                            "particulars": {
+                                                "type": "string"
+                                            },
+                                            "guidance": {
+                                                "type": "string"
                                             }
                                         }
                                     }
@@ -10442,6 +10448,48 @@
                         "description": "current date (Wed Feb 09 2022 17:38:17 GMT+0530 (India Standard Time))",
                         "required": true,
                         "type": "string"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/employer/getQualitativeMeasurementDetails": {
+            "get": {
+                "tags": [
+                    "Employer"
+                ],
+                "description": "to get qualitative measurement details",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "Enter jwt token for authentication",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "name",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "initiative",
+                            "ability_to_delegate",
+                            "clear_Communication",
+                            "self_awareness_of_strengths_and_weaknesses",
+                            "agile_thinking",
+                            "influence",
+                            "empathy",
+                            "leadership_courage",
+                            "customer_client_patient_satisfaction",
+                            "team_contributions",
+                            "time_management",
+                            "work_product"
+                        ]
                     }
                 ],
                 "responses": {}
