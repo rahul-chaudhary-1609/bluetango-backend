@@ -15,6 +15,7 @@ import { attributeRatingModel } from "../../models/attributeRatings"
 import { employeeRanksModel } from "../../models/employeeRanks";
 import { teamGoalAssignCompletionByEmployeeModel } from "../../models/teamGoalAssignCompletionByEmployee";
 var Op = Sequelize.Op;
+import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMeasurementComment"
 
 export class EmployeeManagement {
     constructor() { }
@@ -753,6 +754,8 @@ export class EmployeeManagement {
                 employer_id: user.uid,
                 name: attribute.name,
                 comment: attribute.desc || null,
+                particulars: attribute.particulars || null,
+                guidance: attribute.guidance || null,
             })
         }
 
@@ -847,6 +850,22 @@ export class EmployeeManagement {
         } else {
             throw new Error(constants.MESSAGES.attribute_not_found)
         }
+    }
+     /*
+    * get to add qualitative measurement details
+    */
+     public async getQualitativeMeasurementDetails(params: any, user: any) {
+        
+        let where = <any>{ status: constants.STATUS.active}
+        if (params.name) {
+            where = {
+                ...where,
+                name: params.name
+            }
+        }
+        return await qualitativeMeasurementCommentModel.findAll({
+            where: where,
+        })
     }
 
 

@@ -209,6 +209,19 @@ export class EmployeeController {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
+     /**
+   * get qualitative measurement details
+   * @param req :[]
+   * @param res 
+   */
+      public async getQualitativeMeasurementDetails(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await employeeService.getQualitativeMeasurementDetails(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
 
     
 

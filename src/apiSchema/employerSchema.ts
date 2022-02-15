@@ -198,6 +198,8 @@ export const addAttributes = Joi.object({
   attributes:Joi.array().items(Joi.object().keys({
                 name: Joi.string().required(),
                 desc:Joi.string().optional(),
+                particulars:Joi.string().optional(),
+                guidance:Joi.string().optional(),
             })).required(),
 })
 
@@ -218,5 +220,7 @@ export const deleteAttribute = Joi.object({
 export const toggleAttributeStatus = Joi.object({
   attribute_id:Joi.number().required(),
 })
-
+export const getQualitativeMeasurementDetails = Joi.object({
+  name: Joi.string()
+})
 
