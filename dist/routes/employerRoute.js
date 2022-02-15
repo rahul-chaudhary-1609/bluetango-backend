@@ -103,5 +103,7 @@ employerRoute.get("/getAttributeDetails/:attribute_id", tokenValidator.validateE
 employerRoute.delete("/deleteAttribute/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteAttribute), managementController.deleteAttribute);
 /* toggle Attribute Status */
 employerRoute.put("/toggleAttributeStatus/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.toggleAttributeStatus), managementController.toggleAttributeStatus);
+/* get qualitative measurement for employee */
+employerRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateQueryParams(employerSchema.getQualitativeMeasurementDetails), managementController.getQualitativeMeasurementDetails);
 module.exports = employerRoute;
 //# sourceMappingURL=employerRoute.js.map
