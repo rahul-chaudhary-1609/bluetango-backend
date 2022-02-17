@@ -373,6 +373,7 @@ export class CoachService {
             }
         }
         if(params.employer_ids){
+            params.employer_ids=params.employer_ids.split(',');
             employeeWhere["current_employer_id"]=params.employer_ids
         }
 

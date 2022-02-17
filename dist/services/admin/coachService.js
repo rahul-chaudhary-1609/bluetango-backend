@@ -345,6 +345,7 @@ class CoachService {
                 where = Object.assign(Object.assign({}, where), { date: params.date });
             }
             if (params.employer_ids) {
+                params.employer_ids = params.employer_ids.split(',');
                 employeeWhere["current_employer_id"] = params.employer_ids;
             }
             if (params.status) {
