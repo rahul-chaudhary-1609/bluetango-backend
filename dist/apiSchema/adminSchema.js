@@ -250,7 +250,7 @@ exports.listEmployeeCoachSessions = joi_1.default.object({
     status: joi_1.default.number().optional(),
     employeeRankId: joi_1.default.number().optional(),
     sessionType: joi_1.default.number().optional(),
-    employer_ids: joi_1.default.array().optional(),
+    employer_ids: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional(),
 });

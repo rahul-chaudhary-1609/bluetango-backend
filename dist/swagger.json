@@ -2594,12 +2594,9 @@
                     {
                         "name": "employer_ids",
                         "in": "query",
-                        "description": "employer_ids",
+                        "description": "employer_ids comma seperated ids",
                         "required": false,
-                        "type": "array",
-                        "items": {
-                            "type": "number"
-                        }
+                        "type": "string"
                     },
                     {
                         "name": "offset",
