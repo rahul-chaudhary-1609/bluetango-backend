@@ -880,7 +880,7 @@ class EmployersService {
             where["status"] = constants.STATUS.active;
             let coachList = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findAndCountAll({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
+                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge", "status", "app_id", "social_media_handles", "website", "document_url"],
                 order: [["id", "DESC"]]
             }));
             let c = 0;
@@ -953,7 +953,7 @@ class EmployersService {
             };
             const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge", "status", "app_id", "social_media_handles", "website", "document_url"],
             }));
             if (coach) {
                 coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({

@@ -190,7 +190,7 @@ export class CoachService {
 
         let query:any={
             where: where,
-            attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
+            attributes: ["id", "name", "email", "phone_number","coach_specialization_category_ids","employee_rank_ids","coach_charge","status","app_id","social_media_handles","website","document_url"],
             order: [["id", "DESC"]],
         }
 
@@ -444,7 +444,7 @@ export class CoachService {
                 id: params.coach_id,
                 status: [0,1]
             },
-            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge","status"],
+            attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName","coach_specialization_category_ids","employee_rank_ids","coach_charge","status","app_id","social_media_handles","website","document_url"],
         }
         const coach = await helperFunction.convertPromiseToObject(
                 await queryService.selectOne(coachManagementModel,query)
