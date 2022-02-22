@@ -99,6 +99,10 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
     document_url: {
         type: DataTypes.TEXT,
     },
+    documentFileName: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
 
 },
     {

@@ -199,7 +199,8 @@ exports.addEditCoach = joi_1.default.object({
     coach_charge: joi_1.default.number().optional(),
     social_media_handles: joi_1.default.object().allow(null).optional(),
     website: joi_1.default.string().allow("", null).optional(),
-    document_url: joi_1.default.string().allow("", null).optional()
+    document_url: joi_1.default.string().allow("", null).optional(),
+    documentFileName: joi_1.default.string().optional(),
 });
 exports.listFeedback = joi_1.default.object({
     feedbackType: joi_1.default.number().valid(1, 2, 3, 4).optional(),

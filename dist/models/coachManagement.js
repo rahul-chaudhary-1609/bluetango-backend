@@ -100,6 +100,10 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
     document_url: {
         type: sequelize_1.DataTypes.TEXT,
     },
+    documentFileName: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
+    },
 }, {
     tableName: "coach_management"
 });

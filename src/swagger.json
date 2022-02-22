@@ -1224,6 +1224,9 @@
                 },
                 "document_url": {
                   "type": "string"
+                },
+                "documentFileName": {
+                  "type": "string"
                 }
               }
             }
