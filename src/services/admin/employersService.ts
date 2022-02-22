@@ -1021,7 +1021,7 @@ export class EmployersService {
         const coach = await helperFunction.convertPromiseToObject(
             await coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge","status","app_id","social_media_handles","website","document_url"],
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge","status","app_id","social_media_handles","website","document_url","documentFileName"],
             })
         )
 
