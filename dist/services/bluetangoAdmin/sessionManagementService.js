@@ -50,7 +50,7 @@ class SessionManagementService {
     getSessionList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let where = {};
+            var where = {};
             let Where = { app_id: constants.COACH_APP_ID.BT };
             let Wheres = {};
             if (params.searchKey && params.searchKey.trim()) {
@@ -64,9 +64,43 @@ class SessionManagementService {
                     ]
                 };
             }
+            var order = ['id', 'DESC'];
             if (params.status) {
                 where["status"] = params.status;
+                switch (Number(params.status)) {
+                    case 1: //Current to future
+                        where["date"] = {
+                            [Op.gte]: params.date || new Date()
+                        };
+                        order = ['date', 'ASC'];
+                        break;
+                    case 2: //Currrent to Future sessions
+                        where["date"] = {
+                            [Op.gte]: params.date || new Date()
+                        };
+                        order = ['date', 'ASC'];
+                        break;
+                    case 3: //Only past rejected session , nearest past to older past
+                        where["date"] = {
+                            [Op.lte]: params.date || new Date()
+                        };
+                        order = ['date', 'DESC'];
+                        break;
+                    case 4: //Descending order me cancelled sessions (Latest to older dates)
+                        where["date"] = {
+                            [Op.lte]: params.date || new Date()
+                        };
+                        order = ['date', 'DESC'];
+                        break;
+                    case 5: //Current to past
+                        where["date"] = {
+                            [Op.lte]: params.date || new Date()
+                        };
+                        order = ['date', 'DESC'];
+                        break;
+                }
             }
+            console.log(where, order);
             if (params.type) {
                 where["type"] = params.type;
             }
@@ -91,6 +125,7 @@ class SessionManagementService {
                     }
                 ],
                 raw: true,
+                order: [order],
                 attributes: ["id", "coach_id", "query", "date", "start_time", "action", "slot_id", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
             }, {});
             sessions.rows = sessions.rows.slice(offset, offset + limit);

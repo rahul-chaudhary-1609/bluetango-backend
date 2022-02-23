@@ -9802,6 +9802,13 @@
                         "description": "page size",
                         "required": false,
                         "type": "number"
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "date in new Date() format send along with status",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {}
