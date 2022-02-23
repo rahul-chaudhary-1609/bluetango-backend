@@ -22,7 +22,7 @@ export class SessionManagementService {
   */
     public async getSessionList(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-        let where: any = {}
+        var where: any = {}
         let Where: any = { app_id: constants.COACH_APP_ID.BT }
         let Wheres: any = {}
 
@@ -37,10 +37,43 @@ export class SessionManagementService {
                 ]
             }
         }
-
+        var order = ['id', 'DESC'];
         if (params.status) {
-            where["status"] = params.status
+            where["status"] = params.status;
+            switch (Number(params.status)) {
+                case 1://Current to future
+                    where["date"] = {
+                        [Op.gte]: params.date || new Date()
+                    }
+                    order = ['date', 'ASC'];
+                    break;
+                case 2://Currrent to Future sessions
+                    where["date"] = {
+                        [Op.gte]: params.date || new Date()
+                    }
+                    order = ['date', 'ASC'];
+                    break;
+                case 3://Only past rejected session , nearest past to older past
+                    where["date"] = {
+                        [Op.lte]: params.date || new Date()
+                    }
+                    order = ['date', 'DESC'];
+                    break;
+                case 4://Descending order me cancelled sessions (Latest to older dates)
+                    where["date"] = {
+                        [Op.lte]: params.date || new Date()
+                    }
+                    order = ['date', 'DESC'];
+                    break;
+                case 5://Current to past
+                    where["date"] = {
+                        [Op.lte]: params.date || new Date()
+                    }
+                    order = ['date', 'DESC'];
+                    break;
+            }
         }
+        console.log(where, order)
         if (params.type) {
             where["type"] = params.type
         }
@@ -66,7 +99,8 @@ export class SessionManagementService {
                 }
             ],
             raw: true,
-            attributes: ["id", "coach_id", "query", "date", "start_time", "action","slot_id", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
+            order: [order],
+            attributes: ["id", "coach_id", "query", "date", "start_time", "action", "slot_id", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('team_level.name'), 'team_level']]
         }, {})
         sessions.rows = sessions.rows.slice(offset, offset + limit);
         sessions.rows = appUtils.formatPassedAwayTime(sessions.rows);
@@ -103,7 +137,7 @@ export class SessionManagementService {
                 }
             ],
             raw: true,
-            attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id","slot_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category'],"query"]
+            attributes: ["id", "comment", "coach_rating", "cancelled_by", "request_received_date", "employee_rank_id", "coach_specialization_category_id", "coach_id", "slot_id", "date", "timeline", "start_time", "end_time", "call_duration", "status", "type", [Sequelize.col('coach_management.name'), 'name'], [Sequelize.col('coach_management.email'), 'email'], [Sequelize.col('team_level.name'), 'team_level'], [Sequelize.col('coach_specialization_category.name'), 'coach_specialization_category'], "query"]
         })
         if (sessions) {
             return appUtils.formatPassedAwayTime([sessions])[0];
@@ -114,7 +148,7 @@ export class SessionManagementService {
     /*
 *perform action on sessions
 */
-    public async performAction(params: any,user:any) {
+    public async performAction(params: any, user: any) {
         let Sessions = await this.getSessionDetail(params)
         params.model = employeeCoachSessionsModel
         params.action_by = constants.ACTION_BY.admin;
@@ -148,12 +182,12 @@ export class SessionManagementService {
                     {
                         model: coachManagementModel,
                         required: true,
-                        attributes: ["id","name", "device_token"],
+                        attributes: ["id", "name", "device_token"],
                     },
                     {
                         model: employeeModel,
                         required: true,
-                        attributes: ["id","name"],
+                        attributes: ["id", "name"],
                     },
                 ]
             })
@@ -168,10 +202,10 @@ export class SessionManagementService {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
                     message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
-                    senderEmployeeData:{id:user.uid},
+                    senderEmployeeData: { id: user.uid },
                 },
             }
-            
+
             await notificationModel.create(notificationObj);
 
             let notificationData = <any>{
@@ -181,7 +215,7 @@ export class SessionManagementService {
                     type: constants.NOTIFICATION_TYPE.session_reassigned,
                     title: 'Sesssion assigned by admin',
                     message: `Admin has assigned session for ${session.employee.name} on ${session.date} at ${session.start_time}`,
-                    senderEmployeeData:{id:user.uid},
+                    senderEmployeeData: { id: user.uid },
                 },
             }
             await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
