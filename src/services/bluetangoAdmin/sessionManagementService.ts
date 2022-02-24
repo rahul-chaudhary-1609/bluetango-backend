@@ -40,6 +40,8 @@ export class SessionManagementService {
         var order = ['id', 'DESC'];
         if (params.status) {
             where["status"] = params.status;
+            let dateObj = params.date ? new Date(params.date) : new Date();
+            dateObj.setMonth(dateObj.getMonth() - 6);
             switch (Number(params.status)) {
                 case 1://Current to future
                     where["date"] = {
@@ -55,25 +57,36 @@ export class SessionManagementService {
                     break;
                 case 3://Only past rejected session , nearest past to older past
                     where["date"] = {
-                        [Op.lte]: params.date || new Date()
+                        [Op.between]: [
+                            dateObj,
+                            params.date || new Date(),
+                        ]
+                        //[Op.lte]: params.date || new Date()
                     }
                     order = ['date', 'DESC'];
                     break;
                 case 4://Descending order me cancelled sessions (Latest to older dates)
                     where["date"] = {
-                        [Op.lte]: params.date || new Date()
+                        [Op.between]: [
+                            dateObj,
+                            params.date || new Date(),
+                        ]
+                        //[Op.lte]: params.date || new Date()
                     }
                     order = ['date', 'DESC'];
                     break;
                 case 5://Current to past
                     where["date"] = {
-                        [Op.lte]: params.date || new Date()
+                        [Op.between]: [
+                            dateObj,
+                            params.date || new Date(),
+                        ]
+                        //[Op.lte]: params.date || new Date()
                     }
                     order = ['date', 'DESC'];
                     break;
             }
         }
-        console.log(where, order)
         if (params.type) {
             where["type"] = params.type
         }
