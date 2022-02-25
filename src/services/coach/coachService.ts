@@ -81,17 +81,27 @@ export class CoachService {
                 break
             }
             case constants.COACH_SCHEDULE_TYPE.weekly: {
-                let start = new Date(params.date);
-                let end = new Date(params.date);
-                end.setFullYear(start.getFullYear() + 1)
-
-                while (start < end) {
-                    for (let d = 0; d < params.day.length; d++) {
-                        if (params.day[d] == parseInt(moment(start).format('d'))) {
-                            dates.push(moment(start).format("YYYY-MM-DD"))
+                if (params.custom_dates) {
+                    params.custom_dates.forEach(element => {
+                        for (let d = 0; d < params.day.length; d++) {
+                            if (params.day[d] == parseInt(moment(element).format('d'))) {
+                                dates.push(moment(element).format("YYYY-MM-DD"))
+                            }
                         }
+                    });
+                } else {
+                    let start = new Date(params.date);
+                    let end = new Date(params.date);
+                    end.setFullYear(start.getFullYear() + 1)
+
+                    while (start < end) {
+                        for (let d = 0; d < params.day.length; d++) {
+                            if (params.day[d] == parseInt(moment(start).format('d'))) {
+                                dates.push(moment(start).format("YYYY-MM-DD"))
+                            }
+                        }
+                        start.setDate(start.getDate() + 1)
                     }
-                    start.setDate(start.getDate() + 1)
                 }
                 break
             }
@@ -112,7 +122,6 @@ export class CoachService {
             //     break
             // }
         }
-
         let schedules = [];
         let slot_time_group_id = await helperFunction.getUniqueSlotTimeGroupId();
 
@@ -1158,7 +1167,7 @@ export class CoachService {
 
     public async getUnseenChatNotificationCount(user: any) {
 
-        let count= (await helperFunction.convertPromiseToObject(await notificationModel.count({
+        let count = (await helperFunction.convertPromiseToObject(await notificationModel.count({
             where: {
                 reciever_id: user.uid,
                 reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
@@ -1185,7 +1194,7 @@ export class CoachService {
         })
 
 
-        return {count}
+        return { count }
 
     }
 
