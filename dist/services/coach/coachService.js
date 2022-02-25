@@ -56,7 +56,7 @@ class CoachService {
             //// new automatically created slots
             let Slots;
             let validslots = [];
-            Slots = yield appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration);
+            Slots = yield appUtils.calculate_time_slot(appUtils.parseTime(constants.DEFAAULT_START_END_TIME.start_time.replace('00', params.timings[0].start_time.split(":")[1])), appUtils.parseTime(constants.DEFAAULT_START_END_TIME.end_time), params.session_duration);
             for (let i = 0; i < Slots.length; i++) {
                 if (Slots[i + 1]) {
                     validslots.push({ start_time: Slots[i], end_time: Slots[i + 1] });
