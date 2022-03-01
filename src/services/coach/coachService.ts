@@ -46,7 +46,7 @@ export class CoachService {
                 break;
             }
             case constants.TIME_CAPTURE_TYPE.previewed: {
-                validslots = params.timings;
+                validslots = params.validslots;
                 break;
             }
         }
@@ -160,26 +160,74 @@ export class CoachService {
             })
         })
         if (params.is_update) {
-            let bookedSlots = await queryService.selectAndCountAll(coachScheduleModel, {
-                where: {
-                    coach_id: user.uid,
-                    status: constants.COACH_SCHEDULE_STATUS.booked,
-                    date: {
-                        [Op.in]: dates,
+            var slot_type = params.slot_type == 1 ? Op.between : Op.notBetween;
+            let bookedSlots = [];
+            let bookedSlotsIds = [];
+            for (let timings of params.timings) {
+                var BookedSlots = await queryService.selectAndCountAll(coachScheduleModel, {
+                    where: {
+                        id: {
+                            [Op.notIn]: bookedSlotsIds
+                        },
+                        coach_id: user.uid,
+                        status: constants.COACH_SCHEDULE_STATUS.booked,
+                        date: {
+                            [Op.in]: dates,
+                        },
+                        [Op.and]: [
+                            {
+                                start_time: {
+                                    [slot_type]: [
+                                        timings.start_time,
+                                        timings.end_time,
+                                    ]
+                                },
+                            },
+                            {
+                                end_time: {
+                                    [slot_type]: [
+                                        timings.start_time,
+                                        timings.end_time,
+                                    ]
+                                },
+                            }
+                        ]
                     }
-                }
-            }, {})
-            if (bookedSlots.count >= 1) {
+                }, {})
+                bookedSlotsIds.push(...BookedSlots.rows.map((ele) => ele.id))
+                bookedSlots.push(...BookedSlots.rows)
+            }
+            if (bookedSlots.length >= 1) {
                 return { bookedSlots: bookedSlots };
             }
-            await queryService.deleteData(coachScheduleModel, {
-                where: {
-                    coach_id: user.uid,
-                    date: {
-                        [Op.in]: dates,
+            for (let Timings of params.timings) {
+                await queryService.deleteData(coachScheduleModel, {
+                    where: {
+                        coach_id: user.uid,
+                        date: {
+                            [Op.in]: dates,
+                        },
+                        [Op.and]: [
+                            {
+                                start_time: {
+                                    [slot_type]: [
+                                        Timings.start_time,
+                                        Timings.end_time,
+                                    ]
+                                },
+                            },
+                            {
+                                end_time: {
+                                    [slot_type]: [
+                                        Timings.start_time,
+                                        Timings.end_time,
+                                    ]
+                                },
+                            }
+                        ]
                     }
-                }
-            })
+                })
+            }
         }
         for (let slot of params.slots) {
             let schedule = await coachScheduleModel.findOne({
@@ -188,7 +236,7 @@ export class CoachService {
                     date: {
                         [Op.in]: dates,
                     },
-                    [Op.or]: [
+                    [Op.and]: [
                         {
                             start_time: {
                                 [Op.between]: [
@@ -205,20 +253,20 @@ export class CoachService {
                                 ]
                             },
                         },
-                        {
-                            [Op.and]: [
-                                {
-                                    start_time: {
-                                        [Op.lte]: slot.start_time,
-                                    },
-                                },
-                                {
-                                    end_time: {
-                                        [Op.gte]: slot.end_time,
-                                    },
-                                },
-                            ],
-                        }
+                        // {
+                        //     [Op.and]: [
+                        //         {
+                        //             start_time: {
+                        //                 [Op.lte]: slot.start_time,
+                        //             },
+                        //         },
+                        //         {
+                        //             end_time: {
+                        //                 [Op.gte]: slot.end_time,
+                        //             },
+                        //         },
+                        //     ],
+                        // }
                     ],
                     // status:{
                     //     [Op.notIn]:[constants.COACH_SCHEDULE_STATUS.passed]
