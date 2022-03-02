@@ -197,7 +197,7 @@ export const validateUnavailableTime = (timeSlots, slots, time_capture_type) => 
     var unavaibaleSlots = [];
     for (let i = 0; i < timeSlots.length; i++) {
         slots.filter((value, index, array) => {
-            if (parseTime(timeSlots[i].start_time) <= parseTime(value.start_time) && parseTime(timeSlots[i].end_time) > parseTime(value.start_time) || parseTime(timeSlots[i].start_time) < parseTime(value.end_time) && parseTime(timeSlots[i].end_time) >= parseTime(value.end_time)) {
+            if (parseTime(timeSlots[i].start_time) <= parseTime(value.start_time) && parseTime(timeSlots[i].end_time) > parseTime(value.start_time) && parseTime(timeSlots[i].end_time) >= parseTime(value.end_time) || parseTime(timeSlots[i].start_time) < parseTime(value.end_time) && parseTime(timeSlots[i].end_time) >= parseTime(value.end_time)) {
                 validSlots.push(index);
             }
         })

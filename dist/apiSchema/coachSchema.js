@@ -132,8 +132,7 @@ exports.addEditSlot = joi_1.default.object({
     // end_time: Joi.string().required(),
     timings: joi_1.default.array().items(joi_1.default.object().keys({
         start_time: joi_1.default.string().required(),
-        end_time: joi_1.default.string().required(),
-        is_available: joi_1.default.number()
+        end_time: joi_1.default.string().required()
     })).required(),
     type: joi_1.default.number().required(),
     day: joi_1.default.array().optional(),
@@ -141,7 +140,13 @@ exports.addEditSlot = joi_1.default.object({
     custom_dates: joi_1.default.array().optional(),
     session_duration: joi_1.default.number().required(),
     time_capture_type: joi_1.default.number().valid(1, 2, 3).required(),
-    is_update: joi_1.default.boolean()
+    is_update: joi_1.default.boolean(),
+    slot_type: joi_1.default.number(),
+    validslots: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required(),
+        is_available: joi_1.default.number().required()
+    }))
 });
 exports.getSlots = joi_1.default.object({
     filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),

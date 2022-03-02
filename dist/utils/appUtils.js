@@ -215,7 +215,7 @@ exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
     var unavaibaleSlots = [];
     for (let i = 0; i < timeSlots.length; i++) {
         slots.filter((value, index, array) => {
-            if (exports.parseTime(timeSlots[i].start_time) <= exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) > exports.parseTime(value.start_time) || exports.parseTime(timeSlots[i].start_time) < exports.parseTime(value.end_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time)) {
+            if (exports.parseTime(timeSlots[i].start_time) <= exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) > exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time) || exports.parseTime(timeSlots[i].start_time) < exports.parseTime(value.end_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time)) {
                 validSlots.push(index);
             }
         });
