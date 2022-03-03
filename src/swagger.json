@@ -10521,6 +10521,27 @@
         ],
         "responses": {}
       }
+    },
+    "/web/getStaticContent": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "get Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
     }
   },
   "definitions": {}

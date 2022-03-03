@@ -15,5 +15,7 @@ webRoute.get("/getAdvisors", homepageController.getAdvisors);
 webRoute.get("/getArticles", homepageController.getArticles);
 /* get all articles*/
 webRoute.get("/getSubscriptions", homepageController.getSubscriptions);
+/* get static content */
+webRoute.get("/getStaticContent", homepageController.getStaticContent);
 module.exports = webRoute;
 //# sourceMappingURL=webRoute.js.map
