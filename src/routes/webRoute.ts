@@ -23,5 +23,7 @@ webRoute.get("/getArticles", homepageController.getArticles);
 /* get all articles*/
 webRoute.get("/getSubscriptions", homepageController.getSubscriptions);
 
+/* get static content */
+webRoute.get("/getStaticContent", homepageController.getStaticContent);
 
 export = webRoute;

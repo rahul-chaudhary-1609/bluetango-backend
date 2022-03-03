@@ -35,6 +35,8 @@ const coachManagement_1 = require("../../models/coachManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
 const articleManagement_1 = require("../../models/articleManagement");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
+const index_1 = require("../../models/index");
 const Sequelize = require('sequelize');
 class HomepageServices {
     constructor() { }
@@ -96,6 +98,17 @@ class HomepageServices {
                 order: ["charge"]
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
+        });
+    }
+    /*
+      *get static content
+      */
+    getStaticContent(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield queryService.selectOne(index_1.staticContentModel, {
+                where: { id: 1 },
+                attributes: [`${params.contentType}`]
+            });
         });
     }
 }

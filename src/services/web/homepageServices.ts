@@ -5,6 +5,8 @@ import { coachManagementModel } from "../../models/coachManagement";
 import { advisorManagementModel } from "../../models/advisorManagement";
 import { articleManagementModel } from "../../models/articleManagement";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
+import { staticContentModel, coachBiosModel } from "../../models/index"
 
 const Sequelize = require('sequelize');
 
@@ -75,6 +77,15 @@ export class HomepageServices {
         });
 
         return await helperFunction.convertPromiseToObject(subscriptionList);
+    }
+    /*
+      *get static content
+      */
+      public async getStaticContent(params: any) {
+        return await queryService.selectOne(staticContentModel, {
+            where: { id: 1 },
+            attributes: [`${params.contentType}`]
+        })
     }
 
 }
