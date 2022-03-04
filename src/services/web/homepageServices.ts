@@ -92,8 +92,18 @@ export class HomepageServices {
               * @param : token
               */
  public async getBios(params: any) {
+    coachBiosModel.belongsTo(coachManagementModel,{foreignKey:"coach_id"});
+    let query: any = {
+        include:[
+            {
+                model:coachManagementModel,
+                attributes:['name'],
+                required:true,
+            }
+        ],
+    }
     let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
-    let bios = await queryService.selectAndCountAll(coachBiosModel, {}, {})
+    let bios = await queryService.selectAndCountAll(coachBiosModel, query, {})
     bios.rows = bios.rows.slice(offset, offset + limit);
     return bios
 
