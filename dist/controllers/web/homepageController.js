@@ -116,6 +116,22 @@ class HomepageController {
             }
         });
     }
+    /**
+         * get all coach bios
+         * @param req :
+         * @param res
+         */
+    getBios(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield homepageServices.getBios(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
 }
 exports.HomepageController = HomepageController;
 //# sourceMappingURL=homepageController.js.map

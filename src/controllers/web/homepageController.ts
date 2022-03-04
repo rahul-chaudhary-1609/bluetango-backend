@@ -83,6 +83,19 @@ export class HomepageController {
             appUtils.errorResponse(res, error, constants.code.error_code);
         }
     }
+/**
+     * get all coach bios
+     * @param req :
+     * @param res 
+     */
+ public async getBios(req: any, res: any) {
+    try {
+        const responseFromService = await homepageServices.getBios(req.query);
+        return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
 
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
 
 }

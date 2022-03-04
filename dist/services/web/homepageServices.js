@@ -111,6 +111,18 @@ class HomepageServices {
             });
         });
     }
+    /*
+                 * get all Bios
+                 * @param : token
+                 */
+    getBios(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let bios = yield queryService.selectAndCountAll(index_1.coachBiosModel, {}, {});
+            bios.rows = bios.rows.slice(offset, offset + limit);
+            return bios;
+        });
+    }
 }
 exports.HomepageServices = HomepageServices;
 //# sourceMappingURL=homepageServices.js.map

@@ -87,5 +87,16 @@ export class HomepageServices {
             attributes: [`${params.contentType}`]
         })
     }
+ /*
+              * get all Bios
+              * @param : token
+              */
+ public async getBios(params: any) {
+    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+    let bios = await queryService.selectAndCountAll(coachBiosModel, {}, {})
+    bios.rows = bios.rows.slice(offset, offset + limit);
+    return bios
 
+
+}
 }
