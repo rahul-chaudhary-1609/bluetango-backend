@@ -117,8 +117,18 @@ class HomepageServices {
                  */
     getBios(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            index_1.coachBiosModel.belongsTo(coachManagement_1.coachManagementModel, { foreignKey: "coach_id" });
+            let query = {
+                include: [
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        attributes: ['name'],
+                        required: true,
+                    }
+                ],
+            };
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let bios = yield queryService.selectAndCountAll(index_1.coachBiosModel, {}, {});
+            let bios = yield queryService.selectAndCountAll(index_1.coachBiosModel, query, {});
             bios.rows = bios.rows.slice(offset, offset + limit);
             return bios;
         });
