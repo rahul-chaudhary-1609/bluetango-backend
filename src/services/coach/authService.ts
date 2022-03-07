@@ -103,6 +103,7 @@ export class AuthService {
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
             mailParams.subject = "Reset Password Request";
+            mailParams.name = existingUser.app_id == constants.COACH_APP_ID.BX ? "BluXinga" : "BlueTango"
             await helperFunction.sendEmail(mailParams);
             return true;
         } else {
