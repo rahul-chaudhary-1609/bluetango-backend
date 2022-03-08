@@ -302,6 +302,7 @@ class CoachService {
     listEmployeeCoachSessions(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            console.log("params=============>", params);
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
             employeeCoachSession_1.employeeCoachSessionsModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
@@ -384,7 +385,8 @@ class CoachService {
                         model: coachManagement_1.coachManagementModel,
                         attributes: ['id', 'name'],
                         required: true,
-                        where: coachWhere
+                        where: coachWhere,
+                        order: [["name", "ASC"]],
                     },
                     {
                         model: employeeRanks_1.employeeRanksModel,
@@ -394,7 +396,7 @@ class CoachService {
                 ],
                 limit,
                 offset,
-                order: [["status", "ASC"], ["employee.employer.name", "ASC"], ["createdAt", "DESC"]],
+                order: [["status", "ASC"], ["date", "DESC"], ["start_time", "DESC"], ["createdAt", "DESC"]],
                 attributes: ["id",
                     "coach_id",
                     "employee_id",

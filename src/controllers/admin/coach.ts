@@ -93,6 +93,7 @@ export class CoachController {
 
     public async listEmployeeCoachSessions(req: any, res: any) {
         try {
+            console.log("params=============>",req.query)
             const responseFromService = await coachService.listEmployeeCoachSessions(req.query);
             return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
 

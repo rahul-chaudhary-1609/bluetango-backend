@@ -311,6 +311,8 @@ export class CoachService {
     public async listEmployeeCoachSessions(params:any){
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
+        console.log("params=============>",params)
+
         employeeCoachSessionsModel.hasOne(employeeModel,{foreignKey:"id",sourceKey:"employee_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(coachManagementModel,{foreignKey:"id",sourceKey:"coach_id",targetKey:"id"})
         employeeCoachSessionsModel.hasOne(employeeRanksModel,{foreignKey:"id",sourceKey:"employee_rank_id",targetKey:"id"})
@@ -428,7 +430,8 @@ export class CoachService {
                         model:coachManagementModel,
                         attributes:['id','name'],
                         required:true,
-                        where:coachWhere
+                        where:coachWhere,
+                        order: [["name", "ASC"]],
                     },
                     {
                         model:employeeRanksModel,
@@ -438,7 +441,7 @@ export class CoachService {
                 ],
                 limit,
                 offset,
-                order: [["status", "ASC"],["employee.employer.name", "ASC"],["createdAt", "DESC"]],
+                order: [["status", "ASC"],["date", "DESC"],["start_time", "DESC"],["createdAt", "DESC"]],
                 attributes: [ "id",
                 "coach_id",
                 "employee_id",

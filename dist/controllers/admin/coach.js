@@ -127,6 +127,7 @@ class CoachController {
     listEmployeeCoachSessions(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("params=============>", req.query);
                 const responseFromService = yield coachService.listEmployeeCoachSessions(req.query);
                 return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
