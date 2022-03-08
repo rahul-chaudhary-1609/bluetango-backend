@@ -129,7 +129,7 @@ class AuthService {
                 mailParams.to = params.email;
                 mailParams.html = `Hi ${existingUser.name}
                 <br> Click on the link below to reset your password
-                <br> ${(existingUser.app_id == constants.COACH_APP_ID.BX ? process.env.WEB_HOST_URL : process.env.BLUETANGO_RESET_PASS_URL)}?token=${token.token}
+                <br> ${(existingUser.app_id == constants.COACH_APP_ID.BX ? process.env.WEB_HOST_URL : process.env.WEB_HOST_URL)}?token=${token.token}
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
                 mailParams.subject = "Reset Password Request";
