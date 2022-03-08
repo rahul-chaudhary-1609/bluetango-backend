@@ -438,7 +438,7 @@ export class CoachService {
                 ],
                 limit,
                 offset,
-                order: [["createdAt", "DESC"]],
+                order: [["status", "ASC"],["employee.employer.name", "ASC"],["createdAt", "DESC"]],
                 attributes: [ "id",
                 "coach_id",
                 "employee_id",
