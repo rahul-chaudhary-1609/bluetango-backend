@@ -196,6 +196,38 @@ class ChatController {
             }
         });
     }
+    /**
+* to clear chat
+* @param req :[]
+* @param res
+*/
+    clearChat(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.clearChat(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+        * get chat room id
+        * @param req :[]
+        * @param res
+        */
+    getChatRoomId(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield chatServices.getChatRoomId(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.ChatController = ChatController;
 //# sourceMappingURL=chatController.js.map

@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.STATUS = exports.NOTIFICATION_RECIEVER_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
+exports.ACTION_BY = exports.SESSION_ACTION = exports.DEFAAULT_START_END_TIME = exports.TIME_CAPTURE_TYPE = exports.COACH_APP_ID = exports.ADMIN_PERMISSION = exports.CONTACT_TYPE = exports.ZOOM_USER_TYPE = exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = exports.COACH_SCHEDULE_DAY = exports.COACH_SCHEDULE_TYPE = exports.COACH_SCHEDULE_STATUS = exports.EMPLOYEE_COACH_SESSION_STATUS = exports.EMPLOYEE_COACH_SESSION_TYPE = exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = exports.IS_PAGINATION = exports.URLS = exports.TIME_ZONE = exports.SECRETS = exports.FEEDBACK_TYPE = exports.CHAT_DISCONNECT_TYPE = exports.EMPLOYER_FREE_TRIAL_STATUS = exports.EMPLOYER_SUBSCRIPTION_TYPE = exports.CHAT_ROOM_TYPE = exports.PRIMARY_GOAL = exports.STATUS = exports.BLUETANGO_CHAT_USER_TYPE = exports.CHAT_USER_TYPE = exports.NOTIFICATION_RECIEVER_TYPE = exports.BLUETANGO_NOTIFICATION_TYPE = exports.NOTIFICATION_TYPE = exports.EMPLOYER_SUBSCRIPTION_PLAN_STATUS = exports.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS = exports.USER_ROLE = exports.EMPLOYER_FREE_TRIAL_DURATION = exports.notificationmsg = exports.CUSTOM_JOI_MESSAGE = exports.OFFSET_LIMIT = exports.otp_expiry_time = exports.defaultServerResponse = exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = exports.FORGOT_PASSWORD_SECRET_KEY = exports.COACH_SECRET_KEY = exports.EMPLOYER_SECRET_KEY = exports.EMPLOYEE_SECRET_KEY = exports.EMAIL_SECRET_KEY = exports.ADMIN_SECRET_KEY = exports.BLUETANGO_ADMIN_SECRET_KEY = exports.SECRET_KEY = exports.mobile_otp_message = exports.ROUTE_PREFIX = exports.code = exports.HOST_URL = exports.MESSAGES = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.MESSAGES = {
@@ -76,6 +76,7 @@ exports.MESSAGES = {
     invalid_email_token: "",
     success: 'Success',
     invalid_department: "Invalid department is provided",
+    invalid_employee_rank: "Invalid employee rank is provided",
     invalid_employer: "Invalid employer id",
     invalid_action: "Invalid action request",
     already_activated: "Already activated",
@@ -121,7 +122,7 @@ exports.MESSAGES = {
     subAdmin_not_found: "SubAdmin not found",
     invalid_admin: "Only super admin can add subAdmin",
     contact_details_fetched: "Contact Us details fetched",
-    subAdmin_added: "Sub admin added successfully",
+    subAdmin_added: "Admins added successfully",
     subAdmin_updated: "Sub admin updated successfully",
     invalid_subAdmin: "Invalid sub admin",
     library_video_added: "Library video added",
@@ -134,12 +135,14 @@ exports.MESSAGES = {
     article_details_fetched: "Article details fetched",
     invalid_article: "Invalid article",
     self_chat: "You can not chat with yourself",
+    top_level_manager: `This is the top-level manager. Only your employees can start a chat`,
     advisor_added: "Advisor added",
     advisor_fetched: "Advisor list fetched",
     advisor_updated: "Advisor updated",
     invalid_advisor: "Invalid advisor",
     only_manager_chat: "You can initiate chat with your manager only",
     only_manager_or_coach_chat: "You can initiate chat either with your manager or with a coach",
+    only_coach_chat: "You can initiate chat with a coach only",
     chat_room_notFound: "chat room not found",
     video_chat_session_create_error: "Error in video chat session creation",
     video_chat_session_created: "Session created",
@@ -164,6 +167,67 @@ exports.MESSAGES = {
     payment_faliled: `Payment failed!`,
     employer_free_trial_already_started: `Free trial already started`,
     employer_free_trial_already_exhausted: `Free trial already exhausted`,
+    goal_not_assigned: `This goal is not assigned to you`,
+    goal_assign_not_found: `No goal assined found with this id`,
+    four_goal_assign_not_found: `Either at least one of these four goal assign IDs does not match the goals assigned to this employee or at least one of these goal assign IDs does not exist`,
+    only_four_primary_goals_are_allowed: `Exactly 4 goals can be marked as primary at a time. No less no more`,
+    attribute_already_added: `An attribute with the same name/label already exist.`,
+    attribute_not_found: `Either no attribute exist with this id or it does not belogs to current employer`,
+    no_feedback: `No feedback found`,
+    no_coach_specialization_category: `No specialization category found`,
+    no_coach_with_specialization_category: `No coach found with this specialization category`,
+    coach_specialization_category_already_exist: `A coach specialization category with the same name already exist.`,
+    no_employee_rank: `No employee rank found`,
+    employee_rank_already_exist: `A employee rank with the same name already exist.`,
+    coach_specialization_category_delete_error: `If a coach belongs to a particular coach specialization category then that coach specialization category cannot be deleted.`,
+    employee_rank_delete_employee_error: `If an employee belongs to a particular employee rank then that employee rank cannot be deleted.`,
+    employee_rank_delete_coach_error: `If a coach belongs to a particular employee rank then that employee rank cannot be deleted.`,
+    delete_success: `Deleted Successfully`,
+    no_coach: `No coach found`,
+    no_session: `No session found`,
+    session_not_belogs_to_coach: `This session is not belongs to you`,
+    session_not_belogs_to_employee: `This session is not belongs to you`,
+    coach_schedule_day_required: `Day is required if slot type is weekly`,
+    coach_schedule_custom_dates_required: `Custom dates is/are required if slot type is custom`,
+    coach_schedule_already_exist: `This schedule time has some conflicts with existing slot(s).`,
+    no_coach_schedule: `No slot found`,
+    coach_schedule_not_available: `This slot is not available.`,
+    slot_id_required: `Slot id is required in case of individual delete`,
+    slot_date_group_id_required: `Slot date group id is required in case of date group delete`,
+    slot_time_group_id_required: `Slot time group id is required in case of time group delete`,
+    slot_group_delete_date_required: `Current date is required in case of group delete`,
+    coach_schedule_overlaped: `The recieved slots must have one or more overlaped time values.\nPlease check, fix, and create again`,
+    coach_schedule_start_greater_or_equal_end: `For each slots start time must be less than end time`,
+    zoom_cancel_meeting_error: `Something went wrong with canceling the zoom meeting`,
+    zoom_end_meeting_error: `Something went wrong with ending the zoom meeting`,
+    zoom_update_meeting_error: `Something went wrong with updating the zoom meeting`,
+    zoom_schedule_meeting_error: `Something went wrong with scheduling the zoom meeting`,
+    zoom_meeting_not_found: `Meeting with this {meetingId} is not found or has expired.`,
+    zoom_meeting_emp_cancel_error: `You can cancel a meeting until it has just started`,
+    zoom_meeting_coach_cancel_error: `You can cancel a meeting until it's over`,
+    biosAdded: 'Bios added successfully',
+    bios_already_exist: 'Bios already exists for this coach',
+    bios_not_exist: 'Bios not exists for this coach',
+    biosUpdated: 'Bios updated successfully',
+    biosDeleted: 'Bios deleted successfully',
+    staticContentUpdated: 'Static content updated successfully',
+    session_details_fetched: "Session details fetched successfully",
+    available_coaches_fetched: "Available coaches fetched successfully",
+    admin_deleted: "Admin deleted successfully",
+    role_already_exist: "Role already exist",
+    role_details_fetched: "Role details fetched successfully",
+    role_deleted: "Role deleted successfully",
+    admin_And_role_updated: "Admin and role details updated successfully",
+    admin_and_role_status: "Admin and role status updated successfully",
+    role_fetched: "Roles fetched successfully",
+    select_appId: "Select BluXinga or BlueTango for login",
+    only_employee_or_BT_Admin_chat: "You can initiate chat either with employee or with a admin",
+    admin_him_self_delete: "Admin will not remove himself",
+    admin_role_delete: "Admin cannot delete his own role",
+    coach_bios_detail: "Coach Bio details fetched successfully",
+    invalid_toke: "Invalid token",
+    thoughts_uploaded: "Thoughts uploaded successfully",
+    thoughts_downloaded: "Thoughts downloaded successfully"
 };
 exports.HOST_URL = process.env.HOST_URL;
 exports.code = {
@@ -174,12 +238,14 @@ exports.ROUTE_PREFIX = {
 };
 exports.mobile_otp_message = 'Your one time password is ';
 exports.SECRET_KEY = "A!@#$%^";
+exports.BLUETANGO_ADMIN_SECRET_KEY = "S$%^!@#K";
 exports.ADMIN_SECRET_KEY = "S$%^!@#K";
 exports.EMAIL_SECRET_KEY = "S$%^K@*S";
 exports.EMPLOYEE_SECRET_KEY = "EE$%^!@#K";
 exports.EMPLOYER_SECRET_KEY = "ER$%^!@#K";
 exports.COACH_SECRET_KEY = "ER$%^!@#K";
 exports.FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K";
+exports.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY = "FORKEY$%^!@#K";
 exports.defaultServerResponse = {
     status: 400,
     success: false,
@@ -249,6 +315,19 @@ exports.NOTIFICATION_TYPE = {
     achievement_comment: 15,
     group_chat: 16,
     expiration_of_free_trial: 17,
+    goal_submit_reminder: 18,
+    meeting_about_to_end: 19,
+    update_meeting_duration: 20,
+    new_coaching_session_request: 21,
+    session_accepted: 22,
+    session_rejected: 23,
+    cancel_session: 24,
+    session_reassigned: 25,
+    session_with_in_10_min: 26,
+    session_completed: 27,
+};
+exports.BLUETANGO_NOTIFICATION_TYPE = {
+    text_chat: 1
 };
 exports.NOTIFICATION_RECIEVER_TYPE = {
     employee: 1,
@@ -256,15 +335,29 @@ exports.NOTIFICATION_RECIEVER_TYPE = {
     coach: 3,
     admin: 4,
 };
+exports.CHAT_USER_TYPE = {
+    employee: 1,
+    coach: 2,
+    BT_admin: 3
+};
+exports.BLUETANGO_CHAT_USER_TYPE = {
+    admin: 1,
+    coach: 2,
+};
 exports.STATUS = {
     inactive: 0,
     active: 1,
     deleted: 2,
 };
+exports.PRIMARY_GOAL = {
+    no: 0,
+    yes: 1,
+};
 exports.CHAT_ROOM_TYPE = {
     employee: 0,
     coach: 1,
     group: 2,
+    BT_admin: 3
 };
 exports.EMPLOYER_SUBSCRIPTION_TYPE = {
     free: 0,
@@ -297,6 +390,106 @@ exports.SECRETS = {
         public_key: process.env.BRAINTREE_PUBLIC_KEY,
         private_key: process.env.BRAINTREE_PRIVATE_KEY,
         access_token: process.env.BRAINTREE_ACCESS_TOKEN
+    },
+    ZOOM_SECRETS: {
+        jwt_token: process.env.ZOOM_JWT_TOKEN,
     }
+};
+exports.TIME_ZONE = process.env.TIME_ZONE;
+exports.URLS = {
+    ZOOM_URLS: {
+        base_url: process.env.ZOOM_BASE_URL
+    }
+};
+exports.IS_PAGINATION = {
+    no: 0,
+    yes: 1,
+};
+exports.EMPLOYEE_COACH_SESSION_CANCELLED_BY = {
+    not_cancelled: 0,
+    coach: 1,
+    employee: 2,
+};
+exports.EMPLOYEE_COACH_SESSION_TYPE = {
+    free: 1,
+    paid: 2,
+};
+exports.EMPLOYEE_COACH_SESSION_STATUS = {
+    pending: 1,
+    accepted: 2,
+    rejected: 3,
+    cancelled: 4,
+    completed: 5,
+};
+exports.COACH_SCHEDULE_STATUS = {
+    available: 1,
+    booked: 2,
+    passed: 3,
+    unavailable: 4,
+};
+exports.COACH_SCHEDULE_TYPE = {
+    does_not_repeat: 1,
+    daily: 2,
+    weekly: 3,
+    every_week_day: 4,
+    custom: 5,
+};
+exports.COACH_SCHEDULE_DAY = {
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+};
+exports.COACH_SCHEDULE_SLOT_DELETE_TYPE = {
+    individual: 1,
+    group: 2,
+};
+exports.COACH_SCHEDULE_SLOT_GROUP_DELETE_TYPE = {
+    date: 1,
+    time: 2,
+};
+exports.ZOOM_USER_TYPE = {
+    coach: 1,
+    employee: 2,
+};
+exports.CONTACT_TYPE = {
+    employee: 1,
+    employer: 2,
+    coach: 3,
+};
+exports.ADMIN_PERMISSION = {
+    add: 1,
+    update: 2,
+    view: 3,
+    delete: 4
+};
+exports.COACH_APP_ID = {
+    BX: 1,
+    BT: 2,
+};
+exports.TIME_CAPTURE_TYPE = {
+    available: 1,
+    unavailable: 2,
+    previewed: 3
+};
+exports.DEFAAULT_START_END_TIME = {
+    start_time: "06:00",
+    end_time: "24:00",
+};
+exports.SESSION_ACTION = {
+    pending: 1,
+    declined: 2,
+    expired: 3,
+    reassigned: 4,
+    accepted: 5
+};
+exports.ACTION_BY = {
+    pending: 0,
+    coach: 1,
+    system: 2,
+    admin: 3
 };
 //# sourceMappingURL=constants.js.map

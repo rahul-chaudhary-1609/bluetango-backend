@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.updateSlotAvailability = exports.getChatRoomId = exports.endZoomMeeting = exports.updateZoomMeetingDuration = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getAcceptedSessions = exports.rejectSessionRequest = exports.acceptSessionRequest = exports.getSessionRequests = exports.deleteSlot = exports.getSlot = exports.getSlots = exports.addEditSlot = exports.clearChat = exports.updateEmployerDeviceToken = exports.markNotificationsAsViewed = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.editProfile = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -34,7 +34,7 @@ exports.login = joi_1.default.object({
     }),
     password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -44,7 +44,8 @@ exports.login = joi_1.default.object({
         "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
         "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
     }),
-    device_token: joi_1.default.string().optional()
+    device_token: joi_1.default.string().optional(),
+    app_id: joi_1.default.number().optional().valid(1, 2)
 });
 exports.forgotPassword = joi_1.default.object({
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required()
@@ -52,6 +53,7 @@ exports.forgotPassword = joi_1.default.object({
         "string.pattern.base": constants.MESSAGES.invalid_email
     }),
     user_role: joi_1.default.string().regex(new RegExp("^(?=.*[1-5])")).required(),
+    app_id: joi_1.default.number().optional().valid(1, 2)
 });
 exports.resetPassword = joi_1.default.object({
     password: joi_1.default.string().min(8)
@@ -120,5 +122,101 @@ exports.markNotificationsAsViewed = joi_1.default.object({
 });
 exports.updateEmployerDeviceToken = joi_1.default.object({
     device_token: joi_1.default.string().required()
+});
+exports.clearChat = joi_1.default.object({
+    chat_room_id: joi_1.default.number().required()
+});
+exports.addEditSlot = joi_1.default.object({
+    date: joi_1.default.string().required(),
+    // start_time: Joi.string().required(),
+    // end_time: Joi.string().required(),
+    timings: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required()
+    })).required(),
+    type: joi_1.default.number().required(),
+    day: joi_1.default.array().optional(),
+    custom_date: joi_1.default.string().optional(),
+    custom_dates: joi_1.default.array().optional(),
+    session_duration: joi_1.default.number().required(),
+    time_capture_type: joi_1.default.number().valid(1, 2, 3).required(),
+    is_update: joi_1.default.boolean(),
+    slot_type: joi_1.default.number(),
+    validslots: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required(),
+        is_available: joi_1.default.number().required()
+    }))
+});
+exports.getSlots = joi_1.default.object({
+    filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
+    date: joi_1.default.string().allow(null, '').optional(),
+    day: joi_1.default.string().allow(null, '').optional(),
+    week: joi_1.default.string().allow(null, '').optional(),
+    month: joi_1.default.string().allow(null, '').optional(),
+    year: joi_1.default.string().allow(null, '').optional(),
+});
+exports.getSlot = joi_1.default.object({
+    slot_id: joi_1.default.number().required(),
+});
+exports.deleteSlot = joi_1.default.object({
+    type: joi_1.default.number().required(),
+    group_type: joi_1.default.number().optional(),
+    slot_id: joi_1.default.number().optional(),
+    slot_date_group_id: joi_1.default.string().optional(),
+    slot_time_group_id: joi_1.default.string().optional(),
+    current_date: joi_1.default.string().optional(),
+});
+exports.getSessionRequests = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.acceptSessionRequest = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+    timezone: joi_1.default.string().required(),
+});
+exports.rejectSessionRequest = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.getAcceptedSessions = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.cancelSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+    cancel_reason: joi_1.default.string().required(),
+    datetime: joi_1.default.string().optional(),
+});
+exports.listSessionHistory = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getSessionHistoryDetails = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.updateZoomMeetingDuration = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.endZoomMeeting = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.getChatRoomId = joi_1.default.object({
+    other_user_id: joi_1.default.string().required(),
+    type: joi_1.default.number(),
+});
+exports.updateSlotAvailability = joi_1.default.object({
+    date: joi_1.default.string().required(),
+    timings: joi_1.default.array().items(joi_1.default.object().keys({
+        start_time: joi_1.default.string().required(),
+        end_time: joi_1.default.string().required()
+    })).required(),
+    is_available: joi_1.default.number().valid(1, 4).required(),
+    event_type: joi_1.default.number().valid(0, 1).required()
 });
 //# sourceMappingURL=coachSchema.js.map

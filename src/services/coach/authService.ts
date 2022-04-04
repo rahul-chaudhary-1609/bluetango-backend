@@ -4,7 +4,11 @@ import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
 import { coachManagementModel } from "../../models/coachManagement";
-import { param } from "../../routes/adminRoute";
+import { employeeRanksModel } from "../../models/employeeRanks";
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
+import { staticContentModel, coachBiosModel } from "../../models/index"
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -17,12 +21,18 @@ export class AuthService {
     */
     public async login(params: any) {
 
-        let existingUser = await coachManagementModel.findOne({
+        let existingUser = await coachManagementModel.findAll({
             where: {
-                email: params.username.toLowerCase()
+                email: params.username.toLowerCase(),
+                app_id: params.app_id || [constants.COACH_APP_ID.BX,constants.COACH_APP_ID.BT],
+                status:[constants.STATUS.active,constants.STATUS.inactive],
             },
             order: [["createdAt", "DESC"]]
         });
+        if (existingUser && existingUser.length > 1) {
+            return {is_both:1};
+        }
+        existingUser = existingUser[0]
         if (!_.isEmpty(existingUser) && existingUser.status == 0) {
             throw new Error(constants.MESSAGES.deactivate_account);
         } else if (!_.isEmpty(existingUser) && existingUser.status == 2) {
@@ -34,7 +44,14 @@ export class AuthService {
             if (comparePassword) {
                 delete existingUser.password;
                 let token = await tokenResponse.coachTokenResponse(existingUser);
-                existingUser.token = token.token;
+                let reqData = <any>{
+                    uid: existingUser.id,
+                }
+
+                let profileData = await this.getProfile(reqData);
+
+                profileData.token = token.token;
+
                 if (params.device_token) {
                     await coachManagementModel.update({
                         device_token: params.device_token
@@ -42,8 +59,8 @@ export class AuthService {
                         { where: { id: existingUser.id } }
                     );
                 }
-               
-                return existingUser;
+
+                return profileData;
             } else {
                 throw new Error(constants.MESSAGES.invalid_password);
             }
@@ -61,16 +78,20 @@ export class AuthService {
         const qry = <any>{
             where: {
                 email: params.email.toLowerCase(),
-                status: { [Op.ne]: 2 }
+                status: { [Op.ne]: 2 },
+                app_id: params.app_id || [1, 2]
             }
         };
 
         if (params.user_role == constants.USER_ROLE.coach) {
-            existingUser = await coachManagementModel.findOne(qry);
+            existingUser = await coachManagementModel.findAll(qry);
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }
-
+        if (existingUser && existingUser.length > 1) {
+            return {is_both:1};
+        }
+        existingUser = existingUser[0]
         if (!_.isEmpty(existingUser)) {
             // params.country_code = existingUser.country_code;
             let token = await tokenResponse.forgotPasswordTokenResponse(existingUser, params.user_role);
@@ -78,10 +99,11 @@ export class AuthService {
             mailParams.to = params.email;
             mailParams.html = `Hi ${existingUser.name}
                 <br> Click on the link below to reset your password
-                <br> ${process.env.WEB_HOST_URL}?token=${token.token}
+                <br> ${(existingUser.app_id == constants.COACH_APP_ID.BX ? process.env.WEB_HOST_URL : process.env.WEB_HOST_URL)}?token=${token.token}
                 <br> Please Note: For security purposes, this link expires in ${process.env.FORGOT_PASSWORD_LINK_EXPIRE_IN_MINUTES} Hours.
                 `;
             mailParams.subject = "Reset Password Request";
+            mailParams.name = existingUser.app_id == constants.COACH_APP_ID.BX ? "BluXinga" : "BlueTango"
             await helperFunction.sendEmail(mailParams);
             return true;
         } else {
@@ -110,25 +132,89 @@ export class AuthService {
         } else {
             throw new Error(constants.MESSAGES.user_not_found);
         }
-       
+
     }
 
     /*
     * function to get profile 
     */
     public async getProfile(user: any) {
-        let profile= await helperFunction.convertPromiseToObject(
+        let coach = await helperFunction.convertPromiseToObject(
             await coachManagementModel.findOne({
                 where: {
                     id: parseInt(user.uid),
-                    status:{[Op.ne]:2}
+                    status: { [Op.ne]: 2 }
                 }
             })
         )
 
-        delete profile.password;
+        coach.coach_specialization_categories = await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: coach.coach_specialization_category_ids || [],
+                    },
+                    status: constants.STATUS.active,
+                }
+            })
+        )
 
-        return profile
+        coach.employee_ranks = await helperFunction.convertPromiseToObject(
+            await employeeRanksModel.findAll({
+                where: {
+                    id: {
+                        [Op.in]: coach.employee_rank_ids || [],
+                    },
+                    status: constants.STATUS.active,
+                }
+            })
+        )
+
+        coach.total_completed_sessions = await employeeCoachSessionsModel.count({
+            where: {
+                coach_id: coach.id,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            }
+        })
+
+        let totalRating = await employeeCoachSessionsModel.sum('coach_rating', {
+            where: {
+                coach_id: coach.id,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating: {
+                    [Op.gte]: 1
+                }
+            }
+        })
+
+        coach.rating_count = await employeeCoachSessionsModel.count({
+            where: {
+                coach_id: coach.id,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating: {
+                    [Op.gte]: 1
+                }
+            }
+        })
+        let totalSessions = await employeeCoachSessionsModel.findAndCountAll({
+            where: {
+                coach_id: coach.id,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            }
+        })
+        let freeSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 1).map(obj => obj.employee_id))];
+        let paidSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 2).map(obj => obj.employee_id))];
+        coach.conversionRate = (paidSessionsCount.length / freeSessionsCount.length);
+        coach.average_rating = 0;
+        if (coach.rating_count > 0) {
+            coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
+        }
+
+        delete coach.coach_specialization_category_ids;
+        delete coach.employee_rank_ids;
+        delete coach.password;
+
+        return coach
 
     }
 
@@ -136,19 +222,19 @@ export class AuthService {
     /*
     * function to get profile 
     */
-    public async editProfile(params: any,user: any) {
+    public async editProfile(params: any, user: any) {
         let profile = await coachManagementModel.findOne({
-                where: {
-                    id: parseInt(user.uid),
-                    status: { [Op.ne]: 2 }
-                }
+            where: {
+                id: parseInt(user.uid),
+                status: { [Op.ne]: 2 }
+            }
         })
-        
-        let currentProfile = await helperFunction.convertPromiseToObject(profile);        
+
+        let currentProfile = await helperFunction.convertPromiseToObject(profile);
 
         profile.name = params.name || currentProfile.name;
         profile.email = params.email || currentProfile.email;
-        profile.password = params.password ? await appUtils.bcryptPassword(params.password): currentProfile.password;
+        profile.password = params.password ? await appUtils.bcryptPassword(params.password) : currentProfile.password;
         profile.country_code = params.country_code || currentProfile.country_code;
         profile.phone_number = params.phone_number || currentProfile.phone_number;
         profile.description = params.description || currentProfile.description;
@@ -200,7 +286,27 @@ export class AuthService {
         return await helperFunction.uploadFile(params, folderName);
     }
 
+    /*
+      *get static content
+      */
+    public async getStaticContent(params: any) {
+        return await queryService.selectOne(staticContentModel, {
+            where: { id: 1 },
+            attributes: [`${params.contentType}`]
+        })
+    }
+    /*
+              * get all Bios
+              * @param : token
+              */
+    public async getBios(params: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+        let bios = await queryService.selectAndCountAll(coachBiosModel, {}, {})
+        bios.rows = bios.rows.slice(offset, offset + limit);
+        return bios
 
+
+    }
 }
 
 

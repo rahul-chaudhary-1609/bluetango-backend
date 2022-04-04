@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
+exports.getEmployeeCoachSession = exports.listEmployeeCoachSessions = exports.deleteEmployeeRank = exports.getEmployeeRank = exports.listEmployeeRanks = exports.addEditEmployeeRank = exports.deleteCoachSpecializationCategory = exports.getCoachSpecializationCategory = exports.listCoachSpecializationCategories = exports.addEditCoachSpecializationCategories = exports.getFeedbackDetails = exports.listFeedback = exports.addEditCoach = exports.getEmployersList = exports.updateSubscriptionPlan = exports.addSubscriptionPlan = exports.addEditEmployers = exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.addNewAdmin = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -134,23 +134,23 @@ exports.addEditEmployers = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8).optional()
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        // .required()
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }),
+    // password: Joi.string().min(8).optional()
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // // .required()
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     industry_type: joi_1.default.string().required(),
     address: joi_1.default.string().required(),
-    thought_of_the_day: joi_1.default.string().optional()
+    contact_name: joi_1.default.string().required(),
 });
 exports.addSubscriptionPlan = joi_1.default.object({
     plan_name: joi_1.default.string().required(),
@@ -177,22 +177,85 @@ exports.addEditCoach = joi_1.default.object({
     id: joi_1.default.string().optional(),
     name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8).optional()
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        // .required()
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }),
+    // password: Joi.string().min(8).optional()
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // // .required()
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     description: joi_1.default.string().required(),
     image: joi_1.default.string().optional(),
-    fileName: joi_1.default.string().optional()
+    fileName: joi_1.default.string().optional(),
+    coach_specialization_category_ids: joi_1.default.array().optional(),
+    employee_rank_ids: joi_1.default.array().optional(),
+    coach_charge: joi_1.default.number().optional(),
+    social_media_handles: joi_1.default.object().allow(null).optional(),
+    website: joi_1.default.string().allow("", null).optional(),
+    document_url: joi_1.default.string().allow("", null).optional(),
+    documentFileName: joi_1.default.string().optional(),
+});
+exports.listFeedback = joi_1.default.object({
+    feedbackType: joi_1.default.number().valid(1, 2, 3, 4).optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+    searchKey: joi_1.default.string().optional()
+});
+exports.getFeedbackDetails = joi_1.default.object({
+    feedback_id: joi_1.default.number().required(),
+});
+exports.addEditCoachSpecializationCategories = joi_1.default.object({
+    category_id: joi_1.default.number().optional(),
+    name: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+});
+exports.listCoachSpecializationCategories = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getCoachSpecializationCategory = joi_1.default.object({
+    category_id: joi_1.default.number().required(),
+});
+exports.deleteCoachSpecializationCategory = joi_1.default.object({
+    category_id: joi_1.default.number().required(),
+});
+exports.addEditEmployeeRank = joi_1.default.object({
+    rank_id: joi_1.default.number().optional(),
+    name: joi_1.default.string().required(),
+    description: joi_1.default.string().required(),
+});
+exports.listEmployeeRanks = joi_1.default.object({
+    is_pagination: joi_1.default.number().default(1).optional(),
+    searchKey: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getEmployeeRank = joi_1.default.object({
+    rank_id: joi_1.default.number().required(),
+});
+exports.deleteEmployeeRank = joi_1.default.object({
+    rank_id: joi_1.default.number().required(),
+});
+exports.listEmployeeCoachSessions = joi_1.default.object({
+    searchKey: joi_1.default.string().optional(),
+    date: joi_1.default.string().optional(),
+    status: joi_1.default.number().optional(),
+    employeeRankId: joi_1.default.number().optional(),
+    sessionType: joi_1.default.number().optional(),
+    employer_ids: joi_1.default.string().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getEmployeeCoachSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
 });
 //# sourceMappingURL=adminSchema.js.map

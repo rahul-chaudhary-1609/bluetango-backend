@@ -46,7 +46,7 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield authService.login(req.body);
-                appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+                appUtils.successResponse(res, responseFromService, (responseFromService.is_both) ? constants.MESSAGES.select_appId : constants.MESSAGES.login_success);
             }
             catch (e) {
                 next(e);
@@ -62,8 +62,7 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield authService.forgotPassword(req.body);
-                const msg = constants.MESSAGES.forget_pass_otp;
-                appUtils.successResponse(res, responseFromService, msg);
+                appUtils.successResponse(res, responseFromService, (responseFromService["is_both"]) ? constants.MESSAGES.select_appId : constants.MESSAGES.forget_pass_otp);
             }
             catch (error) {
                 next(error);
@@ -165,6 +164,38 @@ class AuthController {
             }
             catch (e) {
                 next(e);
+            }
+        });
+    }
+    /**
+     * get static content
+     * @param req :
+     * @param res
+     */
+    getStaticContent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getStaticContent(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+        * get all coach bios
+        * @param req :
+        * @param res
+        */
+    getBios(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield authService.getBios(req.query);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
             }
         });
     }

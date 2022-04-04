@@ -35,6 +35,7 @@ const chatRelationMappingInRoom_1 = require("../../models/chatRelationMappingInR
 const employee_1 = require("../../models/employee");
 const notification_1 = require("../../models/notification");
 const coachManagement_1 = require("../../models/coachManagement");
+const bluetangoAdmin_1 = require("../../models/bluetangoAdmin");
 const Sequelize = require('sequelize');
 const OpenTok = require("opentok");
 const opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY, { timeout: 30000 });
@@ -45,34 +46,63 @@ class ChatServices {
     * function to get chat  list
     */
     getChatList(user) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
+            let chatRoomData;
+            let chatRoomDataUser = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
+                where: {
+                    user_id: user.uid,
+                }
+            });
+            let chatRoomDataOtherUser = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findAll({
                 where: {
                     other_user_id: user.uid,
                     type: constants.CHAT_ROOM_TYPE.coach
                 }
             });
+            chatRoomData = [...chatRoomDataUser, ...chatRoomDataOtherUser];
             let chats = [];
             for (let chat of chatRoomData) {
                 let is_disabled = false;
+                let id = chat.other_user_id;
+                if (chat.other_user_id == user.uid)
+                    id = chat.user_id;
                 let employee = yield employee_1.employeeModel.findOne({
                     attributes: ['id', 'name', 'profile_pic_url', 'status'],
                     where: {
-                        id: chat.user_id,
+                        id
                     }
                 });
-                if (employee.status == constants.STATUS.deleted)
-                    is_disabled = true;
-                chats.push({
+                let admin = yield bluetangoAdmin_1.bluetangoAdminModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                    where: {
+                        id
+                    }
+                });
+                if (employee) {
+                    if (employee.status == constants.STATUS.deleted)
+                        is_disabled = true;
+                }
+                else {
+                    if (admin.status == constants.STATUS.deleted)
+                        is_disabled = true;
+                }
+                let chatObj = {
                     id: chat.id,
                     room_id: chat.room_id,
-                    user: employee,
+                    user: employee || admin,
                     status: chat.status,
                     type: chat.type,
                     is_disabled,
+                    info: (_a = chat.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach)),
                     createdAt: chat.createdAt,
                     updatedAt: chat.updatedAt
-                });
+                };
+                if (!chatObj.info.isDeleted) {
+                    chatObj.chatLastDeletedOn = chatObj.info.chatLastDeletedOn;
+                    delete chatObj.info;
+                    chats.push(chatObj);
+                }
             }
             return chats;
         });
@@ -209,6 +239,18 @@ class ChatServices {
             let recieverEmployeeData = yield employee_1.employeeModel.findOne({
                 where: { id: recieverId, }
             });
+            chatRoomData = yield helperFunction.convertPromiseToObject(chatRoomData);
+            if (chatRoomData.info) {
+                yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                    info: chatRoomData.info.map((info) => {
+                        return Object.assign(Object.assign({}, info), { isDeleted: false });
+                    })
+                }, {
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                });
+            }
             let senderEmployeeData = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: { id: user.uid, }
             }));
@@ -667,6 +709,180 @@ class ChatServices {
                 where: Object.assign(Object.assign({}, whereCondition), { status: 1, reciever_id: user.uid, reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach })
             }));
             return notification;
+        });
+    }
+    /*
+    * function to clear Chat
+    */
+    clearChat(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let chatRoomData = yield helperFunction.convertPromiseToObject(yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                where: {
+                    room_id: params.chat_room_id,
+                }
+            }));
+            if (!chatRoomData)
+                throw new Error(constants.MESSAGES.chat_room_notFound);
+            if (chatRoomData.info) {
+                yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.update({
+                    info: chatRoomData.info.map((info) => {
+                        if (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach) {
+                            return Object.assign(Object.assign({}, info), { chatLastDeletedOn: new Date(), isDeleted: true });
+                        }
+                        else {
+                            return Object.assign({}, info);
+                        }
+                    })
+                }, {
+                    where: {
+                        room_id: params.chat_room_id,
+                    }
+                });
+            }
+            return true;
+        });
+    }
+    /*
+        * function to get chat room id
+        */
+    getChatRoomId(params, user) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (user.uid == params.other_user_id) {
+                throw new Error(constants.MESSAGES.self_chat);
+            }
+            if (params.type && params.type == constants.CHAT_ROOM_TYPE.employee) {
+                let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                    where: {
+                        [Op.or]: [
+                            { [Op.and]: [{ user_id: user.uid }, { other_user_id: params.other_user_id }] },
+                            { [Op.and]: [{ user_id: params.other_user_id }, { other_user_id: user.uid }] }
+                        ],
+                        type: constants.CHAT_ROOM_TYPE.employee
+                    }
+                });
+                let employee = yield employee_1.employeeModel.findOne({
+                    attributes: ['id', 'name', 'profile_pic_url'],
+                    where: {
+                        id: parseInt(params.other_user_id),
+                    }
+                });
+                if (!chatRoomData) {
+                    if (!employee)
+                        throw new Error(constants.MESSAGES.only_employee_or_BT_Admin_chat);
+                    let chatRoomObj = {
+                        user_id: user.uid,
+                        other_user_id: params.other_user_id,
+                        room_id: yield helperFunction.getUniqueChatRoomId(),
+                        type: constants.CHAT_ROOM_TYPE.employee,
+                        info: [
+                            {
+                                id: user.uid,
+                                chatLastDeletedOn: new Date(),
+                                isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.coach
+                            },
+                            {
+                                id: parseInt(params.other_user_id),
+                                chatLastDeletedOn: new Date(),
+                                isDeleted: false,
+                                type: constants.CHAT_USER_TYPE.employee
+                            }
+                        ]
+                    };
+                    chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
+                }
+                else {
+                    chatRoomData.info = chatRoomData.info.map((info) => {
+                        return Object.assign(Object.assign({}, info), { isDeleted: false });
+                    });
+                    chatRoomData.save();
+                }
+                let users = yield coachManagement_1.coachManagementModel.findAll({
+                    attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                    where: {
+                        id: user.uid
+                    }
+                });
+                chatRoomData = {
+                    id: chatRoomData.id,
+                    user: users,
+                    other_user: employee,
+                    room_id: chatRoomData.room_id,
+                    status: chatRoomData.status,
+                    chatLastDeletedOn: (_a = chatRoomData.info) === null || _a === void 0 ? void 0 : _a.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach)).chatLastDeletedOn,
+                    createdAt: chatRoomData.createdAt,
+                    updatedAt: chatRoomData.updatedAt
+                };
+                return chatRoomData;
+            }
+            else {
+                {
+                    let chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.findOne({
+                        where: {
+                            [Op.or]: [
+                                { [Op.and]: [{ user_id: user.uid }, { other_user_id: params.other_user_id }] },
+                                { [Op.and]: [{ user_id: params.other_user_id }, { other_user_id: user.uid }] }
+                            ],
+                            type: constants.CHAT_ROOM_TYPE.BT_admin
+                        }
+                    });
+                    let admin = yield bluetangoAdmin_1.bluetangoAdminModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url'],
+                        where: {
+                            id: parseInt(params.other_user_id),
+                        }
+                    });
+                    if (!chatRoomData) {
+                        if (!admin)
+                            throw new Error(constants.MESSAGES.only_employee_or_BT_Admin_chat);
+                        let chatRoomObj = {
+                            user_id: user.uid,
+                            other_user_id: params.other_user_id,
+                            room_id: yield helperFunction.getUniqueChatRoomId(),
+                            type: constants.CHAT_ROOM_TYPE.BT_admin,
+                            info: [
+                                {
+                                    id: user.uid,
+                                    chatLastDeletedOn: new Date(),
+                                    isDeleted: false,
+                                    type: constants.CHAT_USER_TYPE.coach
+                                },
+                                {
+                                    id: parseInt(params.other_user_id),
+                                    chatLastDeletedOn: new Date(),
+                                    isDeleted: false,
+                                    type: constants.CHAT_USER_TYPE.BT_admin
+                                }
+                            ]
+                        };
+                        chatRoomData = yield chatRelationMappingInRoom_1.chatRealtionMappingInRoomModel.create(chatRoomObj);
+                    }
+                    else {
+                        chatRoomData.info = chatRoomData.info.map((info) => {
+                            return Object.assign(Object.assign({}, info), { isDeleted: false });
+                        });
+                        chatRoomData.save();
+                    }
+                    let users = yield coachManagement_1.coachManagementModel.findAll({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: user.uid
+                        }
+                    });
+                    chatRoomData = {
+                        id: chatRoomData.id,
+                        user: users,
+                        other_user: admin,
+                        room_id: chatRoomData.room_id,
+                        status: chatRoomData.status,
+                        chatLastDeletedOn: (_b = chatRoomData.info) === null || _b === void 0 ? void 0 : _b.find(info => (info.id == user.uid && info.type == constants.CHAT_USER_TYPE.coach)).chatLastDeletedOn,
+                        createdAt: chatRoomData.createdAt,
+                        updatedAt: chatRoomData.updatedAt
+                    };
+                    return chatRoomData;
+                }
+            }
         });
     }
 }

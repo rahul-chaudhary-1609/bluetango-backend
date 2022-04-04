@@ -44,11 +44,11 @@ class AchievementServices {
     /*
     * function to get achievemnets
     */
-    getAchievements(user) {
+    getAchievements(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let employee = yield helperFunction.convertPromiseToObject(yield employee_1.employeeModel.findByPk(parseInt(user.uid)));
             achievement_1.achievementModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
-            let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll({
+            let query = {
                 attributes: [
                     'id', 'employee_id', 'description', 'status',
                     ['like_count', 'likeCount'],
@@ -65,7 +65,13 @@ class AchievementServices {
                     },
                 ],
                 order: [["last_action_on", "DESC"]]
-            }));
+            };
+            if (!params.is_pagination || params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset,
+                    query.limit = limit;
+            }
+            let achievements = yield helperFunction.convertPromiseToObject(yield achievement_1.achievementModel.findAll(query));
             for (let achievement of achievements) {
                 achievement.isLiked = false;
                 achievement.isHighFived = false;

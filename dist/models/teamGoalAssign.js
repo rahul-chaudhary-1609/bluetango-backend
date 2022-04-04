@@ -23,11 +23,22 @@ exports.teamGoalAssignModel = connection_1.sequelize.define("team_goal_assign", 
         allowNull: false,
         defaultValue: 0
     },
+    last_submit_reminder_datetime: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
+        defaultValue: "2021-08-01"
+    },
     status: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
         comment: "0=>assign, 1=> approve, 2=> rejected, 3=> requested"
+    },
+    is_primary: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        comment: "0=>no, 1=> yes"
     }
 }, {
     tableName: "team_goal_assign"

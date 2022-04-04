@@ -31,13 +31,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateJsonString = exports.jsonSegregate = exports.comparePassword = exports.bcryptPassword = exports.getUnixTimeStamp = exports.currentUnixTimeStamp = exports.calcluateOtpTime = exports.CheckEmail = exports.gererateOtp = exports.successResponse = exports.errorResponse = void 0;
+exports.UploadExcelToJson = exports.validateUnavailableTime = exports.calculate_time_slot = exports.parseTime = exports.createTimeSlots = exports.formatPassedAwayTime = exports.validateJsonString = exports.jsonSegregate = exports.comparePassword = exports.bcryptPassword = exports.getUnixTimeStamp = exports.currentUnixTimeStamp = exports.calcluateOtpTime = exports.CheckEmail = exports.gererateOtp = exports.successResponse = exports.errorResponse = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../constants"));
 const randomstring = __importStar(require("randomstring"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const helperFunction = __importStar(require("../utils/helperFunction"));
 const moment = require("moment");
+const excelToJson = require('convert-excel-to-json');
 /* function for sending the error response */
 exports.errorResponse = (res, error, errorCode, message = constants.MESSAGES.bad_request) => {
     let response = Object.assign({}, constants.defaultServerResponse);
@@ -150,4 +151,120 @@ exports.validateJsonString = (text) => {
         return false;
     }
 };
+exports.formatPassedAwayTime = (data) => {
+    const formatedData = data;
+    const today = new Date();
+    for (let k = 0; k < data.length; k++) {
+        const b = moment(data[k].date), a = moment(today), intervals = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'], out = [];
+        for (let i = 0; i < intervals.length; i++) {
+            const diff = a.diff(b, intervals[i]);
+            b.add(diff, intervals[i]);
+            out.push(diff);
+        }
+        if (out[0] >= 1) {
+            formatedData[k]["time_passed"] = `${out[0]} year`;
+        }
+        else if (out[1] >= 1) {
+            formatedData[k]["time_passed"] = `${out[1]} month`;
+        }
+        else if (out[2] >= 1) {
+            formatedData[k]["time_passed"] = `${out[2]} week`;
+        }
+        else if (out[3] >= 1) {
+            formatedData[k]["time_passed"] = `${out[3]} day`;
+        }
+        else if (out[4] >= 1) {
+            formatedData[k]["time_passed"] = `${out[4]} hour`;
+        }
+        else if (out[5] >= 1) {
+            formatedData[k]["time_passed"] = `${out[5]} minutes`;
+        }
+        else {
+            formatedData[k]["time_passed"] = `${out[6]} seconds`;
+        }
+    }
+    return formatedData;
+};
+exports.createTimeSlots = (data) => {
+};
+exports.parseTime = (s) => {
+    let c = s.split(':');
+    return parseInt(c[0]) * 60 + parseInt(c[1]);
+};
+const convertHours = (mins) => {
+    let hour = Math.floor(mins / 60);
+    let Mins = mins % 60;
+    let converted = pad(hour, 2) + ':' + pad(Mins, 2);
+    return converted;
+};
+const pad = (str, max) => {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+};
+exports.calculate_time_slot = (start_time, end_time, interval) => {
+    let i, formatted_time;
+    let time_slots = new Array();
+    for (let i = start_time; i <= end_time; i = i + interval) {
+        formatted_time = convertHours(i);
+        time_slots.push(formatted_time);
+    }
+    return time_slots;
+};
+exports.validateUnavailableTime = (timeSlots, slots, time_capture_type) => {
+    var validSlots = [];
+    var unavaibaleSlots = [];
+    for (let i = 0; i < timeSlots.length; i++) {
+        slots.filter((value, index, array) => {
+            if (exports.parseTime(timeSlots[i].start_time) <= exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) > exports.parseTime(value.start_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time) || exports.parseTime(timeSlots[i].start_time) < exports.parseTime(value.end_time) && exports.parseTime(timeSlots[i].end_time) >= exports.parseTime(value.end_time)) {
+                validSlots.push(index);
+            }
+        });
+    }
+    if (time_capture_type == 1) {
+        [...new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value]);
+            slots[value] = null;
+        });
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.available }))), unavailableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.unavailable }))) };
+    }
+    else {
+        [...new Set(validSlots)].map((value) => {
+            unavaibaleSlots.push(slots[value]);
+            slots[value] = null;
+        });
+        slots = slots.filter(function (el) {
+            return el != null;
+        });
+        return { availableSlots: slots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.available }))), unavailableSlots: unavaibaleSlots.map(v => (Object.assign(Object.assign({}, v), { is_available: constants.COACH_SCHEDULE_STATUS.unavailable }))) };
+    }
+};
+exports.UploadExcelToJson = (path, headerRow, columnToKey) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(path, headerRow, columnToKey);
+        columnToKey['*'] = '{{columnHeader}}';
+        let result = excelToJson({
+            sourceFile: path,
+            columnToKey: columnToKey,
+            header: {
+                rows: headerRow
+            }
+        });
+        let columnKeyObj = {};
+        for (const value of Object.values(columnToKey)) {
+            columnKeyObj[`${value}`] = null;
+        }
+        delete columnKeyObj["{{columnHeader}}"];
+        result = (result && result[Object.keys(result)[0]]) ? result[Object.keys(result)[0]] : [];
+        result.forEach((element, index, array) => {
+            result[index] = Object.assign(Object.assign({}, columnKeyObj), element);
+        });
+        return result;
+    }
+    catch (err) {
+        return err;
+    }
+});
 //# sourceMappingURL=appUtils.js.map

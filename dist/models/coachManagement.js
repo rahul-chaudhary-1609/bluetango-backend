@@ -71,9 +71,41 @@ exports.coachManagementModel = connection_1.sequelize.define("coach_management",
     fileName: {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    coach_specialization_category_ids: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
+    },
+    employee_rank_ids: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.INTEGER),
+    },
+    coach_charge: {
+        type: sequelize_1.DataTypes.DECIMAL(15, 2),
+        allowNull: false,
+        defaultValue: 0,
+    },
+    app_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '1=>BX,2=>BT'
+    },
+    social_media_handles: {
+        type: sequelize_1.DataTypes.JSON,
+        allowNull: true,
+    },
+    website: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    document_url: {
+        type: sequelize_1.DataTypes.TEXT,
+    },
+    documentFileName: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
+    },
 }, {
     tableName: "coach_management"
 });
-exports.coachManagementModel.sync({ alter: false });
+exports.coachManagementModel.sync({ alter: true });
 //# sourceMappingURL=coachManagement.js.map

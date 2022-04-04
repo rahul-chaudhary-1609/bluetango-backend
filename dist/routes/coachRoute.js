@@ -29,9 +29,11 @@ const validators = __importStar(require("../middleware/validators"));
 const multerParser_1 = require("../middleware/multerParser");
 const authController_1 = require("../controllers/coach/authController");
 const chatController_1 = require("../controllers/coach/chatController");
+const coachController_1 = require("../controllers/coach/coachController");
 const coachRoute = express_1.default.Router();
 const authController = new authController_1.AuthController();
 const chatController = new chatController_1.ChatController();
+const coachController = new coachController_1.CoachController();
 // auth API
 /* login route for employee login */
 coachRoute.post("/login", validators.trimmer, joiSchemaValidation.validateBody(coachSchema.login), authController.login);
@@ -62,6 +64,8 @@ coachRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenValid
 coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+/* clear Chat*/
+coachRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.clearChat), chatController.clearChat);
 /* contact us for employee */
 coachRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateCoachToken, chatController.getNotifications);
 /* to get unseen notification count */
@@ -70,5 +74,41 @@ coachRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValidator
 coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.markNotificationsAsViewed), chatController.markNotificationsAsViewed);
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, multerParser_1.upload.single('file'), authController.uploadFile);
+/* add Slot */
+coachRoute.post("/addEditSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.addEditSlot), coachController.addEditSlot);
+/* get Slots */
+coachRoute.get("/getSlots", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlots), coachController.getSlots);
+/*get Slot */
+coachRoute.get("/getSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlot), coachController.getSlot);
+/* delete Slot */
+coachRoute.delete("/deleteSlot", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
+/* get Session Requests */
+coachRoute.get("/getSessionRequests", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSessionRequests), coachController.getSessionRequests);
+/* accept Session Request */
+coachRoute.put("/acceptSessionRequest", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.acceptSessionRequest), coachController.acceptSessionRequest);
+/* reject Session Request */
+coachRoute.put("/rejectSessionRequest", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.rejectSessionRequest), coachController.rejectSessionRequest);
+/* get Accepted Sessions */
+coachRoute.get("/getAcceptedSessions", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getAcceptedSessions), coachController.getAcceptedSessions);
+/* cancel Session */
+coachRoute.put("/cancelSession", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.cancelSession), coachController.cancelSession);
+/* list Session History */
+coachRoute.get("/listSessionHistory", tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.listSessionHistory), coachController.listSessionHistory);
+/* get Session History Details */
+coachRoute.get("/getSessionHistoryDetails/:session_id", tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getSessionHistoryDetails), coachController.getSessionHistoryDetails);
+/* update Zoom Meeting Duration */
+coachRoute.put("/updateZoomMeetingDuration", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateZoomMeetingDuration), coachController.updateZoomMeetingDuration);
+/* end Zoom Meeting */
+coachRoute.put("/endZoomMeeting", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
+/* get static content */
+coachRoute.get("/getStaticContent", tokenValidator.validateCoachToken, authController.getStaticContent);
+/* get Bios */
+coachRoute.get("/getBios", tokenValidator.validateCoachToken, authController.getBios);
+/* get chat room id */
+coachRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getChatRoomId), chatController.getChatRoomId);
+/* update Slots availability */
+coachRoute.post("/updateSlotAvailability", tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateSlotAvailability), coachController.updateSlotAvailability);
+/* get Unseen Chat Notification Count */
+coachRoute.get("/getUnseenChatNotificationCount", tokenValidator.validateCoachToken, coachController.getUnseenChatNotificationCount);
 module.exports = coachRoute;
 //# sourceMappingURL=coachRoute.js.map

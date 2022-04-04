@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRawQueryResult = exports.selectAll = exports.selectData = void 0;
+exports.getRawQueryResult = exports.selectAndCountAll = exports.selectAll = exports.selectData = void 0;
 const constants = __importStar(require("../constants"));
 const lodash_1 = __importDefault(require("lodash"));
 const connection_1 = require("../connection");
@@ -69,6 +69,26 @@ exports.selectAll = (model, condition, attributes) => __awaiter(void 0, void 0, 
             }
             else {
                 selectQueryServiceData = yield model.findAll();
+            }
+        }
+        else {
+            throw new Error(constants.MESSAGES.model_name_required);
+        }
+        return selectQueryServiceData;
+    }
+    catch (error) {
+        throw new Error(error);
+    }
+});
+exports.selectAndCountAll = (model, condition, attributes) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let selectQueryServiceData;
+        if (!lodash_1.default.isEmpty(model)) {
+            if (!lodash_1.default.isEmpty(condition)) {
+                selectQueryServiceData = yield model.findAndCountAll(condition);
+            }
+            else {
+                selectQueryServiceData = yield model.findAndCountAll();
             }
         }
         else {

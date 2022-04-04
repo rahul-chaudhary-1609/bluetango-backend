@@ -115,23 +115,24 @@ export const addEditEmployers = Joi.object ({
   id: Joi.string().optional(),
   name: Joi.string().required(),
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-  password: Joi.string().min(8).optional()
-  .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-  // .required()
-  .messages({
-    "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-    "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-    "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-    "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-  }),
+  // password: Joi.string().min(8).optional()
+  // .max(15)
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // // .required()
+  // .messages({
+  //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+  //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+  //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+  //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+  // }),
   country_code: Joi.string().required(),
   phone_number: Joi.string().required(),
   industry_type: Joi.string().required(),
   address: Joi.string().required(),
-  thought_of_the_day: Joi.string().optional()
+  contact_name: Joi.string().required(),
+  // thought_of_the_day: Joi.string().optional()
 })
 
 export const addSubscriptionPlan = Joi.object ({
@@ -162,21 +163,97 @@ export const addEditCoach = Joi.object ({
   id: Joi.string().optional(),
   name: Joi.string().required(),
   email: Joi.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-  password: Joi.string().min(8).optional()
-  .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-  // .required()
-  .messages({
-    "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-    "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-    "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-    "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-    "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-  }),
+  // password: Joi.string().min(8).optional()
+  // .max(15)
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // // .required()
+  // .messages({
+  //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+  //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+  //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+  //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+  //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+  // }),
   country_code: Joi.string().required(),
   phone_number: Joi.string().required(),
   description: Joi.string().required(),
   image: Joi.string().optional(),
-  fileName: Joi.string().optional()
+  fileName: Joi.string().optional(),
+  coach_specialization_category_ids:Joi.array().optional(),
+  employee_rank_ids:Joi.array().optional(),
+  coach_charge:Joi.number().optional(),
+  social_media_handles: Joi.object().allow(null).optional(),
+  website: Joi.string().allow("", null).optional(),
+  document_url: Joi.string().allow("", null).optional(),
+  documentFileName: Joi.string().optional(),
+
+})
+
+export const listFeedback = Joi.object ({
+  feedbackType: Joi.number().valid(1,2,3,4).optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+  searchKey: Joi.string().optional()
+})
+
+export const getFeedbackDetails = Joi.object ({
+  feedback_id: Joi.number().required(),
+})
+
+export const addEditCoachSpecializationCategories= Joi.object ({
+  category_id: Joi.number().optional(),
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+})
+
+export const listCoachSpecializationCategories= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getCoachSpecializationCategory= Joi.object ({
+  category_id: Joi.number().required(),
+})
+
+export const deleteCoachSpecializationCategory= Joi.object ({
+  category_id: Joi.number().required(),
+})
+
+export const addEditEmployeeRank= Joi.object ({
+  rank_id: Joi.number().optional(),
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+})
+
+export const listEmployeeRanks= Joi.object ({
+  is_pagination: Joi.number().default(1).optional(),
+  searchKey: Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getEmployeeRank= Joi.object ({
+  rank_id: Joi.number().required(),
+})
+
+export const deleteEmployeeRank= Joi.object ({
+  rank_id: Joi.number().required(),
+})
+
+export const listEmployeeCoachSessions= Joi.object ({
+  searchKey: Joi.string().optional(),
+  date: Joi.string().optional(),
+  status:Joi.number().optional(),
+  employeeRankId:Joi.number().optional(),
+  sessionType:Joi.number().optional(),
+  employer_ids:Joi.string().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getEmployeeCoachSession= Joi.object ({
+  session_id:Joi.number().required(),
 })

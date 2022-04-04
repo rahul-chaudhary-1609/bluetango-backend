@@ -70,10 +70,43 @@ export const coachManagementModel: any = sequelize.define("coach_management", {
     fileName: {
         type: DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    coach_specialization_category_ids:{
+        type:DataTypes.ARRAY(DataTypes.INTEGER),
+    },
+    employee_rank_ids:{
+        type:DataTypes.ARRAY(DataTypes.INTEGER),
+    },
+    coach_charge:{
+        type:DataTypes.DECIMAL(15,2),
+        allowNull:false,
+        defaultValue:0,
+    },
+    app_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '1=>BX,2=>BT'
+    },
+    social_media_handles: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    website: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    document_url: {
+        type: DataTypes.TEXT,
+    },
+    documentFileName: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+
 },
     {
         tableName: "coach_management"
     }
 );
-coachManagementModel.sync({ alter: false });
+coachManagementModel.sync({ alter: true });

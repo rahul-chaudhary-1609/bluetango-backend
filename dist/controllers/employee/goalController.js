@@ -246,6 +246,54 @@ class GoalController {
             }
         });
     }
+    /**
+   * get Goal Completion Average As Manager
+   * @param req :[]
+   * @param res
+   */
+    getGoalCompletionAverageAsManager(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.getGoalCompletionAverageAsManager(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+ * toggle Goal As Primary
+ * @param req :[body data]
+ * @param res : [data object]
+ */
+    toggleGoalAsPrimary(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.toggleGoalAsPrimary(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+* mark Goal As Primary
+* @param req :[body data]
+* @param res : [data object]
+*/
+    markGoalsAsPrimary(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield goalServices.markGoalsAsPrimary(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
 }
 exports.GoalController = GoalController;
 //# sourceMappingURL=goalController.js.map

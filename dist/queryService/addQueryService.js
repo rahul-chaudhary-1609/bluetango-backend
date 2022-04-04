@@ -40,9 +40,10 @@ const lodash_1 = __importDefault(require("lodash"));
 *
 */
 exports.addData = (model, data) => __awaiter(void 0, void 0, void 0, function* () {
+    let addQueryServiceData;
     if (!lodash_1.default.isEmpty(model)) {
         if (!lodash_1.default.isEmpty(data)) {
-            var addQueryServiceData = yield model.create(data);
+            addQueryServiceData = yield model.create(data);
         }
         else {
             throw new Error(constants.MESSAGES.request_validation_message);

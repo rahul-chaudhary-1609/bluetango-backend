@@ -7,12 +7,14 @@ import { upload } from "../middleware/multerParser"
 
 import { AuthController } from "../controllers/coach/authController";
 import { ChatController } from "../controllers/coach/chatController";
+import { CoachController } from "../controllers/coach/coachController";
 
 
 const coachRoute = express.Router();
 
 const authController = new AuthController();
 const chatController = new ChatController();
+const coachController = new CoachController();
 
 
 // auth API
@@ -61,6 +63,9 @@ coachRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.vali
 /* send disconnect video/audio chat notification*/
 coachRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
 
+/* clear Chat*/
+coachRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.clearChat), chatController.clearChat);
+
 /* contact us for employee */
 coachRoute.get("/getNotifications", validators.trimmer, tokenValidator.validateCoachToken, chatController.getNotifications);
 
@@ -73,5 +78,56 @@ coachRoute.put("/markNotificationsAsViewed", validators.trimmer, tokenValidator.
 
 /* upload media files */
 coachRoute.post("/uploadFile", tokenValidator.validateCoachToken, upload.single('file'), authController.uploadFile);
+
+/* add Slot */
+coachRoute.post("/addEditSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.addEditSlot), coachController.addEditSlot);
+
+/* get Slots */
+coachRoute.get("/getSlots",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlots), coachController.getSlots);
+
+/*get Slot */
+coachRoute.get("/getSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSlot), coachController.getSlot);
+
+/* delete Slot */
+coachRoute.delete("/deleteSlot",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.deleteSlot), coachController.deleteSlot);
+
+/* get Session Requests */
+coachRoute.get("/getSessionRequests",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getSessionRequests), coachController.getSessionRequests);
+
+/* accept Session Request */
+coachRoute.put("/acceptSessionRequest",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.acceptSessionRequest), coachController.acceptSessionRequest);
+
+/* reject Session Request */
+coachRoute.put("/rejectSessionRequest",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.rejectSessionRequest), coachController.rejectSessionRequest);
+
+/* get Accepted Sessions */
+coachRoute.get("/getAcceptedSessions",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getAcceptedSessions), coachController.getAcceptedSessions);
+
+/* cancel Session */
+coachRoute.put("/cancelSession",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.cancelSession), coachController.cancelSession);
+
+/* list Session History */
+coachRoute.get("/listSessionHistory",tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.listSessionHistory), coachController.listSessionHistory);
+
+/* get Session History Details */
+coachRoute.get("/getSessionHistoryDetails/:session_id",tokenValidator.validateCoachToken, joiSchemaValidation.validateParams(coachSchema.getSessionHistoryDetails), coachController.getSessionHistoryDetails);
+
+/* update Zoom Meeting Duration */
+coachRoute.put("/updateZoomMeetingDuration",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateZoomMeetingDuration), coachController.updateZoomMeetingDuration);
+
+/* end Zoom Meeting */
+coachRoute.put("/endZoomMeeting",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.endZoomMeeting), coachController.endZoomMeeting);
+/* get static content */
+coachRoute.get("/getStaticContent", tokenValidator.validateCoachToken, authController.getStaticContent);
+/* get Bios */
+coachRoute.get("/getBios", tokenValidator.validateCoachToken, authController.getBios);
+/* get chat room id */
+coachRoute.get("/getChatRoomId", validators.trimmer, tokenValidator.validateCoachToken, joiSchemaValidation.validateQueryParams(coachSchema.getChatRoomId), chatController.getChatRoomId);
+/* update Slots availability */
+coachRoute.post("/updateSlotAvailability",tokenValidator.validateCoachToken, joiSchemaValidation.validateBody(coachSchema.updateSlotAvailability), coachController.updateSlotAvailability);
+
+/* get Unseen Chat Notification Count */
+coachRoute.get("/getUnseenChatNotificationCount", tokenValidator.validateCoachToken, coachController.getUnseenChatNotificationCount);
+
 
 export = coachRoute;

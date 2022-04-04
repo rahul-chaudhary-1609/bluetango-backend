@@ -208,62 +208,104 @@ class GoalServices {
             teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
             teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
             teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            // let employee=await helperFunction.convertPromiseToObject(
+            //     await employeeModel.findAll({
+            //         where:{
+            //             [Op.iLike]: `%${params.search_string}%`
+            //         }
+            //     })
+            // )
             var count, whereCondition;
-            if (params.search_string) {
-                whereCondition = {
-                    name: { [Op.iLike]: `%${params.search_string}%` }
-                };
-                count = yield teamGoal_1.teamGoalModel.count({
-                    where: { manager_id: user.uid },
-                    include: [
-                        {
-                            model: employee_1.employeeModel,
-                            required: false,
-                        },
-                        {
-                            model: teamGoalAssign_1.teamGoalAssignModel,
-                            required: true,
-                            include: [
-                                {
-                                    model: employee_1.employeeModel,
-                                    where: whereCondition,
-                                    required: true,
-                                }
-                            ]
-                        }
-                    ],
-                });
-            }
-            else {
-                count = yield teamGoal_1.teamGoalModel.count({
-                    where: { manager_id: user.uid }
-                });
-            }
-            let rows = yield teamGoal_1.teamGoalModel.findAll({
+            // if (params.search_string) {
+            //     whereCondition = <any> {
+            //        name: { [Op.iLike]: `%${params.search_string}%` },
+            //        status:constants.STATUS.active,
+            //     }
+            //     count = await teamGoalModel.count({
+            //         where: {manager_id: user.uid },
+            //         include: [
+            //             {
+            //                 model: employeeModel,
+            //                 required: true,
+            //             },
+            //             {
+            //                 model: teamGoalAssignModel,
+            //                 required: true,
+            //                 include: [
+            //                     {
+            //                         model: employeeModel,
+            //                         where: whereCondition,
+            //                         required: true,
+            //                     }
+            //                 ]
+            //             }
+            //         ],
+            //     })
+            // } else {
+            //     count = await teamGoalModel.count({
+            //         where: {manager_id: user.uid }
+            //     })
+            // }       
+            let rows = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findAll({
                 where: { manager_id: user.uid },
                 include: [
                     {
                         model: employee_1.employeeModel,
-                        required: false,
+                        // separate: true,
+                        required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
-                        required: false,
+                        separate: true,
+                        required: true,
                         include: [
                             {
                                 model: employee_1.employeeModel,
-                                where: whereCondition,
+                                // where: whereCondition,
                                 required: true,
                                 attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                             }
                         ]
                     }
                 ],
-                limit: limit,
-                offset: offset,
+                // limit: limit,
+                // offset: offset,
                 order: [["createdAt", "DESC"]]
-            });
+            }));
+            let filteredRows = [];
+            for (let goal of rows) {
+                let totalGoalMeasure = parseFloat(goal.enter_measure);
+                let goalAssignCount = goal.team_goal_assigns.length != 0 ? goal.team_goal_assigns.length : 1;
+                for (let goal_asssign of goal.team_goal_assigns) {
+                    goal_asssign.completionAverageValue = parseFloat(goal_asssign.complete_measure);
+                    //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
+                }
+                let comepletedGoalMeasureValue = goal.team_goal_assigns.reduce((result, teamGoalAssign) => result + parseFloat(teamGoalAssign.completionAverageValue), 0);
+                //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
+                goal.completionTeamAverageValue = (comepletedGoalMeasureValue / goalAssignCount).toFixed(2);
+                goal.completionTeamAveragePercentage = ((comepletedGoalMeasureValue * 100) / (totalGoalMeasure * goalAssignCount)).toFixed(2) + "%";
+                goal.sortValue = parseFloat(((comepletedGoalMeasureValue * 100) / (totalGoalMeasure * goalAssignCount)).toFixed(2));
+                if (params.search_string && params.search_string.trim()) {
+                    let isFound = false;
+                    for (let assign of goal.team_goal_assigns) {
+                        if (assign.employee.name.toLowerCase().includes(params.search_string.toLowerCase())) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (isFound) {
+                        filteredRows.push(goal);
+                    }
+                }
+                else {
+                    filteredRows.push(goal);
+                }
+            }
+            rows = [...filteredRows];
+            rows.sort((a, b) => b.sortValue - a.sortValue);
+            count = rows.length;
+            rows = rows.slice(offset, offset + limit);
             return { count, rows };
         });
     }
@@ -280,11 +322,13 @@ class GoalServices {
                 include: [
                     {
                         model: employee_1.employeeModel,
+                        // separate: true,
                         required: true,
                         attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
                     },
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         include: [
                             {
                                 model: employee_1.employeeModel,
@@ -328,6 +372,7 @@ class GoalServices {
                     },
                     {
                         model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                        separate: true,
                         attributes: ['id', 'goal_id', 'team_goal_assign_id', ['description', 'employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status', 'createdAt', 'updatedAt'],
                         required: false,
                         where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested, },
@@ -435,6 +480,7 @@ class GoalServices {
                 },
             };
             yield helperFunction.sendFcmNotification([managerData.device_token], notificationData);
+            teamGoalAssignRequestRes.goal_total_measure = getGoalData.enter_measure;
             return teamGoalAssignRequestRes;
             // } else {
             //     throw new Error(constants.MESSAGES.invalid_measure);
@@ -456,10 +502,12 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         required: true,
                         include: [
                             {
                                 model: teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel,
+                                separate: true,
                                 attributes: ['id', 'goal_id', 'team_goal_assign_id', ['description', 'employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status', 'createdAt', 'updatedAt'],
                                 where: { status: constants.TEAM_GOAL_ASSIGN_COMPLETED_BY_EMPLOYEE_STATUS.requested },
                                 required: true,
@@ -629,6 +677,7 @@ class GoalServices {
             for (let goal of quantitativeStatsOfGoals) {
                 quantitativeStats.push(Object.assign(Object.assign({}, goal), { quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`, quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100 }));
             }
+            quantitativeStats.sort((a, b) => b.quantitative_stats_percent - a.quantitative_stats_percent);
             return { quantitativeStats };
         });
     }
@@ -656,6 +705,7 @@ class GoalServices {
             for (let goal of quantitativeStatsOfGoals) {
                 quantitativeStats.push(Object.assign(Object.assign({}, goal), { quantitative_stats: `${parseFloat(goal.complete_measure)}/${parseFloat(goal.team_goal.enter_measure)}`, quantitative_stats_percent: (parseFloat(goal.complete_measure) / parseFloat(goal.team_goal.enter_measure)) * 100 }));
             }
+            quantitativeStats.sort((a, b) => b.quantitative_stats_percent - a.quantitative_stats_percent);
             return { quantitativeStats };
         });
     }
@@ -671,6 +721,7 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         where: { employee_id: user.uid },
                         include: [
                             {
@@ -684,6 +735,7 @@ class GoalServices {
                 order: [["createdAt", "DESC"]]
             }));
             let teamGoalAssignCompletion = yield helperFunction.convertPromiseToObject(yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.findAll({
+                attributes: ['id', 'goal_id', 'team_goal_assign_id', ['description', 'employee_comment'], 'manager_comment', 'complete_measure', 'total_complete_measure', 'status', 'createdAt', 'updatedAt'],
                 where: {
                     goal_id: params.goal_id,
                     team_goal_assign_id: goalDetailsAsEmployee.team_goal_assigns[0].id,
@@ -708,6 +760,7 @@ class GoalServices {
                 include: [
                     {
                         model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
                         where: { id: params.team_goal_assign_id, },
                         include: [
                             {
@@ -739,6 +792,125 @@ class GoalServices {
             //     })
             // )
             // return teamGoalAssignCompletion;
+        });
+    }
+    getGoalCompletionAverageAsManager(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoal_1.teamGoalModel.hasMany(teamGoalAssign_1.teamGoalAssignModel, { foreignKey: "goal_id", sourceKey: "id", targetKey: "goal_id" });
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            teamGoal_1.teamGoalModel.hasMany(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
+            let whereCondition = {
+                manager_id: user.uid,
+            };
+            if (params.goal_id) {
+                whereCondition = {
+                    id: params.goal_id
+                };
+            }
+            let goals = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findAll({
+                attributes: ['id', 'manager_id', 'title', 'select_measure', 'enter_measure'],
+                where: whereCondition,
+                include: [
+                    {
+                        model: teamGoalAssign_1.teamGoalAssignModel,
+                        separate: true,
+                    }
+                ],
+                order: [["createdAt", "DESC"]]
+            }));
+            for (let goal of goals) {
+                let totalGoalMeasure = parseFloat(goal.enter_measure);
+                let goalAssignCount = goal.team_goal_assigns.length != 0 ? goal.team_goal_assigns.length : 1;
+                ;
+                for (let goal_asssign of goal.team_goal_assigns) {
+                    goal_asssign.completionAverageValue = parseFloat(goal_asssign.complete_measure);
+                    //goal_asssign.completionAveragePercentage=((parseFloat(goal_asssign.complete_measure)*100)/totalGoalMeasure).toFixed(2);
+                }
+                let comepletedGoalMeasureValue = goal.team_goal_assigns.reduce((result, teamGoalAssign) => result + parseFloat(teamGoalAssign.completionAverageValue), 0);
+                //let comepletedGoalMeasurePercentage=goal.team_goal_assigns.reduce((result:number,teamGoalAssign:any)=>result+parseFloat(teamGoalAssign.completionAveragePercentage),0);
+                goal.completionTeamAverageValue = (comepletedGoalMeasureValue / goalAssignCount).toFixed(2);
+                goal.completionTeamAveragePercentage = ((comepletedGoalMeasureValue * 100) / (totalGoalMeasure * goalAssignCount)).toFixed(2) + "%";
+                goal.sortValue = parseFloat(((comepletedGoalMeasureValue * 100) / (totalGoalMeasure * goalAssignCount)).toFixed(2));
+                delete goal.team_goal_assigns;
+            }
+            goals.sort((a, b) => b.sortValue - a.sortValue);
+            return goals;
+        });
+    }
+    toggleGoalAsPrimary(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let teamGoalAssign = yield teamGoalAssign_1.teamGoalAssignModel.findByPk(parseInt(params.team_goal_assign_id));
+            if (teamGoalAssign) {
+                if (teamGoalAssign.employee_id == user.uid) {
+                    if (teamGoalAssign.is_primary == constants.PRIMARY_GOAL.no) {
+                        let primaryGoalCount = yield teamGoalAssign_1.teamGoalAssignModel.count({
+                            where: {
+                                employee_id: parseInt(user.uid),
+                                is_primary: constants.PRIMARY_GOAL.yes
+                            }
+                        });
+                        if (primaryGoalCount < 4) {
+                            teamGoalAssign.is_primary = constants.PRIMARY_GOAL.yes;
+                        }
+                        else {
+                            throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+                        }
+                    }
+                    else {
+                        teamGoalAssign.is_primary = constants.PRIMARY_GOAL.no;
+                    }
+                    teamGoalAssign.save();
+                    return true;
+                }
+                else {
+                    throw new Error(constants.MESSAGES.goal_not_assigned);
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.goal_assign_not_found);
+            }
+        });
+    }
+    markGoalsAsPrimary(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let primaryGoals = params.goals.filter((goal) => goal.is_primary == constants.PRIMARY_GOAL.yes);
+            if (primaryGoals.length == 4) {
+                let checkIfGoalAssignExist = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.count({
+                    where: {
+                        id: primaryGoals.map((goal) => goal.team_goal_assign_id),
+                        employee_id: user.uid,
+                    }
+                }));
+                if (checkIfGoalAssignExist == 4) {
+                    let updatedGoals = yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        is_primary: constants.PRIMARY_GOAL.yes,
+                    }, {
+                        where: {
+                            id: primaryGoals.map((goal) => goal.team_goal_assign_id),
+                            employee_id: user.uid,
+                        }
+                    });
+                    yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        is_primary: constants.PRIMARY_GOAL.no,
+                    }, {
+                        where: {
+                            id: {
+                                [Op.notIn]: primaryGoals.map((goal) => goal.team_goal_assign_id)
+                            },
+                            employee_id: user.uid,
+                        }
+                    });
+                    return {
+                        updateCount: updatedGoals[0]
+                    };
+                }
+                else {
+                    throw new Error(constants.MESSAGES.four_goal_assign_not_found);
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.only_four_primary_goals_are_allowed);
+            }
         });
     }
 }

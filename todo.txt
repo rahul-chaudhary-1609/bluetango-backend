@@ -1,0 +1,4 @@
+## Required for CV share and download features
+1. Install Pandoc on production server (https://pandoc.org/installing.html)
+2. Install Chromium on production server 
+

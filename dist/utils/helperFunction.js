@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
+exports.generaePassword = exports.deleteFile = exports.getUniqueSlotTimeGroupId = exports.getUniqueSlotDateGroupId = exports.getMonday = exports.getUniqueBluetangoChatRoomId = exports.getUniqueChatRoomId = exports.randomStringEightDigit = exports.checkPermission = exports.updateZoomMeetingDuration = exports.endZoomMeeting = exports.cancelZoomMeeting = exports.scheduleZoomMeeting = exports.sendFcmNotification = exports.getCurrentDate = exports.convertPromiseToObject = exports.pagination = exports.currentUnixTimeStamp = exports.sendEmail = exports.uploadFile = void 0;
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
 const constants = __importStar(require("../constants"));
@@ -42,7 +42,17 @@ const FCM = require('fcm-node');
 const fcm = new FCM(process.env.FCM_SERVER_KEY); //put your server key here
 const employersService_1 = require("../services/admin/employersService");
 const chatRelationMappingInRoom_1 = require("../models/chatRelationMappingInRoom");
+const coachSchedule_1 = require("../models/coachSchedule");
 const groupChatRoom_1 = require("../models/groupChatRoom");
+const zoomUsers_1 = require("../models/zoomUsers");
+const node_fetch_1 = __importDefault(require("node-fetch"));
+const models_1 = require("../models");
+const moment_1 = __importDefault(require("moment"));
+require("moment-timezone");
+const employeeCoachSession_1 = require("../models/employeeCoachSession");
+const queryService = __importStar(require("../queryService/bluetangoAdmin/queryService"));
+const bluetangoChatRoom_1 = require("../models/bluetangoChatRoom");
+const generator = require('generate-password');
 //Instantiates a Home services  
 const employersService = new employersService_1.EmployersService();
 const s3Client = new AWS.S3({
@@ -83,15 +93,27 @@ exports.uploadFile = (params, folderName) => __awaiter(void 0, void 0, void 0, f
  */
 exports.sendEmail = (params) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const msg = {
+        let msg = {
             to: params.to,
             from: {
                 email: process.env.SENDGRID_FROM_EMAIL,
-                name: 'BluXinga'
+                name: params.name || 'BluXinga'
             },
             subject: params.subject,
             html: params.html,
         };
+        if (params.attachments) {
+            msg = {
+                to: params.to,
+                from: {
+                    email: process.env.SENDGRID_FROM_EMAIL,
+                    name: 'BluXinga'
+                },
+                subject: params.subject,
+                html: params.html,
+                attachments: params.attachments,
+            };
+        }
         console.log(msg);
         yield sgMail.send(msg);
     }
@@ -161,7 +183,237 @@ exports.sendFcmNotification = (tokens, notification) => __awaiter(void 0, void 0
         console.log("No FCM Device token registered yet.");
     }
 });
-exports.checkPermission = (req, re, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.scheduleZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    //comming soon...
+    let coach = yield exports.convertPromiseToObject(yield models_1.coachManagementModel.findByPk(params.session.coach_id));
+    let employee = yield exports.convertPromiseToObject(yield models_1.employeeModel.findByPk(params.session.employee_id));
+    let zoomUser = yield exports.convertPromiseToObject(yield zoomUsers_1.zoomUserModel.findOne({
+        where: {
+            user_id: params.session.coach_id,
+            type: constants.ZOOM_USER_TYPE.coach,
+            status: constants.STATUS.active,
+        }
+    }));
+    console.log("zoomUser1", zoomUser, constants.SECRETS.ZOOM_SECRETS.jwt_token);
+    if (!zoomUser) {
+        let newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
+            method: "GET",
+            headers: {
+                authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+                'content-type': "application/json"
+            }
+        });
+        newZoomUser = yield newZoomUser.json();
+        console.log("zoomUser2", zoomUser);
+        if (!newZoomUser.id) {
+            let userBody = {
+                action: "custCreate",
+                user_info: {
+                    email: coach.email,
+                    type: 1,
+                    first_name: coach.name.split(" ")[0],
+                }
+            };
+            yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users`, {
+                method: "POST",
+                headers: {
+                    authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+                    'content-type': "application/json"
+                },
+                body: JSON.stringify(userBody)
+            });
+            newZoomUser = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}`, {
+                method: "GET",
+                headers: {
+                    authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+                    'content-type': "application/json"
+                }
+            });
+            newZoomUser = yield newZoomUser.json();
+            console.log("zoomUser3", zoomUser);
+        }
+        let zoomUserObj = {
+            user_id: params.session.coach_id,
+            zoom_user_id: newZoomUser.id,
+            email: coach.email,
+            type: constants.ZOOM_USER_TYPE.coach,
+            details: newZoomUser,
+        };
+        console.log("zoomUser4", zoomUserObj);
+        zoomUser = yield exports.convertPromiseToObject(yield zoomUsers_1.zoomUserModel.create(zoomUserObj));
+    }
+    let startTime = moment_1.default(params.session.start_time, "HH:mm:ss");
+    let endTime = moment_1.default(params.session.end_time, "HH:mm:ss");
+    let duration = moment_1.default.duration(endTime.diff(startTime));
+    let meetingBody = {
+        topic: `${params.session.query}`,
+        type: 2,
+        start_time: `${params.session.date}T${params.session.start_time}`,
+        duration: `${Math.ceil(duration.asMinutes())}`,
+        timezone: params.timezone,
+        password: `${Math.floor(100000 + Math.random() * 900000)}`,
+        agenda: `${params.session.query}`,
+    };
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/users/${coach.email}/meetings`, {
+        method: "POST",
+        headers: {
+            authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+            'content-type': "application/json"
+        },
+        body: JSON.stringify(meetingBody)
+    });
+    console.log(meetingBody, meeting, meeting.status);
+    if (meeting.status == 201) {
+        meeting = yield meeting.json();
+        delete meeting.settings;
+        let mailParams = {};
+        mailParams.subject = "Zoom Meeting Details";
+        //email to employee
+        mailParams.to = employee.email;
+        mailParams.html = `Hi  ${employee.name}
+        <br> Please find zoom meeting details:
+        <br><br><b> Join URL</b>: ${meeting.join_url}<br>
+        <br><b>Meeting ID</b>: ${meeting.id}
+        <br><b> Passcode</b>: ${meeting.password}
+        `;
+        yield exports.sendEmail(mailParams);
+        //email to coach
+        mailParams.to = coach.email;
+        mailParams.html = `Hi  ${coach.name}
+        <br> Please find zoom meeting details:
+        <br><br><b> Join URL</b>: ${meeting.start_url}<br>
+        <br><b>Meeting ID</b>: ${meeting.id}
+        <br><b> Passcode</b>: ${meeting.password}
+        `;
+        yield exports.sendEmail(mailParams);
+        // let details={
+        //     "created_at": "2019-09-05T16:54:14Z",
+        //     "duration": 15,
+        //     "host_id": "AbcDefGHi",
+        //     "id": 1100000,
+        //     "join_url": "https://zoom.us/j/1100000",
+        // }
+        return meeting;
+    }
+    else {
+        throw new Error(constants.MESSAGES.zoom_schedule_meeting_error);
+    }
+});
+exports.cancelZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    //comming soon...
+    let coach = yield exports.convertPromiseToObject(yield models_1.coachManagementModel.findByPk(params.session.coach_id));
+    let employee = yield exports.convertPromiseToObject(yield models_1.employeeModel.findByPk(params.session.employee_id));
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+        method: "DELETE",
+        headers: {
+            authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+            'content-type': "application/json"
+        },
+    });
+    if (meeting.status == 204) {
+        let mailParams = {};
+        mailParams.subject = "Cancel Zoom Meeting";
+        //email to employee
+        mailParams.to = employee.email;
+        mailParams.html = `Hi  ${employee.name}
+        <br> Please find cancelled zoom meeting details:
+        <br><b>Meeting ID</b>: ${params.session.details.id}
+        `;
+        yield exports.sendEmail(mailParams);
+        //email to coach
+        mailParams.to = coach.email;
+        mailParams.html = `Hi  ${coach.name}
+        <br> Please find cancelled zoom meeting details:
+        <br><b>Meeting ID</b>: ${params.session.details.id}
+        `;
+        yield exports.sendEmail(mailParams);
+        return true;
+    }
+    else if (meeting.status == 404) {
+        throw new Error(constants.MESSAGES.zoom_meeting_not_found);
+    }
+    else {
+        throw new Error(constants.MESSAGES.zoom_cancel_meeting_error);
+    }
+});
+exports.endZoomMeeting = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    //comming soon...
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}/status`, {
+        method: "PUT",
+        headers: {
+            authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+            'content-type': "application/json"
+        },
+        body: JSON.stringify({
+            action: "end"
+        })
+    });
+    if (meeting.status == 204) {
+        console.log("meeting.status\n", meeting.status);
+        let startTime = moment_1.default(params.session.start_time, "HH:mm:ss");
+        let endTime = moment_1.default(params.session.end_time, "HH:mm:ss");
+        let duration = moment_1.default.duration(endTime.diff(startTime));
+        employeeCoachSession_1.employeeCoachSessionsModel.update({
+            status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+            call_duration: Math.ceil(duration.asMinutes()),
+        }, {
+            where: {
+                id: params.session_id,
+            }
+        });
+        let meetingDeleted = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+            method: "DELETE",
+            headers: {
+                authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+                'content-type': "application/json"
+            },
+        });
+        console.log("meetingDeleted.status\n", meetingDeleted.status);
+        return true;
+    }
+    else if (meeting.status == 404) {
+        console.log("meeting.status\n", meeting.status);
+        throw new Error(constants.MESSAGES.zoom_meeting_not_found);
+    }
+    else {
+        console.log("meeting.status\n", meeting.status);
+        throw new Error(constants.MESSAGES.zoom_end_meeting_error);
+    }
+});
+exports.updateZoomMeetingDuration = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    //comming soon...
+    let meetingBody = {
+        duration: `${parseInt(params.session.details.duration) + parseInt(params.extendingMinutes)}`,
+    };
+    let meeting = yield node_fetch_1.default(`${constants.URLS.ZOOM_URLS.base_url}/meetings/${params.session.details.id}`, {
+        method: "PATCH",
+        headers: {
+            authorization: `Bearer ${constants.SECRETS.ZOOM_SECRETS.jwt_token}`,
+            'content-type': "application/json"
+        },
+        body: JSON.stringify(meetingBody)
+    });
+    if (meeting.status == 204) {
+        let endTime = moment_1.default(params.session.end_time, "HH:mm:ss").add(parseInt(params.extendingMinutes), "minutes").format("HH:mm:ss");
+        let duration = `${parseInt(params.session.details.duration) + parseInt(params.extendingMinutes)}`;
+        yield employeeCoachSession_1.employeeCoachSessionsModel.update({
+            end_time: endTime,
+            details: Object.assign(Object.assign({}, params.session.details), { duration })
+        }, {
+            where: {
+                id: params.session.id
+            }
+        });
+        return true;
+    }
+    else if (meeting.status == 404) {
+        throw new Error(constants.MESSAGES.zoom_meeting_not_found);
+    }
+    else {
+        throw new Error(constants.MESSAGES.zoom_update_meeting_error);
+    }
+});
+exports.checkPermission = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log('req - - -  -', req.user.user_role);
         if (req.user.user_role == constants.USER_ROLE.sub_admin) {
@@ -222,4 +474,89 @@ exports.getUniqueChatRoomId = () => __awaiter(void 0, void 0, void 0, function* 
     }
     return room_id;
 });
+exports.getUniqueBluetangoChatRoomId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let room_id = null;
+    while (!isUniqueFound) {
+        room_id = exports.randomStringEightDigit();
+        let chatRoom = yield queryService.selectOne(bluetangoChatRoom_1.bluetangoChatRoomModel, {
+            where: {
+                room_id
+            }
+        });
+        if (!chatRoom) {
+            isUniqueFound = true;
+        }
+    }
+    return room_id;
+});
+exports.getMonday = (params) => {
+    let date = new Date(params);
+    let day = date.getDay();
+    let diff = date.getDate() - day + (day == 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+};
+/*
+* function to generate the random key
+*/
+let getRandomStringOfLengthTen = () => {
+    // Generate Random Number
+    return randomstring.generate({
+        charset: "alphanumeric",
+        length: 10,
+        readable: true,
+    });
+};
+exports.getUniqueSlotDateGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let slot_date_group_id = null;
+    while (!isUniqueFound) {
+        slot_date_group_id = getRandomStringOfLengthTen();
+        let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
+            where: {
+                slot_date_group_id
+            }
+        });
+        if (!schedule)
+            isUniqueFound = true;
+    }
+    return slot_date_group_id;
+});
+exports.getUniqueSlotTimeGroupId = () => __awaiter(void 0, void 0, void 0, function* () {
+    let isUniqueFound = false;
+    let slot_time_group_id = null;
+    while (!isUniqueFound) {
+        slot_time_group_id = getRandomStringOfLengthTen();
+        let schedule = yield coachSchedule_1.coachScheduleModel.findOne({
+            where: {
+                slot_time_group_id
+            }
+        });
+        if (!schedule)
+            isUniqueFound = true;
+    }
+    return slot_time_group_id;
+});
+exports.deleteFile = (params) => {
+    params.Bucket = process.env.AWS_BUCKET_NAME;
+    s3Client.deleteObject(params, (error, data) => {
+        if (error) {
+            console.log(error);
+        }
+        console.log(data);
+    });
+};
+exports.generaePassword = () => {
+    // Generate Random password
+    let password = generator.generate({
+        length: 10,
+        numbers: true,
+        symbols: true,
+        lowercase: true,
+        uppercase: true,
+        excludeSimilarCharacters: true,
+        strict: true,
+    });
+    return password;
+};
 //# sourceMappingURL=helperFunction.js.map

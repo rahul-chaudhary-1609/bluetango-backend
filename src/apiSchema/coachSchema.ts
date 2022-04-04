@@ -12,7 +12,7 @@ export const login = Joi.object({
         ),
     password: Joi.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
             "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -22,7 +22,8 @@ export const login = Joi.object({
             "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
             "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
         }),
-    device_token: Joi.string().optional()
+    device_token: Joi.string().optional(),
+    app_id: Joi.number().optional().valid(1,2)
 });
 
 export const forgotPassword = Joi.object({
@@ -33,6 +34,7 @@ export const forgotPassword = Joi.object({
             }
         ),
     user_role: Joi.string().regex(new RegExp("^(?=.*[1-5])")).required(),
+    app_id: Joi.number().optional().valid(1,2)
 });
 
 export const resetPassword = Joi.object({
@@ -112,4 +114,113 @@ export const markNotificationsAsViewed = Joi.object({
 
 export const updateEmployerDeviceToken = Joi.object({
     device_token: Joi.string().required()
+})
+
+export const clearChat = Joi.object({
+    chat_room_id: Joi.number().required()
+})
+
+export const addEditSlot= Joi.object({
+    date: Joi.string().required(),
+    // start_time: Joi.string().required(),
+    // end_time: Joi.string().required(),
+    timings:Joi.array().items(Joi.object().keys({
+        start_time: Joi.string().required(),
+        end_time: Joi.string().required()
+    })).required(),
+    type: Joi.number().required(),
+    day: Joi.array().optional(),
+    custom_date:Joi.string().optional(),
+    custom_dates:Joi.array().optional(),
+    session_duration:Joi.number().required(),
+    time_capture_type:Joi.number().valid(1,2,3).required(),
+    is_update:Joi.boolean(),
+    slot_type:Joi.number(),
+    validslots:Joi.array().items(Joi.object().keys({
+        start_time: Joi.string().required(),
+        end_time: Joi.string().required(),
+        is_available:Joi.number().required()
+    }))
+})
+
+export const getSlots= Joi.object({
+    filter_key: Joi.string().valid("Daily","Weekly","Monthly", "Yearly").allow(null, '').optional(),
+    date: Joi.string().allow(null, '').optional(),
+    day: Joi.string().allow(null, '').optional(),
+    week: Joi.string().allow(null, '').optional(),
+    month: Joi.string().allow(null, '').optional(),
+    year: Joi.string().allow(null, '').optional(),
+})
+
+export const getSlot= Joi.object({
+    slot_id: Joi.number().required(),
+})
+
+export const deleteSlot= Joi.object({
+    type:Joi.number().required(),
+    group_type:Joi.number().optional(),
+    slot_id: Joi.number().optional(),
+    slot_date_group_id: Joi.string().optional(),
+    slot_time_group_id: Joi.string().optional(),
+    current_date: Joi.string().optional(),
+})
+
+export const getSessionRequests=Joi.object({
+    datetime:Joi.string().optional(),
+    is_pagination:Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional(),
+})
+
+export const acceptSessionRequest=Joi.object({
+    session_id:Joi.number().required(),
+    timezone:Joi.string().required(),
+})
+
+export const rejectSessionRequest=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const getAcceptedSessions=Joi.object({
+    datetime:Joi.string().optional(),
+    is_pagination:Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional(),
+})
+
+export const cancelSession=Joi.object({
+    session_id:Joi.number().required(),
+    cancel_reason: Joi.string().required(),
+    datetime:Joi.string().optional(),
+})
+
+export const listSessionHistory=Joi.object({
+    datetime:Joi.string().optional(),
+    is_pagination:Joi.number().optional(),
+    limit: Joi.number().optional(),
+    offset: Joi.number().optional(),
+})
+
+export const getSessionHistoryDetails=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const updateZoomMeetingDuration=Joi.object({
+    session_id:Joi.number().required(),
+})
+
+export const endZoomMeeting=Joi.object({
+    session_id:Joi.number().required(),
+})
+export const getChatRoomId = Joi.object({
+    other_user_id: Joi.string().required(),
+    type: Joi.number(),
+  })
+export const updateSlotAvailability= Joi.object({
+    date: Joi.string().required(),
+    timings:Joi.array().items(Joi.object().keys({
+    start_time: Joi.string().required(),
+    end_time: Joi.string().required()})).required(),
+    is_available:Joi.number().valid(1,4).required(),
+    event_type:Joi.number().valid(0,1).required()
 })

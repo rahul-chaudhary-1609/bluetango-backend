@@ -18,31 +18,39 @@ export class AchievementServices {
     /*
     * function to get achievemnets
     */
-    public async getAchievements(user: any) {
+    public async getAchievements(params:any,user: any) {
 
         let employee = await helperFunction.convertPromiseToObject(await employeeModel.findByPk(parseInt(user.uid)));
 
         achievementModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
 
+        let query:any={
+            attributes: [
+                'id', 'employee_id', 'description', 'status',
+                ['like_count', 'likeCount'],
+                ['high_five_count', 'highFiveCount'],
+                ['comment_count', 'commentCount'],
+                'last_action_on', 'createdAt', 'updatedAt',
+            ],
+            include: [
+                {
+                    model: employeeModel,
+                    attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id','status','createdAt', 'updatedAt'],
+                    where: { current_employer_id: employee.current_employer_id},
+                    required:true
+                },
+            ],               
+            order: [["last_action_on", "DESC"]]
+        }
+
+        if(!params.is_pagination || params.is_pagination==constants.IS_PAGINATION.yes){
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset=offset,
+            query.limit=limit
+        }
+
         let achievements = await helperFunction.convertPromiseToObject(
-            await achievementModel.findAll({
-                attributes: [
-                    'id', 'employee_id', 'description', 'status',
-                    ['like_count', 'likeCount'],
-                    ['high_five_count', 'highFiveCount'],
-                    ['comment_count', 'commentCount'],
-                    'last_action_on', 'createdAt', 'updatedAt',
-                ],
-                include: [
-                    {
-                        model: employeeModel,
-                        attributes: ['id', 'name', 'profile_pic_url', 'current_employer_id','status','createdAt', 'updatedAt'],
-                        where: { current_employer_id: employee.current_employer_id},
-                        required:true
-                    },
-                ],               
-                order: [["last_action_on", "DESC"]]
-            })
+            await achievementModel.findAll(query)
         )
 
         for (let achievement of achievements) {

@@ -25,6 +25,9 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.DATE,
         allowNull: true
     },
+    prev_employers: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSON),
+    },
     prev_employer: {
         type: sequelize_1.DataTypes.STRING,
     },
@@ -51,10 +54,10 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
     date_of_birth: {
         type: sequelize_1.DataTypes.DATEONLY,
     },
-    employee_code: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
+    // employee_code: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // },
     profile_pic_url: {
         type: sequelize_1.DataTypes.STRING,
     },
@@ -121,8 +124,50 @@ exports.employeeModel = connection_1.sequelize.define("employee", {
         type: sequelize_1.DataTypes.TEXT,
         allowNull: true,
     },
+    last_goal_reminder_datetime: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
+        defaultValue: "2021-08-01"
+    },
+    employee_rank_id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+    },
+    first_name: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    last_name: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
+    address: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
+    technical_skills: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true
+    },
+    qualifications: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
+        allowNull: true,
+    },
+    educations: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.JSONB),
+        allowNull: true,
+    },
+    references: {
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        allowNull: true
+    },
+    previous_employment_history: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
 }, {
     tableName: "employee"
 });
-exports.employeeModel.sync({ alter: false });
+exports.employeeModel.sync({ alter: true });
 //# sourceMappingURL=employee.js.map

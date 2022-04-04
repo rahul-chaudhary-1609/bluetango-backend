@@ -3,13 +3,13 @@ import * as constants from "../../constants";
 import * as appUtils from "../../utils/appUtils";
 import * as helperFunction from "../../utils/helperFunction";
 import * as tokenResponse from "../../utils/tokenResponse";
-import { employeeModel } from  "../../models/employee"
+import { employeeModel } from "../../models/employee"
 import { adminModel } from "../../models/admin";
-import { employersModel } from  "../../models/employers"
-import { departmentModel } from  "../../models/department"
-import { managerTeamMemberModel } from  "../../models/managerTeamMember"
-import { teamGoalAssignModel } from  "../../models/teamGoalAssign"
-import { qualitativeMeasurementModel } from  "../../models/qualitativeMeasurement"
+import { employersModel } from "../../models/employers"
+import { departmentModel } from "../../models/department"
+import { managerTeamMemberModel } from "../../models/managerTeamMember"
+import { teamGoalAssignModel } from "../../models/teamGoalAssign"
+import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
 import { teamGoalModel } from "../../models/teamGoal";
 import { emojiModel } from "../../models/emoji";
 import { coachManagementModel } from "../../models/coachManagement";
@@ -18,10 +18,21 @@ import { notificationModel } from "../../models/notification";
 import { feedbackModel } from "../../models/feedback";
 import { AuthService } from "./authService";
 import { libraryManagementModel } from "../../models/libraryManagement";
-
+import { deleteFile } from "../../middleware/multerParser";
+import { attributeRatingModel } from "../../models/attributeRatings"
+import { employeeRanksModel } from "../../models/employeeRanks";
+import { coachSpecializationCategoriesModel } from "../../models/coachSpecializationCategories";
+import { employeeCoachSessionsModel } from "../../models/employeeCoachSession";
+import { coachScheduleModel } from "../../models/coachSchedule";
+const moment = require("moment");
+import * as path from 'path';
+import { chatRealtionMappingInRoomModel } from "../../models/chatRelationMappingInRoom";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
-
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
+import {thoughtsModel} from "../../models"
 const authService = new AuthService();
 
 export class EmployeeServices {
@@ -30,81 +41,113 @@ export class EmployeeServices {
     /*
     * function to get list of team members
     */
-    public async getListOfTeamMemberByManagerId(params:any, user: any) {
+    public async getListOfTeamMemberByManagerId(params: any, user: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
-        managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-        employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
 
-        let teamMembersData = await helperFunction.convertPromiseToObject(  await managerTeamMemberModel.findAndCountAll({
-                where: { manager_id: user.uid},
-                include: [
-                    {
-                        model: employeeModel, 
-                        required: true,
-                        attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
-                        where:{status:1},
-                        include: [
-                            {
-                                model: emojiModel,
-                                required: false,
-                                attributes:['image_url', 'caption'],
-                            }
-                        ]
-                    }
-                ],
-                limit: limit,
-                offset: offset,
-                order: [["createdAt", "DESC"]]
+        let teamMembersData = await helperFunction.convertPromiseToObject(await managerTeamMemberModel.findAndCountAll({
+            where: { manager_id: user.uid },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
+                    where: { status: 1 },
+                    include: [
+                        {
+                            model: emojiModel,
+                            required: false,
+                            attributes: ['image_url', 'caption'],
+                        }
+                    ]
+                }
+            ],
+            limit: limit,
+            offset: offset,
+            order: [["createdAt", "DESC"]]
 
-            })
+        })
         );
 
         for (let obj of teamMembersData.rows) {
             if (obj.employee) {
                 obj.isEmployeeEnergyUpdatedInLast24Hour = true;
-            
+
                 const timeDiff = Math.floor(((new Date()).getTime() - (new Date(obj.employee.energy_last_updated)).getTime()) / 1000)
-                
+
                 if (timeDiff > 86400) obj.isEmployeeEnergyUpdatedInLast24Hour = false;
             }
-            
+
 
         }
-        
+
         let date = new Date();
-        date.setMonth(date.getMonth()-3);
+        date.setMonth(date.getMonth() - 3);
         //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate();
-        let dateCheck = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
-        for (let i=0; i< teamMembersData.rows.length; i++ ) {
-            let rateCheck = await helperFunction.convertPromiseToObject( await qualitativeMeasurementModel.findOne({
-                    where: {
-                        manager_id: user.uid,
-                        employee_id: teamMembersData.rows[i].team_member_id,
-                        updatedAt:{[Op.gte]: dateCheck }
-                    }
-                })
+        let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        for (let i = 0; i < teamMembersData.rows.length; i++) {
+            let rateCheck = await helperFunction.convertPromiseToObject(await attributeRatingModel.findOne({
+                where: {
+                    manager_id: user.uid,
+                    employee_id: teamMembersData.rows[i].team_member_id,
+                    updatedAt: { [Op.gte]: dateCheck }
+                }
+            })
             );
             if (_.isEmpty(rateCheck)) {
                 teamMembersData.rows[i].rate_valid = 1;
             } else {
-                teamMembersData.rows[i].rate_valid_after_date =  rateCheck.createdAt;
+                teamMembersData.rows[i].rate_valid_after_date = rateCheck.createdAt;
                 teamMembersData.rows[i].rate_valid = 0;
             }
         }
 
         return teamMembersData;
-           
+
+    }
+
+
+    public async getEmployeeCountGroupByEnergy(params: any, user: any) {
+        let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
+        // managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+
+        let teamMembersData = await helperFunction.convertPromiseToObject(await employeeModel.findAll({
+            attributes: ['energy_id', [Sequelize.fn("COUNT",Sequelize.col('employee.id')),"employeeCount"] ],
+            where: { status: 1 },            
+            include: [
+                {
+                    model: managerTeamMemberModel,
+                    required: true,
+                    attributes: [],
+                    where: { manager_id: user.uid },
+                },
+                {
+                    model: emojiModel,
+                    required: false,
+                    attributes: ['image_url', 'caption'],
+                }
+            ],
+            group:[['"employee.energy_id"'],['"emoji.id"']],
+
+        })
+        );
+
+        return teamMembersData;
+
     }
 
     /*
     * function to get details of employee
     */
-    public async viewDetailsEmployee(params:any) {
-        employeeModel.hasMany(teamGoalAssignModel,{ foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
+    public async viewDetailsEmployee(params: any) {
+        employeeModel.hasMany(teamGoalAssignModel, { foreignKey: "employee_id", sourceKey: "id", targetKey: "employee_id" });
         teamGoalAssignModel.hasOne(teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
         employeeModel.hasOne(departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
-        let employeeDetails = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
-                where: { id: params.id},
+        let employeeDetails = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
+            where: { id: params.id },
             include: [
                 {
                     model: departmentModel,
@@ -112,6 +155,7 @@ export class EmployeeServices {
                 },
                 {
                     model: teamGoalAssignModel,
+                    separate: true,
                     required: false,
                     include: [
                         {
@@ -120,11 +164,11 @@ export class EmployeeServices {
                         }
                     ]
                 },
-                ],
-            attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url','current_department_id']
-            }) );
+            ],
+            attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'profile_pic_url', 'current_department_id']
+        }));
 
-        
+
 
         let qualitativeMeasurement = await helperFunction.convertPromiseToObject(await qualitativeMeasurementModel.findAll({
             where: { employee_id: params.id },
@@ -191,37 +235,51 @@ export class EmployeeServices {
             employeeDetails.qualitativeMeasurementDetails = result;
         }
 
-        
+        attributeRatingModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+        employeeDetails.attributeRatings = await helperFunction.convertPromiseToObject(await attributeRatingModel.findOne({
+            where: { employee_id: params.id },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit: 1
+        }))
+
+
         return employeeDetails;
     }
 
     /*
     * function to get details of employee
     */
-    public async searchTeamMember(params:any, user: any) {
+    public async searchTeamMember(params: any, user: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit);
 
-        managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-        let teamMembersData= await helperFunction.convertPromiseToObject( await managerTeamMemberModel.findAndCountAll({
-            where: { manager_id: user.uid},
+        let teamMembersData = await helperFunction.convertPromiseToObject(await managerTeamMemberModel.findAndCountAll({
+            where: { manager_id: user.uid },
             include: [
                 {
-                    model: employeeModel, 
+                    model: employeeModel,
                     required: true,
                     where: {
-                        [Op.or]:[
-                            {name: { [Op.iLike]: `%${params.search_string}%` }},
-                            {phone_number: {[Op.iLike]: `%${params.search_string}%`}},
-                            {email: { [Op.iLike]: `%${params.search_string}%`}}
+                        [Op.or]: [
+                            { name: { [Op.iLike]: `%${params.search_string}%` } },
+                            { phone_number: { [Op.iLike]: `%${params.search_string}%` } },
+                            { email: { [Op.iLike]: `%${params.search_string}%` } }
                         ]
                     },
-                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code','energy_last_updated', 'profile_pic_url'],
+                    attributes: ['id', 'name', 'email', 'phone_number', 'country_code', 'energy_last_updated', 'profile_pic_url'],
                     include: [
                         {
                             model: emojiModel,
                             required: false,
-                            attributes:['image_url', 'caption'],
+                            attributes: ['image_url', 'caption'],
                         }
                     ]
                 }
@@ -248,18 +306,18 @@ export class EmployeeServices {
     /*
     * function to add thought of the day
     */
-    public async thoughtOfTheDay(params:any, user: any) {
+    public async thoughtOfTheDay(params: any, user: any) {
         await employeeModel.update(
             {
                 thought_of_the_day: params.thought_of_the_day
             },
             {
-                where: { id: user.uid}
+                where: { id: user.uid }
             }
         )
 
         return employeeModel.findOne({
-            where: { id: user.uid}
+            where: { id: user.uid }
         })
     }
 
@@ -272,14 +330,14 @@ export class EmployeeServices {
         });
     }
 
-     /*
-    * function to add thought of the day
-    */
-    public async updateEnergyCheck(params:any, user: any) {
+    /*
+   * function to add thought of the day
+   */
+    public async updateEnergyCheck(params: any, user: any) {
         await employeeModel.update(
             {
                 energy_id: params.energy_id,
-                energy_last_updated:new Date(),
+                energy_last_updated: new Date(),
             },
             {
                 where: { id: user.uid }
@@ -293,34 +351,34 @@ export class EmployeeServices {
     */
     public async viewEnergyCheckTeamMembers(user: any) {
 
-       managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
-       employeeModel.hasOne(emojiModel,{ foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-       
+        managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "team_member_id", targetKey: "id" });
+        employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+
         return await managerTeamMemberModel.findAll({
-           where: { manager_id: user.uid },
-           include:[
-               {
+            where: { manager_id: user.uid },
+            include: [
+                {
                     model: employeeModel,
                     required: false,
-                    attributes:['id', 'name', 'energy_id'],
+                    attributes: ['id', 'name', 'energy_id'],
                     include: [
                         {
                             model: emojiModel,
                             required: false,
-                            attributes:['image_url', 'caption'],
+                            attributes: ['image_url', 'caption'],
                         }
                     ]
-               }
-           ]
-       })
+                }
+            ]
+        })
     }
 
-     /*
-    * feel about job today
-    */
+    /*
+   * feel about job today
+   */
     public async feelAboutJobToday(params: any, user: any) {
-        
-        return await employeeModel.update(params, 
+
+        return await employeeModel.update(params,
             {
                 where: { id: user.uid }
             });
@@ -363,7 +421,7 @@ export class EmployeeServices {
     public async getCurrentManager(user: any) {
         let currentManager = await helperFunction.convertPromiseToObject(await managerTeamMemberModel.findOne({
             where: { team_member_id: user.uid },
-            })
+        })
         );
 
         return currentManager;
@@ -378,15 +436,15 @@ export class EmployeeServices {
         employeeModel.hasOne(managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
         managerTeamMemberModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         let employee = await employeeModel.findOne({
-            attributes: ['id', 'name','employee_code','profile_pic_url'],
+            attributes: ['id', 'name', 'profile_pic_url','address','technical_skills','qualifications','educations','references','previous_employment_history'],
             where: {
-                id:user.uid
+                id: user.uid
             },
             include: [
                 {
                     model: departmentModel,
                     required: false,
-                    attributes:['name']
+                    attributes: ['name']
                 },
                 {
                     model: managerTeamMemberModel,
@@ -413,8 +471,8 @@ export class EmployeeServices {
     public async viewEmployeeEnergy(user: any) {
 
         employeeModel.hasOne(emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
-        let employeeEnergy = await helperFunction.convertPromiseToObject( await employeeModel.findOne({
-            attributes: ['id', 'name','energy_last_updated'],
+        let employeeEnergy = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
+            attributes: ['id', 'name', 'energy_last_updated'],
             where: {
                 id: user.uid
             },
@@ -422,7 +480,7 @@ export class EmployeeServices {
                 {
                     model: emojiModel,
                     required: false,
-                    attributes: ['id','image_url','caption']
+                    attributes: ['id', 'image_url', 'caption']
                 },
             ],
 
@@ -434,7 +492,7 @@ export class EmployeeServices {
         const timeDiff = Math.floor(((new Date()).getTime() - (new Date(employeeEnergy.energy_last_updated)).getTime()) / 1000)
 
         if (timeDiff > 86400) employeeEnergy.isUpdateAvailable = true;
-        
+
 
         return employeeEnergy;
     }
@@ -460,7 +518,7 @@ export class EmployeeServices {
     public async viewFeelAboutJobToday(user: any) {
 
         let employeeFeelAboutJobToday = await employeeModel.findOne({
-            attributes: ['id', 'job_emoji_id','job_comments'],
+            attributes: ['id', 'job_emoji_id', 'job_comments'],
             where: {
                 id: user.uid
             },
@@ -501,25 +559,1104 @@ export class EmployeeServices {
         return await helperFunction.convertPromiseToObject(employeeFeelAboutJobTodayFromAdmin);
     }
 
+    public async getCoachSpecializationCategoryList() {
+
+        let query = <any>{
+            order: [["createdAt", "DESC"]]
+        }
+        query.where = <any>{
+            status: {
+                [Op.in]: [constants.STATUS.active]
+            }
+        }
+
+        let categories = await helperFunction.convertPromiseToObject(
+            await coachSpecializationCategoriesModel.findAndCountAll(query)
+        )
+
+        if (categories.count == 0) {
+            throw new Error(constants.MESSAGES.no_coach_specialization_category);
+        }
+
+        return categories;
+
+    }
+
+
+    private sortBySlotTime(list:any){
+        list.forEach((row) => {
+            row.available_slots?.forEach((slot) => {
+                Object.keys(slot).forEach((key) => {
+                    if (key == "start_time") {
+                        slot[key] = slot[key].replace(/:/g, "")
+                    }
+                })
+            })
+        })
+
+        // console.log("coachList",coachList.rows.forEach((row,index)=>{
+        //     console.log(`available_slot${index}`,row.available_slots)
+        // }))
+
+        list.sort((a, b) => a.available_slots[0]?.start_time - b.available_slots[0]?.start_time);
+
+        list.forEach((row) => {
+            row.available_slots?.forEach((slot) => {
+                Object.keys(slot).forEach((key) => {
+                    if (key == "start_time") {
+                        slot[key] = moment(slot[key], "HHmmss").format("HH:mm:ss")
+                    }
+                })
+            })
+        })
+
+        // console.log("coachList",coachList.rows.forEach((row,index)=>{
+        //     console.log(`available_slot${index}`,row.available_slots)
+        // }))
+
+        return list;
+    }
+
     /*
    * function to get coach list
    */
-    public async getCoachList(user: any) {
+    public async getCoachList(user: any, params: any) {
 
-        let coachList = await coachManagementModel.findAndCountAll({
-            attributes: ['id', 'name', 'description', ['image', 'profile_pic_url']],
-            where: {
-                status: constants.STATUS.active,
+        let employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.findByPk(parseInt(user.uid))
+        )
+        let where: any = {}
+
+        if (params.searchKey) {
+            let coachSpecializationCategories = await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${params.searchKey}%`
+                        }
+                    }
+                })
+            )
+
+            if (coachSpecializationCategories.length > 0) {
+                let coachSpecializationCategoryIds = coachSpecializationCategories.map(coachSpecializationCategory => coachSpecializationCategory.id);
+                if (coachSpecializationCategoryIds) {
+                    where["coach_specialization_category_ids"] = {
+                        [Op.contains]: coachSpecializationCategoryIds || [],
+                    }
+                } else {
+                    throw new Error(constants.MESSAGES.no_coach_with_specialization_category)
+                }
+            } else {
+                // where["coach_specialization_category_ids"] = { 
+                //     [Op.contains]: null,
+                // }
+                throw new Error(constants.MESSAGES.no_coach_with_specialization_category)
             }
-        });
+        }
+        
+        // let dates = []
+        // if (params.weekly) {
+        //     let start = new Date();
+        //     let end = new Date(new Date().setDate(new Date().getDate() + 6));
+        //     while (start <= end) {
+        //         dates.push(moment(start).format("YYYY-MM-DD"))
+        //         start.setDate(start.getDate() + 1)
+        //     }
+        //     let slots = await coachScheduleModel.findAll(
+        //         {
+        //             status:constants.COACH_SCHEDULE_STATUS.available,
+        //             date: {
+        //                 [Op.in]: [dates],
+        //             }
+        //         }
+        //     )
+        //     var coach_ids = slots.map(ele => ele.coach_id)
+        //     coach_ids = [...new Set(coach_ids)];
+        //     where["id"] = {
+        //         [Op.in]: coach_ids
+        //     }
+        // }
 
-        return await helperFunction.convertPromiseToObject(coachList);
+        if(params.coach_specialization_category_id){
+            where["coach_specialization_category_ids"] = {
+                [Op.contains]: [params.coach_specialization_category_id],
+            }
+        }
+
+        if (employee) {
+            where["employee_rank_ids"] = {
+                [Op.contains]: [employee.employee_rank_id]
+            }
+        }
+
+        where["status"] = constants.STATUS.active
+
+        let query = <any>{
+            where: where,
+            attributes: ["id", "name", 'description', "email", "phone_number", ['image', 'profile_pic_url'], "coach_specialization_category_ids", "employee_rank_ids", "coach_charge","app_id","social_media_handles","website"],
+            order: [["id", "DESC"]]
+        }
+
+        if (params.sortBy) {
+            if (params.sortBy == 1) {
+                query.order = [["createdAt", "DESC"]]
+            } else if (params.sortBy == 2) {
+                query.order = [["createdAt", "ASC"]]
+            } else if (params.sortBy == 4) {
+                query.order = [["coach_charge", "DESC"]]
+            } else if (params.sortBy == 5) {
+                query.order = [["coach_charge", "ASC"]]
+            }
+        }
+
+        let coachList = await helperFunction.convertPromiseToObject(
+            await coachManagementModel.findAndCountAll(query)
+        )
+
+        for (let coach of coachList.rows) {
+            coach.coach_specialization_categories = await helperFunction.convertPromiseToObject(
+                await coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.employee_ranks = await helperFunction.convertPromiseToObject(
+                await employeeRanksModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                })
+            )
+
+            coach.total_completed_sessions = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                }
+            })
+
+            let totalRating = await employeeCoachSessionsModel.sum('coach_rating', {
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
+                    }
+                }
+            })
+
+            let slotsWhere = <any>{
+                coach_id: coach.id,
+                status: constants.COACH_SCHEDULE_STATUS.available,
+            }
+
+            if (params.filterBy) {
+                if (params.filterBy == 1 && params.date) {
+                    slotsWhere = {
+                        ...slotsWhere,
+                        [Op.and]:[
+                            {
+                                date: {
+                                    [Op.gte]: params.date,
+                                }
+                            },
+                            {
+                                date: {
+                                    [Op.lte]: moment(params.date,"YYYY-MM-DD").add(6,"days").format("YYYY-MM-DD"),
+                                }
+                            }
+                        ]
+                        
+                    }
+                } else if (params.filterBy == 2 && params.date) {
+                    slotsWhere = {
+                        ...slotsWhere,
+                        date: params.date,
+                    }
+                } else if (params.filterBy == 3 && params.date) {
+                    slotsWhere = {
+                        ...slotsWhere,
+                        date: params.date,
+                    }
+                }
+            } else {
+                slotsWhere = {
+                    ...slotsWhere,
+                    date: moment(new Date()).format("YYYY-MM-DD"),
+                }
+            }
+
+            coach.available_slots = await helperFunction.convertPromiseToObject(
+                await coachScheduleModel.findAll({
+                    attributes: ['id', 'date', 'start_time', 'end_time'],
+                    where: slotsWhere,
+                    order: [["date", "ASC"], ["start_time", "ASC"], ["end_time", "ASC"]]
+                })
+            )
+
+            coach.rating_count = await employeeCoachSessionsModel.count({
+                where: {
+                    coach_id: coach.id,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: {
+                        [Op.gte]: 1
+                    }
+                }
+            })
+
+            coach.average_rating = 0;
+            if (coach.rating_count > 0) {
+                coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
+            }
+            delete coach.coach_specialization_category_ids;
+            delete coach.employee_rank_ids;
+        }
+
+        coachList.rows = coachList.rows.filter(coach => coach.available_slots?.length > 0);
+
+        coachList.count = coachList.rows.length;
+
+        if (!params.sortBy || params.sortBy == 3) {
+            coachList.rows.sort((a, b) => b.average_rating - a.average_rating);
+        }
+
+        if (params.sortBy && params.sortBy == 6) {
+            coachList.rows=this.sortBySlotTime(coachList.rows);
+        }
+
+        let coaches=<any>{
+            BT:null,
+            BX:{},            
+        }
+
+        coaches.BT=coachList.rows.filter((coach)=>coach.app_id==constants.COACH_APP_ID.BT).reduce((allBTCoach,coach)=>{
+            return{
+                count:allBTCoach.count+1,
+                available_slots:[...new Set([...allBTCoach.available_slots,...coach.available_slots])],
+                average_rating:allBTCoach.average_rating+coach.average_rating,
+                app_id:constants.COACH_APP_ID.BT,
+            }
+        }, {count:0, available_slots:[], average_rating:0, app_id:constants.COACH_APP_ID.BT});
+
+        if(coaches.BT.count>0){
+            coaches.BT.average_rating=parseFloat((coaches.BT.average_rating/coaches.BT.count).toFixed(2));
+        }
+
+        coaches.BX.rows=coachList.rows.filter((coach)=>coach.app_id==constants.COACH_APP_ID.BX);
+        coaches.BX.count = coaches.BX.rows.length;
+
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            coaches.BX.count = coaches.BX.rows.length;
+            coaches.BX.rows = coaches.BX.rows.slice(offset, offset + limit);
+        }
+
+        return coaches;
+    }
+
+    public async getSlots(params: any) {
+
+        console.log("params", params)
+
+        let where = <any>{
+            coach_id: params.coach_id,
+            status: constants.COACH_SCHEDULE_STATUS.available,
+        }
+
+        let start_date = new Date();
+        let end_date = new Date();
+
+        if (params.filter_key) {
+            if (params.filter_key == "Daily") {
+                where = {
+                    ...where,
+                    date: moment(new Date()).format("YYYY-MM-DD"),
+                };
+            } else if (params.filter_key == "Weekly") {
+                start_date = helperFunction.getMonday(start_date);
+                end_date = helperFunction.getMonday(start_date);
+                end_date.setDate(start_date.getDate() + 6);
+                where = {
+                    ...where,
+                    date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
+                        ]
+                    }
+                };
+            } else if (params.filter_key == "Monthly") {
+                start_date.setDate(1)
+                end_date.setMonth(start_date.getMonth() + 1)
+                end_date.setDate(1)
+                end_date.setDate(end_date.getDate() - 1)
+
+                where = {
+                    ...where,
+                    date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
+                        ]
+                    }
+                };
+            } else if (params.filter_key == "Yearly") {
+                start_date.setDate(1)
+                start_date.setMonth(0)
+                end_date.setDate(1)
+                end_date.setMonth(0)
+                end_date.setFullYear(end_date.getFullYear() + 1)
+                end_date.setDate(end_date.getDate() - 1)
+                where = {
+                    ...where,
+                    date: {
+                        [Op.between]: [
+                            moment(start_date).format("YYYY-MM-DD"),
+                            moment(end_date).format("YYYY-MM-DD")
+                        ]
+                    }
+                };
+            }
+        } else if ((params.day && params.month && params.year) || params.date) {
+            where = {
+                ...where,
+                date: params.date || `${params.year}-${params.month}-${params.day}`,
+            };
+        } else if (params.week && params.year) {
+            where = {
+                [Op.and]: [
+                    {
+                        ...where,
+                    },
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                    Sequelize.where(Sequelize.fn("date_part", "week", Sequelize.col("date")), "=", params.week),
+                ]
+            };
+        } else if (params.month && params.year) {
+            where = {
+                [Op.and]: [
+                    {
+                        ...where,
+                    },
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                    Sequelize.where(Sequelize.fn("date_part", "month", Sequelize.col("date")), "=", params.month),
+                ]
+            };
+        } else if (params.year) {
+            where = {
+                [Op.and]: [
+                    {
+                        ...where,
+                    },
+                    Sequelize.where(Sequelize.fn("date_part", "year", Sequelize.col("date")), "=", params.year),
+                ]
+            };
+        } else {
+            start_date.setDate(1)
+            end_date.setMonth(start_date.getMonth() + 1)
+            end_date.setDate(1)
+            end_date.setDate(end_date.getDate() - 1)
+
+            where = {
+                ...where,
+                date: {
+                    [Op.between]: [
+                        moment(start_date).format("YYYY-MM-DD"),
+                        moment(end_date).format("YYYY-MM-DD")
+                    ]
+                }
+            };
+        }
+
+        return await helperFunction.convertPromiseToObject(
+            await coachScheduleModel.findAndCountAll({
+                where,
+                order: [["date", "ASC"], ["start_time", "ASC"]]
+            })
+        )
+    }
+
+    public async getSlot(params: any) {
+
+        let schedule = await helperFunction.convertPromiseToObject(
+            await coachScheduleModel.findByPk(parseInt(params.slot_id))
+        )
+
+        if (!schedule) throw new Error(constants.MESSAGES.no_coach_schedule)
+
+        return schedule
+    }
+
+    public async createSessionRequest(params: any, user: any) {
+        let employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.findByPk(parseInt(user.uid))
+        )
+
+        let slot = null
+        
+        if(params.app_id==constants.COACH_APP_ID.BX)
+        {
+            slot=await coachScheduleModel.findOne({
+                where:{
+                    id:params.slot_id
+                },
+                raw:true,
+            });
+
+            if (!slot) {
+                throw new Error(constants.MESSAGES.no_coach_schedule)
+            }else if (slot.status != constants.COACH_SCHEDULE_STATUS.available) {
+                throw new Error(constants.MESSAGES.coach_schedule_not_available)
+            }
+
+        }else{
+            coachScheduleModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+            let slots=await helperFunction.convertPromiseToObject(
+                await coachScheduleModel.findAll({
+                    where:{
+                        date: params.date,
+                        start_time: params.start_time,
+                        end_time: params.end_time,
+                        status: constants.COACH_SCHEDULE_STATUS.available,
+                    },
+                    include:[
+                        {
+                            model:coachManagementModel,
+                            required:true,
+                            attributes: ["id", "name"],
+                            where:{
+                                app_id:constants.COACH_APP_ID.BT,
+                                status:constants.STATUS.active
+                            }
+                        }
+                    ]
+                })
+            )
+
+            if(slots.length>0){
+                slots=slots.sort((slotA,slotB)=>{
+                    if(slotA.coach_management.name < slotB.coach_management.name){
+                        return -1;
+                    }else if(slotA.coach_management.name > slotB.coach_management.name){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                })
+
+                slot=slots[0];
+            }else{
+                throw new Error(constants.MESSAGES.coach_schedule_not_available)
+            }
+        }
+
+        let employeeSessionCount = await employeeCoachSessionsModel.count({
+            where: {
+                employee_id: user.uid,
+                type: constants.EMPLOYEE_COACH_SESSION_TYPE.free,
+                status: {
+                    [Op.in]: [
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                        constants.EMPLOYEE_COACH_SESSION_STATUS.completed
+                    ]
+                }
+            }
+        })
+
+        let employeeCoachSessionObj = <any>{
+            coach_id: slot.coach_id,
+            employee_id: user.uid,
+            employee_rank_id: employee.employee_rank_id,
+            coach_specialization_category_id: params.coach_specialization_category_id,
+            date: params.date,
+            start_time: params.start_time,
+            end_time: params.end_time || null,
+            slot_id: params.slot_id,
+            type: employeeSessionCount < 2 ? constants.EMPLOYEE_COACH_SESSION_TYPE.free : constants.EMPLOYEE_COACH_SESSION_TYPE.paid,
+            query: params.query,
+        }
+
+        let session = await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.create(employeeCoachSessionObj)
+        );
+
+        if (session) {
+            // slot.status = constants.COACH_SCHEDULE_STATUS.booked;
+            // slot.save();
+            await coachScheduleModel.update(
+                {
+                    status:constants.COACH_SCHEDULE_STATUS.booked,
+                },
+                {
+                    where:{
+                        id:slot.id,
+                    }
+                }
+            )
+
+            let coach = await helperFunction.convertPromiseToObject(
+                await coachManagementModel.findByPk(parseInt(slot.coach_id))
+            )
+
+            delete employee.password;
+
+            //add notification 
+            let notificationObj = <any>{
+                type_id: session.id,
+                sender_id: user.uid,
+                reciever_id: slot.coach_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+                type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                    title: 'New coaching session request',
+                    message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                    senderEmployeeData: employee,
+                },
+            }
+
+            await notificationModel.create(notificationObj);
+
+            //send push notification
+            let notificationData = <any>{
+                title: 'New coaching session request',
+                body: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.new_coaching_session_request,
+                    title: 'New coaching session request',
+                    message: `${employee.name} has requested for a coaching session on ${params.date} at ${params.start_time}`,
+                    senderEmployeeData: employee,
+                },
+            }
+            await helperFunction.sendFcmNotification([coach.device_token], notificationData);
+
+            let mailParams = <any>{};
+            mailParams.to = coach.email;
+            mailParams.html = `Hi  ${coach.name}
+                <br>A new session request is created by ${employee.name}
+                `;
+            mailParams.subject = "New Session Request";
+            mailParams.name = "BlueXinga"
+            await helperFunction.sendEmail(mailParams);
+        }
+
+        return session;
+            
+
+    }
+
+    public async getSessions(params: any, user: any) {
+        console.log("getSessions", params, user)
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    await employeeCoachSessionsModel.update({
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    }, {
+                        where: {
+                            id: session.id,
+                        }
+                    })
+                }
+            }
+
+            sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
+                    await employeeCoachSessionsModel.update({
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        // call_duration:Math.ceil(duration.asMinutes()),
+                    }, {
+                        where: {
+                            id: session.id,
+                        }
+                    })
+                }
+            }
+        }
+
+        let query = <any>{
+            order: [["date"], ["start_time"]]
+        }
+        query.where = {
+            employee_id: user.uid,
+            status: {
+                [Op.in]: [
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                ]
+            },
+        }
+
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset = offset;
+            query.limit = limit;
+        }
+
+        query.include = [
+            {
+                model: coachManagementModel,
+                attributes: ['id', 'name', 'email', 'phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
+            },
+            {
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
+            }
+        ]
+
+        let sessions = await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
+
+        for (let session of sessions.rows) {
+            session.chatRoom = await helperFunction.convertPromiseToObject(
+                await chatRealtionMappingInRoomModel.findOne({
+                    where: {
+                        user_id: session.employee_id,
+                        other_user_id: session.coach_id,
+                        type: constants.CHAT_ROOM_TYPE.coach,
+                        status: constants.STATUS.active,
+                    }
+                })
+            )
+
+            if (session.chatRoom) {
+                session.chatRoom.user = await helperFunction.convertPromiseToObject(
+                    await employeeModel.findOne({
+                        attributes: ['id', 'name', 'profile_pic_url', 'status'],
+                        where: {
+                            id: session.employee_id,
+                        }
+                    })
+                )
+
+                session.chatRoom.other_user = await helperFunction.convertPromiseToObject(
+                    await coachManagementModel.findOne({
+                        attributes: ['id', 'name', ['image', 'profile_pic_url']],
+                        where: {
+                            id: session.coach_id,
+                        }
+                    })
+                )
+            }
+        }
+
+        return sessions;
+    }
+
+    public async cancelSession(params: any, user: any) {
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" })
+        let session = await employeeCoachSessionsModel.findOne({
+            where: { id: params.session_id },
+            include: [
+                {
+                    model: coachManagementModel,
+                    required: true,
+                    attributes: ["id", "name", "device_token"],
+                },
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ["id", "name", "device_token"],
+                },
+            ],
+        })
+        if (!session) {
+            throw new Error(constants.MESSAGES.no_session)
+        }
+
+        if (session.employee_id != user.uid) {
+            throw new Error(constants.MESSAGES.session_not_belogs_to_employee)
+        }
+
+        params.session = await helperFunction.convertPromiseToObject(session);
+
+        if (params.datetime) {
+            let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+            let endTime = moment(`${params.session.date} ${params.session.start_time}`, "YYYY-MM-DD HH:mm:ss")
+
+            let duration = moment.duration(endTime.diff(startTime));
+            let secondDiff = Math.ceil(duration.asSeconds())
+
+            if (secondDiff <= 0) {
+                throw new Error(constants.MESSAGES.zoom_meeting_emp_cancel_error)
+            }
+        }
+
+        if (params.session.status == constants.EMPLOYEE_COACH_SESSION_STATUS.accepted) {
+            await helperFunction.cancelZoomMeeting(params);
+        }
+
+        session.status = constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled;
+        session.cancel_reason = params.cancel_reason;
+        session.cancelled_by = constants.EMPLOYEE_COACH_SESSION_CANCELLED_BY.employee;
+        session.save();
+
+        let slot = await coachScheduleModel.findByPk(parseInt(session.slot_id));
+        slot.status = constants.COACH_SCHEDULE_STATUS.available;
+        slot.save();
+
+        //add notification 
+        let notificationObj = <any>{
+            type_id: session.id,
+            sender_id: user.uid,
+            reciever_id: session.coach_id,
+            reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.coach,
+            type: constants.NOTIFICATION_TYPE.cancel_session,
+            data: {
+                type: constants.NOTIFICATION_TYPE.cancel_session,
+                title: 'Sesssion cancelled by employee',
+                message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData: session.employee,
+            },
+        }
+
+        await notificationModel.create(notificationObj);
+        //send push notification
+        let notificationData = <any>{
+            title: 'Sesssion cancelled by employee',
+            body: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+            data: {
+                type: constants.NOTIFICATION_TYPE.cancel_session,
+                title: 'Sesssion cancelled by employee',
+                message: `${session.employee.name} has cancelled session on ${session.date} at ${session.start_time}`,
+                senderEmployeeData: session.employee,
+            },
+        }
+        await helperFunction.sendFcmNotification([session.coach_management.device_token], notificationData);
+
+        return await helperFunction.convertPromiseToObject(session);
+    }
+
+    public async getNotRatedSessions(params: any, user: any) {
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
+                    await employeeCoachSessionsModel.update({
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration: Math.ceil(duration.asMinutes()),
+                    }, {
+                        where: {
+                            id: session.id,
+                        }
+                    })
+                }
+            }
+        }
+
+        let sessions = await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll({
+                where: {
+                    employee_id: user.uid,
+                    status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    coach_rating: 0,
+                    is_rating_skipped: 0,
+                },
+                include: [
+                    {
+                        model: coachManagementModel,
+                        attributes: ['id', 'name', 'email', 'phone_number', ['image', 'profile_pic_url']],
+                    },
+                    {
+                        model: coachSpecializationCategoriesModel,
+                        attributes: ['id', 'name', 'description'],
+                    },
+                    {
+                        model: employeeRanksModel,
+                        attributes: ['id', 'name', 'description'],
+                    }
+                ]
+            })
+        )
+
+        let sessionArray = [];
+        for (let session of sessions.rows) {
+            let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+            let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+            let duration = moment.duration(endTime.diff(startTime));
+            let secondDiff = Math.ceil(duration.asSeconds())
+
+            if (secondDiff <= 0) {
+                sessionArray.push(session)
+            }
+        }
+
+        sessions.rows = sessionArray;
+        sessions.count = sessionArray.length;
+
+        await employeeCoachSessionsModel.update({
+            is_rating_skipped: 1,
+        }, {
+            where: {
+                employee_id: user.uid,
+                status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                coach_rating: 0,
+                is_rating_skipped: 0,
+            }
+        })
+
+        return sessions;
+    }
+
+    public async listSessionHistory(params: any, user: any) {
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        if (params.datetime) {
+            let sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.pending,
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    await employeeCoachSessionsModel.update({
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                    }, {
+                        where: {
+                            id: session.id,
+                        }
+                    })
+                }
+            }
+
+            sessions = await helperFunction.convertPromiseToObject(
+                await employeeCoachSessionsModel.findAll({
+                    where: {
+                        employee_id: user.uid,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.accepted,
+                    }
+                }
+                )
+            )
+
+            for (let session of sessions) {
+                let startTime = moment(`${params.datetime}`, "YYYY-MM-DD HH:mm:ss")
+                let endTime = moment(`${session.date} ${session.end_time}`, "YYYY-MM-DD HH:mm:ss")
+
+                let duration = moment.duration(endTime.diff(startTime));
+                let secondDiff = Math.ceil(duration.asSeconds())
+
+                if (secondDiff <= 0) {
+                    let startTime = moment(session.start_time, "HH:mm:ss");
+                    let endTime = moment(session.end_time, "HH:mm:ss");
+
+                    let duration = moment.duration(endTime.diff(startTime));
+
+                    await employeeCoachSessionsModel.update({
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        call_duration: Math.ceil(duration.asMinutes()),
+                    }, {
+                        where: {
+                            id: session.id,
+                        }
+                    })
+                }
+            }
+        }
+
+        let query = <any>{
+            order: [["date", "DESC"], ["start_time", "DESC"]]
+        }
+        query.where = {
+            employee_id: user.uid,
+            status: {
+                [Op.in]: [
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                    constants.EMPLOYEE_COACH_SESSION_STATUS.rejected,
+                ]
+            },
+        }
+
+        if (params.is_pagination && params.is_pagination == constants.IS_PAGINATION.yes) {
+            let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+            query.offset = offset;
+            query.limit = limit;
+        }
+
+        query.include = [
+            {
+                model: coachManagementModel,
+                attributes: ['id', 'name', 'email', 'phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
+            },
+            {
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
+            }
+        ]
+
+        return await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findAndCountAll(query)
+        )
+    }
+
+    public async getSessionHistoryDetails(params: any) {
+        employeeCoachSessionsModel.hasOne(coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(coachSpecializationCategoriesModel, { foreignKey: "id", sourceKey: "coach_specialization_category_id", targetKey: "id" })
+        employeeCoachSessionsModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" })
+
+        let query = <any>{}
+        query.where = {
+            id: params.session_id,
+        }
+
+        query.include = [
+            {
+                model: coachManagementModel,
+                attributes: ['id', 'name', 'email', 'phone_number', ['image', 'profile_pic_url']],
+            },
+            {
+                model: coachSpecializationCategoriesModel,
+                attributes: ['id', 'name', 'description'],
+            },
+            {
+                model: employeeRanksModel,
+                attributes: ['id', 'name', 'description'],
+            }
+        ]
+
+        let session = await helperFunction.convertPromiseToObject(
+            await employeeCoachSessionsModel.findOne(query)
+        );
+
+        if (!session) {
+            throw new Error(constants.MESSAGES.no_session);
+        }
+
+        return session;
+    }
+
+    public async rateCoachSession(params: any) {
+        let session = await employeeCoachSessionsModel.findByPk(parseInt(params.session_id))
+
+        if (!session) {
+            throw new Error(constants.MESSAGES.no_session);
+        }
+
+        session.coach_rating = params.rating;
+        session.comment = params.comment;
+        session.save();
+
+        return await helperFunction.convertPromiseToObject(session);
+    }
+
+    public async skipRateSession(params: any) {
+        let session = await employeeCoachSessionsModel.findByPk(parseInt(params.session_id))
+
+        if (!session) {
+            throw new Error(constants.MESSAGES.no_session);
+        }
+
+        session.is_rating_skipped = 1;
+        session.save();
+
+        return await helperFunction.convertPromiseToObject(session);
     }
 
     /*
   * function to contact admin
   */
-    public async contactUs(params:any,user: any) {
+    public async contactUs(params: any, user: any) {
 
         let employee = await helperFunction.convertPromiseToObject(await employeeModel.findOne({
             where: {
@@ -528,10 +1665,10 @@ export class EmployeeServices {
         }));
 
         let contactObj = <any>{
-            //employer_id: employee.current_employer_id,
+            employer_id: employee.current_employer_id,
             employee_id: user.uid,
             message: params.message,
-            status:constants.STATUS.active,
+            type: constants.CONTACT_TYPE.employee
         }
 
         return await contactUsModel.create(contactObj);
@@ -551,9 +1688,10 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
-                status:[0,1]
+                status: [0, 1]
             },
             order: [["createdAt", "DESC"]]
         }));
@@ -568,6 +1706,7 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.achievement_post,
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
                 reciever_id: user.uid,
@@ -575,17 +1714,17 @@ export class EmployeeServices {
             }
         })
 
-        
+
         return notifications;
     }
 
     /*
 * function to get unseen notification count
 */
-    public async getUnseenNotificationCount( user: any) {
+    public async getUnseenNotificationCount(user: any) {
 
         return {
-            all : await notificationModel.count({
+            all: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -594,13 +1733,14 @@ export class EmployeeServices {
                             constants.NOTIFICATION_TYPE.achievement_post,
                             constants.NOTIFICATION_TYPE.message,
                             constants.NOTIFICATION_TYPE.group_chat,
+                            constants.NOTIFICATION_TYPE.goal_submit_reminder,
                         ]
                     },
                     status: 1,
                 }
             }),
 
-            achievement : await notificationModel.count({
+            achievement: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -614,7 +1754,7 @@ export class EmployeeServices {
                 }
             }),
 
-            achievement_post_only : await notificationModel.count({
+            achievement_post_only: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -625,7 +1765,7 @@ export class EmployeeServices {
                 }
             }),
 
-            chat : await notificationModel.count({
+            chat: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -641,7 +1781,7 @@ export class EmployeeServices {
                 }
             }),
 
-            chat_message_only : (await helperFunction.convertPromiseToObject( await notificationModel.count({
+            chat_message_only: (await helperFunction.convertPromiseToObject(await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -654,7 +1794,7 @@ export class EmployeeServices {
                 group: ['type_id']
             }))).length,
 
-            goal : await notificationModel.count({
+            goal: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -668,7 +1808,7 @@ export class EmployeeServices {
                 }
             }),
 
-            rating : await notificationModel.count({
+            rating: await notificationModel.count({
                 where: {
                     reciever_id: user.uid,
                     reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
@@ -681,8 +1821,8 @@ export class EmployeeServices {
 
         }
 
-        
-        
+
+
     }
 
     /*
@@ -735,7 +1875,7 @@ export class EmployeeServices {
                         constants.NOTIFICATION_TYPE.message,
                         constants.NOTIFICATION_TYPE.group_chat,
                     ],
-                    type_id:parseInt(params.chat_room_id),
+                    type_id: parseInt(params.chat_room_id),
                 }
             }
             else if (params.type == "goal") {
@@ -765,7 +1905,8 @@ export class EmployeeServices {
                 type: {
                     [Op.notIn]: [
                         constants.NOTIFICATION_TYPE.achievement_post,
-                        constants.NOTIFICATION_TYPE.message
+                        constants.NOTIFICATION_TYPE.message,
+                        constants.NOTIFICATION_TYPE.goal_submit_reminder,
                     ]
                 },
             }
@@ -774,7 +1915,7 @@ export class EmployeeServices {
 
         let notification = await helperFunction.convertPromiseToObject(await notificationModel.update({
             status: 0,
-        },{
+        }, {
             where: {
                 //id: parseInt(params.notification_id),
                 ...whereCondition,
@@ -813,12 +1954,12 @@ export class EmployeeServices {
      * @param params 
      * @param user 
      */
-    public async feedback(params: any,user:any) {
+    public async feedback(params: any, user: any) {
         let feedbackObj = <any>{
             user_id: parseInt(user.uid),
             rating: parseInt(params.rating),
             message: params.message || null,
-            feedback_type:constants.FEEDBACK_TYPE.employee,
+            feedback_type: constants.FEEDBACK_TYPE.employee,
         }
 
         return await helperFunction.convertPromiseToObject(await feedbackModel.create(feedbackObj));
@@ -831,7 +1972,7 @@ export class EmployeeServices {
     public async listVideo(params: any) {
         let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
 
-        let videos= await helperFunction.convertPromiseToObject( await libraryManagementModel.findAndCountAll({
+        let videos = await helperFunction.convertPromiseToObject(await libraryManagementModel.findAndCountAll({
             where: { status: 1 },
             limit: limit,
             offset: offset,
@@ -850,10 +1991,283 @@ export class EmployeeServices {
         let index = 0;
         videos.rows = videos.rows.map((video) => {
             if (index > 4) index = 0;
-            return { ...video, thumbnail_url: video.thumbnail_url || thumbnailList[index++]}
+            return { ...video, thumbnail_url: video.thumbnail_url || thumbnailList[index++] }
         })
 
         return videos
 
     }
+
+    public async generateHTML(params: any) {
+
+        let { employee, folderPath, fileNames } = params;
+
+        if (employee.employee_rank) {
+            employee.employee_rank = employee.employee_rank.name;
+        }
+
+        let htmlHeader = `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset='utf-8'>
+                <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                <title>${employee.name}</title>
+                <meta name='viewport' content='width=device-width, initial-scale=1'>
+                
+            </head>`;
+
+        let htmlBody = `<body>
+                <h1 style="text-align: center;">${employee.name} CV</h1>
+                <table style="padding:0px 10px 10px 10px;">`
+
+        for (let key in employee) {
+
+            htmlBody += `<tr style="text-align: left;">
+                    <th style="opacity: 0.9;">${key.split("_").map((ele) => {
+                if (ele == "of" || ele == "in") return ele
+                else return ele.charAt(0).toUpperCase() + ele.slice(1)
+            }).join(" ")}</th>
+                    <td style="opacity: 0.8;">:</td>
+                    <td style="opacity: 0.8;">${key == 'profile_pic_url' ? `<img src='${employee[key]}' />` : employee[key]}</td>
+                </tr>`
+        }
+
+        let htmlFooter = `</table></body>
+            </html>`;
+
+
+        fs.writeFileSync(folderPath + fileNames[0], htmlHeader + htmlBody + htmlFooter);
+    }
+
+
+    public async shareEmployeeCV(params: any, user: any) {
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+
+        let employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                },
+                include: [
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
+            })
+        )
+
+        let folderPath = `./src/upload`;
+        let fileNames = [
+            `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type==1 ? "pdf":"docx"}`,
+        ];
+
+        fileNames.forEach(async (fileName) => {
+            if (fs.existsSync(folderPath + fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        await this.generateHTML({ employee, folderPath, fileNames })
+
+        const puppeteer = require('puppeteer')
+        const hb = require('handlebars')
+
+        const invoicePath = path.resolve(folderPath + fileNames[0]);
+        const res = fs.readFileSync(invoicePath, 'utf8');
+        //console.log("res",res)
+
+        let data = {};
+
+        const template = hb.compile(res, { strict: true });
+
+        const result = template(data);
+
+        const html = result;
+
+        let launchOptions = {};
+
+        if (require("os").platform() == 'linux') {
+            launchOptions = {
+                executablePath: '/usr/bin/chromium-browser',
+                args: ["--no-sandbox"]
+            }
+        }
+
+        const browser = await puppeteer.launch(launchOptions);
+        const page = await browser.newPage()
+
+        await page.setContent(html)
+
+        await page.pdf({ path: folderPath + fileNames[1], format: 'A4' })
+        await browser.close();
+
+        let attachment = fs.readFileSync(folderPath + fileNames[1]).toString('base64');
+
+        let mailOptions = {
+            to: params.to_email,
+            subject: params.subject || `${employee.name} CV`,
+            html: params.message && params.message || `PFA`,
+            attachments: [
+                {
+                    content: attachment,
+                    filename: fileNames[1].slice(1),
+                    type: "application/pdf",
+                    disposition: "attachment"
+                }
+            ]
+        };
+
+        await helperFunction.sendEmail(mailOptions);
+
+        fileNames.forEach(async (fileName) => {
+            if (fs.existsSync(folderPath + fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        return true;
+
+    }
+
+    public async getEmployeeCV(params: any, user: any) {
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
+
+        let employee = await helperFunction.convertPromiseToObject(
+            await employeeModel.findOne({
+                where: {
+                    id: user.uid,
+                },
+                include: [
+                    {
+                        model: employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                ]
+            })
+        )
+
+        let folderPath = `./src/upload`;
+        let fileNames = [
+            `/${employee.name.split(" ").join("_")}_${employee.id}.html`,
+            `/${employee.name.split(" ").join("_")}_${employee.id}.${params.type==1 ? "pdf":"docx"}`,
+        ];
+
+        fileNames.forEach(async (fileName) => {
+            if (fs.existsSync(folderPath + fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        await this.generateHTML({ employee, folderPath, fileNames })
+
+        const util = require('util');
+        const exec = util.promisify(require('child_process').exec);
+
+        let panDocCMD = `pandoc -f html ${folderPath + fileNames[0]} -o ${folderPath + fileNames[1]}`;
+        console.log("pandoc ", await exec(panDocCMD));
+
+        let fileParams = {
+            path: path.join(__dirname, `../../../${folderPath}${fileNames[1]}`),
+            originalname: fileNames[1],
+            mimetype: `application/pdfapplication/vnd.openxmlformats-officedocument.wordprocessingml.document`
+        }
+
+        let docURL = await helperFunction.uploadFile(fileParams, "thumbnails");
+
+        console.log("fileParams", fileParams)
+
+        fileNames.forEach(async (fileName) => {
+            if (fs.existsSync(folderPath + fileName)) {
+                await deleteFile(fileName);
+            }
+        })
+
+        return docURL;
+
+    }
+
+    /*
+* function to get notification
+*/
+    public async getGoalSubmitReminders(params: any, user: any) {
+
+        let goalSubmitReminders = await helperFunction.convertPromiseToObject(await notificationModel.findAndCountAll({
+            where: {
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: [
+                    constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                ],
+                status: 1,
+            },
+            order: [["createdAt", "DESC"]]
+        }));
+
+        await notificationModel.update({
+            status: 0,
+        }, {
+            where: {
+                status: 1,
+                type: [
+                    constants.NOTIFICATION_TYPE.goal_submit_reminder,
+                ],
+                reciever_id: user.uid,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+            }
+        })
+
+        for (let goalSubmitReminder of goalSubmitReminders.rows) {
+            delete goalSubmitReminder.data.senderEmplyeeData;
+        }
+
+
+        return goalSubmitReminders;
+    }
+    /**
+     * function to get thought
+     */
+     public async getThought(params:any) {
+        let dateobj= new Date(params.date) ;
+        let month = dateobj.getMonth() + 1;
+        let day = dateobj.getDate() ;
+        let monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let where={
+            day: `${day} ${monthNames[month-1]}`
+        }
+        let thought=  await queryService.selectOne(thoughtsModel, {
+            where: where,
+        })
+        if(thought &&thought.thought!=null){
+            return thought;
+        }
+        else{
+            for(let i=0;i<11;i++){
+                if(month==1){
+                    month=13;
+                }
+                month--;
+                let thought=  await queryService.selectOne(thoughtsModel, {
+                    where: {day: `${day} ${monthNames[month-1]}`},
+                })
+                if(thought &&thought.thought!=null){
+                    return thought
+                }
+            }
+            month--;
+                for(let j=day-1;j>=1;j--){
+                    let thought=  await queryService.selectOne(thoughtsModel, {
+                        where: {day: `${j} ${monthNames[month-1]}`},
+                    })
+                    if(thought &&thought.thought!=null){
+                        return thought
+                    }
+                }
+        }
+    }
+
 }
+

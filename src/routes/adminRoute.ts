@@ -13,6 +13,7 @@ const adminRoute = express.Router();
 
 const loginController = new AdminController.LoginController();
 const employersController = new AdminController.EmployersController();
+const coachController = new AdminController.CoachController();
 
 
 /* add subAdmin */
@@ -100,10 +101,10 @@ adminRoute.get("/getCoachDetails", tokenValidator.validateAdminToken, employersC
 adminRoute.put("/deleteCoach", tokenValidator.validateAdminToken, employersController.deleteCoach);
 
 /* view contact us list */
-adminRoute.get("/getCotactUsList", tokenValidator.validateAdminToken, employersController.getCotactUsList);
+adminRoute.get("/getContactUsList", tokenValidator.validateAdminToken, employersController.getContactUsList);
 
 /* view contact us list */
-adminRoute.get("/getCotactUsDetails", tokenValidator.validateAdminToken, employersController.getCotactUsDetails);
+adminRoute.get("/getContactUsDetails", tokenValidator.validateAdminToken, employersController.getContactUsDetails);
 
 /* send email and push notification */
 adminRoute.post("/sendEmailAndNotification", tokenValidator.validateAdminToken, employersController.sendEmailAndNotification);
@@ -165,6 +166,51 @@ adminRoute.put("/deleteAdvisor", tokenValidator.validateAdminToken, employersCon
 /* advisor details */
 adminRoute.get("/detailsAdvisor", tokenValidator.validateAdminToken, employersController.detailsAdvisor);
 
+/* list Feedback */
+adminRoute.get("/listFeedback", joiSchemaValidation.validateQueryParams(adminSchema.listFeedback), tokenValidator.validateAdminToken, employersController.listFeedback);
 
+/* get Feedback Details */
+adminRoute.get("/getFeedbackDetails", joiSchemaValidation.validateQueryParams(adminSchema.getFeedbackDetails), tokenValidator.validateAdminToken, employersController.getFeedbackDetails);
+
+
+//new coach API's
+
+/* add Edit Coach Specialization Categories */
+adminRoute.post("/addEditCoachSpecializationCategories", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.addEditCoachSpecializationCategories), coachController.addEditCoachSpecializationCategories);
+
+/* list Coach Specialization Categories */
+adminRoute.get("/listCoachSpecializationCategories", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listCoachSpecializationCategories), coachController.listCoachSpecializationCategories);
+
+/* get Coach Specialization Categories */
+adminRoute.get("/getCoachSpecializationCategory", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getCoachSpecializationCategory), coachController.getCoachSpecializationCategory);
+
+/* delete Coach Specialization Categories */
+adminRoute.delete("/deleteCoachSpecializationCategory", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.deleteCoachSpecializationCategory), coachController.deleteCoachSpecializationCategory);
+
+//employee rank API's
+
+/* add Edit Employee Rank*/
+adminRoute.post("/addEditEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.addEditEmployeeRank), coachController.addEditEmployeeRank);
+
+/* list Employee Ranks */
+adminRoute.get("/listEmployeeRanks", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeRanks), coachController.listEmployeeRanks);
+
+/* get Employee Rank */
+adminRoute.get("/getEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeRank), coachController.getEmployeeRank);
+
+/* delete Employee Rank */
+adminRoute.delete("/deleteEmployeeRank", tokenValidator.validateAdminToken,joiSchemaValidation.validateBody(adminSchema.deleteEmployeeRank), coachController.deleteEmployeeRank);
+
+//session management API's
+
+/* list Employee Coach Sessions */
+adminRoute.get("/listEmployeeCoachSessions", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.listEmployeeCoachSessions), coachController.listEmployeeCoachSessions);
+
+/* get Employee Coach Session */
+adminRoute.get("/getEmployeeCoachSession", tokenValidator.validateAdminToken,joiSchemaValidation.validateQueryParams(adminSchema.getEmployeeCoachSession), coachController.getEmployeeCoachSession);
+/* upload thoughts */
+adminRoute.post("/uploadThoughts", tokenValidator.validateAdminToken, upload.single('thoughts'), employersController.uploadThoughts);
+/* download thoughts */
+adminRoute.get("/downloadThoughts", tokenValidator.validateAdminToken, employersController.downloadThoughts);
 
 export = adminRoute;

@@ -53,6 +53,22 @@ class QualitativeMeasurementController {
         });
     }
     /**
+    * add Attribute Ratings
+    * @param req :[]
+    * @param res
+    */
+    addAttributeRatings(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield qualitativeMeasuremetServices.addAttributeRatings(req.body, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
    * get qualitative measurement
    * @param req :[]
    * @param res
@@ -69,6 +85,22 @@ class QualitativeMeasurementController {
         });
     }
     /**
+   * get qualitative measurement
+   * @param req :[]
+   * @param res
+   */
+    getAttributeRatings(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield qualitativeMeasuremetServices.getAttributeRatings(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
    * get qualitative measurement details
    * @param req :[]
    * @param res
@@ -77,6 +109,22 @@ class QualitativeMeasurementController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const responseFromService = yield qualitativeMeasuremetServices.getQualitativeMeasurementDetails(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    /**
+   * get Attributes
+   * @param req :[]
+   * @param res
+   */
+    getAttributeList(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield qualitativeMeasuremetServices.getAttributeList(req.params, req.user);
                 appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
             }
             catch (e) {

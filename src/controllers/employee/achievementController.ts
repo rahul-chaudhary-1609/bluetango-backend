@@ -17,7 +17,7 @@ export class AchievementController {
     */
     public async getAchievements(req: any, res: any, next: any) {
         try {
-            const responseFromService = await achievementServices.getAchievements(req.user);
+            const responseFromService = await achievementServices.getAchievements(req.query,req.user);
             appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
         } catch (e) {
             next(e)

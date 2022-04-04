@@ -27,6 +27,10 @@
       "description": "Employee related api's"
     },
     {
+      "name": "EmployeeAttributes",
+      "description": "Employee Attribute related api's"
+    },
+    {
       "name": "EmployeeChat",
       "description": "Employee Chat related api's"
     },
@@ -49,6 +53,10 @@
     {
       "name": "Web",
       "description": "Web related api's"
+    },
+    {
+      "name": "Bluetango Admin",
+      "description": "Bluetango admin related api's"
     }
   ],
   "paths": {
@@ -215,7 +223,10 @@
             "description": "1--> active/ 2--> delete",
             "required": false,
             "type": "number",
-            "enum": [1,2]
+            "enum": [
+              1,
+              2
+            ]
           }
         ],
         "responses": {}
@@ -351,13 +362,6 @@
             "type": "string"
           },
           {
-            "name": "password",
-            "in": "formData",
-            "description": "password",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "country_code",
             "in": "formData",
             "description": "country code",
@@ -379,9 +383,9 @@
             "type": "string"
           },
           {
-            "name": "thought_of_the_day",
+            "name": "contact_name",
             "in": "formData",
-            "description": "industry type",
+            "description": "contact_name",
             "required": false,
             "type": "string"
           }
@@ -456,11 +460,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -603,6 +607,13 @@
             "type": "string"
           },
           {
+            "name": "employeeRankName",
+            "in": "query",
+            "description": "filter employee list by employee rank name",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",
@@ -610,11 +621,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -764,6 +775,13 @@
             "type": "number"
           },
           {
+            "name": "employeeRankId",
+            "in": "formData",
+            "description": "employee rank id",
+            "required": false,
+            "type": "number"
+          },
+          {
             "name": "status",
             "in": "formData",
             "description": "0=>inactive,1=>active,2=>deleted",
@@ -887,7 +905,10 @@
             "description": "0=>inactive,1=>active",
             "required": false,
             "type": "number",
-            "enum": [0, 1]
+            "enum": [
+              0,
+              1
+            ]
           }
         ],
         "responses": {}
@@ -916,7 +937,10 @@
             "description": "0=>inactive,1=>active",
             "required": false,
             "type": "number",
-            "enum": [0, 1]
+            "enum": [
+              0,
+              1
+            ]
           },
           {
             "name": "offset",
@@ -926,11 +950,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1031,11 +1055,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1101,11 +1125,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1118,7 +1142,7 @@
         ],
         "description": "Api to add/edit coach",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -1129,67 +1153,83 @@
             "type": "string"
           },
           {
-            "name": "id",
-            "in": "formData",
-            "description": "id, when you will pass id then it will be update otherwise it will be create",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "email",
-            "in": "formData",
-            "description": "email id",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "password",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "country_code",
-            "in": "formData",
-            "description": "country code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "phone_number",
-            "in": "formData",
-            "description": "phone number",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "formData",
-            "description": "description",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "image",
-            "in": "formData",
-            "description": "image url",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "fileName",
-            "in": "formData",
-            "description": "file name",
-            "required": false,
-            "type": "string"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "fileName": {
+                  "type": "string"
+                },
+                "coach_specialization_category_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "employee_rank_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "coach_charge": {
+                  "type": "number"
+                },
+                "social_media_handles": {
+                  "type": "object",
+                  "properties": {
+                    "facebook": {
+                      "type": "string"
+                    },
+                    "twitter": {
+                      "type": "string"
+                    },
+                    "linkedin": {
+                      "type": "string"
+                    },
+                    "instagram": {
+                      "type": "string"
+                    },
+                    "google": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "website": {
+                  "type": "string"
+                },
+                "document_url": {
+                  "type": "string"
+                },
+                "documentFileName": {
+                  "type": "string"
+                }
+              }
+            }
           }
         ],
         "responses": {}
@@ -1220,6 +1260,34 @@
             "type": "string"
           },
           {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "coach specialization category id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "employee_rank_id",
+            "in": "query",
+            "description": "employee rank id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "description": "coach rating: 1,2,3,4,5",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
             "name": "offset",
             "in": "query",
             "description": "page",
@@ -1227,11 +1295,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1293,7 +1361,7 @@
         "responses": {}
       }
     },
-    "/admin/getCotactUsList": {
+    "/admin/getContactUsList": {
       "get": {
         "tags": [
           "Admin"
@@ -1318,17 +1386,17 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
       }
     },
-    "/admin/getCotactUsDetails": {
+    "/admin/getContactUsDetails": {
       "get": {
         "tags": [
           "Admin"
@@ -1379,7 +1447,10 @@
             "description": "employer/employee",
             "required": true,
             "type": "string",
-            "enum": ["employer","employee"]
+            "enum": [
+              "employer",
+              "employee"
+            ]
           },
           {
             "name": "notification_type",
@@ -1387,14 +1458,18 @@
             "description": "0->email/1->notification/2->both",
             "required": true,
             "type": "number",
-            "enum": [0,1,2]
+            "enum": [
+              0,
+              1,
+              2
+            ]
           },
           {
-              "name": "message",
-              "in": "formData",
-              "description": "message",
-              "required": true,
-              "type": "string"
+            "name": "message",
+            "in": "formData",
+            "description": "message",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -1432,11 +1507,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1605,7 +1680,10 @@
             "description": "1--> active/ 2--> delete",
             "required": false,
             "type": "number",
-            "enum": [1,2]
+            "enum": [
+              1,
+              2
+            ]
           }
         ],
         "responses": {}
@@ -1636,11 +1714,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -1832,11 +1910,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -2028,11 +2106,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -2059,6 +2137,509 @@
             "name": "id",
             "in": "query",
             "description": "advisor id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listFeedback": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Feedback",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "feedbackType",
+            "in": "query",
+            "description": "feedback type: 1=>employee, 2=>employer, 3=>coach, 4=> other",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "searchKey",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getFeedbackDetails": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Feedback Details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "feedback_id",
+            "in": "query",
+            "description": "feedback id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/addEditCoachSpecializationCategories": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to addEdit Coach Specialization Categories",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "category_id",
+            "in": "formData",
+            "description": "id, when you will pass id then it will be update otherwise it will be create",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "enter coach category specialization name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "enter coach category specialization description",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listCoachSpecializationCategories": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Coach Specialization Categories",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getCoachSpecializationCategory": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Coach Specialization Category",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "description": "enter the category id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/deleteCoachSpecializationCategory": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to delete Coach Specialization Category",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "category_id",
+            "in": "formData",
+            "description": "enter the category id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/addEditEmployeeRank": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to addEdit Employee Rank",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "rank_id",
+            "in": "formData",
+            "description": "id, when you will pass id then it will be update otherwise it will be create",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "enter Employee Rank name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "enter Employee Rank description",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listEmployeeRanks": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Employee Ranks",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getEmployeeRank": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Employee Rank",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "rank_id",
+            "in": "query",
+            "description": "enter rank id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/deleteEmployeeRank": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to delete Employee Rank",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "rank_id",
+            "in": "formData",
+            "description": "enter the rank id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/listEmployeeCoachSessions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to list Employee Coach Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "enter the date: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status: 1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "employeeRankId",
+            "in": "query",
+            "description": "employee Rank Id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "sessionType",
+            "in": "query",
+            "description": "sessionType: 1=>free, 2=>paid",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "employer_ids",
+            "in": "query",
+            "description": "employer_ids comma seperated ids",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/getEmployeeCoachSession": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to get Employee Coach Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "query",
+            "description": "enter session id",
             "required": true,
             "type": "number"
           }
@@ -2124,9 +2705,10 @@
             "description": " super_admin=> 1, sub_admin=> 2, employee=> 3,employer=> 4,coach=> 5",
             "required": true,
             "type": "number",
-            "enum": [5]
+            "enum": [
+              5
+            ]
           }
-
         ],
         "responses": {}
       }
@@ -2233,11 +2815,32 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getEmployeeCountGroupByEnergy": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "get Employee Count Group By Energy",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {}
@@ -2303,11 +2906,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -2343,11 +2946,13 @@
             "description": "folderName",
             "required": true,
             "type": "string",
-            "enum":["employee_profile_pic",
-            "employer_profile_pic",
-            "admin_profile_pic",
-            "coach_profile_pic",
-            "other"]
+            "enum": [
+              "employee_profile_pic",
+              "employer_profile_pic",
+              "admin_profile_pic",
+              "coach_profile_pic",
+              "other"
+            ]
           }
         ],
         "responses": {}
@@ -2360,7 +2965,7 @@
         ],
         "description": "Employee update profile",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -2371,46 +2976,86 @@
             "type": "string"
           },
           {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "phone_number",
-            "in": "formData",
-            "description": "phone_number",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "country_code",
-            "in": "formData",
-            "description": "country_code",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "date_of_birth",
-            "in": "formData",
-            "description": "date_of_birth: YYYY-MM-DD",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "accomplishments",
-            "in": "formData",
-            "description": "accomplishments",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "profile_pic_url",
-            "in": "formData",
-            "description": "profile_pic_url",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "description": "1. date_of_birth formate must be YYYY-MM-DD\n2. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "date_of_birth": {
+                  "type": "string"
+                },
+                "accomplishments": {
+                  "type": "string"
+                },
+                "profile_pic_url": {
+                  "type": "string"
+                },
+                "prev_employers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "prev_employer": {
+                        "type": "string"
+                      },
+                      "prev_department": {
+                        "type": "string"
+                      },
+                      "prev_designation": {
+                        "type": "string"
+                      },
+                      "prev_date_of_joining": {
+                        "type": "string"
+                      },
+                      "prev_exit": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "address": {
+                  "type": "string"
+                },
+                "technical_skills": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "qualifications": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "educations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "references": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "previous_employment_history": {
+                  "type": "array"
+                }
+              }
+            }
           }
         ],
         "responses": {}
@@ -2443,7 +3088,6 @@
               "type": "object"
             }
           }
-
         ],
         "responses": {}
       }
@@ -2506,7 +3150,10 @@
             "description": "select_measure, 1=>Amount, 2=> Quantity",
             "required": true,
             "type": "number",
-            "enum":[1,2]
+            "enum": [
+              1,
+              2
+            ]
           },
           {
             "name": "enter_measure",
@@ -2521,11 +3168,10 @@
             "description": "employee_ids",
             "required": true,
             "type": "array",
-            "items":{
-              "type":"number"
+            "items": {
+              "type": "number"
             }
           }
-
         ],
         "responses": {}
       }
@@ -2547,7 +3193,7 @@
             "required": true,
             "type": "string"
           },
-           {
+          {
             "name": "search_string",
             "in": "query",
             "description": "search_string",
@@ -2562,11 +3208,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -2589,7 +3235,7 @@
             "required": true,
             "type": "string"
           },
-           {
+          {
             "name": "goal_id",
             "in": "query",
             "description": "goal_id",
@@ -2679,7 +3325,7 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
-          }         
+          }
         ],
         "responses": {}
       }
@@ -2735,7 +3381,10 @@
             "description": "status, approve=>1, rejected=> 2",
             "required": true,
             "type": "number",
-            "enum":[1,2]
+            "enum": [
+              1,
+              2
+            ]
           }
         ],
         "responses": {}
@@ -2780,13 +3429,12 @@
             "type": "number"
           },
           {
-              "name": "description",
-              "in": "formData",
-              "description": "description",
-              "required": false,
-              "type": "string"
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
           }
-          
         ],
         "responses": {}
       }
@@ -2816,11 +3464,11 @@
             "type": "number"
           },
           {
-              "name": "limit",
-              "in": "query",
-              "description": "page size",
-              "required": false,
-              "type": "number"
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -3038,7 +3686,7 @@
             "description": "work_product_desc",
             "required": false,
             "type": "string"
-          }          
+          }
         ],
         "responses": {}
       }
@@ -3505,6 +4153,27 @@
         "responses": {}
       }
     },
+    "/employee/getCoachSpecializationCategoryList": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get Coach Specialization Category List",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getCoachList": {
       "get": {
         "tags": [
@@ -3521,6 +4190,650 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "Enter search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "Enter search key",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": " Default is 3. Options are:\n\t1=>newly_added_on_top,\n\t2=>old_on_top,\n\t3=>rating_high_to_low,\n\t4=>cost_high_to_low,\n\t5=>cost_low_to_high,\n\t6=>sooner_availability_on_top",
+            "required": false,
+            "type": "number",
+            "default":3,
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "name": "filterBy",
+            "in": "query",
+            "description": " Default is 2. Options are:\n\t1=>week,\n\t2=>today,\n\t3=>custom_date",
+            "required": false,
+            "type": "number",
+            "default":2,
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date:\n\tstart date if filterBy is 1\n\tOR Date of today if filterBy is 2\n\tOR custom date if filter by is 3)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getSlots": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "query",
+            "description": "Enter coach id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "filter_key",
+            "in": "query",
+            "description": "filter_key",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Daily",
+              "Weekly",
+              "Monthly",
+              "Yearly"
+            ]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date format: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Enter day",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "20",
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29",
+              "30",
+              "31"
+            ]
+          },
+          {
+            "name": "week",
+            "in": "query",
+            "description": "Enter week",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "20",
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29",
+              "30",
+              "31",
+              "32",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "41",
+              "42",
+              "43",
+              "44",
+              "45",
+              "46",
+              "47",
+              "48",
+              "49",
+              "50",
+              "51",
+              "52"
+            ]
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "description": "Enter month",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12"
+            ]
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Enter year",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "2020",
+              "2021",
+              "2023",
+              "2024",
+              "2025",
+              "2026",
+              "2027",
+              "2028",
+              "2029",
+              "2030"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getSlot": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slot_id",
+            "in": "query",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/createSessionRequest": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to create Session Request",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slot_id",
+            "in": "formData",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "query",
+            "in": "formData",
+            "description": "enter query description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app_id",
+            "in": "formData",
+            "description": "app_id: 1=>BX, 2=>BT",
+            "required": true,
+            "type": "number",
+            "enum":[1,2]
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "formData",
+            "description": "enter coach specialization category id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "description": "date format: YYYY-DD-MM",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "in": "formData",
+            "description": "start_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "formData",
+            "description": "end_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getSessions": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to get Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/cancelSession": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to cancel Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "cancel_reason",
+            "in": "formData",
+            "description": "enter cancel reason",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "formData",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getNotRatedSessions": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to get Not Rated Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/listSessionHistory": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to list Session History",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getSessionHistoryDetails/{session_id}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to get Session History Details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "path",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/rateCoachSession": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to rate Coach Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "rating",
+            "in": "formData",
+            "description": "enter rating",
+            "required": true,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "comment",
+            "in": "formData",
+            "description": "enter comment",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/skipRateSession": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "to skip Rate Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -3620,7 +4933,6 @@
             "required": true,
             "type": "string"
           }
-
         ],
         "responses": {}
       }
@@ -3780,6 +5092,350 @@
         "responses": {}
       }
     },
+    "/employee/getGoalCompletionAverageAsManager": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get Goal Completion Average for Manager",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "goal_id",
+            "in": "query",
+            "description": "goal_id",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/shareEmployeeCV": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to share Employee CV",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "to_email",
+            "in": "formData",
+            "description": "Enter receiver's email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subject",
+            "in": "formData",
+            "description": "Enter subject of email",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "Enter message of email",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "1--> pdf , 2--> docx",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getEmployeeCV": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get Employee CV",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "1--> pdf , 2--> docx",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getGoalSubmitReminders": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "api to get Goal Submit Reminders",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/toggleGoalAsPrimary": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to toggle Goal As Primary",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "team_goal_assign_id",
+            "in": "formData",
+            "description": "Enter team goal assign id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/markGoalsAsPrimary": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to mark Goal As Primary",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Enter goals array: [{team_goal_assign_id:number,is_primary:number //0=>no, 1=>yes },]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "goals": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "team_goal_assign_id": {
+                        "type": "number"
+                      },
+                      "is_primary": {
+                        "description": "0=> no, 1=> yes",
+                        "type": "number",
+                        "enum": [
+                          0,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttributeList": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to all Attributes",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttribute/{attribute_id}": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to get an attribute by id",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/addAttributeRatings": {
+      "post": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to add Attribute Ratings",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Enter ratings array: [{attribute_id:number,name:string,rating:number //1,2,3,4,5, desc:string },]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "employee_id": {
+                  "type": "number"
+                },
+                "ratings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attribute_id": {
+                        "type": "number"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "rating": {
+                        "type": "number",
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5
+                        ]
+                      },
+                      "desc": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getAttributeRatings": {
+      "get": {
+        "tags": [
+          "EmployeeAttributes"
+        ],
+        "description": "Api to get Attribute Ratings",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "employee_id",
+            "in": "query",
+            "description": "Enter employee id",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employee/getAchievements": {
       "get": {
         "tags": [
@@ -3796,6 +5452,31 @@
             "description": "Enter jwt token for authentication",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -4153,7 +5834,11 @@
             "description": "0=> employee, 1=> coach, 2=> group",
             "required": false,
             "type": "number",
-            "enum":[0,1,2]
+            "enum": [
+              0,
+              1,
+              2
+            ]
           }
         ],
         "responses": {}
@@ -4315,7 +6000,11 @@
             "description": "text | audio | video",
             "required": true,
             "type": "string",
-            "enum": ["text","audio","video"]
+            "enum": [
+              "text",
+              "audio",
+              "video"
+            ]
           },
           {
             "name": "chat_room_id",
@@ -4413,6 +6102,34 @@
         "responses": {}
       }
     },
+    "/employee/clearChat": {
+      "delete": {
+        "tags": [
+          "EmployeeChat"
+        ],
+        "description": "clear chat",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/login": {
       "post": {
         "tags": [
@@ -4448,7 +6165,7 @@
         ],
         "description": "Api to add a employee",
         "consumes": [
-          "application/x-www-form-urlencoded"
+          "application/json"
         ],
         "parameters": [
           {
@@ -4459,138 +6176,57 @@
             "type": "string"
           },
           {
-            "name": "id",
-            "in": "formData",
-            "description": "id, when you will pass id then it will be update otherwise it will be create",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "manager_id",
-            "in": "formData",
-            "description": "manager id",
-            "required": false,
-            "type": "number"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "description": "name",
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Date formate must be YYYY-MM-DD\n3. is_manager value can be: 0=> false, 1=>true\n4. Required Fields are:\n\tfirst_name,last_name\n\temail,\n\tcountry_code,\n\tphone_number,\n\tcurrent_department_id,\n\tcurrent_date_of_joining,\n\tis_manager\n5.  If is_manager==1 then manager_team_name and manager_team_icon_url is required\n6. Multiple previous employers can be added in prev_employers array like: prev_employers:[{},{},{},{}]",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "email",
-            "in": "formData",
-            "description": "email id",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "password",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "country_code",
-            "in": "formData",
-            "description": "country code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "phone_number",
-            "in": "formData",
-            "description": "phone number",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "current_department_id",
-            "in": "formData",
-            "description": "department type id",
-            "required": true,
-            "type": "number"
-          },
-          {
-            "name": "current_designation",
-            "in": "formData",
-            "description": "designation",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "current_date_of_joining",
-            "in": "formData",
-            "description": "current_date_of_joining",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "employee_code",
-            "in": "formData",
-            "description": "employee code",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "prev_employer",
-            "in": "formData",
-            "description": "prev_employer",
-            "required":false,
-            "type": "string"
-          },
-          {
-            "name": "prev_department",
-            "in": "formData",
-            "description": "prev_department",
-            "required":false,
-            "type": "string"
-          },
-          {
-            "name": "prev_designation",
-            "in": "formData",
-            "description": "prev_designation",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "prev_date_of_joining",
-            "in": "formData",
-            "description": "prev_date_of_joining YYYY-MM-DD",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "prev_exit",
-            "in": "formData",
-            "description": "prev_exit YYYY-MM-DD",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "is_manager",
-            "in": "formData",
-            "description": "0=> false, 1=>true ",
-            "required": true,
-            "type": "number",
-            "enum":[0,1]
-          },
-          {
-            "name": "manager_team_name",
-            "in": "formData",
-            "description": "manager team name is required if is_manager==1",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "manager_team_icon_url",
-            "in": "formData",
-            "description": "manager team icon url is required if is_manager==1",
-            "required": false,
-            "type": "string"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "manager_id": {
+                  "type": "number"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "current_department_id": {
+                  "type": "string"
+                },
+                "current_designation": {
+                  "type": "string"
+                },
+                "current_date_of_joining": {
+                  "type": "string"
+                },
+                "is_manager": {
+                  "type": "number"
+                },
+                "manager_team_name": {
+                  "type": "string"
+                },
+                "manager_team_icon_url": {
+                  "type": "string"
+                },
+                "employee_rank_id": {
+                  "type": "number"
+                }
+              }
+            }
           }
         ],
         "responses": {}
@@ -4617,34 +6253,55 @@
         "responses": {}
       }
     },
+    "/employer/getEmployeeRankList": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to get Employee Rank List",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/getManagerList": {
       "get": {
-      "tags": [
-        "Employer"
-      ],
-      "description": "Api to get manager list",
-      "consumes": [
-        "application/x-www-form-urlencoded"
-      ],
-      "parameters": [
-        {
-          "name": "Authorization",
-          "in": "header",
-          "description": "Enter jwt token for authentication",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "name": "department_id",
-          "in": "query",
-          "description": "department id",
-          "required": false,
-          "type": "number"
-        }
-      ],
-      "responses": {}
-    }
-  },
+        "tags": [
+          "Employer"
+        ],
+        "description": "Api to get manager list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "department_id",
+            "in": "query",
+            "description": "department id",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employer/getEmployeeList": {
       "get": {
         "tags": [
@@ -4670,6 +6327,13 @@
             "type": "number"
           },
           {
+            "name": "employeeRankId",
+            "in": "query",
+            "description": "employee Rank Id",
+            "required": false,
+            "type": "number"
+          },
+          {
             "name": "searchKey",
             "in": "query",
             "description": "searchKey",
@@ -4682,14 +6346,14 @@
             "description": "page",
             "required": false,
             "type": "number"
-        },
-        {
+          },
+          {
             "name": "limit",
             "in": "query",
             "description": "page size",
             "required": false,
             "type": "number"
-        }
+          }
         ],
         "responses": {}
       }
@@ -5316,7 +6980,6 @@
             "required": true,
             "type": "integer"
           }
-          
         ],
         "responses": {}
       }
@@ -5363,6 +7026,188 @@
         "responses": {}
       }
     },
+    "/employer/addAttributes": {
+      "post": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to add Edit Attributes",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Enter attributes array: [{name:string,desc:string },]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "attributes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "desc": {
+                        "type": "string"
+                      },
+                      "particulars": {
+                        "type": "string"
+                      },
+                      "guidance": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getAttributes": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to get Attributes",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getAttributeDetails/{attribute_id}": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to get Attribute details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/deleteAttribute/{attribute_id}": {
+      "delete": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to delete Attribute",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/toggleAttributeStatus/{attribute_id}": {
+      "put": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "Employer to toggle Attribute Status",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attribute_id",
+            "in": "path",
+            "description": "Enter attribute id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/login": {
       "post": {
         "tags": [
@@ -5393,6 +7238,13 @@
             "description": "device_token",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "app_id",
+            "in": "formData",
+            "description": "app_id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -5424,6 +7276,13 @@
             "enum": [
               5
             ]
+          },
+          {
+            "name": "app_id",
+            "in": "formData",
+            "description": "app_id",
+            "required": false,
+            "type": "number"
           }
         ],
         "responses": {}
@@ -5724,6 +7583,732 @@
         "responses": {}
       }
     },
+    "/coach/addEditSlot": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to add/edit slots",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Date format should be: YYYY-MM-DD\n2. Time format should be: HH:mm:ss\n3. Type can be: 1=>does_not_repeat, 2=>daily, 3=>weekly, 4=>every_week_day, 5=>custom\n4. Day is required if type is 3 (must be array)\n\tDay can be : 0=>sunday 1=>monday, 2=>tuesday, 3=>wednesday, 4=>thursday, 5=>friday, 6=>saturday\n5. custom_dates is required if type is 5\n6. Required fields are:\n\tvalidslots\n\ttimings\n\ttime_capture_type\n\tdate\n\tstart_time\n\tend_time\n\ttype\n\ttime_capture_type:1=>available previewed slots, 2=>unavailable previewed slots, 3=>submit previewed slots with available and unavailable slots\n\tis_update:true and slot_type (1=>available previewed slots, 2=>unavailable previewed slots) is required if you want to update existing slots",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "number"
+                },
+                "session_duration": {
+                  "type": "number"
+                },
+                "time_capture_type": {
+                  "type": "number"
+                },
+                "day": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "is_update": {
+                  "type": "boolean",
+                  "default":false
+                },
+                "custom_date": {
+                  "type": "string"
+                },
+                "timings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string"
+                      },
+                      "end_time": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "validslots": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string"
+                      },
+                      "end_time": {
+                        "type": "string"
+                      },
+                      "is_available":{
+                        "type":"number"
+                      }
+                    }
+                  }
+                },
+                "custom_dates": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "slot_type": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSlots": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to get slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filter_key",
+            "in": "query",
+            "description": "filter_key",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Daily",
+              "Weekly",
+              "Monthly",
+              "Yearly"
+            ]
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Enter date format: YYYY-MM-DD",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Enter day",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "20",
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29",
+              "30",
+              "31"
+            ]
+          },
+          {
+            "name": "week",
+            "in": "query",
+            "description": "Enter week",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15",
+              "16",
+              "17",
+              "18",
+              "19",
+              "20",
+              "21",
+              "22",
+              "23",
+              "24",
+              "25",
+              "26",
+              "27",
+              "28",
+              "29",
+              "30",
+              "31",
+              "32",
+              "33",
+              "34",
+              "35",
+              "36",
+              "37",
+              "38",
+              "39",
+              "40",
+              "41",
+              "42",
+              "43",
+              "44",
+              "45",
+              "46",
+              "47",
+              "48",
+              "49",
+              "50",
+              "51",
+              "52"
+            ]
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "description": "Enter month",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10",
+              "11",
+              "12"
+            ]
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Enter year",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "2020",
+              "2021",
+              "2023",
+              "2024",
+              "2025",
+              "2026",
+              "2027",
+              "2028",
+              "2029",
+              "2030"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSlot": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to get slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "slot_id",
+            "in": "query",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/deleteSlot": {
+      "delete": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to delete slot",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "enter type: 1=> individual, 2=> group",
+            "required": true,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "group_type",
+            "in": "formData",
+            "description": "enter type: 1=> date, 2=> time",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "slot_id",
+            "in": "formData",
+            "description": "Slot id is required if type is 1",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "slot_date_group_id",
+            "in": "formData",
+            "description": "Slot date group id is required if group type is 1",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "slot_time_group_id",
+            "in": "formData",
+            "description": "Slot time group id is required if group type is 2",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "current_date",
+            "in": "formData",
+            "description": "current date is required if type is 2 (YYYY-MM-DD)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSessionRequests": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to get Session Requests",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/acceptSessionRequest": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to accept Session Requests",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "timezone",
+            "in": "formData",
+            "description": "eg: America/New_York, Asia/calcutta etc",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/rejectSessionRequest": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to reject Session Requests",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getAcceptedSessions": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to get accepted Sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/cancelSession": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to cancel Session",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "cancel_reason",
+            "in": "formData",
+            "description": "enter cancel reason",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "formData",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/listSessionHistory": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to list Session History",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "datetime",
+            "in": "query",
+            "description": "eg: YYYY-MM-DD HH:mm:ss",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "Default is 1.\n\t1=>yes,\n\t2=>no",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size (required if is_pagination is 1)",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getSessionHistoryDetails/{session_id}": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to get Session History Details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "path",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/updateZoomMeetingDuration": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to update Zoom Meeting Duration",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/endZoomMeeting": {
+      "put": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "to end Zoom Meeting",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "session_id",
+            "in": "formData",
+            "description": "enter session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/coach/getChatList": {
       "get": {
         "tags": [
@@ -5982,6 +8567,34 @@
         "responses": {}
       }
     },
+    "/coach/clearChat": {
+      "delete": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "clear chat",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/web/getCoaches": {
       "get": {
         "tags": [
@@ -6033,11 +8646,1931 @@
         "parameters": [],
         "responses": {}
       }
+    },
+    "/bluetango-admin/login": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin Login",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addAdmin": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Add admin",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "{admins:[{name:'string',email:'@gmail.com'}],role_name:'string',module_wise_permissions:[{module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]}",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/forgotPassword": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin forget password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/resetPassword": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin reset password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/uploadFile": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Employee get profile",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "folderName",
+            "in": "formData",
+            "description": "folderName",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "bluetango_admin_profile_pic"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/logout": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to get admin logout",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getProfile": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin get Profile",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateProfile": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin update Profile",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Required Fields are:\n\tname,\n\temail",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "profile_pic_url": {
+                  "type": "string"
+                },
+                "social_media_handles": {
+                  "type": "object",
+                  "properties": {
+                    "facebook": {
+                      "type": "string"
+                    },
+                    "twitter": {
+                      "type": "string"
+                    },
+                    "linkedin": {
+                      "type": "string"
+                    },
+                    "instagram": {
+                      "type": "string"
+                    },
+                    "google": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/changePassword": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Admin change Password",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "old_password",
+            "in": "formData",
+            "description": "new password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "new_password",
+            "in": "formData",
+            "description": "new password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/dashboard": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to get dashboard",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search key: coach name",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getCoachList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the coach list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search employer by name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "coach_specialization_category_id",
+            "in": "query",
+            "description": "coach specialization category id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "employee_rank_id",
+            "in": "query",
+            "description": "employee rank id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "0=>inactive 1=>active",
+            "required": false,
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "description": "coach rating: 1,2,3,4,5",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addCoach": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to add coach",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "fileName": {
+                  "type": "string"
+                },
+                "coach_specialization_category_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "employee_rank_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "coach_charge": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/editCoach": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to edit coach",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. When you will pass id then it will be update otherwise it will be create\n2. Required Fields are:\n\tcoach_id,\n\tname,\n\temail,\n\tcountry_code,\n\tphone_number,\n\tdescription, and coach_charge is required\n3. Multiple coach specialization category ids can be added in coach_specialization_category_ids array like: prev_employers:[1,2,3,...]\n4. Multiple employee rank ids can be added in employee_rank_ids array like: prev_employers:[1,2,3,...]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "coach_id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "phone_number": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "fileName": {
+                  "type": "string"
+                },
+                "coach_specialization_category_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "employee_rank_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "coach_charge": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getCoachDetails": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to get coach details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "query",
+            "description": "coach id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteCoach/{coach_id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to delete Coach",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "path",
+            "description": "coach id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/blockUnblockCoach": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to block Unblock Coach",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "coach id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "0=>inactive 1=>active",
+            "required": true,
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/listEmployeeRanks": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to list Employee Ranks",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/listCoachSpecializationCategories": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Api to list Coach Specialization Categories",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getChatRoomId": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get chat room id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "other_user_id",
+            "in": "query",
+            "description": "other_user_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getChatList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get chat list",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "is_pagination",
+            "in": "query",
+            "description": "is_pagination: 0=> no, 1=> yes",
+            "required": false,
+            "type": "number",
+            "default": 1,
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/sendChatNotification": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "send chat notification",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "chat_room_id",
+            "in": "formData",
+            "description": "Enter chat room id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "in": "formData",
+            "description": "Enter message in case of text chat",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addBios": {
+      "post": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "add bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "coach_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateBios": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "update bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "bio id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "description",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "image",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fileName",
+            "in": "formData",
+            "description": "file name",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteBios/{id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "delete bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getBios": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/addStaticContent": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "add Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pricing",
+            "in": "formData",
+            "description": "pricing",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "contact_us",
+            "in": "formData",
+            "description": "contact_us",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "about_us",
+            "in": "formData",
+            "description": "about_us",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "privacy_policy",
+            "in": "formData",
+            "description": "privacy_policy",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "terms_ondition",
+            "in": "formData",
+            "description": "terms_ondition",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getStaticContent": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getSessionList": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the Session List (completed session and pending session)",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "search by name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "1=>pending, 2=>accepted, 3=>rejected, 4=> cancelled, 5=>completed",
+            "required": false,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "1=> free, 2=> paid",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "team_level_Id",
+            "in": "query",
+            "description": "team_level_Id",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "date in new Date() format send along with status",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getSessionDetail": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view the Session Detail (completed session and pending session)",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/performAction": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to perform action on pending sessions",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "slot_id",
+            "in": "formData",
+            "description": "slot id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "coach_id",
+            "in": "formData",
+            "description": "Enter coach id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "description": "Enter date",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "action",
+            "in": "formData",
+            "description": "1=>pending, 2=>declined, 3=>expired, 4=> reassigned, 5=>accepted",
+            "required": true,
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "name": "start_time",
+            "in": "formData",
+            "description": "start_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "formData",
+            "description": "end_time format: HH:mm:ss",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getAvailabileCoaches": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to view Availabile Coaches Slots",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "session id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteAdmin/{admin_id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to delete Admin",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin_id",
+            "in": "path",
+            "description": "admin_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/viewRoleDetails": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to get  role details along with admin details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "query",
+            "description": "role_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/deleteRole/{role_id}": {
+      "delete": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "api to delete Role",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "description": "role_id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateAdminAndRole": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "Update admin",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "{admins:[{id:'number',name:'string',email:'@gmail.com'}],id:'number',role_name:'string',module_wise_permissions:[{module:[],permissions:[1=>add, 2=> updated, 3=> view, 4=> delete]}]}",
+            "required": true,
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/updateAdminAndRoleStatus": {
+      "put": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "update Admin And Role Status",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formDate",
+            "description": "0--> inactive/ 1--> active",
+            "required": true,
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "id",
+            "in": "formDate",
+            "description": "role_id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getrolesAndAdmins": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "update Admin And Role Status",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "0--> inactive/ 1--> active",
+            "required": false,
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          {
+            "name": "module",
+            "in": "query",
+            "description": "'Dashboard', 'Coach Administration', 'Administration Management', 'Static Content', 'Session Content'",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Dashboard", "Coach Administration", "Administration Management", "Static Content", "Session Content"
+            ]
+          },
+          {
+            "name": "searchKey",
+            "in": "query",
+            "description": "enter the search key",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getStaticContent": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "get Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getBios": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "get bluetango coach bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getUnseenChatNotificationCount": {
+      "get": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "get Unseen Chat Notification Count",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/getChatRoomId": {
+      "get": {
+        "tags": [
+          "CoachChat"
+        ],
+        "description": "get chat room id",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "other_user_id",
+            "in": "query",
+            "description": "other_user_id",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "0=> employee,1=> BT_admin",
+            "required": false,
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/bluetango-admin/getBiosDetails": {
+      "get": {
+        "tags": [
+          "Bluetango Admin"
+        ],
+        "description": "get bio details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "bios id",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/coach/updateSlotAvailability": {
+      "post": {
+        "tags": [
+          "Coach"
+        ],
+        "description": "api to update Slot Availability",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "1. Date format should be: YYYY-MM-DD\n\t is_available is required 1<= for available,4<= for unavailable\n\tevent_type is requires 0<= for current data 1<= for following days\n\ttimings is required",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "is_available": {
+                  "type": "number"
+                },
+                "event_type": {
+                  "type": "number"
+                },
+                "timings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string"
+                      },
+                      "end_time": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/uploadThoughts": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to upload thoughts",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "thoughts",
+            "in": "formData",
+            "description": "thoughts",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/downloadThoughts": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Api to download thoughts",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employee/getThought": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Api to get thought",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "current date (Wed Feb 09 2022 17:38:17 GMT+0530 (India Standard Time))",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employer/getQualitativeMeasurementDetails": {
+      "get": {
+        "tags": [
+          "Employer"
+        ],
+        "description": "to get qualitative measurement details",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Enter jwt token for authentication",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "initiative",
+              "ability_to_delegate",
+              "clear_Communication",
+              "self_awareness_of_strengths_and_weaknesses",
+              "agile_thinking",
+              "influence",
+              "empathy",
+              "leadership_courage",
+              "customer_client_patient_satisfaction",
+              "team_contributions",
+              "time_management",
+              "work_product"
+            ]
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/web/getStaticContent": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "get Static Content",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "contentType",
+            "in": "query",
+            "description": "contentType(pricing,contact_us,about_us,privacy_policy,terms_ondition)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/web/getBios": {
+      "get": {
+        "tags": [
+          "Web"
+        ],
+        "description": "get bluetango coach bios",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page size",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {}
+      }
     }
-
-
   },
-  "definitions": {
-    
-  }
+  "definitions": {}
 }

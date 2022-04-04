@@ -27,9 +27,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployersService = void 0;
 const models_1 = require("../../models");
@@ -37,22 +34,26 @@ const subscriptionManagement_1 = require("../../models/subscriptionManagement");
 const paymentManagement_1 = require("../../models/paymentManagement");
 const coachManagement_1 = require("../../models/coachManagement");
 const contactUs_1 = require("../../models/contactUs");
-const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
-const connection_1 = require("../../connection");
+const feedback_1 = require("../../models/feedback");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const libraryManagement_1 = require("../../models/libraryManagement");
 const articleManagement_1 = require("../../models/articleManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const multerParser_1 = require("../../middleware/multerParser");
 const path = __importStar(require("path"));
+const coachSpecializationCategories_1 = require("../../models/coachSpecializationCategories");
+const employeeCoachSession_1 = require("../../models/employeeCoachSession");
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
+const excel = require("exceljs");
+const moment = require("moment");
 class EmployersService {
     constructor() { }
     /**
@@ -74,7 +75,7 @@ class EmployersService {
     addEditEmployers(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            var isEmail = yield appUtils.CheckEmail(params);
+            let isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
                 qry.where = {
@@ -82,7 +83,7 @@ class EmployersService {
                     status: { [Op.in]: [0, 1] }
                 };
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield models_1.employersModel.findOne({
                     where: {
@@ -113,7 +114,7 @@ class EmployersService {
                 });
             }
             params.admin_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
+            if (!existingUser) {
                 if (params.id) {
                     delete params.password;
                     let updateData = yield models_1.employersModel.update(params, {
@@ -129,11 +130,12 @@ class EmployersService {
                     }
                 }
                 else {
-                    if (!params.password) {
-                        throw new Error(constants.MESSAGES.password_not_provided);
-                    }
-                    const password = params.password;
-                    params.password = yield appUtils.bcryptPassword(params.password);
+                    // if (!params.password) {
+                    //     throw new Error(constants.MESSAGES.password_not_provided)
+                    // }
+                    // const password = params.password
+                    const password = yield helperFunction.generaePassword();
+                    params.password = yield appUtils.bcryptPassword(password);
                     //params.first_time_login_datetime = new Date();
                     const employer = yield models_1.employersModel.create(params);
                     const mailParams = {};
@@ -164,7 +166,7 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employersModel.hasMany(models_1.employeeModel, { foreignKey: "current_employer_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            var whereCond = {};
+            let whereCond = {};
             if (params.searchKey) {
                 whereCond["name"] = { [Op.iLike]: `%${params.searchKey}%` };
             }
@@ -184,6 +186,7 @@ class EmployersService {
                     {
                         model: models_1.employeeModel,
                         required: false,
+                        separate: true,
                         attributes: ["id"],
                         where: {
                             status: [0, 1]
@@ -240,28 +243,106 @@ class EmployersService {
     */
     dashboardAnalytics(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let rawQuery = "";
-            let where = {};
-            let employees;
-            // let admin_id = params.admin_id
-            rawQuery = `SELECT * FROM "employers" AS "employers" 
-            WHERE "employers"."status" = 1 AND
-             "employers"."createdAt" BETWEEN date '${params.from}'
-             AND date '${params.to}'
-              `;
-            let employers = yield connection_1.sequelize.query(rawQuery, {
-                raw: true
-            });
-            let employerCount = employers[0] ? employers[0].length : 0;
-            rawQuery = `SELECT * FROM "employee" AS "employees" 
-        WHERE "employees"."status" = 1 AND
-         "employees"."createdAt" BETWEEN date '${params.from}'
-         AND date '${params.to}'`;
-            employees = yield connection_1.sequelize.query(rawQuery, {
-                raw: true
-            });
-            let employeeCount = employees[0] ? employees[0].length : 0;
-            return { employers: employerCount, employees: employeeCount };
+            // let rawQuery = ""
+            // let employees;
+            // // let admin_id = params.admin_id
+            // rawQuery = `SELECT * FROM "employers" AS "employers" 
+            //     WHERE "employers"."status" = 1 AND
+            //      "employers"."createdAt" BETWEEN date '${params.from}'
+            //      AND date '${params.to}'
+            //       `
+            // let employers =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let employerCount = employers[0] ? employers[0].length : 0
+            // rawQuery = `SELECT * FROM "employee" AS "employees" 
+            // WHERE "employees"."status" = 1 AND
+            //  "employees"."createdAt" BETWEEN date '${params.from}'
+            //  AND date '${params.to}'`
+            // employees =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let employeeCount = employees[0] ? employees[0].length : 0
+            // rawQuery = `SELECT * FROM "coach_management" AS "coaches" 
+            // WHERE "coaches"."status" = 1 AND
+            //  "coaches"."createdAt" BETWEEN date '${params.from}'
+            //  AND date '${params.to}'`
+            // let coaches =await helperFunction.convertPromiseToObject(
+            //     await sequelize.query(rawQuery, {
+            //         raw: true
+            //     })
+            // )
+            // let coachCount = coaches[0] ? coaches[0].length : 0
+            let where = {
+                [Op.and]: [
+                    {
+                        status: constants.STATUS.active,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let employerCount = yield models_1.employersModel.count({ where });
+            let employeeCount = yield models_1.employeeModel.count({ where });
+            let coachCount = yield coachManagement_1.coachManagementModel.count({ where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let totalCompletedSession = yield employeeCoachSession_1.employeeCoachSessionsModel.count({ where });
+            let totalEarningBySession = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('amount', { where });
+            where = {
+                [Op.and]: [
+                    {
+                        status: {
+                            [Op.notIn]: [
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.cancelled,
+                                constants.EMPLOYEE_COACH_SESSION_STATUS.rejected
+                            ]
+                        }
+                    },
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '>=', params.from),
+                    Sequelize.where(Sequelize.fn('date', Sequelize.col('createdAt')), '<=', params.to),
+                ]
+            };
+            let totalScheduledSession = yield employeeCoachSession_1.employeeCoachSessionsModel.count({ where });
+            employeeCoachSession_1.employeeCoachSessionsModel.hasOne(coachManagement_1.coachManagementModel, { foreignKey: "id", sourceKey: "coach_id", targetKey: "id" });
+            let topFiveSessionTaker = yield helperFunction.convertPromiseToObject(yield employeeCoachSession_1.employeeCoachSessionsModel.findAll({
+                attributes: [
+                    'coach_id',
+                    [Sequelize.fn('COUNT', Sequelize.col('id')), 'sessionCount'],
+                ],
+                where,
+                group: ['"employee_coach_sessions.coach_id"'],
+                order: [[Sequelize.fn('COUNT', Sequelize.col('id')), "DESC"]],
+                limit: 5,
+            }));
+            for (let coach of topFiveSessionTaker) {
+                coach.coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                    attributes: ["id", "name", "email"],
+                    where: {
+                        id: coach.coach_id,
+                    }
+                }));
+            }
+            return {
+                employers: employerCount,
+                employees: employeeCount,
+                coaches: coachCount,
+                totalCompletedSession,
+                totalEarningBySession,
+                totalScheduledSession,
+                topFiveSessionTaker
+            };
         });
     }
     /**
@@ -272,22 +353,12 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            models_1.employeeModel.belongsTo(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id" });
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            var whereCond = {};
-            var employer = {};
-            var department = {};
-            // let where = {
-            //     admin_id: params.admin_id
-            // }
-            //var employerId = []
-            //const employers = await employersModel.findAndCountAll({ where: where, raw: true })
-            // for (let i = 0; i < employers.rows.length; i++) {
-            //     employerId.push(employers.rows[i].id)
-            // }
-            // whereCond = {
-            //     current_employer_id: { [Op.in]: employerId },
-            //     status: 1
-            // }
+            let whereCond = {};
+            let employer = {};
+            let department = {};
+            let employeeRank = {};
             if (params.employerName) {
                 employer = {
                     name: { [Op.iLike]: `%${params.employerName}%` },
@@ -299,14 +370,18 @@ class EmployersService {
                     name: { [Op.iLike]: `%${params.departmentName}%` }
                 };
             }
+            if (params.employeeRankName) {
+                employeeRank = {
+                    name: { [Op.iLike]: `%${params.employeeRankName}%` },
+                };
+            }
             if (params.searchKey) {
                 whereCond = {
-                    //current_employer_id: { [Op.in]: employerId },
                     name: { [Op.iLike]: `%${params.searchKey}%` },
                 };
             }
             whereCond["status"] = { [Op.or]: [0, 1] };
-            return yield models_1.employeeModel.findAndCountAll({
+            let employees = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findAndCountAll({
                 where: whereCond,
                 include: [
                     {
@@ -320,12 +395,22 @@ class EmployersService {
                         where: department,
                         required: true,
                         attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        where: employeeRank,
+                        required: true,
+                        attributes: ["id", "name"]
                     }
                 ],
                 limit: limit,
                 offset: offset,
                 order: [["id", "DESC"]]
-            });
+            }));
+            for (let employee of employees.rows) {
+                employee.total_completed_session = 5;
+            }
+            return employees;
         });
     }
     /**
@@ -385,6 +470,14 @@ class EmployersService {
                     throw new Error(constants.MESSAGES.invalid_department);
                 }
                 params.current_department_id = departmentExists.id;
+            }
+            if (params.employeeRankId) {
+                query = { where: { id: params.employeeRankId } };
+                let employeeRankExists = yield employeeRanks_1.employeeRanksModel.findOne(query);
+                if (!employeeRankExists) {
+                    throw new Error(constants.MESSAGES.invalid_employee_rank);
+                }
+                params.employee_rank_id = employeeRankExists.id;
             }
             if (params.status) {
                 let status = [0, 1, 2];
@@ -523,7 +616,11 @@ class EmployersService {
                         include: [{
                                 model: models_1.employeeModel,
                                 required: false,
-                                attributes: ["id", "name"]
+                                separate: true,
+                                attributes: ["id", "name"],
+                                where: {
+                                    status: [0, 1]
+                                }
                             }]
                     },
                     {
@@ -571,8 +668,8 @@ class EmployersService {
                     }
                 ],
                 attributes: ["id", "expiry_date"],
-                limit: limit,
-                offset: offset,
+                // limit: limit,
+                // offset: offset,
                 raw: true
             });
         });
@@ -593,7 +690,11 @@ class EmployersService {
                     {
                         model: models_1.employeeModel,
                         required: false,
-                        attributes: ["id"]
+                        separate: true,
+                        attributes: ["id"],
+                        where: {
+                            status: [0, 1]
+                        }
                     }
                     // {
                     //     model: industryTypeModel,
@@ -619,7 +720,7 @@ class EmployersService {
     addEditCoach(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = params.email.toLowerCase();
-            var isEmail = yield appUtils.CheckEmail(params);
+            let isEmail = yield appUtils.CheckEmail(params);
             const qry = { where: {} };
             if (isEmail) {
                 qry.where = {
@@ -627,7 +728,7 @@ class EmployersService {
                     status: { [Op.in]: [0, 1] }
                 };
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield coachManagement_1.coachManagementModel.findOne({
                     where: {
@@ -640,7 +741,8 @@ class EmployersService {
                         },
                         id: {
                             [Op.ne]: params.id
-                        }
+                        },
+                        app_id: constants.COACH_APP_ID.BX,
                     }
                 });
             }
@@ -653,12 +755,14 @@ class EmployersService {
                         ],
                         status: {
                             [Op.in]: [0, 1]
-                        }
+                        },
+                        app_id: constants.COACH_APP_ID.BX,
                     }
                 });
             }
+            console.log("existingUser", existingUser);
             params.admin_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
+            if (!existingUser) {
                 if (params.id) {
                     delete params.password;
                     let updateData = yield coachManagement_1.coachManagementModel.update(params, {
@@ -674,12 +778,13 @@ class EmployersService {
                     }
                 }
                 else {
-                    if (!params.password) {
-                        throw new Error(constants.MESSAGES.password_not_provided);
-                    }
-                    const password = params.password;
-                    params.password = yield appUtils.bcryptPassword(params.password);
-                    const coach = yield coachManagement_1.coachManagementModel.create(params);
+                    // if (!params.password) {
+                    //     throw new Error(constants.MESSAGES.password_not_provided)
+                    // }
+                    // const password = params.password
+                    const password = yield helperFunction.generaePassword();
+                    params.password = yield appUtils.bcryptPassword(password);
+                    const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.create(params));
                     const mailParams = {};
                     mailParams.to = params.email;
                     mailParams.html = `Hi  ${params.name}
@@ -688,7 +793,57 @@ class EmployersService {
                 <br><b> IOS URL</b>: ${process.env.COACH_IOS_URL} <br>
                 <br> username : ${params.email}
                 <br> password : ${password}
+                <br> Check your details here:
+                <br><table style="padding:0px 10px 10px 10px;">
                 `;
+                    delete coach.password;
+                    coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                        where: {
+                            id: {
+                                [Op.in]: coach.coach_specialization_category_ids || [],
+                            },
+                            status: constants.STATUS.active,
+                        },
+                        attributes: ['name']
+                    }));
+                    coach.coach_specialization_categories = coach.coach_specialization_categories.map(category => category.name).join(', ');
+                    delete coach.coach_specialization_category_ids;
+                    coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
+                        where: {
+                            id: {
+                                [Op.in]: coach.employee_rank_ids || [],
+                            },
+                            status: constants.STATUS.active,
+                        },
+                        attributes: ['name']
+                    }));
+                    coach.employee_ranks = coach.employee_ranks.map(rank => rank.name).join(', ');
+                    coach.fees_per_session = coach.coach_charge;
+                    delete coach.id;
+                    delete coach.admin_id;
+                    delete coach.device_token;
+                    delete coach.first_time_login;
+                    delete coach.first_time_login_datetime;
+                    delete coach.first_time_reset_password;
+                    delete coach.fileName;
+                    delete coach.status;
+                    delete coach.coach_charge;
+                    delete coach.employee_rank_ids;
+                    delete coach.updatedAt;
+                    delete coach.createdAt;
+                    for (let key in coach) {
+                        mailParams.html += `<tr style="text-align: left;">
+                            <th style="opacity: 0.9;">${key.split("_").map((ele) => {
+                            if (ele == "of" || ele == "in")
+                                return ele;
+                            else
+                                return ele.charAt(0).toUpperCase() + ele.slice(1);
+                        }).join(" ")}</th>
+                            <td style="opacity: 0.8;">:</td>
+                            <td style="opacity: 0.8;">${key == 'image' ? `<img src='${coach[key]}' />` : coach[key]}</td>
+                        </tr>`;
+                    }
+                    mailParams.html += `</table>`;
                     mailParams.subject = "Coach Login Credentials";
                     yield helperFunction.sendEmail(mailParams);
                     return coach;
@@ -706,18 +861,84 @@ class EmployersService {
     getCoachList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
-            let where = {};
+            let where = {
+                app_id: constants.COACH_APP_ID.BX,
+            };
             if (params.searchKey) {
                 where["name"] = { [Op.iLike]: `%${params.searchKey}%` };
             }
-            where["status"] = 1;
-            return yield coachManagement_1.coachManagementModel.findAndCountAll({
+            if (params.coach_specialization_category_id) {
+                where["coach_specialization_category_ids"] = {
+                    [Op.contains]: [params.coach_specialization_category_id]
+                };
+            }
+            if (params.employee_rank_id) {
+                where["employee_rank_ids"] = {
+                    [Op.contains]: [params.employee_rank_id]
+                };
+            }
+            where["status"] = constants.STATUS.active;
+            let coachList = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findAndCountAll({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number"],
-                limit: limit,
-                offset: offset,
+                attributes: ["id", "name", "email", "phone_number", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge", "status", "app_id", "social_media_handles", "website", "document_url"],
                 order: [["id", "DESC"]]
-            });
+            }));
+            let c = 0;
+            for (let coach of coachList.rows) {
+                coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    }
+                });
+                let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
+                    }
+                });
+                coach.rating_count = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
+                    }
+                });
+                coach.average_rating = 0;
+                if (coach.rating_count > 0) {
+                    coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
+                }
+                delete coach.coach_specialization_category_ids;
+                delete coach.employee_rank_ids;
+            }
+            if (params.rating) {
+                let coachListFilteredByRating = coachList.rows.filter((coach) => coach.average_rating == params.rating);
+                coachList.rows = [...coachListFilteredByRating];
+                coachList.count = coachListFilteredByRating.length;
+            }
+            coachList.rows = coachList.rows.slice(offset, offset + limit);
+            return coachList;
         });
     }
     /**
@@ -728,13 +949,68 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {
                 id: params.coachId,
-                status: 1
+                status: [0, 1]
             };
-            const coach = yield coachManagement_1.coachManagementModel.findOne({
+            const coach = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
                 where: where,
-                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName"],
-            });
+                attributes: ["id", "name", "email", "phone_number", "country_code", "description", "image", "fileName", "coach_specialization_category_ids", "employee_rank_ids", "coach_charge", "status", "app_id", "social_media_handles", "website", "document_url", "documentFileName"],
+            }));
             if (coach) {
+                coach.coach_specialization_categories = yield helperFunction.convertPromiseToObject(yield coachSpecializationCategories_1.coachSpecializationCategoriesModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.coach_specialization_category_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.employee_ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAll({
+                    where: {
+                        id: {
+                            [Op.in]: coach.employee_rank_ids || [],
+                        },
+                        status: constants.STATUS.active,
+                    }
+                }));
+                coach.total_completed_sessions = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    }
+                });
+                let totalRating = yield employeeCoachSession_1.employeeCoachSessionsModel.sum('coach_rating', {
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
+                    }
+                });
+                coach.rating_count = yield employeeCoachSession_1.employeeCoachSessionsModel.count({
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                        coach_rating: {
+                            [Op.gte]: 1
+                        }
+                    }
+                });
+                let totalSessions = yield employeeCoachSession_1.employeeCoachSessionsModel.findAndCountAll({
+                    where: {
+                        coach_id: coach.id,
+                        status: constants.EMPLOYEE_COACH_SESSION_STATUS.completed,
+                    }
+                });
+                let freeSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 1).map(obj => obj.employee_id))];
+                let paidSessionsCount = [...new Set(totalSessions.rows.filter(ele => ele.type == 2).map(obj => obj.employee_id))];
+                coach.average_rating = 0;
+                coach.conversionRate = (paidSessionsCount.length / freeSessionsCount.length);
+                if (coach.rating_count > 0) {
+                    coach.average_rating = parseFloat((parseInt(totalRating) / coach.rating_count).toFixed(0));
+                }
+                delete coach.coach_specialization_category_ids;
+                delete coach.employee_rank_ids;
                 return coach;
             }
             else {
@@ -767,7 +1043,7 @@ class EmployersService {
   *
   * @param {} params pass all parameters from request
   */
-    getCotactUsList(params) {
+    getContactUsList(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
             contactUs_1.contactUsModel.belongsTo(models_1.employersModel, { foreignKey: "employer_id" });
@@ -784,7 +1060,10 @@ class EmployersService {
                         required: false,
                         attributes: ["id", "name"]
                     }
-                ]
+                ],
+                limit: limit,
+                offset: offset,
+                order: [["createdAt", "DESC"]]
             });
         });
     }
@@ -792,7 +1071,7 @@ class EmployersService {
   *
   * @param {} params pass all parameters from request
   */
-    getCotactUsDetails(params) {
+    getContactUsDetails(params) {
         return __awaiter(this, void 0, void 0, function* () {
             let where = {
                 id: params.constactId
@@ -877,11 +1156,12 @@ class EmployersService {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.belongsTo(models_1.employersModel, { foreignKey: "current_employer_id" });
             models_1.employeeModel.belongsTo(models_1.departmentModel, { foreignKey: "current_department_id" });
+            models_1.employeeModel.belongsTo(employeeRanks_1.employeeRanksModel, { foreignKey: "employee_rank_id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let where = {};
             where.id = params.employeeId;
-            const employee = yield models_1.employeeModel.findOne({
+            const employee = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
                 where: where,
                 include: [
                     {
@@ -891,6 +1171,11 @@ class EmployersService {
                     },
                     {
                         model: models_1.departmentModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
                         required: false,
                         attributes: ["id", "name"]
                     },
@@ -905,8 +1190,9 @@ class EmployersService {
                         //attributes: ["id","name"]
                     }
                 ]
-            });
+            }));
             if (employee) {
+                employee.total_completed_session = 5;
                 return employee;
             }
             else {
@@ -1285,6 +1571,171 @@ class EmployersService {
             where.id = params.uid;
             where.status = 2;
             return yield models_1.adminModel.findOne({ where: where });
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    listFeedback(params) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function* () {
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let whereCondintion = {
+                status: [constants.STATUS.active, constants.STATUS.inactive],
+            };
+            if (params.feedbackType) {
+                whereCondintion = Object.assign(Object.assign({}, whereCondintion), { feedback_type: params.feedbackType });
+            }
+            // if(params.searchKey){
+            //     whereCondintion={
+            //         ...whereCondintion,
+            //         message:{
+            //             [Op.iLike]:`%${params.searchKey}%`,
+            //         }
+            //     }
+            // }  
+            let feedbacks = yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.findAndCountAll({
+                where: whereCondintion,
+                limit: limit,
+                offset: offset,
+                order: [["id", "DESC"]]
+            }));
+            if (feedbacks.count > 0) {
+                let filteredFeedbacks = [];
+                for (let feedback of feedbacks.rows) {
+                    if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                        feedback.user = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                            where: {
+                                id: feedback.user_id
+                            },
+                            attributes: ['id', 'name', 'email', 'phone_number']
+                        }));
+                    }
+                    else {
+                        feedback.user = null;
+                    }
+                    if (params.searchKey && params.searchKey.trim() != "") {
+                        if (((_a = feedback.message) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes(params.searchKey.toLowerCase())) || ((_b = feedback.user) === null || _b === void 0 ? void 0 : _b.name.toLowerCase().includes(params.searchKey.toLowerCase())) || ((_c = feedback.user) === null || _c === void 0 ? void 0 : _c.email.toLowerCase().includes(params.searchKey.toLowerCase()))) {
+                            filteredFeedbacks.push(feedback);
+                        }
+                    }
+                }
+                if (params.searchKey && params.searchKey.trim() != "") {
+                    feedbacks.count = filteredFeedbacks.length;
+                    feedbacks.rows = filteredFeedbacks;
+                }
+            }
+            if (feedbacks.count == 0)
+                throw new Error(constants.MESSAGES.no_feedback);
+            return feedbacks;
+        });
+    }
+    /**
+    *
+    * @param {} params pass all parameters from request
+    */
+    getFeedbackDetails(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let feedback = yield helperFunction.convertPromiseToObject(yield feedback_1.feedbackModel.findOne({
+                where: {
+                    id: params.feedback_id
+                }
+            }));
+            if (feedback) {
+                if (feedback.feedback_type == constants.FEEDBACK_TYPE.employee) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else if (feedback.feedback_type == constants.FEEDBACK_TYPE.employer) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield models_1.employersModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else if (feedback.feedback_type == constants.FEEDBACK_TYPE.coach) {
+                    feedback.user = yield helperFunction.convertPromiseToObject(yield coachManagement_1.coachManagementModel.findOne({
+                        where: {
+                            id: feedback.user_id
+                        },
+                        attributes: ['id', 'name', 'email', 'phone_number']
+                    }));
+                }
+                else {
+                    feedback.user = null;
+                }
+            }
+            else {
+                throw new Error(constants.MESSAGES.no_feedback);
+            }
+            return feedback;
+        });
+    }
+    /**
+    * uploadThoughts
+    */
+    uploadThoughts(params, file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let thoughts = {
+                "A": "day",
+                "B": "thought"
+            };
+            let sheetData = yield appUtils.UploadExcelToJson(file.path, 1, thoughts);
+            yield models_1.thoughtsModel.destroy({
+                truncate: true,
+                force: true
+            });
+            yield models_1.thoughtsModel.bulkCreate(sheetData);
+            yield multerParser_1.deleteFile(file.filename);
+            return true;
+        });
+    }
+    /**
+    * download thoughts
+    */
+    downloadThoughts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let worksheet;
+            let Columns = [
+                { header: "Day", key: "day", width: 20 },
+                { header: "Thought of the Day", key: "thought", width: 20 }
+            ];
+            let excelData = yield models_1.thoughtsModel.findAll({
+                attributes: ["day", "thought"]
+            });
+            let workbook = new excel.Workbook();
+            worksheet = workbook.addWorksheet('thoughts');
+            worksheet.columns = Columns;
+            let fName = "thoughts";
+            worksheet.addRows(excelData);
+            let filename = `${fName}-${moment().format('YYYYMMDD-HHmmss')}.xlsx`;
+            res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            res.setHeader("Content-Disposition", "attachment; filename=" + filename);
+            return workbook.xlsx.write(res).then(function () {
+                res.status(200).end();
+            });
         });
     }
 }

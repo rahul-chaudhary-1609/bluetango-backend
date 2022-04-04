@@ -35,6 +35,8 @@ const coachManagement_1 = require("../../models/coachManagement");
 const advisorManagement_1 = require("../../models/advisorManagement");
 const articleManagement_1 = require("../../models/articleManagement");
 const subscriptionManagement_1 = require("../../models/subscriptionManagement");
+const queryService = __importStar(require("../../queryService/bluetangoAdmin/queryService"));
+const index_1 = require("../../models/index");
 const Sequelize = require('sequelize');
 class HomepageServices {
     constructor() { }
@@ -96,6 +98,39 @@ class HomepageServices {
                 order: ["charge"]
             });
             return yield helperFunction.convertPromiseToObject(subscriptionList);
+        });
+    }
+    /*
+      *get static content
+      */
+    getStaticContent(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield queryService.selectOne(index_1.staticContentModel, {
+                where: { id: 1 },
+                attributes: [`${params.contentType}`]
+            });
+        });
+    }
+    /*
+                 * get all Bios
+                 * @param : token
+                 */
+    getBios(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            index_1.coachBiosModel.belongsTo(coachManagement_1.coachManagementModel, { foreignKey: "coach_id" });
+            let query = {
+                include: [
+                    {
+                        model: coachManagement_1.coachManagementModel,
+                        attributes: ['name'],
+                        required: true,
+                    }
+                ],
+            };
+            let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+            let bios = yield queryService.selectAndCountAll(index_1.coachBiosModel, query, {});
+            bios.rows = bios.rows.slice(offset, offset + limit);
+            return bios;
         });
     }
 }

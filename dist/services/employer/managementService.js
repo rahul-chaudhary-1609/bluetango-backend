@@ -27,13 +27,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployeeManagement = void 0;
 const models_1 = require("../../models");
-const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const appUtils = __importStar(require("../../utils/appUtils"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
@@ -44,7 +40,12 @@ const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
 const teamGoalAssign_1 = require("../../models/teamGoalAssign");
 const emoji_1 = require("../../models/emoji");
 const groupChatRoom_1 = require("../../models/groupChatRoom");
+const attributes_1 = require("../../models/attributes");
+const attributeRatings_1 = require("../../models/attributeRatings");
+const employeeRanks_1 = require("../../models/employeeRanks");
+const teamGoalAssignCompletionByEmployee_1 = require("../../models/teamGoalAssignCompletionByEmployee");
 var Op = Sequelize.Op;
+const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 class EmployeeManagement {
     constructor() { }
     /**
@@ -59,6 +60,51 @@ class EmployeeManagement {
                 return true;
         });
     }
+    migrateGoalsToNewManager(manager_id, employee_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            teamGoalAssign_1.teamGoalAssignModel.hasOne(teamGoal_1.teamGoalModel, { foreignKey: "id", sourceKey: "goal_id", targetKey: "id" });
+            let goalAssigns = yield helperFunction.convertPromiseToObject(yield teamGoalAssign_1.teamGoalAssignModel.findAll({
+                where: {
+                    employee_id,
+                },
+                include: [
+                    {
+                        model: teamGoal_1.teamGoalModel,
+                        required: true,
+                    }
+                ]
+            }));
+            for (let goalAssign of goalAssigns) {
+                let newGoalObj = {
+                    manager_id,
+                    title: goalAssign.team_goal.title,
+                    description: goalAssign.team_goal.description,
+                    start_date: goalAssign.team_goal.start_date,
+                    end_date: goalAssign.team_goal.end_date,
+                    select_measure: goalAssign.team_goal.select_measure,
+                    enter_measure: goalAssign.team_goal.enter_measure,
+                };
+                let [newGoal, created] = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOrCreate({
+                    where: newGoalObj,
+                    defaults: newGoalObj,
+                }));
+                yield teamGoalAssign_1.teamGoalAssignModel.update({
+                    goal_id: newGoal.id,
+                }, {
+                    where: {
+                        id: goalAssign.id,
+                    }
+                });
+                yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update({
+                    goal_id: newGoal.id,
+                }, {
+                    where: {
+                        team_goal_assign_id: goalAssign.id,
+                    }
+                });
+            }
+        });
+    }
     /**
     * add edit employee function
     @param {} params pass all parameters from request
@@ -66,12 +112,13 @@ class EmployeeManagement {
     addEditEmployee(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
             params.email = (params.email).toLowerCase();
+            params.name = params.first_name + " " + params.last_name;
             if (params.current_department_id) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: params.current_department_id } });
                 if (!departmentExists)
                     throw new Error(constants.MESSAGES.invalid_department);
             }
-            var existingUser;
+            let existingUser = null;
             if (params.id) {
                 existingUser = yield models_1.employeeModel.findOne({
                     where: {
@@ -102,133 +149,146 @@ class EmployeeManagement {
                 });
             }
             params.current_employer_id = user.uid;
-            if (lodash_1.default.isEmpty(existingUser)) {
-                let isEmployeeCodeExist = null;
+            if (!existingUser) {
+                // let isEmployeeCodeExist = null;
+                // if (params.id) {
+                //     isEmployeeCodeExist = await employeeModel.findOne({
+                //         where: {
+                //             // employee_code: params.employee_code,
+                //             current_employer_id: params.current_employer_id,
+                //             status: {
+                //                 [Op.in]: [0, 1]
+                //             },
+                //             id: {
+                //                 [Op.ne]: params.id
+                //             }
+                //         }
+                //     });
+                // } else {
+                //     isEmployeeCodeExist = await employeeModel.findOne({
+                //         where: {
+                //             // employee_code: params.employee_code,
+                //             current_employer_id: params.current_employer_id,
+                //             status: {
+                //                 [Op.in]: [0, 1]
+                //             }
+                //         }
+                //     });
+                // }
+                // if (!isEmployeeCodeExist) {
+                if (params.is_manager == 1) {
+                    if (!params.manager_team_name) {
+                        throw new Error(constants.MESSAGES.manager_team_name_required);
+                    }
+                    if (!params.manager_team_icon_url) {
+                        throw new Error(constants.MESSAGES.manager_team_icon_url_required);
+                    }
+                }
                 if (params.id) {
-                    isEmployeeCodeExist = yield models_1.employeeModel.findOne({
-                        where: {
-                            employee_code: params.employee_code,
-                            current_employer_id: params.current_employer_id,
-                            status: {
-                                [Op.in]: [0, 1]
-                            },
-                            id: {
-                                [Op.ne]: params.id
-                            }
-                        }
+                    delete params.password;
+                    let updateData = yield models_1.employeeModel.update(params, {
+                        where: { id: params.id }
                     });
-                }
-                else {
-                    isEmployeeCodeExist = yield models_1.employeeModel.findOne({
-                        where: {
-                            employee_code: params.employee_code,
-                            current_employer_id: params.current_employer_id,
-                            status: {
-                                [Op.in]: [0, 1]
-                            }
-                        }
-                    });
-                }
-                if (!isEmployeeCodeExist) {
-                    if (params.is_manager == 1) {
-                        if (!params.manager_team_name) {
-                            throw new Error(constants.MESSAGES.manager_team_name_required);
-                        }
-                        if (!params.manager_team_icon_url) {
-                            throw new Error(constants.MESSAGES.manager_team_icon_url_required);
-                        }
-                    }
-                    if (params.id) {
-                        delete params.password;
-                        let updateData = yield models_1.employeeModel.update(params, {
-                            where: { id: params.id }
-                        });
-                        if (updateData) {
-                            let managerData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
-                                where: { team_member_id: params.id }
-                            }));
-                            if (managerData && params.manager_id) {
-                                if (managerData.manager_id != parseInt(params.manager_id)) {
-                                    yield managerTeamMember_1.managerTeamMemberModel.update({
-                                        manager_id: params.manager_id
-                                    }, {
-                                        where: { team_member_id: params.id }
-                                    });
-                                }
-                            }
-                            else if (params.manager_id) {
-                                let teamMemberObj = {
-                                    team_member_id: params.id,
+                    if (updateData) {
+                        let managerData = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                            where: { team_member_id: params.id }
+                        }));
+                        if (managerData && params.manager_id) {
+                            if (managerData.manager_id != parseInt(params.manager_id)) {
+                                yield managerTeamMember_1.managerTeamMemberModel.update({
                                     manager_id: params.manager_id
-                                };
-                                yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
-                            }
-                            else if (managerData) {
-                                let where = {
-                                    team_member_id: params.id,
-                                    manager_id: managerData.manager_id
-                                };
-                                yield managerTeamMember_1.managerTeamMemberModel.destroy({ where });
-                            }
-                            let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
-                                where: { id: params.id }
-                            }));
-                            if (params.is_manager == 1) {
-                                let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
-                                    where: {
-                                        manager_id: parseInt(params.id),
-                                    }
+                                }, {
+                                    where: { team_member_id: params.id }
                                 });
-                                if (groupChatRoom) {
-                                    groupChatRoom.name = params.manager_team_name;
-                                    groupChatRoom.icon_image_url = params.manager_team_icon_url;
-                                    groupChatRoom.save();
-                                }
-                                else {
-                                    let groupChatRoomObj = {
-                                        name: params.manager_team_name,
-                                        manager_id: parseInt(params.id),
-                                        member_ids: [],
-                                        live_member_ids: [],
-                                        room_id: yield helperFunction.getUniqueChatRoomId(),
-                                        icon_image_url: params.manager_team_icon_url
-                                    };
-                                    groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
-                                }
-                                employeeRes.groupChatRoom = groupChatRoom;
+                                yield this.migrateGoalsToNewManager(params.manager_id, params.id);
                             }
-                            return employeeRes;
                         }
-                        else {
-                            return false;
-                        }
-                    }
-                    else {
-                        let password = params.password;
-                        params.password = yield appUtils.bcryptPassword(params.password);
-                        let employeeRes = yield models_1.employeeModel.create(params);
-                        if (params.manager_id) {
+                        else if (params.manager_id) {
                             let teamMemberObj = {
-                                team_member_id: employeeRes.id,
+                                team_member_id: params.id,
                                 manager_id: params.manager_id
                             };
                             yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
                         }
-                        if (params.is_manager == 1) {
-                            let groupChatRoomObj = {
-                                name: params.manager_team_name,
-                                manager_id: parseInt(employeeRes.id),
-                                member_ids: [],
-                                live_member_ids: [],
-                                room_id: yield helperFunction.getUniqueChatRoomId(),
-                                icon_image_url: params.manager_team_icon_url
+                        else if (managerData) {
+                            let where = {
+                                team_member_id: params.id,
+                                manager_id: managerData.manager_id
                             };
-                            let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                            yield managerTeamMember_1.managerTeamMemberModel.destroy({ where });
+                        }
+                        let employeeRes = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
+                            where: { id: params.id }
+                        }));
+                        if (params.is_manager == 1) {
+                            let groupChatRoom = yield groupChatRoom_1.groupChatRoomModel.findOne({
+                                where: {
+                                    manager_id: parseInt(params.id),
+                                }
+                            });
+                            if (groupChatRoom) {
+                                groupChatRoom.name = params.manager_team_name;
+                                groupChatRoom.icon_image_url = params.manager_team_icon_url;
+                                groupChatRoom.save();
+                            }
+                            else {
+                                let groupChatRoomObj = {
+                                    name: params.manager_team_name,
+                                    manager_id: parseInt(params.id),
+                                    member_ids: [],
+                                    live_member_ids: [],
+                                    room_id: yield helperFunction.getUniqueChatRoomId(),
+                                    icon_image_url: params.manager_team_icon_url,
+                                    info: [{
+                                            id: parseInt(params.id),
+                                            chatLastDeletedOn: new Date(),
+                                            isDeleted: false,
+                                            type: constants.CHAT_USER_TYPE.employee,
+                                        }],
+                                };
+                                groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                            }
                             employeeRes.groupChatRoom = groupChatRoom;
                         }
-                        const mailParams = {};
-                        mailParams.to = params.email;
-                        mailParams.html = `Hi  ${params.name}
+                        return employeeRes;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    // let password = params.password;
+                    let password = yield helperFunction.generaePassword();
+                    params.password = yield appUtils.bcryptPassword(password);
+                    let employeeRes = yield models_1.employeeModel.create(params);
+                    if (params.manager_id) {
+                        let teamMemberObj = {
+                            team_member_id: employeeRes.id,
+                            manager_id: params.manager_id
+                        };
+                        yield managerTeamMember_1.managerTeamMemberModel.create(teamMemberObj);
+                    }
+                    if (params.is_manager == 1) {
+                        let groupChatRoomObj = {
+                            name: params.manager_team_name,
+                            manager_id: parseInt(employeeRes.id),
+                            member_ids: [],
+                            live_member_ids: [],
+                            room_id: yield helperFunction.getUniqueChatRoomId(),
+                            icon_image_url: params.manager_team_icon_url,
+                            info: [{
+                                    id: parseInt(employeeRes.id),
+                                    chatLastDeletedOn: new Date(),
+                                    isDeleted: false,
+                                    type: constants.CHAT_USER_TYPE.employee,
+                                }],
+                        };
+                        let groupChatRoom = yield helperFunction.convertPromiseToObject(yield groupChatRoom_1.groupChatRoomModel.create(groupChatRoomObj));
+                        employeeRes.groupChatRoom = groupChatRoom;
+                    }
+                    const mailParams = {};
+                    mailParams.to = params.email;
+                    mailParams.html = `Hi  ${params.name}
                 <br> Please download the app by clicking on link below and use the given credentials for login into the app :
                 <br><br><b> Android URL</b>: ${process.env.EMPLOYEE_ANDROID_URL}
                 <br><b> IOS URL</b>: ${process.env.EMPLOYEE_IOS_URL} <br>
@@ -236,14 +296,13 @@ class EmployeeManagement {
                 <br> username : ${params.email}
                 <br> password : ${password}
                 `;
-                        mailParams.subject = "Employee Login Credentials";
-                        yield helperFunction.sendEmail(mailParams);
-                        return employeeRes;
-                    }
+                    mailParams.subject = "Employee Login Credentials";
+                    yield helperFunction.sendEmail(mailParams);
+                    return employeeRes;
                 }
-                else {
-                    throw new Error(constants.MESSAGES.employee_code_already_registered);
-                }
+                // } else {
+                //     throw new Error(constants.MESSAGES.employee_code_already_registered);
+                // }
             }
             else {
                 throw new Error(constants.MESSAGES.email_phone_already_registered);
@@ -277,6 +336,7 @@ class EmployeeManagement {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(emoji_1.emojiModel, { foreignKey: "id", sourceKey: "energy_id", targetKey: "id" });
+            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             if (params.departmentId) {
                 let departmentExists = yield models_1.departmentModel.findOne({ where: { id: parseInt(params.departmentId) } });
                 if (!departmentExists)
@@ -285,6 +345,7 @@ class EmployeeManagement {
             let whereCond = {
                 status: [constants.STATUS.active, constants.STATUS.inactive]
             };
+            let employeeRank = {};
             whereCond.current_employer_id = user.uid;
             if (params.departmentId) {
                 whereCond = Object.assign(Object.assign({}, whereCond), { current_department_id: parseInt(params.departmentId) });
@@ -296,6 +357,11 @@ class EmployeeManagement {
                         { email: { [Op.iLike]: `%${searchKey}%` } },
                         { phone_number: { [Op.iLike]: `%${searchKey}%` } }
                     ] });
+            }
+            if (params.employeeRankId) {
+                employeeRank = {
+                    id: params.employeeRankId,
+                };
             }
             let query = {
                 attributes: ['id', 'name', 'email', 'country_code', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager', 'energy_last_updated'],
@@ -312,6 +378,12 @@ class EmployeeManagement {
                         as: 'energy_emoji_data',
                         attributes: ['id', 'image_url', 'caption']
                     },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        where: employeeRank,
+                        required: true,
+                        attributes: ["id", "name"]
+                    }
                 ],
                 order: [["createdAt", "DESC"]]
             };
@@ -334,6 +406,20 @@ class EmployeeManagement {
             }));
         });
     }
+    getEmployeeRankList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ranks = yield helperFunction.convertPromiseToObject(yield employeeRanks_1.employeeRanksModel.findAndCountAll({
+                where: {
+                    status: constants.STATUS.active,
+                },
+                order: [["name", "ASC"]]
+            }));
+            if (ranks.count == 0) {
+                throw new Error(constants.MESSAGES.no_employee_rank);
+            }
+            return ranks;
+        });
+    }
     /**
      * function to View employee details
      */
@@ -341,9 +427,9 @@ class EmployeeManagement {
         return __awaiter(this, void 0, void 0, function* () {
             models_1.employeeModel.hasOne(models_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             models_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+            models_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             let employeeDetails = yield helperFunction.convertPromiseToObject(yield models_1.employeeModel.findOne({
-                //attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url', 'current_department_id', 'is_manager'],
                 where: {
                     id: parseInt(params.employee_id),
                     status: [constants.STATUS.active, constants.STATUS.inactive]
@@ -363,6 +449,11 @@ class EmployeeManagement {
                         model: models_1.departmentModel,
                         attributes: ['id', 'name'],
                         required: false,
+                    },
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
                     }
                 ],
             }));
@@ -438,7 +529,20 @@ class EmployeeManagement {
                     }
                 }
             }
-            return { employeeDetails, goalStats, qualitativeMeasurements };
+            attributeRatings_1.attributeRatingModel.hasOne(models_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let attributeRatings = yield helperFunction.convertPromiseToObject(yield attributeRatings_1.attributeRatingModel.findOne({
+                where: { employee_id: params.employee_id || user.uid },
+                include: [
+                    {
+                        model: models_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
+            return { employeeDetails, goalStats, qualitativeMeasurements, attributeRatings };
         });
     }
     /**
@@ -467,13 +571,190 @@ class EmployeeManagement {
      */
     updateManager(params, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            let managerTeam = yield helperFunction.convertPromiseToObject(yield managerTeamMember_1.managerTeamMemberModel.update({
+            yield managerTeamMember_1.managerTeamMemberModel.update({
                 manager_id: params.new_manager_id,
             }, {
                 where: { manager_id: params.current_manager_id, },
                 returning: true
+            });
+            let goals = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findAll({
+                where: {
+                    manager_id: params.current_manager_id,
+                }
             }));
+            for (let goal of goals) {
+                let newGoal = yield helperFunction.convertPromiseToObject(yield teamGoal_1.teamGoalModel.findOne({
+                    where: {
+                        manager_id: params.new_manager_id,
+                        title: goal.title,
+                        description: goal.description,
+                        start_date: goal.start_date,
+                        end_date: goal.end_date,
+                        select_measure: goal.select_measure,
+                        enter_measure: goal.enter_measure,
+                    },
+                }));
+                if (newGoal) {
+                    yield teamGoalAssign_1.teamGoalAssignModel.update({
+                        goal_id: newGoal.id,
+                    }, {
+                        where: {
+                            goal_id: goal.id,
+                        }
+                    });
+                    yield teamGoalAssignCompletionByEmployee_1.teamGoalAssignCompletionByEmployeeModel.update({
+                        goal_id: newGoal.id,
+                    }, {
+                        where: {
+                            goal_id: goal.id,
+                        }
+                    });
+                }
+                else {
+                    yield teamGoal_1.teamGoalModel.update({
+                        manager_id: params.new_manager_id,
+                    }, {
+                        where: {
+                            manager_id: params.current_manager_id,
+                        },
+                        returning: true
+                    });
+                }
+            }
             return true;
+        });
+    }
+    addAttributes(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("params.attributes", params.attributes, params);
+            // params.attributes=JSON.parse(params.attributes);
+            // console.log("params.attributes",params.attributes,params)
+            let duplicateAttribute = null;
+            let attributes = [];
+            for (let attribute of params.attributes) {
+                duplicateAttribute = yield attributes_1.attributeModel.findOne({
+                    where: {
+                        employer_id: user.uid,
+                        name: {
+                            [Op.iLike]: attribute.name.toLowerCase(),
+                        },
+                        status: [constants.STATUS.active, constants.STATUS.inactive],
+                    }
+                });
+                if (duplicateAttribute) {
+                    break;
+                }
+                attributes.push({
+                    employer_id: user.uid,
+                    name: attribute.name,
+                    comment: attribute.desc || null,
+                    particulars: attribute.particulars || null,
+                    guidance: attribute.guidance || null,
+                });
+            }
+            if (!duplicateAttribute) {
+                return yield helperFunction.convertPromiseToObject(yield attributes_1.attributeModel.bulkCreate(attributes));
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_already_added);
+            }
+        });
+    }
+    getAttributes(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = {
+                where: {
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                },
+                order: [["createdAt", "DESC"]]
+            };
+            if (!params.is_pagination || params.is_pagination == constants.IS_PAGINATION.yes) {
+                let [offset, limit] = yield helperFunction.pagination(params.offset, params.limit);
+                query.offset = offset,
+                    query.limit = limit;
+            }
+            let attribute = yield attributes_1.attributeModel.findAndCountAll(query);
+            if (attribute) {
+                return yield helperFunction.convertPromiseToObject(attribute);
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    getAttributeDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                return yield helperFunction.convertPromiseToObject(attribute);
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    deleteAttribute(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                attribute.status = constants.STATUS.deleted;
+                attribute.save();
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    toggleAttributeStatus(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = yield attributes_1.attributeModel.findOne({
+                where: {
+                    id: params.attribute_id,
+                    employer_id: user.uid,
+                    status: [constants.STATUS.active, constants.STATUS.inactive],
+                }
+            });
+            if (attribute) {
+                if (attribute.status == constants.STATUS.active) {
+                    attribute.status = constants.STATUS.inactive;
+                }
+                else {
+                    attribute.status = constants.STATUS.active;
+                }
+                attribute.save();
+                return true;
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
+        });
+    }
+    /*
+   * get to add qualitative measurement details
+   */
+    getQualitativeMeasurementDetails(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let where = { status: constants.STATUS.active };
+            if (params.name) {
+                where = Object.assign(Object.assign({}, where), { name: params.name });
+            }
+            return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
+                where: where,
+            });
         });
     }
 }

@@ -46,6 +46,25 @@ export const selectAll = async (model: any, condition: any, attributes: any) => 
 
 }
 
+export const selectAndCountAll = async (model: any, condition: any, attributes: any) => {
+    try {
+        let selectQueryServiceData;
+        if (!_.isEmpty(model)) {
+            if (!_.isEmpty(condition)) {
+                selectQueryServiceData = await model.findAndCountAll(condition);
+            } else {
+                selectQueryServiceData = await model.findAndCountAll();
+            }
+        } else {
+            throw new Error(constants.MESSAGES.model_name_required);
+        }
+        return selectQueryServiceData;
+    } catch (error) {
+        throw new Error(error);
+    }
+
+}
+
 export const getRawQueryResult = async(query, replacements) => {
     const result = await rawQuery(query, replacements);
     return result[0]

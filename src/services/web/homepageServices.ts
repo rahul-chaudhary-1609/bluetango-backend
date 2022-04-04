@@ -5,6 +5,8 @@ import { coachManagementModel } from "../../models/coachManagement";
 import { advisorManagementModel } from "../../models/advisorManagement";
 import { articleManagementModel } from "../../models/articleManagement";
 import { subscriptionManagementModel } from "../../models/subscriptionManagement";
+import * as queryService from '../../queryService/bluetangoAdmin/queryService';
+import { staticContentModel, coachBiosModel } from "../../models/index"
 
 const Sequelize = require('sequelize');
 
@@ -76,5 +78,35 @@ export class HomepageServices {
 
         return await helperFunction.convertPromiseToObject(subscriptionList);
     }
+    /*
+      *get static content
+      */
+      public async getStaticContent(params: any) {
+        return await queryService.selectOne(staticContentModel, {
+            where: { id: 1 },
+            attributes: [`${params.contentType}`]
+        })
+    }
+ /*
+              * get all Bios
+              * @param : token
+              */
+ public async getBios(params: any) {
+    coachBiosModel.belongsTo(coachManagementModel,{foreignKey:"coach_id"});
+    let query: any = {
+        include:[
+            {
+                model:coachManagementModel,
+                attributes:['name'],
+                required:true,
+            }
+        ],
+    }
+    let [offset, limit] = await helperFunction.pagination(params.offset, params.limit)
+    let bios = await queryService.selectAndCountAll(coachBiosModel, query, {})
+    bios.rows = bios.rows.slice(offset, offset + limit);
+    return bios
 
+
+}
 }

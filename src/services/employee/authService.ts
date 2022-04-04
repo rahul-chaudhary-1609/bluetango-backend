@@ -9,6 +9,7 @@ import { employersModel } from  "../../models/employers"
 import { departmentModel } from  "../../models/department"
 import { managerTeamMemberModel } from "../../models/managerTeamMember";
 import { coachManagementModel } from "../../models/coachManagement";
+import { employeeRanksModel } from "../../models/employeeRanks";
 import { emojiModel } from "../../models/emoji";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -24,6 +25,7 @@ export class AuthService {
 
         employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
         let existingUser = await employeeModel.findOne({
             where: {
                 email: params.username.toLowerCase()
@@ -158,6 +160,7 @@ export class AuthService {
         employeeModel.hasOne(departmentModel,{ foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
         employeeModel.hasOne(employersModel,{ foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
         employeeModel.hasOne(managerTeamMemberModel,{ foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+        employeeModel.hasOne(employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
         managerTeamMemberModel.hasOne(employeeModel,{ foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
         employersModel.hasOne(adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" } )
         
@@ -166,6 +169,11 @@ export class AuthService {
                 id: params.uid
             },
             include: [
+                {
+                    model: employeeRanksModel,
+                    required: false,
+                    attributes: ["id", "name"]
+                },
                 {
                     model: departmentModel, 
                     required: false,

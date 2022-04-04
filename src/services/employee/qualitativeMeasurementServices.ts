@@ -2,10 +2,12 @@ import _ from "lodash";
 import * as constants from "../../constants";
 import * as helperFunction from "../../utils/helperFunction";
 import { qualitativeMeasurementModel } from "../../models/qualitativeMeasurement"
+import { attributeRatingModel } from "../../models/attributeRatings"
 import { qualitativeMeasurementCommentModel } from  "../../models/qualitativeMeasurementComment"
 import { managerTeamMemberModel } from  "../../models/managerTeamMember"
 import { employeeModel } from "../../models/employee";
 import { notificationModel } from "../../models/notification";
+import { attributeModel } from "../../models/attributes";
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 
@@ -91,6 +93,85 @@ export class QualitativeMeasuremetServices {
         }
         
     }
+
+    public async addAttributeRatings(params: any, user: any) {
+        let date = new Date();
+        date.setMonth(date.getMonth()-3);
+        //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+        let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        let checkManagerEmployee = await managerTeamMemberModel.findOne({
+            where: {
+                manager_id: user.uid,
+                team_member_id: params.employee_id
+            }
+        })
+        if (_.isEmpty(checkManagerEmployee)){
+            throw new Error(constants.MESSAGES.invalid_employee_id);
+        }
+
+        let attributeRating = await attributeRatingModel.findOne({
+            where: {
+                manager_id: user.uid,
+                employee_id: params.employee_id,
+                updatedAt:{[Op.gte]: dateCheck }
+            }
+        })
+        params.manager_id = user.uid;
+        params.start_date = new Date();
+        params.end_date = new Date()
+        params.end_date.setMonth(params.start_date.getMonth() + 3);
+
+        let employeeData = await employeeModel.findOne({
+            where: { id: params.employee_id}
+        })
+
+        let managerData = await employeeModel.findOne({
+            where: { id: params.employee_id }
+        })
+
+        delete managerData.password
+
+        if (_.isEmpty(attributeRating)) {
+            let resData =  await  attributeRatingModel.create(params);
+
+             // add notification for employee
+             let notificationObj = <any> {
+                type_id: resData.id,
+                sender_id: user.uid,
+                reciever_id: params.employee_id,
+                reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                type: constants.NOTIFICATION_TYPE.rating,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'New rating',
+                    //message: `your manager has given rating to you`,
+                    message: `Your rating has been updated`,
+                    id: resData.id,
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
+            }
+            await notificationModel.create(notificationObj);
+            // send push notification
+            let notificationData = <any> {
+                title: 'New rating',
+                body: `Your rating has been updated`,
+                data: {
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    title: 'New rating',
+                    message: `Your rating has been updated`,
+                    id: resData.id,
+                    senderEmplyeeData: managerData,
+                    //title: (params[i].title?params[i].title: ''),                            
+                },
+            }
+            await helperFunction.sendFcmNotification( [employeeData.device_token], notificationData);
+
+            return resData;
+        } else {
+            throw new Error(constants.MESSAGES.add_qualitative_measure_check);
+        }
+    }
    
     /*
     * get to add qualitative measurement
@@ -171,6 +252,28 @@ export class QualitativeMeasuremetServices {
        return result;
    }
 
+    /*
+    * get Employee Attributes
+    */
+    public async getAttributeRatings(params: any,user:any) {
+        attributeRatingModel.hasOne(employeeModel,{foreignKey: "id", sourceKey: "employee_id", targetKey: "id"});
+        let attributeRatings =await helperFunction.convertPromiseToObject( await attributeRatingModel.findOne({
+            where: { employee_id: params.employee_id || user.uid },
+            include: [
+                {
+                    model: employeeModel,
+                    required: true,
+                    attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                }
+            ],
+            order: [["updatedAt", "DESC"]],
+            limit:1
+        })) 
+
+        if (!attributeRatings) throw new Error(constants.MESSAGES.no_qualitative_measure);                   
+
+        return attributeRatings;
+    }
     
     /*
     * get to add qualitative measurement details
@@ -187,6 +290,36 @@ export class QualitativeMeasuremetServices {
         return await qualitativeMeasurementCommentModel.findAll({
             where: where,
         })
+    }
+
+    public async getAttributeList(params:any,user:any){
+        let attribute=null;
+
+        if(params.attribute_id){
+
+            attribute=await attributeModel.findOne({
+                where:{
+                    id:params.attribute_id,
+                    employer_id:user.current_employer_id,
+                    status:constants.STATUS.active,
+                }
+            })
+        }else{
+
+            attribute=await attributeModel.findAndCountAll({
+                where:{
+                    employer_id:user.current_employer_id,
+                    status:constants.STATUS.active,                
+                },
+                order: [["createdAt", "DESC"]]
+            })
+        }
+
+        if(attribute){
+            return await helperFunction.convertPromiseToObject(attribute);
+        }else{
+            throw new Error(constants.MESSAGES.attribute_not_found)
+        }
     }
 
 

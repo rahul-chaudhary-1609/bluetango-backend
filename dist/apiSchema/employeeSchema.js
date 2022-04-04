@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getEmployeeCV = exports.getThought = exports.getNotRatedSessions = exports.skipRateSession = exports.rateCoachSession = exports.getSessionHistoryDetails = exports.listSessionHistory = exports.cancelSession = exports.getSessions = exports.createSessionRequest = exports.getSlot = exports.getSlots = exports.getCoachList = exports.clearChat = exports.markGoalsAsPrimary = exports.toggleGoalAsPrimary = exports.shareEmployeeCV = exports.getGoalCompletionAverageAsManager = exports.feedback = exports.referFriend = exports.getQuantitativeStatsOfGoalsAsManager = exports.viewGoalAssignCompletionAsManager = exports.getAttributes = exports.getAttributeRatings = exports.addAttributeRatings = exports.addQualitativeMeasurement = exports.goalAcceptRejectAsManager = exports.submitGoalAsEmployee = exports.addGoal = exports.editGoal = exports.getAchievementHighFivesList = exports.getAchievementLikesList = exports.markNotificationsAsViewed = exports.deleteAchievementComment = exports.deleteAchievement = exports.getAchievementComments = exports.addEditCommentAchievement = exports.highFiveAchievement = exports.likeDislikeAchievement = exports.createUpdateAchievement = exports.getAchievementById = exports.getAchievements = exports.contactUs = exports.sendChatDisconnectNotification = exports.sendChatNotification = exports.getChatSessionIdandToken = exports.checkChatSession = exports.dropChatSession = exports.createChatSession = exports.getChatRoomId = exports.viewGoalDetailsAsEmployee = exports.viewGoalDetailsAsManager = exports.viewGoalAsManager = exports.searchTeamMember = exports.getQualitativeMeasurementDetails = exports.getQualitativeMeasurement = exports.feelAboutJobToday = exports.updateEnergyCheck = exports.thoughtOfTheDay = exports.viewDetailsEmployee = exports.limitOffsetValidate = exports.getListOfTeamMemberByManagerId = exports.updateProfile = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -34,7 +34,7 @@ exports.login = joi_1.default.object({
     }),
     password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -99,7 +99,20 @@ exports.updateProfile = joi_1.default.object({
     country_code: joi_1.default.string().max(5).optional(),
     date_of_birth: joi_1.default.string().optional(),
     accomplishments: joi_1.default.string().optional(),
-    profile_pic_url: joi_1.default.string().optional()
+    profile_pic_url: joi_1.default.string().optional(),
+    prev_employers: joi_1.default.array().items(joi_1.default.object().keys({
+        prev_employer: joi_1.default.string().required(),
+        prev_department: joi_1.default.string().required(),
+        prev_designation: joi_1.default.string().required(),
+        prev_date_of_joining: joi_1.default.string().required(),
+        prev_exit: joi_1.default.string().required(),
+    })).optional(),
+    address: joi_1.default.string().optional(),
+    technical_skills: joi_1.default.array().optional(),
+    qualifications: joi_1.default.array().optional(),
+    educations: joi_1.default.array().optional(),
+    references: joi_1.default.array().optional(),
+    previous_employment_history: joi_1.default.array().optional()
 });
 exports.getListOfTeamMemberByManagerId = joi_1.default.object({
     limit: joi_1.default.string().optional(),
@@ -176,6 +189,11 @@ exports.sendChatDisconnectNotification = joi_1.default.object({
 });
 exports.contactUs = joi_1.default.object({
     message: joi_1.default.string().required(),
+});
+exports.getAchievements = joi_1.default.object({
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
 });
 exports.getAchievementById = joi_1.default.object({
     achievement_id: joi_1.default.number().required(),
@@ -281,6 +299,21 @@ exports.addQualitativeMeasurement = joi_1.default.object({
     work_product: joi_1.default.string().optional(),
     work_product_desc: joi_1.default.string().optional()
 });
+exports.addAttributeRatings = joi_1.default.object({
+    employee_id: joi_1.default.number().required(),
+    ratings: joi_1.default.array().items(joi_1.default.object().keys({
+        attribute_id: joi_1.default.number().required(),
+        name: joi_1.default.string().required(),
+        rating: joi_1.default.number().valid(1, 2, 3, 4, 5).required(),
+        desc: joi_1.default.string().optional(),
+    })).required(),
+});
+exports.getAttributeRatings = joi_1.default.object({
+    employee_id: joi_1.default.number().optional(),
+});
+exports.getAttributes = joi_1.default.object({
+    attribute_id: joi_1.default.number().optional(),
+});
 exports.viewGoalAssignCompletionAsManager = joi_1.default.object({
     goal_id: joi_1.default.number().required(),
     team_goal_assign_id: joi_1.default.number().required(),
@@ -296,5 +329,94 @@ exports.referFriend = joi_1.default.object({
 exports.feedback = joi_1.default.object({
     rating: joi_1.default.number().required(),
     message: joi_1.default.string().optional(),
+});
+exports.getGoalCompletionAverageAsManager = joi_1.default.object({
+    goal_id: joi_1.default.number().optional(),
+});
+exports.shareEmployeeCV = joi_1.default.object({
+    to_email: joi_1.default.string().required(),
+    subject: joi_1.default.string().optional(),
+    message: joi_1.default.string().optional(),
+    type: joi_1.default.number().required().valid(1, 2)
+});
+exports.toggleGoalAsPrimary = joi_1.default.object({
+    team_goal_assign_id: joi_1.default.number().required(),
+});
+exports.markGoalsAsPrimary = joi_1.default.object({
+    goals: joi_1.default.array().items(joi_1.default.object().keys({
+        team_goal_assign_id: joi_1.default.number().required(),
+        is_primary: joi_1.default.number().valid(0, 1).required(),
+    })).required(),
+});
+exports.clearChat = joi_1.default.object({
+    chat_room_id: joi_1.default.number().required()
+});
+exports.getCoachList = joi_1.default.object({
+    searchKey: joi_1.default.string().allow(null, "").optional(),
+    coach_specialization_category_id: joi_1.default.number().optional(),
+    sortBy: joi_1.default.number().optional(),
+    filterBy: joi_1.default.number().optional(),
+    date: joi_1.default.string().required(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getSlots = joi_1.default.object({
+    coach_id: joi_1.default.number().required(),
+    filter_key: joi_1.default.string().valid("Daily", "Weekly", "Monthly", "Yearly").allow(null, '').optional(),
+    date: joi_1.default.string().allow(null, '').optional(),
+    day: joi_1.default.string().allow(null, '').optional(),
+    week: joi_1.default.string().allow(null, '').optional(),
+    month: joi_1.default.string().allow(null, '').optional(),
+    year: joi_1.default.string().allow(null, '').optional(),
+});
+exports.getSlot = joi_1.default.object({
+    slot_id: joi_1.default.number().required(),
+});
+exports.createSessionRequest = joi_1.default.object({
+    slot_id: joi_1.default.number().required(),
+    query: joi_1.default.string().required(),
+    app_id: joi_1.default.number().required(),
+    coach_specialization_category_id: joi_1.default.number().required(),
+    date: joi_1.default.string().required(),
+    start_time: joi_1.default.string().required(),
+    end_time: joi_1.default.string().required(),
+});
+exports.getSessions = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.cancelSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+    cancel_reason: joi_1.default.string().required(),
+    datetime: joi_1.default.string().optional(),
+});
+exports.listSessionHistory = joi_1.default.object({
+    datetime: joi_1.default.string().optional(),
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.getSessionHistoryDetails = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.rateCoachSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+    rating: joi_1.default.number().required(),
+    comment: joi_1.default.string().optional(),
+});
+exports.skipRateSession = joi_1.default.object({
+    session_id: joi_1.default.number().required(),
+});
+exports.getNotRatedSessions = joi_1.default.object({
+    datetime: joi_1.default.string().required(),
+});
+exports.getThought = joi_1.default.object({
+    date: joi_1.default.string().required()
+});
+exports.getEmployeeCV = joi_1.default.object({
+    type: joi_1.default.number().required().valid(1, 2)
 });
 //# sourceMappingURL=employeeSchema.js.map

@@ -2,7 +2,9 @@ import * as constants from '../constants'
 import jwt from 'jsonwebtoken';
 import { EmployersService } from '../services/admin/employersService'
 import { adminModel, employersModel, employeeModel, coachManagementModel } from '../models';
+import * as queryServices from '../queryService/bluetangoAdmin/queryService';
 import * as helperFunction from "../utils/helperFunction";
+import { bluetangoAdminModel } from '../models/bluetangoAdmin';
 
 //Instantiates a Home services  
 const employersService = new EmployersService();
@@ -23,11 +25,50 @@ export const validateAdminToken = async (req, res, next) => {
 
         let isUserExist = await employersService.findAdminById(req.user)
         console.log(isUserExist)
-        if(isUserExist) {
+        if (isUserExist) {
             response.status = 401;
             response.message = "User has been deleted please contact admin"
             return res.status(response.status).send(response);
         }
+        return next();
+    } catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+}
+
+export const validateBluetangoAdminToken = async (req, res, next) => {
+    let response = { ...constants.defaultServerResponse };
+    try {
+        if (!req.headers.authorization) {
+            throw new Error(constants.MESSAGES.token_missing);
+        }
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.BLUETANGO_ADMIN_SECRET_KEY || constants.BLUETANGO_ADMIN_SECRET_KEY);
+        const admin = await queryServices.selectOne(bluetangoAdminModel, { where: { id: decoded.id } })
+
+        if (admin.tokens.find(element => element ==token)==undefined) {
+            response.status = 401;
+            response.message = constants.MESSAGES.invalid_toke
+            return res.status(response.status).send(response);
+        }
+        if (admin.status == constants.STATUS.inactive) {
+            response.status = 401;
+            response.message = constants.MESSAGES.deactivate_account
+            return res.status(response.status).send(response);
+        }
+        else if (admin.status == constants.STATUS.deleted) {
+            response.status = 401;
+            response.message = constants.MESSAGES.delete_account
+            return res.status(response.status).send(response);
+        }
+
+        let payload = {
+            uid: decoded.id,
+            user_role: decoded.user_role
+        }
+        req.user = payload;
         return next();
     } catch (error) {
         response.message = error.message;
@@ -47,6 +88,26 @@ export const validateForgotPasswordToken = async (req, res, next) => {
         let payload = {
             uid: decoded.id,
             user_role: decoded.user_role
+        }
+        req.user = payload;
+        return next();
+    } catch (error) {
+        response.message = error.message;
+        response.status = 401;
+    }
+    return res.status(response.status).send(response);
+}
+
+export const validateBluetangoForgotPasswordToken = async (req, res, next) => {
+    let response = { ...constants.defaultServerResponse };
+    try {
+        if (!req.headers.authorization) {
+            throw new Error(constants.MESSAGES.token_missing);
+        }
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY || constants.BLUETANGO_FORGOT_PASSWORD_SECRET_KEY);
+        let payload = {
+            uid: decoded.id,
         }
         req.user = payload;
         return next();
@@ -87,7 +148,8 @@ export const validateEmployeeToken = async (req, res, next) => {
 
         let payload = {
             uid: decoded.id,
-            user_role: decoded.user_role
+            user_role: decoded.user_role,
+            current_employer_id: employee.current_employer_id
         }
         req.user = payload;
         return next();
@@ -179,7 +241,7 @@ export const checkEmployerHaveActivePlan = async (req, res, next) => {
             response.status = 402;
             response.message = constants.MESSAGES.employer_have_no_plan
             return res.status(response.status).send(response);
-        }else {
+        } else {
             return next();
         }
     } catch (error) {
@@ -187,5 +249,5 @@ export const checkEmployerHaveActivePlan = async (req, res, next) => {
         response.status = 401;
     }
     return res.status(response.status).send(response);
-    
+
 }

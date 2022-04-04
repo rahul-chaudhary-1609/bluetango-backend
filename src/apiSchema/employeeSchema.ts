@@ -13,7 +13,7 @@ export const login = Joi.object({
   ),
   password: Joi.string().min(8)
   .max(15)
-  .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+  // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
   .required()
   .messages({
     "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -84,7 +84,20 @@ export const updateProfile = Joi.object({
   country_code: Joi.string().max(5).optional(),
   date_of_birth: Joi.string().optional(),
   accomplishments: Joi.string().optional(),
-  profile_pic_url: Joi.string().optional()
+  profile_pic_url: Joi.string().optional(),
+  prev_employers:Joi.array().items(Joi.object().keys({
+      prev_employer: Joi.string().required(),
+      prev_department: Joi.string().required(),
+      prev_designation: Joi.string().required(),
+      prev_date_of_joining: Joi.string().required(),
+      prev_exit: Joi.string().required(),
+  })).optional(),
+  address:Joi.string().optional(),
+  technical_skills:Joi.array().optional(),
+  qualifications:Joi.array().optional(),
+  educations:Joi.array().optional(),
+  references:Joi.array().optional(),
+  previous_employment_history:Joi.array().optional()
 })
 
 export const getListOfTeamMemberByManagerId = Joi.object({
@@ -181,6 +194,12 @@ export const sendChatDisconnectNotification = Joi.object({
 
 export const contactUs = Joi.object({
   message: Joi.string().required(),
+})
+
+export const getAchievements = Joi.object({
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
 })
 
 export const getAchievementById = Joi.object({
@@ -308,6 +327,24 @@ export const addQualitativeMeasurement = Joi.object({
   work_product_desc: Joi.string().optional()
 })
 
+export const addAttributeRatings=Joi.object({
+  employee_id: Joi.number().required(),
+  ratings:Joi.array().items(Joi.object().keys({
+              attribute_id:Joi.number().required(),
+              name: Joi.string().required(),
+              rating: Joi.number().valid(1,2,3,4,5).required(),
+              desc:Joi.string().optional(),
+          })).required(),
+});
+
+export const getAttributeRatings = Joi.object({
+  employee_id:Joi.number().optional(),
+})
+
+export const getAttributes = Joi.object({
+  attribute_id:Joi.number().optional(),
+})
+
 export const viewGoalAssignCompletionAsManager = Joi.object({
   goal_id: Joi.number().required(),
   team_goal_assign_id: Joi.number().required(),
@@ -326,4 +363,110 @@ export const referFriend = Joi.object({
 export const feedback = Joi.object({
   rating: Joi.number().required(),
   message: Joi.string().optional(),
+});
+
+export const getGoalCompletionAverageAsManager=Joi.object({
+  goal_id: Joi.number().optional(),
+});
+
+export const shareEmployeeCV=Joi.object({
+  to_email: Joi.string().required(),
+  subject: Joi.string().optional(),
+  message: Joi.string().optional(),
+  type:Joi.number().required().valid(1,2)
+});
+
+export const toggleGoalAsPrimary=Joi.object({
+  team_goal_assign_id: Joi.number().required(),
+});
+
+export const markGoalsAsPrimary=Joi.object({
+  goals:Joi.array().items(Joi.object().keys({
+            team_goal_assign_id: Joi.number().required(),
+            is_primary: Joi.number().valid(0,1).required(),
+        })).required(),
+});
+
+export const clearChat = Joi.object({
+  chat_room_id: Joi.number().required()
+})
+
+export const getCoachList= Joi.object({
+  searchKey: Joi.string().allow(null,"").optional(),
+  coach_specialization_category_id:Joi.number().optional(),
+  sortBy: Joi.number().optional(),
+  filterBy: Joi.number().optional(),
+  date: Joi.string().required(),
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getSlots= Joi.object({
+  coach_id: Joi.number().required(),
+  filter_key: Joi.string().valid("Daily","Weekly","Monthly", "Yearly").allow(null, '').optional(),
+  date: Joi.string().allow(null, '').optional(),
+  day: Joi.string().allow(null, '').optional(),
+  week: Joi.string().allow(null, '').optional(),
+  month: Joi.string().allow(null, '').optional(),
+  year: Joi.string().allow(null, '').optional(),
+})
+
+export const getSlot= Joi.object({
+  slot_id: Joi.number().required(),
+})
+
+export const createSessionRequest= Joi.object({
+  slot_id:Joi.number().required(),
+  query:Joi.string().required(),
+  app_id:Joi.number().required(),
+  coach_specialization_category_id:Joi.number().required(),
+  date:Joi.string().required(),
+  start_time:Joi.string().required(),
+  end_time:Joi.string().required(),   
+})
+
+
+export const getSessions=Joi.object({
+  datetime:Joi.string().optional(),
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const cancelSession=Joi.object({
+  session_id:Joi.number().required(),
+  cancel_reason: Joi.string().required(),
+  datetime:Joi.string().optional(),
+})
+
+export const listSessionHistory=Joi.object({
+  datetime:Joi.string().optional(),
+  is_pagination:Joi.number().optional(),
+  limit: Joi.number().optional(),
+  offset: Joi.number().optional(),
+})
+
+export const getSessionHistoryDetails=Joi.object({
+  session_id:Joi.number().required(),
+})
+
+export const rateCoachSession=Joi.object({
+  session_id:Joi.number().required(),
+  rating:Joi.number().required(),
+  comment:Joi.string().optional(),
+})
+
+export const skipRateSession=Joi.object({
+  session_id:Joi.number().required(),
+})
+
+export const getNotRatedSessions=Joi.object({
+  datetime:Joi.string().required(),
+})
+export const getThought=Joi.object({
+  date:Joi.string().required()
+})
+export const getEmployeeCV=Joi.object({
+  type:Joi.number().required().valid(1,2)
 });

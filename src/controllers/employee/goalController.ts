@@ -193,5 +193,48 @@ export class GoalController {
         }
     }
 
+     /**
+    * get Goal Completion Average As Manager
+    * @param req :[]
+    * @param res 
+    */
+      public async getGoalCompletionAverageAsManager(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.getGoalCompletionAverageAsManager(req.query, req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+        } catch (e) {
+            next(e)
+        }
+    }
+
+       /**
+    * toggle Goal As Primary
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+    public async toggleGoalAsPrimary(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.toggleGoalAsPrimary(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
+           /**
+    * mark Goal As Primary
+    * @param req :[body data]
+    * @param res : [data object]
+    */
+    public async markGoalsAsPrimary(req: any, res: any, next: any) {
+        try {
+            const responseFromService = await goalServices.markGoalsAsPrimary(req.body,req.user);
+            appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+
+        } catch (e) {
+            next(e)
+        }
+    }
     
 }

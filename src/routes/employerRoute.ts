@@ -27,13 +27,16 @@ employerRoute.post("/resetPassword", validators.trimmer, joiSchemaValidation.val
 employerRoute.post("/changePassword", validators.trimmer, joiSchemaValidation.validateBody(employerSchema.changePassword), tokenValidator.validateEmployerToken, authController.changePassword);
 
 /* add or edit employers route for employers */
-employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employerSchema.addEditEmployee), tokenValidator.validateEmployerToken,tokenValidator.checkEmployerHaveActivePlan, managementController.addEditEmployee);
+employerRoute.post("/addEditEmployee", joiSchemaValidation.validateBody(employerSchema.addEditEmployee), tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.addEditEmployee);
 
 /* get employers list route for employers */
-employerRoute.get("/getManagerList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateQueryParams(employerSchema.getManagerList),  managementController.getManagerList);
+employerRoute.get("/getManagerList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateQueryParams(employerSchema.getManagerList), managementController.getManagerList);
 
 /* get employers list route for employers */
 employerRoute.get("/getDepartmentList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getDepartmentList);
+
+/* get Employee Rank List route for employers */
+employerRoute.get("/getEmployeeRankList", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeRankList);
 
 /* get employers list route for employers */
 employerRoute.get("/getEmployeeList", joiSchemaValidation.validateQueryParams(employerSchema.getEmployeeList), tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, managementController.getEmployeeList);
@@ -55,11 +58,11 @@ employerRoute.get("/getSubscriptionPlanList", tokenValidator.validateEmployerTok
 employerRoute.post("/buyPlan", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.buyPlan), employerController.buyPlan);
 
 /* view Employee Details */
-employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan,joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails),  managementController.viewEmployeeDetails);
+employerRoute.get("/viewEmployeeDetails/:employee_id", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateParams(employerSchema.viewEmployeeDetails), managementController.viewEmployeeDetails);
 
 
 /* delete Employee */
-employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan,joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
+employerRoute.delete("/deleteEmployee/:employee_id", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateParams(employerSchema.deleteEmployee), managementController.deleteEmployee);
 
 /* update Employee manager */
 employerRoute.put("/updateManager", tokenValidator.validateEmployerToken, tokenValidator.checkEmployerHaveActivePlan, joiSchemaValidation.validateBody(employerSchema.updateManager), managementController.updateManager);
@@ -92,7 +95,7 @@ employerRoute.get("/getUnseenNotificationCount", validators.trimmer, tokenValida
 
 
 /* payment */
-employerRoute.post("/payment", tokenValidator.validateEmployerToken,  paymentController.payment);
+employerRoute.post("/payment", tokenValidator.validateEmployerToken, paymentController.payment);
 
 /* payment success */
 employerRoute.get("/paymentSuccess", paymentController.paymentSuccess);
@@ -105,6 +108,23 @@ employerRoute.get("/getBraintreeClientToken", tokenValidator.validateEmployerTok
 
 /* payment failed */
 employerRoute.post("/uploadFile", tokenValidator.validateEmployerToken, upload.single('file'), authController.uploadFile);
+
+/* add Edit Attributes */
+employerRoute.post("/addAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateBody(employerSchema.addAttributes), managementController.addAttributes);
+
+/* get Attributes */
+employerRoute.get("/getAttributes", tokenValidator.validateEmployerToken, joiSchemaValidation.validateQueryParams(employerSchema.getAttributes), managementController.getAttributes);
+
+/* get Attribute details */
+employerRoute.get("/getAttributeDetails/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.getAttributeDetails), managementController.getAttributeDetails);
+
+/* delete Attribute */
+employerRoute.delete("/deleteAttribute/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.deleteAttribute), managementController.deleteAttribute);
+
+/* toggle Attribute Status */
+employerRoute.put("/toggleAttributeStatus/:attribute_id", tokenValidator.validateEmployerToken, joiSchemaValidation.validateParams(employerSchema.toggleAttributeStatus), managementController.toggleAttributeStatus);
+/* get qualitative measurement for employee */
+employerRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, tokenValidator.validateEmployerToken, joiSchemaValidation.validateQueryParams(employerSchema.getQualitativeMeasurementDetails), managementController.getQualitativeMeasurementDetails);
 
 
 

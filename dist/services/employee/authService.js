@@ -43,6 +43,7 @@ const employers_1 = require("../../models/employers");
 const department_1 = require("../../models/department");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const coachManagement_1 = require("../../models/coachManagement");
+const employeeRanks_1 = require("../../models/employeeRanks");
 const emoji_1 = require("../../models/emoji");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
@@ -56,6 +57,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             employee_1.employeeModel.hasOne(department_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             employee_1.employeeModel.hasOne(employers_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
+            employee_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             let existingUser = yield employee_1.employeeModel.findOne({
                 where: {
                     email: params.username.toLowerCase()
@@ -197,6 +199,7 @@ class AuthService {
             employee_1.employeeModel.hasOne(department_1.departmentModel, { foreignKey: "id", sourceKey: "current_department_id", targetKey: "id" });
             employee_1.employeeModel.hasOne(employers_1.employersModel, { foreignKey: "id", sourceKey: "current_employer_id", targetKey: "id" });
             employee_1.employeeModel.hasOne(managerTeamMember_1.managerTeamMemberModel, { foreignKey: "team_member_id", sourceKey: "id", targetKey: "team_member_id" });
+            employee_1.employeeModel.hasOne(employeeRanks_1.employeeRanksModel, { foreignKey: "id", sourceKey: "employee_rank_id", targetKey: "id" });
             managerTeamMember_1.managerTeamMemberModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "manager_id", targetKey: "id" });
             employers_1.employersModel.hasOne(admin_1.adminModel, { foreignKey: "id", sourceKey: "admin_id", targetKey: "id" });
             let existingUser = yield employee_1.employeeModel.findOne({
@@ -204,6 +207,11 @@ class AuthService {
                     id: params.uid
                 },
                 include: [
+                    {
+                        model: employeeRanks_1.employeeRanksModel,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
                     {
                         model: department_1.departmentModel,
                         required: false,

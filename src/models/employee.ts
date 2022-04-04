@@ -24,6 +24,9 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.DATE,
         allowNull: true
     },
+    prev_employers: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+    },
     prev_employer: {
         type: DataTypes.STRING,
     },
@@ -50,10 +53,10 @@ export const employeeModel: any = sequelize.define("employee", {
     date_of_birth: {
         type: DataTypes.DATEONLY,
     },
-    employee_code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
+    // employee_code: {
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // },
     profile_pic_url: {
         type: DataTypes.STRING,
     },
@@ -120,9 +123,51 @@ export const employeeModel: any = sequelize.define("employee", {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    last_goal_reminder_datetime: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: "2021-08-01"
+    },
+    employee_rank_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue:1,
+    },
+    first_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    last_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    address: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    technical_skills: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
+    },
+    qualifications: {
+        type: DataTypes.ARRAY(DataTypes.JSONB),
+        allowNull:true,
+    },
+    educations: {
+        type: DataTypes.ARRAY(DataTypes.JSONB),
+        allowNull:true,
+    },
+    references: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true
+    },
+    previous_employment_history: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 },
     {
         tableName: "employee"
     }
 );
-employeeModel.sync({ alter: false });
+employeeModel.sync({ alter: true });

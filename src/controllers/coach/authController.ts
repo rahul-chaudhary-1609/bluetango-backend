@@ -19,7 +19,7 @@ export class AuthController {
     public async login(req: any, res: any, next: any) {
         try {
             const responseFromService = await authService.login(req.body);
-            appUtils.successResponse(res, responseFromService, constants.MESSAGES.login_success);
+            appUtils.successResponse(res, responseFromService, (responseFromService.is_both) ? constants.MESSAGES.select_appId : constants.MESSAGES.login_success);
         } catch (e) {
             next(e)
         }
@@ -33,8 +33,7 @@ export class AuthController {
     public async forgotPassword(req: any, res: any, next: any) {
         try {
             const responseFromService = await authService.forgotPassword(req.body);
-            const msg = constants.MESSAGES.forget_pass_otp;
-            appUtils.successResponse(res, responseFromService, msg);
+            appUtils.successResponse(res, responseFromService, (responseFromService["is_both"]) ? constants.MESSAGES.select_appId : constants.MESSAGES.forget_pass_otp);
         } catch (error) {
             next(error)
         }
@@ -127,6 +126,33 @@ export class AuthController {
             next(e)
         }
     }
+     /**
+      * get static content
+      * @param req :
+      * @param res 
+      */
+      public async getStaticContent(req: any, res: any) {
+        try {
+            const responseFromService = await authService.getStaticContent(req.query);
+            return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
 
+        } catch (error) {
+            appUtils.errorResponse(res, error, constants.code.error_code);
+        }
+    }
+ /**
+     * get all coach bios
+     * @param req :
+     * @param res 
+     */
+  public async getBios(req: any, res: any) {
+    try {
+        const responseFromService = await authService.getBios(req.query);
+        return appUtils.successResponse(res, responseFromService, constants.MESSAGES.fetch_success);
+
+    } catch (error) {
+        appUtils.errorResponse(res, error, constants.code.error_code);
+    }
+}
 
 }

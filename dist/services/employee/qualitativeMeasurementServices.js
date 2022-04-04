@@ -36,10 +36,12 @@ const lodash_1 = __importDefault(require("lodash"));
 const constants = __importStar(require("../../constants"));
 const helperFunction = __importStar(require("../../utils/helperFunction"));
 const qualitativeMeasurement_1 = require("../../models/qualitativeMeasurement");
+const attributeRatings_1 = require("../../models/attributeRatings");
 const qualitativeMeasurementComment_1 = require("../../models/qualitativeMeasurementComment");
 const managerTeamMember_1 = require("../../models/managerTeamMember");
 const employee_1 = require("../../models/employee");
 const notification_1 = require("../../models/notification");
+const attributes_1 = require("../../models/attributes");
 const Sequelize = require('sequelize');
 var Op = Sequelize.Op;
 class QualitativeMeasuremetServices {
@@ -79,6 +81,78 @@ class QualitativeMeasuremetServices {
             delete managerData.password;
             if (lodash_1.default.isEmpty(qualitativeMeasurementData)) {
                 let resData = yield qualitativeMeasurement_1.qualitativeMeasurementModel.create(params);
+                // add notification for employee
+                let notificationObj = {
+                    type_id: resData.id,
+                    sender_id: user.uid,
+                    reciever_id: params.employee_id,
+                    reciever_type: constants.NOTIFICATION_RECIEVER_TYPE.employee,
+                    type: constants.NOTIFICATION_TYPE.rating,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'New rating',
+                        //message: `your manager has given rating to you`,
+                        message: `Your rating has been updated`,
+                        id: resData.id,
+                        senderEmplyeeData: managerData,
+                    },
+                };
+                yield notification_1.notificationModel.create(notificationObj);
+                // send push notification
+                let notificationData = {
+                    title: 'New rating',
+                    body: `Your rating has been updated`,
+                    data: {
+                        type: constants.NOTIFICATION_TYPE.rating,
+                        title: 'New rating',
+                        message: `Your rating has been updated`,
+                        id: resData.id,
+                        senderEmplyeeData: managerData,
+                    },
+                };
+                yield helperFunction.sendFcmNotification([employeeData.device_token], notificationData);
+                return resData;
+            }
+            else {
+                throw new Error(constants.MESSAGES.add_qualitative_measure_check);
+            }
+        });
+    }
+    addAttributeRatings(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let date = new Date();
+            date.setMonth(date.getMonth() - 3);
+            //let dateCheck = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate(); 
+            let dateCheck = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            let checkManagerEmployee = yield managerTeamMember_1.managerTeamMemberModel.findOne({
+                where: {
+                    manager_id: user.uid,
+                    team_member_id: params.employee_id
+                }
+            });
+            if (lodash_1.default.isEmpty(checkManagerEmployee)) {
+                throw new Error(constants.MESSAGES.invalid_employee_id);
+            }
+            let attributeRating = yield attributeRatings_1.attributeRatingModel.findOne({
+                where: {
+                    manager_id: user.uid,
+                    employee_id: params.employee_id,
+                    updatedAt: { [Op.gte]: dateCheck }
+                }
+            });
+            params.manager_id = user.uid;
+            params.start_date = new Date();
+            params.end_date = new Date();
+            params.end_date.setMonth(params.start_date.getMonth() + 3);
+            let employeeData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
+            let managerData = yield employee_1.employeeModel.findOne({
+                where: { id: params.employee_id }
+            });
+            delete managerData.password;
+            if (lodash_1.default.isEmpty(attributeRating)) {
+                let resData = yield attributeRatings_1.attributeRatingModel.create(params);
                 // add notification for employee
                 let notificationObj = {
                     type_id: resData.id,
@@ -180,6 +254,29 @@ class QualitativeMeasuremetServices {
         });
     }
     /*
+    * get Employee Attributes
+    */
+    getAttributeRatings(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            attributeRatings_1.attributeRatingModel.hasOne(employee_1.employeeModel, { foreignKey: "id", sourceKey: "employee_id", targetKey: "id" });
+            let attributeRatings = yield helperFunction.convertPromiseToObject(yield attributeRatings_1.attributeRatingModel.findOne({
+                where: { employee_id: params.employee_id || user.uid },
+                include: [
+                    {
+                        model: employee_1.employeeModel,
+                        required: true,
+                        attributes: ['id', 'name', 'email', 'phone_number', 'profile_pic_url']
+                    }
+                ],
+                order: [["updatedAt", "DESC"]],
+                limit: 1
+            }));
+            if (!attributeRatings)
+                throw new Error(constants.MESSAGES.no_qualitative_measure);
+            return attributeRatings;
+        });
+    }
+    /*
     * get to add qualitative measurement details
     */
     getQualitativeMeasurementDetails(params, user) {
@@ -191,6 +288,35 @@ class QualitativeMeasuremetServices {
             return yield qualitativeMeasurementComment_1.qualitativeMeasurementCommentModel.findAll({
                 where: where,
             });
+        });
+    }
+    getAttributeList(params, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let attribute = null;
+            if (params.attribute_id) {
+                attribute = yield attributes_1.attributeModel.findOne({
+                    where: {
+                        id: params.attribute_id,
+                        employer_id: user.current_employer_id,
+                        status: constants.STATUS.active,
+                    }
+                });
+            }
+            else {
+                attribute = yield attributes_1.attributeModel.findAndCountAll({
+                    where: {
+                        employer_id: user.current_employer_id,
+                        status: constants.STATUS.active,
+                    },
+                    order: [["createdAt", "DESC"]]
+                });
+            }
+            if (attribute) {
+                return yield helperFunction.convertPromiseToObject(attribute);
+            }
+            else {
+                throw new Error(constants.MESSAGES.attribute_not_found);
+            }
         });
     }
     /*

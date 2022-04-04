@@ -333,6 +333,7 @@ export class EmployerService {
         let contactObj = <any>{
             employer_id: parseInt(user.uid),
             message: params.message,
+            type:constants.CONTACT_TYPE.employer
         }
 
         return await contactUsModel.create(contactObj);

@@ -54,12 +54,14 @@ employeeRoute.post("/employeeResetPassword", validators.trimmer, joiSchemaValida
 /* get my profile route for employee */
 employeeRoute.get("/getMyProfile", validators.trimmer, tokenValidator.validateEmployeeToken, authController.getMyProfile);
 /* update profile route for employee */
-employeeRoute.post("/updateProfile", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateProfile), authController.updateProfile);
+employeeRoute.post("/updateProfile", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.updateProfile), authController.updateProfile);
 /* upload file route for employee */
 employeeRoute.post("/uploadFile", tokenValidator.validateEmployeeToken, multerParser_1.upload.single('file'), authController.uploadFile);
 // employee API
 /* get my profile route for employee */
 employeeRoute.get("/getListOfTeamMemberByManagerId", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.limitOffsetValidate), employeeController.getListOfTeamMemberByManagerId);
+/* get Employee Count Group By Energy */
+employeeRoute.get("/getEmployeeCountGroupByEnergy", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getEmployeeCountGroupByEnergy);
 /* view details route for employee */
 employeeRoute.get("/viewDetailsEmployee", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.viewDetailsEmployee), employeeController.viewDetailsEmployee);
 /* search team meber for manager */
@@ -119,14 +121,44 @@ employeeRoute.get("/viewGoalDetailsAsEmployee", validators.trimmer, tokenValidat
 // QualitativeMeasurement routes
 /* add qualitative measurement for employee */
 employeeRoute.post("/addQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addQualitativeMeasurement), qualitativeMeasurementController.addQualitativeMeasurement);
+/* add Attribute Ratings */
+employeeRoute.post("/addAttributeRatings", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.addAttributeRatings), qualitativeMeasurementController.addAttributeRatings);
+/* add Attribute Ratings */
+employeeRoute.get("/getAttributeRatings", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getAttributeRatings), qualitativeMeasurementController.getAttributeRatings);
 /* get qualitative measurement for employee */
 employeeRoute.get("/getQualitativeMeasurement", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurement), qualitativeMeasurementController.getQualitativeMeasurement);
+/* get AttributeList */
+employeeRoute.get("/getAttributeList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getAttributeList);
+/* get Attribute by id*/
+employeeRoute.get("/getAttribute/:attribute_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAttributes), qualitativeMeasurementController.getAttributeList);
 /* get qualitative measurement for employee */
 employeeRoute.get("/getQualitativeMeasurementDetails", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getQualitativeMeasurementDetails), qualitativeMeasurementController.getQualitativeMeasurementDetails);
 /* get qualitative measurement comment for employee */
 employeeRoute.get("/getQuantitativeMeasurementCommentList", validators.trimmer, tokenValidator.validateEmployeeToken, qualitativeMeasurementController.getQuantitativeMeasurementCommentList);
+/* get Coach Specialization Category List */
+employeeRoute.get("/getCoachSpecializationCategoryList", tokenValidator.validateEmployeeToken, employeeController.getCoachSpecializationCategoryList);
 /* get coach list */
 employeeRoute.get("/getCoachList", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getCoachList);
+/* get Slots */
+employeeRoute.get("/getSlots", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSlots), employeeController.getSlots);
+/*get Slot */
+employeeRoute.get("/getSlot", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSlot), employeeController.getSlot);
+/* create Session Request */
+employeeRoute.post("/createSessionRequest", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.createSessionRequest), employeeController.createSessionRequest);
+/* get Sessions */
+employeeRoute.get("/getSessions", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getSessions), employeeController.getSessions);
+/* cancel Session */
+employeeRoute.put("/cancelSession", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.cancelSession), employeeController.cancelSession);
+/* get Not Rated Sessions */
+employeeRoute.get("/getNotRatedSessions", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getNotRatedSessions), employeeController.getNotRatedSessions);
+/* list Session History */
+employeeRoute.get("/listSessionHistory", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.listSessionHistory), employeeController.listSessionHistory);
+/* get Session History Details */
+employeeRoute.get("/getSessionHistoryDetails/:session_id", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getSessionHistoryDetails), employeeController.getSessionHistoryDetails);
+/* rate Coach Session */
+employeeRoute.post("/rateCoachSession", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.rateCoachSession), employeeController.rateCoachSession);
+/*skip Rate Session */
+employeeRoute.put("/skipRateSession", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.skipRateSession), employeeController.skipRateSession);
 /* contact us for employee */
 employeeRoute.post("/contactUs", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.contactUs), employeeController.contactUs);
 /* contact us for employee */
@@ -160,9 +192,11 @@ employeeRoute.get("/checkChatSession/:chat_room_id", validators.trimmer, tokenVa
 employeeRoute.post("/sendChatNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatNotification), chatController.sendChatNotification);
 /* send disconnect video/audio chat notification*/
 employeeRoute.post("/sendChatDisconnectNotification", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.sendChatDisconnectNotification), chatController.sendChatDisconnectNotification);
+/* clear Chat*/
+employeeRoute.delete("/clearChat", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.clearChat), chatController.clearChat);
 //achievement API's
 /* get achievements */
-employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, achievementController.getAchievements);
+employeeRoute.get("/getAchievements", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getAchievements), achievementController.getAchievements);
 /* get achievement by id */
 employeeRoute.get("/getAchievementById/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementById), achievementController.getAchievementById);
 /* create achievement */
@@ -183,5 +217,19 @@ employeeRoute.delete("/deleteAchievementComment/:achievement_comment_id", valida
 employeeRoute.get("/getAchievementLikesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementLikesList), achievementController.getAchievementLikesList);
 /* get achievement high fives list*/
 employeeRoute.get("/getAchievementHighFivesList/:achievement_id", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateParams(employeeSchema.getAchievementHighFivesList), achievementController.getAchievementHighFivesList);
+/* get Goal Completion Average As Manager*/
+employeeRoute.get("/getGoalCompletionAverageAsManager", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getGoalCompletionAverageAsManager), goalController.getGoalCompletionAverageAsManager);
+/* share Employee CV*/
+employeeRoute.post("/shareEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.shareEmployeeCV), employeeController.shareEmployeeCV);
+/* get Employee CV*/
+employeeRoute.get("/getEmployeeCV", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.getEmployeeCV), employeeController.getEmployeeCV);
+/* /get Goal Submit Reminders */
+employeeRoute.get("/getGoalSubmitReminders", validators.trimmer, tokenValidator.validateEmployeeToken, employeeController.getGoalSubmitReminders);
+/* toggle Goal As Primary */
+employeeRoute.put("/toggleGoalAsPrimary", validators.trimmer, tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.toggleGoalAsPrimary), goalController.toggleGoalAsPrimary);
+/* mark Goals As Primary */
+employeeRoute.put("/markGoalsAsPrimary", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateBody(employeeSchema.markGoalsAsPrimary), goalController.markGoalsAsPrimary);
+/* /get thought */
+employeeRoute.get("/getThought", tokenValidator.validateEmployeeToken, joiSchemaValidation.validateQueryParams(employeeSchema.getThought), employeeController.getThought);
 module.exports = employeeRoute;
 //# sourceMappingURL=employeeRoute.js.map

@@ -106,6 +106,22 @@ class EmployeeController {
         });
     }
     /**
+ * get Employee Rank List
+ * @param req :[get data]
+ * @param res : [employers data]
+ */
+    getEmployeeRankList(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getEmployeeRankList();
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
     * view Employee Details
     * @param req :[get data]
     * @param res : [employee data]
@@ -150,6 +166,102 @@ class EmployeeController {
             }
             catch (error) {
                 appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * add Edit Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    addAttributes(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.addAttributes(req.body, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * get Attributes
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    getAttributes(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getAttributes(req.query, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * get Attribute Details
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    getAttributeDetails(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getAttributeDetails(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * delete Attribute
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    deleteAttribute(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.deleteAttribute(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+    * toggle Attribute Status
+    * @param req :[get data]
+    * @param res : [employee data]
+    */
+    toggleAttributeStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.toggleAttributeStatus(req.params, req.user);
+                return appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (error) {
+                appUtils.errorResponse(res, error, constants.code.error_code);
+            }
+        });
+    }
+    /**
+  * get qualitative measurement details
+  * @param req :[]
+  * @param res
+  */
+    getQualitativeMeasurementDetails(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const responseFromService = yield employeeService.getQualitativeMeasurementDetails(req.query, req.user);
+                appUtils.successResponse(res, responseFromService, constants.MESSAGES.success);
+            }
+            catch (e) {
+                next(e);
             }
         });
     }

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateManager = exports.getManagerList = exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
+exports.getQualitativeMeasurementDetails = exports.toggleAttributeStatus = exports.deleteAttribute = exports.getAttributes = exports.getAttributeDetails = exports.addAttributes = exports.updateManager = exports.getManagerList = exports.contactUs = exports.cancelPlan = exports.buyPlan = exports.editProfile = exports.deleteEmployee = exports.viewEmployeeDetails = exports.updateEmployerDeviceToken = exports.getEmployeeList = exports.addEditEmployee = exports.changePassword = exports.resetPassword = exports.forgotPassword = exports.login = void 0;
 const joi_1 = __importDefault(require("joi"));
 const constants = __importStar(require("../constants"));
 exports.login = joi_1.default.object({
@@ -35,7 +35,7 @@ exports.login = joi_1.default.object({
     }),
     password: joi_1.default.string().min(8)
         .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+        // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
         .required()
         .messages({
         "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
@@ -98,24 +98,33 @@ exports.changePassword = joi_1.default.object({
 });
 exports.addEditEmployee = joi_1.default.object({
     id: joi_1.default.string().optional(),
-    name: joi_1.default.string().required(),
+    //name: Joi.string().required(),
+    first_name: joi_1.default.string().required(),
+    last_name: joi_1.default.string().required(),
     email: joi_1.default.string().regex(/^(?:^[0-9]{4,15}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i).required(),
-    password: joi_1.default.string().min(8)
-        .max(15)
-        .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
-        .messages({
-        "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
-        "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
-        "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
-        "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
-        "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
-    }).optional(),
+    // password: Joi.string().min(8)
+    // .max(15)
+    // .regex(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})"))
+    // .messages({
+    //   "string.min": constants.CUSTOM_JOI_MESSAGE.password_msg.min,
+    //   "string.max": constants.CUSTOM_JOI_MESSAGE.password_msg.max,
+    //   "string.base": constants.CUSTOM_JOI_MESSAGE.password_msg.base,
+    //   "string.empty": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "any.required": constants.CUSTOM_JOI_MESSAGE.password_msg.required,
+    //   "string.pattern.base": constants.CUSTOM_JOI_MESSAGE.password_msg.pattern
+    // }).optional(),
     country_code: joi_1.default.string().required(),
     phone_number: joi_1.default.string().required(),
     current_department_id: joi_1.default.string().required(),
     current_designation: joi_1.default.string().optional(),
-    employee_code: joi_1.default.string().required(),
+    // employee_code: Joi.string().required(),
+    // prev_employers:Joi.array().items(Joi.object().keys({
+    //     prev_employer: Joi.string().required(),
+    //     prev_department: Joi.string().required(),
+    //     prev_designation: Joi.string().required(),
+    //     prev_date_of_joining: Joi.string().required(),
+    //     prev_exit: Joi.string().required(),
+    // })).optional(),
     prev_employer: joi_1.default.string().optional(),
     prev_department: joi_1.default.string().optional(),
     prev_designation: joi_1.default.string().optional(),
@@ -132,9 +141,11 @@ exports.addEditEmployee = joi_1.default.object({
         "string.base": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.base,
         "string.empty": constants.CUSTOM_JOI_MESSAGE.manager_team_icon_url_msg.required,
     }).optional(),
+    employee_rank_id: joi_1.default.number().required(),
 });
 exports.getEmployeeList = joi_1.default.object({
     departmentId: joi_1.default.number().optional(),
+    employeeRankId: joi_1.default.number().optional(),
     searchKey: joi_1.default.string().optional(),
     limit: joi_1.default.number().optional(),
     offset: joi_1.default.number().optional()
@@ -189,5 +200,30 @@ exports.getManagerList = joi_1.default.object({
 exports.updateManager = joi_1.default.object({
     current_manager_id: joi_1.default.number().required(),
     new_manager_id: joi_1.default.number().required(),
+});
+exports.addAttributes = joi_1.default.object({
+    attributes: joi_1.default.array().items(joi_1.default.object().keys({
+        name: joi_1.default.string().required(),
+        desc: joi_1.default.string().optional(),
+        particulars: joi_1.default.string().optional(),
+        guidance: joi_1.default.string().optional(),
+    })).required(),
+});
+exports.getAttributeDetails = joi_1.default.object({
+    attribute_id: joi_1.default.number().required(),
+});
+exports.getAttributes = joi_1.default.object({
+    is_pagination: joi_1.default.number().optional(),
+    limit: joi_1.default.number().optional(),
+    offset: joi_1.default.number().optional(),
+});
+exports.deleteAttribute = joi_1.default.object({
+    attribute_id: joi_1.default.number().required(),
+});
+exports.toggleAttributeStatus = joi_1.default.object({
+    attribute_id: joi_1.default.number().required(),
+});
+exports.getQualitativeMeasurementDetails = joi_1.default.object({
+    name: joi_1.default.string()
 });
 //# sourceMappingURL=employerSchema.js.map
